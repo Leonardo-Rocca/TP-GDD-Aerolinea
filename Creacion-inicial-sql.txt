@@ -1,0 +1,289 @@
+--Nuevo esquema
+
+CREATE SCHEMA [DBAS] AUTHORIZATION [gd];
+
+-- DDL de tablas
+
+CREATE TABLE DBAS.rutas (
+	codigo_ruta bigint IDENTITY(1,1) PRIMARY KEY,
+	ciudad_origen_id bigint,
+	ciudad_destino_id bigint,
+	precio_base_por_KG float(24),
+	precio_base_por_pasaje float(24),
+	id_servicio bigint
+);
+
+CREATE TABLE DBAS.viajes (
+	id_viaje bigint IDENTITY(1,1) PRIMARY KEY,
+	fecha_salida datetime,
+	fecha_llegada datetime,
+	fecha_llegada_estimada datetime,
+	matricula_aeronave varchar(100),
+	codigo_ruta bigint 
+);
+
+CREATE TABLE DBAS.aeronaves (
+	matricula_aeronave varchar(100) PRIMARY KEY,
+	numero_aeronave bigint,
+	modelo_aeronave varchar(100),
+	baja_fuera_de_servicio tinyint default 0,
+	baja_vida_util tinyint default 0,
+	fecha_alta datetime,
+	fecha_baja_servicio_definitiva datetime,
+	kg_disponible_encomienda float(24),
+	cantidad_butacas bigint,
+	id_fabricante bigint,
+ 	id_servicio bigint
+
+);
+
+CREATE TABLE DBAS.fabricantes (
+	id_fabricante bigint IDENTITY(1,1) PRIMARY KEY,
+	nombre_fabricante varchar(50)
+
+);
+
+CREATE TABLE DBAS.butacas (
+	id_butaca bigint IDENTITY(1,1) PRIMARY KEY,
+	numero_butaca smallint,
+	tipo_butaca char(1) CHECK(tipo_butaca IN('P','V')),
+	ocupada_butaca tinyint default 0 CHECK(ocupada_butaca IN(1,0)),
+	matricula_aeronave varchar(100)
+	UNIQUE(numero_butaca, matricula_aeronave)
+);
+
+CREATE TABLE DBAS.pasajes (
+	id_pasaje bigint IDENTITY(1,1) PRIMARY KEY,
+	id_cliente  bigint,
+	encomienda_cliente_KG float(24),
+	id_viaje bigint NOT NULL,
+	id_butaca bigint,
+	id_comprador bigint NOT NULL,
+	id_compra bigint NOT NULL,
+	PNR bigint UNIQUE -- codigo de compra
+);
+
+CREATE TABLE DBAS.servicios (
+	id_servicio bigint IDENTITY(1,1) PRIMARY KEY,
+	porcentaje_arancel float(24),
+	tipo_servicio varchar(50)
+);
+
+CREATE TABLE DBAS.compras (
+	id_compra bigint IDENTITY(1,1) PRIMARY KEY,
+	fecha_compra datetime NOT NULL,
+	tarjeta_id bigint,
+	id_cliente bigint NOT NULL
+	
+);
+
+CREATE TABLE DBAS.tarjetas (
+	tarjeta_id bigint IDENTITY(1,1) PRIMARY KEY,
+	tarjeta_Numero bigint,
+	tarjeta_Codigo bigint,
+	tarjeta_Fecha_de_vencimiento datetime,
+	tipo_tarjeta_id bigint
+	
+);
+
+CREATE TABLE DBAS.tiposTarjeta (
+	tipo_tarjeta_id bigint IDENTITY(1,1) PRIMARY KEY,
+	descripcion_tipo varchar(10),
+	admite_cuotas tinyint
+	
+);
+
+CREATE TABLE DBAS.roles (
+	id_rol bigint IDENTITY(1,1) PRIMARY KEY,
+	descripcion varchar(100)
+);
+
+CREATE TABLE DBAS.rolesPorFuncionalidad (
+	id_rol bigint,
+	id_funcionalidad bigint,
+);
+
+CREATE TABLE DBAS.funcionalidades (
+	id_funcionalidad bigint IDENTITY(1,1) PRIMARY KEY,
+	descripcion varchar(100)
+);
+
+
+CREATE TABLE DBAS.cancelaciones (
+	id_cancelacion bigint IDENTITY(1,1) PRIMARY KEY,
+	codigo_cancelacion bigint UNIQUE,
+	fecha_devolucion datetime,
+	PNR bigint UNIQUE,
+	motivo_cancelacion varchar(100),
+	id_pasaje bigint
+	
+);
+
+CREATE TABLE DBAS.usuarios (
+	id_usuario bigint IDENTITY(1,1) PRIMARY KEY,
+	username varchar(50) UNIQUE,
+	password varchar(50),
+	id_rol bigint
+);
+
+CREATE TABLE DBAS.ciudades (
+	id_ciudad bigint IDENTITY(1,1) PRIMARY KEY,
+	nombre_ciudad varchar(100)
+);
+
+CREATE TABLE DBAS.clientes (
+	id_cliente bigint IDENTITY(1,1) PRIMARY KEY,
+	dni_cliente bigint,
+	nombre_cliente varchar(100),
+	apellido_cliente varchar(100),
+	direccion_cliente varchar(100),
+	telefono_cliente varchar(50),
+	mail_cliente varchar(100),
+	fecha_nacimiento datetime,
+	millas_totales bigint,
+	id_millas bigint
+);
+
+CREATE TABLE DBAS.canjes (
+	id_canje bigint IDENTITY(1,1) PRIMARY KEY,
+	id_cliente bigint,
+	fecha_canje datetime,
+	cantidad_producto bigint,
+	millas_usadas bigint,
+	id_producto bigint
+	
+);
+
+CREATE TABLE DBAS.millas (
+	id_millas bigint IDENTITY(1,1) PRIMARY KEY,
+	valor_millas bigint,
+	validez_millas int default 365,
+	detalle_millas_realizadas varchar(100),
+	
+);
+
+CREATE TABLE DBAS.productos (
+	id_producto bigint IDENTITY(1,1) PRIMARY KEY,
+	valor_en_milas int,
+	nombre_producto varchar(100),
+	stock int
+);
+
+CREATE TABLE DBAS.periodosFueraDeServicio (
+	id_periodo bigint IDENTITY(1,1) PRIMARY KEY,
+	matricula_aeronave varchar(100),
+	fecha_fuera_servicio datetime,
+	fecha_reinicio_servicio datetime
+);
+
+-- DDL de constraints FK
+
+alter table DBAS.rutas add constraint fk_ruta_ciudadOrigen 
+	foreign key (ciudad_origen_id) references DBAS.ciudades (id_ciudad);
+
+alter table DBAS.rutas add constraint fk_ruta_ciudadDestino 
+	foreign key (ciudad_destino_id) references DBAS.ciudades (id_ciudad);
+
+alter table DBAS.rutas add constraint fk_ruta_servicio 
+	foreign key (id_servicio) references DBAS.servicios (id_servicio);
+
+alter table DBAS.viajes add constraint fk_viaje_aeronave 
+	foreign key (matricula_aeronave) references DBAS.aeronaves (matricula_aeronave);	
+
+alter table DBAS.viajes add constraint fk_viaje_ruta
+	foreign key (codigo_ruta) references DBAS.rutas (codigo_ruta);
+
+alter table DBAS.aeronaves add constraint fk_aeronave_fabricante
+	foreign key (id_fabricante) references DBAS.fabricantes (id_fabricante); 
+	
+alter table DBAS.aeronaves add constraint fk_aeronave_servicio
+	foreign key (id_servicio) references DBAS.servicios (id_servicio); 
+
+alter table DBAS.butacas add constraint fk_butaca_aeronave
+	foreign key (matricula_aeronave) references DBAS.aeronaves (matricula_aeronave);
+
+alter table DBAS.pasajes add constraint fk_pasaje_cliente
+	foreign key (id_cliente ) references DBAS.clientes (id_cliente ); 
+
+alter table DBAS.pasajes add constraint fk_pasaje_butaca
+	foreign key (id_butaca) references DBAS.butacas (id_butaca);
+
+alter table DBAS.pasajes add constraint fk_pasaje_compra
+	foreign key (id_compra) references DBAS.compras (id_compra);
+
+alter table DBAS.pasajes add constraint fk_pasaje_viaje
+	foreign key (id_viaje) references DBAS.viajes (id_viaje);
+
+alter table DBAS.compras add constraint fk_compra_tarjeta
+	foreign key (tarjeta_id) references DBAS.tarjetas (tarjeta_id);
+
+alter table DBAS.compras add constraint fk_compra_cliente
+	foreign key (id_cliente ) references DBAS.clientes (id_cliente );
+
+alter table DBAS.tarjetas add constraint fk_tarjeta_tipoTarjeta
+	foreign key (tipo_tarjeta_id) references DBAS.tiposTarjeta (tipo_tarjeta_id);
+
+alter table DBAS.cancelaciones add constraint fk_cancelacion_pasaje
+	foreign key (id_pasaje) references DBAS.pasajes (id_pasaje);
+
+alter table DBAS.clientes add constraint fk_cliente_millas
+	foreign key (id_millas) references DBAS.millas (id_millas);
+
+alter table DBAS.canjes add constraint fk_canje_cliente
+	foreign key (id_cliente) references DBAS.clientes (id_cliente);
+
+alter table DBAS.canjes add constraint fk_canje_producto
+	foreign key (id_producto) references DBAS.productos (id_producto);
+
+alter table DBAS.periodosFueraDeServicio add constraint fk_periodos_aeronave
+	foreign key (matricula_aeronave) references DBAS.aeronaves (matricula_aeronave);	
+
+alter table DBAS.pasajes add constraint fk_compra_pasaje
+	foreign key (id_compra) references DBAS.compras (id_compra);
+
+alter table DBAS.usuarios add constraint fk_usuario_rol
+	foreign key (id_rol) references DBAS.roles (id_rol);
+
+alter table DBAS.rolesPorFuncionalidad add constraint fk_rolesPorFuncionalidad_rol
+	foreign key (id_rol) references DBAS.roles (id_rol);
+
+alter table DBAS.rolesPorFuncionalidad add constraint fk_rolesPorFuncionalidad_funcionalidad
+	foreign key (id_funcionalidad) references DBAS.funcionalidades (id_funcionalidad);
+
+--Migracion
+
+SELECT * FROM gd_esquema.Maestra
+
+INSERT INTO DBAS.fabricantes(nombre_fabricante)
+SELECT DISTINCT Aeronave_Fabricante 
+FROM gd_esquema.Maestra
+
+---
+
+INSERT INTO DBAS.ciudades(nombre_ciudad)
+SELECT DISTINCT Ruta_Ciudad_Origen FROM gd_esquema.Maestra UNION SELECT DISTINCT Ruta_Ciudad_Destino FROM gd_esquema.Maestra
+
+---
+
+INSERT INTO DBAS.servicios(tipo_servicio)
+SELECT DISTINCT Tipo_Servicio FROM gd_esquema.Maestra
+
+---
+CREATE TABLE #temporalRutasOriginales(nom_ruta_orig varchar(100), nom_ruta_dest varchar(100), ruta_PP float(24), ruta_PKG float(24))
+
+INSERT INTO #temporalRutasOriginales(nom_ruta_orig, nom_ruta_dest, ruta_PP, ruta_PKG)
+SELECT DISTINCT tablaAux1.Ruta_Ciudad_Origen, tablaAux1.Ruta_Ciudad_Destino, Ruta_Precio_BaseKG,Ruta_Precio_BasePasaje
+		FROM ((SELECT DISTINCT Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BasePasaje FROM gd_esquema.Maestra WHERE Ruta_Precio_BasePasaje > 0.00) tablaAux1
+			JOIN (SELECT DISTINCT Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BaseKG FROM gd_esquema.Maestra WHERE Ruta_Precio_BASEKG > 0.00) tablaAux2
+				ON (tablaAux1.Ruta_Ciudad_Origen = tablaAux2.Ruta_Ciudad_Origen AND tablaAux1.Ruta_Ciudad_Destino = tablaAux2.Ruta_Ciudad_Destino))
+
+select * from #temporalRutasOriginales
+
+INSERT INTO DBAS.rutas(ciudad_origen_id, ciudad_destino_id, precio_base_por_KG, precio_base_por_pasaje)
+SELECT tablaCiudades_orig.id_ciudad, tablaCiudades_dest.id_ciudad, tmpRutas.ruta_PKG, tmpRutas.ruta_PP
+FROM ((SELECT * FROM DBAS.ciudades) tablaCiudades_orig 
+	JOIN  #temporalRutasOriginales tmpRutas ON ( tmpRutas.nom_ruta_orig = tablaCiudades_orig.nombre_ciudad) )
+		JOIN (SELECT * FROM DBAS.ciudades) tablaCiudades_dest on  ( tmpRutas.nom_ruta_dest = tablaCiudades_dest.nombre_ciudad) 
+
+SELECT * FROM DBAS.ciudades
+

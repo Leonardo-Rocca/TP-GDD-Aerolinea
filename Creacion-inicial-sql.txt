@@ -269,21 +269,21 @@ INSERT INTO DBAS.servicios(tipo_servicio)
 SELECT DISTINCT Tipo_Servicio FROM gd_esquema.Maestra
 
 ---
-CREATE TABLE #temporalRutasOriginales(nom_ruta_orig varchar(100), nom_ruta_dest varchar(100), ruta_PP float(24), ruta_PKG float(24))
 
-INSERT INTO #temporalRutasOriginales(nom_ruta_orig, nom_ruta_dest, ruta_PP, ruta_PKG)
-SELECT DISTINCT tablaAux1.Ruta_Ciudad_Origen, tablaAux1.Ruta_Ciudad_Destino, Ruta_Precio_BaseKG,Ruta_Precio_BasePasaje
-		FROM ((SELECT DISTINCT Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BasePasaje FROM gd_esquema.Maestra WHERE Ruta_Precio_BasePasaje > 0.00) tablaAux1
-			JOIN (SELECT DISTINCT Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BaseKG FROM gd_esquema.Maestra WHERE Ruta_Precio_BASEKG > 0.00) tablaAux2
-				ON (tablaAux1.Ruta_Ciudad_Origen = tablaAux2.Ruta_Ciudad_Origen AND tablaAux1.Ruta_Ciudad_Destino = tablaAux2.Ruta_Ciudad_Destino))
+CREATE TABLE #temporalRutasOriginales(nom_ruta_orig varchar(100), nom_ruta_dest varchar(100), ruta_PP float(24), ruta_PKG float(24), ruta_servicio varchar(50))
 
-select * from #temporalRutasOriginales
+INSERT INTO #temporalRutasOriginales(nom_ruta_orig, nom_ruta_dest, ruta_PP, ruta_PKG, ruta_servicio)
+SELECT DISTINCT tablaAux1.Ruta_Ciudad_Origen, tablaAux1.Ruta_Ciudad_Destino, Ruta_Precio_BaseKG,Ruta_Precio_BasePasaje, tablaAux1.Tipo_Servicio
+		FROM ((SELECT DISTINCT Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BasePasaje, Tipo_Servicio FROM gd_esquema.Maestra WHERE Ruta_Precio_BasePasaje > 0.00) tablaAux1
+			JOIN (SELECT DISTINCT Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BaseKG, Tipo_Servicio FROM gd_esquema.Maestra WHERE Ruta_Precio_BASEKG > 0.00) tablaAux2
+				ON (tablaAux1.Ruta_Ciudad_Origen = tablaAux2.Ruta_Ciudad_Origen AND tablaAux1.Ruta_Ciudad_Destino = tablaAux2.Ruta_Ciudad_Destino AND tablaAux1.Tipo_Servicio = tablaAux2.Tipo_Servicio))
 
-INSERT INTO DBAS.rutas(ciudad_origen_id, ciudad_destino_id, precio_base_por_KG, precio_base_por_pasaje)
-SELECT tablaCiudades_orig.id_ciudad, tablaCiudades_dest.id_ciudad, tmpRutas.ruta_PKG, tmpRutas.ruta_PP
+INSERT INTO DBAS.rutas(ciudad_origen_id, ciudad_destino_id, precio_base_por_KG, precio_base_por_pasaje, id_servicio)
+SELECT tablaCiudades_orig.id_ciudad, tablaCiudades_dest.id_ciudad, tmpRutas.ruta_PKG, tmpRutas.ruta_PP, tablaServicios.id_servicio
 FROM ((SELECT * FROM DBAS.ciudades) tablaCiudades_orig 
-	JOIN  #temporalRutasOriginales tmpRutas ON ( tmpRutas.nom_ruta_orig = tablaCiudades_orig.nombre_ciudad) )
-		JOIN (SELECT * FROM DBAS.ciudades) tablaCiudades_dest on  ( tmpRutas.nom_ruta_dest = tablaCiudades_dest.nombre_ciudad) 
+	JOIN  #temporalRutasOriginales tmpRutas ON ( tmpRutas.nom_ruta_orig = tablaCiudades_orig.nombre_ciudad)
+		JOIN (SELECT * FROM DBAS.ciudades) tablaCiudades_dest ON ( tmpRutas.nom_ruta_dest = tablaCiudades_dest.nombre_ciudad) 
+			JOIN (SELECT * FROM DBAS.servicios) tablaServicios ON (tmpRutas.ruta_servicio = tablaServicios.tipo_servicio))
 
-SELECT * FROM DBAS.ciudades
+---
 

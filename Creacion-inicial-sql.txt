@@ -24,7 +24,7 @@ CREATE TABLE DBAS.viajes (
 
 CREATE TABLE DBAS.aeronaves (
 	matricula_aeronave varchar(100) PRIMARY KEY,
-	numero_aeronave bigint,
+	numero_aeronave bigint IDENTITY(1,1) UNIQUE,
 	modelo_aeronave varchar(100),
 	baja_fuera_de_servicio tinyint default 0,
 	baja_vida_util tinyint default 0,

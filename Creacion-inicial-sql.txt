@@ -287,3 +287,19 @@ FROM ((SELECT * FROM DBAS.ciudades) tablaCiudades_orig
 
 ---
 
+-- sirve para saber si hay consistencia con el tipo de servicio de la aeronave
+SELECT DISTINCT aux1.Aeronave_matricula, aux1.Aeronave_KG_Disponibles, aux1.Aeronave_Fabricante, aux1.Tipo_Servicio 
+FROM ((SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Tipo_Servicio FROM gd_esquema.Maestra) aux1 JOIN (SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Tipo_Servicio FROM gd_esquema.Maestra) aux2 
+ON (aux1.Aeronave_Matricula = aux2.Aeronave_Matricula AND aux1.Tipo_Servicio != aux2.Tipo_Servicio)) 
+
+-- sirve para saber si hay consistencia con kg disponibles
+SELECT DISTINCT aux1.Aeronave_matricula, aux1.Aeronave_KG_Disponibles, aux1.Aeronave_Fabricante, aux1.Tipo_Servicio 
+FROM ((SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Tipo_Servicio FROM gd_esquema.Maestra) aux1 JOIN (SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Tipo_Servicio FROM gd_esquema.Maestra) aux2 
+ON (aux1.Aeronave_Matricula = aux2.Aeronave_Matricula AND aux1.Aeronave_KG_Disponibles != aux2.Aeronave_KG_Disponibles)) 
+
+INSERT INTO DBAS.aeronaves(matricula_aeronave, modelo_aeronave, kg_disponible_encomienda, id_fabricante, id_servicio)
+SELECT DISTINCT tablaAux.Aeronave_Matricula, tablaAux.Aeronave_Modelo, tablaAux.Aeronave_KG_Disponibles, tablaFab.id_fabricante, tablaServ.id_servicio
+FROM ((SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Aeronave_Modelo, Tipo_Servicio FROM gd_esquema.Maestra) tablaAux
+	JOIN DBAS.fabricantes tablaFab ON (tablaFab.nombre_fabricante = tablaAux.Aeronave_Fabricante)
+		JOIN DBAS.servicios tablaServ ON (tablaServ.tipo_servicio = tablaAux.Tipo_Servicio))
+

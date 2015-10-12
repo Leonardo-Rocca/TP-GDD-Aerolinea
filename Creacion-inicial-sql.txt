@@ -19,7 +19,8 @@ CREATE TABLE DBAS.viajes (
 	fecha_llegada datetime,
 	fecha_llegada_estimada datetime,
 	matricula_aeronave varchar(100),
-	codigo_ruta bigint 
+	codigo_ruta bigint,
+	CHECK( (fecha_llegada_estimada <= DATEADD(day, 1, fecha_salida)) AND (fecha_salida < fecha_llegada))
 );
 
 CREATE TABLE DBAS.aeronaves (
@@ -28,7 +29,7 @@ CREATE TABLE DBAS.aeronaves (
 	modelo_aeronave varchar(100),
 	baja_fuera_de_servicio tinyint default 0,
 	baja_vida_util tinyint default 0,
-	fecha_alta datetime,
+	fecha_reinsercion datetime,
 	fecha_baja_servicio_definitiva datetime,
 	kg_disponible_encomienda float(24),
 	cantidad_butacas bigint,
@@ -46,10 +47,16 @@ CREATE TABLE DBAS.fabricantes (
 CREATE TABLE DBAS.butacas (
 	id_butaca bigint IDENTITY(1,1) PRIMARY KEY,
 	numero_butaca smallint,
-	tipo_butaca char(1) CHECK(tipo_butaca IN('P','V')),
-	ocupada_butaca tinyint default 0 CHECK(ocupada_butaca IN(1,0)),
-	matricula_aeronave varchar(100)
-	UNIQUE(numero_butaca, matricula_aeronave)
+	tipo_butaca varchar(15) CHECK(tipo_butaca IN('Pasillo','Ventanilla')),
+	ocupada_butaca tinyint default 0 CHECK(ocupada_butaca IN(1,0)),	
+	id_viaje bigint,
+	UNIQUE(numero_butaca, id_viaje)
+);
+
+CREATE TABLE DBAS.butacasPorViaje (
+	id_butaca bigint,
+	id_viaje bigint,
+	ocupada_butaca tinyint default 0 CHECK(ocupada_butaca IN(1,0))
 );
 
 CREATE TABLE DBAS.pasajes (
@@ -200,7 +207,7 @@ alter table DBAS.aeronaves add constraint fk_aeronave_servicio
 	foreign key (id_servicio) references DBAS.servicios (id_servicio); 
 
 alter table DBAS.butacas add constraint fk_butaca_aeronave
-	foreign key (matricula_aeronave) references DBAS.aeronaves (matricula_aeronave);
+	foreign key (id_viaje) references DBAS.viajes (id_viaje);
 
 alter table DBAS.pasajes add constraint fk_pasaje_cliente
 	foreign key (id_cliente ) references DBAS.clientes (id_cliente ); 
@@ -302,4 +309,20 @@ SELECT DISTINCT tablaAux.Aeronave_Matricula, tablaAux.Aeronave_Modelo, tablaAux.
 FROM ((SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Aeronave_Modelo, Tipo_Servicio FROM gd_esquema.Maestra) tablaAux
 	JOIN DBAS.fabricantes tablaFab ON (tablaFab.nombre_fabricante = tablaAux.Aeronave_Fabricante)
 		JOIN DBAS.servicios tablaServ ON (tablaServ.tipo_servicio = tablaAux.Tipo_Servicio))
+
+---
+
+INSERT INTO DBAS.viajes (fecha_salida,fecha_llegada_estimada,fecha_llegada,matricula_aeronave,codigo_ruta)
+SELECT DISTINCT tablaAux.FechaSalida, tablaAux.Fecha_LLegada_Estimada, tablaAux.FechaLLegada, tablaAux.Aeronave_Matricula, tablaRutas.codigo_ruta
+FROM ((SELECT FechaSalida, Fecha_LLegada_Estimada, FechaLLegada, Aeronave_Matricula, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino FROM gd_esquema.Maestra) tablaAux 
+	JOIN DBAS.ciudades tablaciudad_orig ON (tablaciudad_orig.nombre_ciudad= tablaAux.Ruta_Ciudad_Origen)
+		JOIN DBAS.ciudades tablaciudad_dest ON (tablaciudad_dest.nombre_ciudad = tablaAux.Ruta_Ciudad_Destino)
+			JOIN DBAS.rutas tablaRutas ON (tablaRutas.ciudad_origen_id = tablaciudad_orig.id_ciudad AND tablaRutas.ciudad_destino_id = tablaciudad_dest.id_ciudad))
+
+---
+
+INSERT INTO DBAS.butacas (numero_butaca, tipo_butaca, id_viaje)
+SELECT DISTINCT tablaAux.Butaca_Nro, tablaAux.Butaca_Tipo, tablaviajes.id_viaje
+FROM ((SELECT Butaca_Nro, Butaca_Tipo, FechaSalida, FechaLLegada, Aeronave_Matricula FROM gd_esquema.Maestra WHERE Butaca_Nro > 0) tablaAux
+	JOIN DBAS.viajes tablaviajes ON (tablaAux.FechaSalida = tablaViajes.fecha_salida AND tablaAux.FechaLLegada = tablaviajes.fecha_llegada AND tablaAux.Aeronave_Matricula = tablaviajes.matricula_aeronave))
 

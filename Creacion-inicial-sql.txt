@@ -362,3 +362,8 @@ from ((
 SELECT * FROM DBAS.viajes WHERE id_viaje = 3345) aux JOIN(
 SELECT * FROM gd_esquema.Maestra WHERE Aeronave_Matricula = 'ASQ-169') aux2 ON (aux.fecha_llegada = aux2.FechaLLegada and aux.fecha_salida=aux2.FechaSalida))
 order by Butaca_Nro
+
+---
+
+INSERT INTO DBAS.clientes(dni_cliente, nombre_cliente, apellido_cliente, direccion_cliente, telefono_cliente, mail_cliente, fecha_nacimiento)
+SELECT DISTINCT Cli_Dni, Cli_Nombre, Cli_Apellido, Cli_Dir, Cli_Telefono, Cli_Mail, Cli_Fecha_Nac FROM gd_esquema.Maestra

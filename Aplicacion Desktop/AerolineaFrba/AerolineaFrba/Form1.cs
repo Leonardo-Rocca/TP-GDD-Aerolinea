@@ -29,11 +29,16 @@ namespace AerolineaFrba
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-          //  int a = BDComun.select();
-            
+          
             Abm_Rol.Form1 asa = new Abm_Rol.Form1();
             asa.Show();
 
+        }
+
+        private void txtselect_Click(object sender, EventArgs e)
+        {
+            int a = BDComun.select();
+            
         }
 
     

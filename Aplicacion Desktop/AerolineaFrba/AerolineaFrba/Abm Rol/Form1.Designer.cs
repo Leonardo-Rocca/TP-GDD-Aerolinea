@@ -76,6 +76,7 @@
             this.button2.TabIndex = 4;
             this.button2.Text = "Eliminar";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // Form1
             // 
@@ -88,7 +89,7 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "AbmRolForm";
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -36,13 +36,14 @@
             this.label2 = new System.Windows.Forms.Label();
             this.txtNombreRol = new System.Windows.Forms.TextBox();
             this.modificarRol = new System.Windows.Forms.Label();
+            this.chkHabilitado = new System.Windows.Forms.CheckBox();
             label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label4
             // 
             label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            label4.Location = new System.Drawing.Point(655, 148);
+            label4.Location = new System.Drawing.Point(163, 197);
             label4.Name = "label4";
             label4.Size = new System.Drawing.Size(100, 141);
             label4.TabIndex = 17;
@@ -78,6 +79,7 @@
             this.button2.TabIndex = 14;
             this.button2.Text = "Cancelar";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // label3
             // 
@@ -117,12 +119,24 @@
             this.modificarRol.TabIndex = 10;
             this.modificarRol.Text = "Modificar Rol";
             // 
+            // chkHabilitado
+            // 
+            this.chkHabilitado.AutoSize = true;
+            this.chkHabilitado.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkHabilitado.Location = new System.Drawing.Point(708, 86);
+            this.chkHabilitado.Name = "chkHabilitado";
+            this.chkHabilitado.Size = new System.Drawing.Size(127, 24);
+            this.chkHabilitado.TabIndex = 18;
+            this.chkHabilitado.Text = "Rol Habilitado";
+            this.chkHabilitado.UseVisualStyleBackColor = true;
+            // 
             // modificarRolEspecificado
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.ClientSize = new System.Drawing.Size(898, 485);
+            this.Controls.Add(this.chkHabilitado);
             this.Controls.Add(label4);
             this.Controls.Add(this.chkListaFuncionalidades);
             this.Controls.Add(this.buttonAgregar);
@@ -147,6 +161,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtNombreRol;
         private System.Windows.Forms.Label modificarRol;
+        private System.Windows.Forms.CheckBox chkHabilitado;
 
     }
 }

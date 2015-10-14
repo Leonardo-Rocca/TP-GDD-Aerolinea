@@ -21,6 +21,8 @@ namespace AerolineaFrba.Abm_Rol
            chkListaFuncionalidades.Items.Insert(2, "Hacer lo logs");
             chkListaFuncionalidades.Items.Insert(3, "Usuarios");
             chkListaFuncionalidades.SetItemCheckState(3, CheckState.Checked);
+            //chkHabilitado.AutoCheck;//(CheckState.Checked);
+
         }
 
         private void buttonAgregar_Click(object sender, EventArgs e)
@@ -53,6 +55,12 @@ namespace AerolineaFrba.Abm_Rol
         private void chkListaFuncionalidades_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            //cancelar
+            this.Close();
         }
     }
 }

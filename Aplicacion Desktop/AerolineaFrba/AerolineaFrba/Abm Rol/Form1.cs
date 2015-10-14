@@ -30,9 +30,15 @@ namespace AerolineaFrba.Abm_Rol
 
         private void button3_Click(object sender, EventArgs e)
         {
-            ModificarForm modify = new ModificarForm();
+            ModificarForm modify = new ModificarForm("Modificar Rol", "Modificar", 1);
             modify.Show();
 
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            ModificarForm modify = new ModificarForm("Eliminar Rol", "Eliminar",2);
+            modify.Show();
         }
     }
 }

@@ -143,6 +143,7 @@
     <Compile Include="Registro Llegada Destino\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utils\ConexionSQL.cs" />
     <EmbeddedResource Include="Abm Rol\CrearRolForm.resx">
       <DependentUpon>CrearRolForm.cs</DependentUpon>
     </EmbeddedResource>

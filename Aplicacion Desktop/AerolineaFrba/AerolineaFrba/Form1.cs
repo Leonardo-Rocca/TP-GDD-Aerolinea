@@ -37,8 +37,16 @@ namespace AerolineaFrba
 
         private void txtselect_Click(object sender, EventArgs e)
         {
-            int a = BDComun.select();
             
+            DataTable tab = BDComun.select();
+            dataGridView1.DataSource = tab;
+           dataGridView1.AutoResizeColumns();
+            dataGridView1.AutoResizeRows();
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
 
     

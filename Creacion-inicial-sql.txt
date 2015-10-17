@@ -6,6 +6,7 @@ CREATE SCHEMA [DBAS] AUTHORIZATION [gd];
 
 CREATE TABLE DBAS.rutas (
 	codigo_ruta bigint IDENTITY(1,1) PRIMARY KEY,
+	codigo_ruta_original bigint,
 	ciudad_origen_id bigint,
 	ciudad_destino_id bigint,
 	precio_base_por_KG float(24),
@@ -47,26 +48,20 @@ CREATE TABLE DBAS.fabricantes (
 CREATE TABLE DBAS.butacas (
 	id_butaca bigint IDENTITY(1,1) PRIMARY KEY,
 	numero_butaca smallint,
-	tipo_butaca varchar(15) CHECK(tipo_butaca IN('Pasillo','Ventanilla')),
+	tipo_butaca varchar(15) CHECK(tipo_butaca IN('Pasillo','Ventanilla','0')),
+	piso_butaca tinyint,
 	matricula_aeronave varchar(100),
 	UNIQUE(numero_butaca, matricula_aeronave)
 );
 
-CREATE TABLE DBAS.butacasPorViaje (
-	id_butaca bigint,
-	id_viaje bigint,
-	ocupada_butaca tinyint default 0 CHECK(ocupada_butaca IN(1,0))
-);
-
-CREATE TABLE DBAS.pasajes (
-	id_pasaje bigint IDENTITY(1,1) PRIMARY KEY,
+CREATE TABLE DBAS.pasajesEncomiendas (
+	codigo_PE bigint PRIMARY KEY,
 	id_cliente  bigint,
 	encomienda_cliente_KG float(24),
 	id_viaje bigint NOT NULL,
 	id_butaca bigint,
-	id_comprador bigint NOT NULL,
 	id_compra bigint NOT NULL,
-	PNR bigint UNIQUE -- codigo de compra
+	
 );
 
 CREATE TABLE DBAS.servicios (
@@ -77,25 +72,12 @@ CREATE TABLE DBAS.servicios (
 
 CREATE TABLE DBAS.compras (
 	id_compra bigint IDENTITY(1,1) PRIMARY KEY,
-	fecha_compra datetime NOT NULL,
-	tarjeta_id bigint,
-	id_cliente bigint NOT NULL
-	
-);
-
-CREATE TABLE DBAS.tarjetas (
-	tarjeta_id bigint IDENTITY(1,1) PRIMARY KEY,
-	tarjeta_Numero bigint,
-	tarjeta_Codigo bigint,
-	tarjeta_Fecha_de_vencimiento datetime,
-	tipo_tarjeta_id bigint
-	
-);
-
-CREATE TABLE DBAS.tiposTarjeta (
-	tipo_tarjeta_id bigint IDENTITY(1,1) PRIMARY KEY,
-	descripcion_tipo varchar(10),
-	admite_cuotas tinyint
+	PNR bigint UNIQUE, -- codigo de compra
+	fecha_compra_pasaje datetime NOT NULL,
+	fecha_compra_encomienda datetime NOT NULL,
+	precio_encomienda float(24),
+	precio_pasaje float(24),
+	id_cliente bigint
 	
 );
 
@@ -105,8 +87,8 @@ CREATE TABLE DBAS.roles (
 );
 
 CREATE TABLE DBAS.rolesPorFuncionalidad (
-	id_rol bigint,
-	id_funcionalidad bigint,
+	id_rol bigint NOT NULL,
+	id_funcionalidad bigint NOT NULL,
 );
 
 CREATE TABLE DBAS.funcionalidades (
@@ -121,7 +103,8 @@ CREATE TABLE DBAS.cancelaciones (
 	fecha_devolucion datetime,
 	PNR bigint UNIQUE,
 	motivo_cancelacion varchar(100),
-	id_pasaje bigint
+	codigo_pasaje bigint,
+	codigo_encomienda bigint
 	
 );
 
@@ -184,12 +167,8 @@ CREATE TABLE DBAS.periodosFueraDeServicio (
 
 --DDL de constraints compuestos
 
-alter table DBAS.butacasPorViaje add constraint pk_butacasPorViaje
-	primary key clustered (id_butaca, id_viaje);
-
 alter table DBAS.rolesPorFuncionalidad add constraint pk_rolesPorFuncionalidad 
 	primary key clustered (id_rol, id_funcionalidad);
-
 
 -- DDL de constraints FK
 
@@ -217,35 +196,29 @@ alter table DBAS.aeronaves add constraint fk_aeronave_servicio
 alter table DBAS.butacas add constraint fk_butaca_aeronave
 	foreign key (matricula_aeronave) references DBAS.aeronaves (matricula_aeronave);
 
-alter table DBAS.butacasPorViaje add constraint fk_butacasPorViaje_butacas
+alter table DBAS.pasajesEncomiendas add constraint fk_pasaje_cliente
+	foreign key (id_cliente ) references DBAS.clientes (id_cliente); 
+
+alter table DBAS.pasajesEncomiendas add constraint fk_pasaje_butaca
 	foreign key (id_butaca) references DBAS.butacas (id_butaca);
 
-alter table DBAS.butacasPorViaje add constraint fk_butacasPorViaje_viaje
-	foreign key (id_viaje) references DBAS.viajes (id_viaje);
-
-alter table DBAS.pasajes add constraint fk_pasaje_cliente
-	foreign key (id_cliente ) references DBAS.clientes (id_cliente ); 
-
-alter table DBAS.pasajes add constraint fk_pasaje_butaca
-	foreign key (id_butaca) references DBAS.butacas (id_butaca);
-
-alter table DBAS.pasajes add constraint fk_pasaje_compra
+alter table DBAS.pasajesEncomiendas add constraint fk_pasaje_compra
 	foreign key (id_compra) references DBAS.compras (id_compra);
 
-alter table DBAS.pasajes add constraint fk_pasaje_viaje
+alter table DBAS.pasajesEncomiendas add constraint fk_pasaje_viaje
 	foreign key (id_viaje) references DBAS.viajes (id_viaje);
 
-alter table DBAS.compras add constraint fk_compra_tarjeta
-	foreign key (tarjeta_id) references DBAS.tarjetas (tarjeta_id);
-
 alter table DBAS.compras add constraint fk_compra_cliente
-	foreign key (id_cliente ) references DBAS.clientes (id_cliente );
-
-alter table DBAS.tarjetas add constraint fk_tarjeta_tipoTarjeta
-	foreign key (tipo_tarjeta_id) references DBAS.tiposTarjeta (tipo_tarjeta_id);
+	foreign key (id_cliente ) references DBAS.clientes (id_cliente);
 
 alter table DBAS.cancelaciones add constraint fk_cancelacion_pasaje
-	foreign key (id_pasaje) references DBAS.pasajes (id_pasaje);
+	foreign key (codigo_pasaje) references DBAS.pasajesEncomiendas (codigo_PE);
+
+alter table DBAS.cancelaciones add constraint fk_cancelacion_encomienda
+	foreign key (codigo_encomienda) references DBAS.pasajesEncomiendas (codigo_PE);
+
+alter table DBAS.cancelaciones add constraint fk_cancelacion_compra
+	foreign key (id_compra_PNR) references DBAS.compras (id_compra_PNR);
 
 alter table DBAS.clientes add constraint fk_cliente_millas
 	foreign key (id_millas) references DBAS.millas (id_millas);
@@ -258,9 +231,6 @@ alter table DBAS.canjes add constraint fk_canje_producto
 
 alter table DBAS.periodosFueraDeServicio add constraint fk_periodos_aeronave
 	foreign key (matricula_aeronave) references DBAS.aeronaves (matricula_aeronave);	
-
-alter table DBAS.pasajes add constraint fk_compra_pasaje
-	foreign key (id_compra) references DBAS.compras (id_compra);
 
 alter table DBAS.usuarios add constraint fk_usuario_rol
 	foreign key (id_rol) references DBAS.roles (id_rol);
@@ -294,10 +264,11 @@ SELECT DISTINCT Tipo_Servicio FROM gd_esquema.Maestra
 CREATE TABLE #temporalRutasOriginales(nom_ruta_orig varchar(100), nom_ruta_dest varchar(100), ruta_PP float(24), ruta_PKG float(24), ruta_servicio varchar(50))
 
 INSERT INTO #temporalRutasOriginales(nom_ruta_orig, nom_ruta_dest, ruta_PP, ruta_PKG, ruta_servicio)
-SELECT DISTINCT tablaAux1.Ruta_Ciudad_Origen, tablaAux1.Ruta_Ciudad_Destino, Ruta_Precio_BaseKG,Ruta_Precio_BasePasaje, tablaAux1.Tipo_Servicio
-		FROM ((SELECT DISTINCT Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BasePasaje, Tipo_Servicio FROM gd_esquema.Maestra WHERE Ruta_Precio_BasePasaje > 0.00) tablaAux1
-			JOIN (SELECT DISTINCT Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BaseKG, Tipo_Servicio FROM gd_esquema.Maestra WHERE Ruta_Precio_BASEKG > 0.00) tablaAux2
-				ON (tablaAux1.Ruta_Ciudad_Origen = tablaAux2.Ruta_Ciudad_Origen AND tablaAux1.Ruta_Ciudad_Destino = tablaAux2.Ruta_Ciudad_Destino AND tablaAux1.Tipo_Servicio = tablaAux2.Tipo_Servicio))
+SELECT DISTINCT tablaAux1.Ruta_Ciudad_Origen, tablaAux1.Ruta_Ciudad_Destino, tablaAux2.Ruta_Precio_BaseKG, tablaAux1.Ruta_Precio_BasePasaje, tablaAux1.Tipo_Servicio
+		FROM ((SELECT DISTINCT Ruta_Codigo, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BasePasaje, Tipo_Servicio FROM gd_esquema.Maestra WHERE Ruta_Precio_BasePasaje > 0.00) tablaAux1
+			JOIN (SELECT DISTINCT Ruta_Codigo,Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BaseKG, Tipo_Servicio FROM gd_esquema.Maestra WHERE Ruta_Precio_BASEKG > 0.00) tablaAux2
+				ON (tablaAux1.Ruta_Ciudad_Origen = tablaAux2.Ruta_Ciudad_Origen AND tablaAux1.Ruta_Ciudad_Destino = tablaAux2.Ruta_Ciudad_Destino))
+
 
 INSERT INTO DBAS.rutas(ciudad_origen_id, ciudad_destino_id, precio_base_por_KG, precio_base_por_pasaje, id_servicio)
 SELECT tablaCiudades_orig.id_ciudad, tablaCiudades_dest.id_ciudad, tmpRutas.ruta_PKG, tmpRutas.ruta_PP, tablaServicios.id_servicio
@@ -335,35 +306,20 @@ FROM ((SELECT FechaSalida, Fecha_LLegada_Estimada, FechaLLegada, Aeronave_Matric
 
 ---
 
-INSERT INTO DBAS.butacas (numero_butaca, tipo_butaca, matricula_aeronave)
-SELECT DISTINCT Butaca_Nro, Butaca_Tipo, Aeronave_Matricula FROM gd_esquema.Maestra WHERE Butaca_Nro > 0
-
-SELECT * FROM DBAS.butacas
-
-SELECT * FROM gd_esquema.Maestra ORDER BY FechaSalida
-
-CREATE TABLE #temporalButacas2(id bigint IDENTITY(1,1), id_but bigint, id_viaj bigint)
-
-INSERT INTO #temporalButacas2(id_but, id_viaj)
-SELECT tablaButacas.id_butaca, tablaviajes.id_viaje
-FROM ((SELECT Butaca_Nro, Butaca_Tipo, FechaSalida, FechaLLegada, Fecha_LLegada_Estimada, Aeronave_Matricula FROM gd_esquema.Maestra WHERE Butaca_Nro > 0) tablaAux
-	JOIN DBAS.viajes tablaviajes ON (tablaAux.FechaSalida = tablaViajes.fecha_salida AND tablaAux.FechaLLegada = tablaviajes.fecha_llegada AND tablaAux.Aeronave_Matricula = tablaviajes.matricula_aeronave)
-		JOIN  DBAS.butacas tablaButacas ON (tablaButacas.numero_butaca = tablaAux.Butaca_Nro AND tablaButacas.tipo_butaca = tablaAux.Butaca_Tipo AND tablaButacas.matricula_aeronave = tablaviajes.matricula_aeronave))
-		WHERE tablaviajes.id_viaje = 3345
-
-SELECT DISTINCT *
-FROM (#temporalButacas2 tmpButacas1 JOIN (SELECT DISTINCT * FROM #temporalButacas2) tmpButacas2 
-ON (tmpButacas1.id_but = tmpButacas2.id_but AND tmpButacas1.id_viaj = tmpButacas2.id_viaj AND tmpButacas1.id != tmpButacas2.id))
-ORDER BY tmpButacas1.id_but
-
-
-select *
-from ((
-SELECT * FROM DBAS.viajes WHERE id_viaje = 3345) aux JOIN(
-SELECT * FROM gd_esquema.Maestra WHERE Aeronave_Matricula = 'ASQ-169') aux2 ON (aux.fecha_llegada = aux2.FechaLLegada and aux.fecha_salida=aux2.FechaSalida))
-order by Butaca_Nro
+INSERT INTO DBAS.butacas (numero_butaca, tipo_butaca, piso_butaca, matricula_aeronave)
+SELECT DISTINCT Butaca_Nro, Butaca_Tipo, Butaca_Piso, Aeronave_Matricula FROM gd_esquema.Maestra
 
 ---
 
 INSERT INTO DBAS.clientes(dni_cliente, nombre_cliente, apellido_cliente, direccion_cliente, telefono_cliente, mail_cliente, fecha_nacimiento)
 SELECT DISTINCT Cli_Dni, Cli_Nombre, Cli_Apellido, Cli_Dir, Cli_Telefono, Cli_Mail, Cli_Fecha_Nac FROM gd_esquema.Maestra
+
+---
+
+INSERT INTO DBAS.compras(fecha_compra_pasaje, fecha_compra_encomienda, precio_pasaje, precio_encomienda, id_cliente)
+SELECT tablaAux.Pasaje_FechaCompra, tablaAux.Paquete_FechaCompra, tablaAux.Pasaje_Precio, tablaAux.Paquete_Precio, tablaCliente.id_cliente 
+	FROM ((SELECT id_cliente,dni_cliente, nombre_cliente, apellido_cliente FROM DBAS.clientes) tablaCliente
+		JOIN (SELECT  Cli_Dni, Cli_Apellido, Cli_Nombre, Pasaje_FechaCompra, Paquete_FechaCompra, Pasaje_Precio, Paquete_Precio FROM gd_esquema.Maestra) tablaAux
+			ON (tablaCliente.dni_cliente = tablaAux.Cli_Dni AND tablaCliente.nombre_cliente = tablaAux.Cli_Nombre AND tablaCliente.apellido_cliente = tablaAux.Cli_Apellido))
+
+--- Falta pasajes, se implementara trigger y cursores

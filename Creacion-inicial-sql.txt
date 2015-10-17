@@ -1,6 +1,8 @@
---Nuevo esquema
+/* -- Nuevo esquema -- */
 
 CREATE SCHEMA [DBAS] AUTHORIZATION [gd];
+
+/* -- Tablas y Constraints -- */
 
 -- DDL de tablas
 
@@ -51,11 +53,11 @@ CREATE TABLE DBAS.butacas (
 	tipo_butaca varchar(15) CHECK(tipo_butaca IN('Pasillo','Ventanilla','0')),
 	piso_butaca tinyint,
 	matricula_aeronave varchar(100),
-	UNIQUE(numero_butaca, matricula_aeronave)
+	UNIQUE(numero_butaca, matricula_aeronave, piso_butaca)
 );
 
 CREATE TABLE DBAS.pasajesEncomiendas (
-	codigo_PE bigint PRIMARY KEY,
+	codigo_PE bigint IDENTITY(1,1) PRIMARY KEY,
 	id_cliente  bigint,
 	encomienda_cliente_KG float(24),
 	id_viaje bigint NOT NULL,
@@ -71,7 +73,7 @@ CREATE TABLE DBAS.servicios (
 );
 
 CREATE TABLE DBAS.compras (
-	id_compra bigint IDENTITY(1,1) PRIMARY KEY,
+	id_compra bigint PRIMARY KEY,
 	PNR bigint UNIQUE, -- codigo de compra
 	fecha_compra_pasaje datetime NOT NULL,
 	fecha_compra_encomienda datetime NOT NULL,
@@ -217,9 +219,6 @@ alter table DBAS.cancelaciones add constraint fk_cancelacion_pasaje
 alter table DBAS.cancelaciones add constraint fk_cancelacion_encomienda
 	foreign key (codigo_encomienda) references DBAS.pasajesEncomiendas (codigo_PE);
 
-alter table DBAS.cancelaciones add constraint fk_cancelacion_compra
-	foreign key (id_compra_PNR) references DBAS.compras (id_compra_PNR);
-
 alter table DBAS.clientes add constraint fk_cliente_millas
 	foreign key (id_millas) references DBAS.millas (id_millas);
 
@@ -241,7 +240,7 @@ alter table DBAS.rolesPorFuncionalidad add constraint fk_rolesPorFuncionalidad_r
 alter table DBAS.rolesPorFuncionalidad add constraint fk_rolesPorFuncionalidad_funcionalidad
 	foreign key (id_funcionalidad) references DBAS.funcionalidades (id_funcionalidad);
 
---Migracion
+/* -- Migracion -- */
 
 SELECT * FROM gd_esquema.Maestra
 
@@ -261,7 +260,7 @@ SELECT DISTINCT Tipo_Servicio FROM gd_esquema.Maestra
 
 ---
 
-CREATE TABLE #temporalRutasOriginales(nom_ruta_orig varchar(100), nom_ruta_dest varchar(100), ruta_PP float(24), ruta_PKG float(24), ruta_servicio varchar(50))
+CREATE TABLE DBAS.#temporalRutasOriginales(nom_ruta_orig varchar(100), nom_ruta_dest varchar(100), ruta_PP float(24), ruta_PKG float(24), ruta_servicio varchar(50))
 
 INSERT INTO #temporalRutasOriginales(nom_ruta_orig, nom_ruta_dest, ruta_PP, ruta_PKG, ruta_servicio)
 SELECT DISTINCT tablaAux1.Ruta_Ciudad_Origen, tablaAux1.Ruta_Ciudad_Destino, tablaAux2.Ruta_Precio_BaseKG, tablaAux1.Ruta_Precio_BasePasaje, tablaAux1.Tipo_Servicio
@@ -314,12 +313,72 @@ SELECT DISTINCT Butaca_Nro, Butaca_Tipo, Butaca_Piso, Aeronave_Matricula FROM gd
 INSERT INTO DBAS.clientes(dni_cliente, nombre_cliente, apellido_cliente, direccion_cliente, telefono_cliente, mail_cliente, fecha_nacimiento)
 SELECT DISTINCT Cli_Dni, Cli_Nombre, Cli_Apellido, Cli_Dir, Cli_Telefono, Cli_Mail, Cli_Fecha_Nac FROM gd_esquema.Maestra
 
----
-
-INSERT INTO DBAS.compras(fecha_compra_pasaje, fecha_compra_encomienda, precio_pasaje, precio_encomienda, id_cliente)
-SELECT tablaAux.Pasaje_FechaCompra, tablaAux.Paquete_FechaCompra, tablaAux.Pasaje_Precio, tablaAux.Paquete_Precio, tablaCliente.id_cliente 
-	FROM ((SELECT id_cliente,dni_cliente, nombre_cliente, apellido_cliente FROM DBAS.clientes) tablaCliente
-		JOIN (SELECT  Cli_Dni, Cli_Apellido, Cli_Nombre, Pasaje_FechaCompra, Paquete_FechaCompra, Pasaje_Precio, Paquete_Precio FROM gd_esquema.Maestra) tablaAux
-			ON (tablaCliente.dni_cliente = tablaAux.Cli_Dni AND tablaCliente.nombre_cliente = tablaAux.Cli_Nombre AND tablaCliente.apellido_cliente = tablaAux.Cli_Apellido))
-
 --- Falta pasajes, se implementara trigger y cursores
+
+CREATE TRIGGER DBAS.migracionCompras ON DBAS.pasajesEncomiendas
+AFTER INSERT
+AS
+BEGIN
+	DECLARE @id_compra bigint;
+	SET @id_compra = 0;
+
+	DECLARE pasYEncCursor CURSOR FOR
+	SELECT codigo_PE,encomienda_cliente_KG, id_viaje, id_butaca, id_compra, id_cliente FROM inserted
+	DECLARE @codigo_PE bigint,@encomienda_cliente_KG float(24), @id_viaje bigint,	@id_butaca bigint, @id_cliente bigint
+
+	OPEN pasYEncCursor;
+
+	FETCH NEXT FROM pasYEncCursor
+		INTO @codigo_PE, @encomienda_cliente_KG, @id_viaje, @id_butacA, @id_compra, @id_cliente
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+	SET @id_compra += 1;
+	INSERT INTO DBAS.compras(id_compra) VALUES (@id_compra)
+
+	INSERT INTO DBAS.compras(id_compra,fecha_compra_pasaje, fecha_compra_encomienda, precio_encomienda, precio_pasaje)
+	SELECT @id_compra, tablaMaestra.Pasaje_FechaCompra, tablaMaestra.Paquete_FechaCompra, tablaMaestra.Pasaje_Precio, tablaMaestra.Paquete_Precio 
+	FROM DBAS.clientes tablaClientes, DBAS.viajes tablaViajes, DBAS.butacas tablaButacas, gd_esquema.Maestra tablaMaestra
+	WHERE tablaClientes.id_cliente = @id_cliente AND tablaViajes.id_viaje = @id_viaje AND tablaButacas.id_butaca = @id_butaca 
+	AND tablaMaestra.Cli_Dni = tablaClientes.dni_cliente AND tablaMaestra.Cli_Nombre = tablaClientes.nombre_cliente AND tablaMaestra.Cli_Apellido = tablaClientes.apellido_cliente
+	AND tablaMaestra.Aeronave_Matricula = tablaViajes.matricula_aeronave AND tablaMaestra.FechaLLegada = tablaViajes.fecha_llegada AND tablaMaestra.FechaSalida = tablaViajes.fecha_salida
+	AND tablaMaestra.Butaca_Nro = tablaButacas.numero_butaca AND tablaMaestra.Butaca_Piso = tablaButacas.piso_butaca
+
+	UPDATE DBAS.pasajesEncomiendas SET id_compra = @id_compra
+	WHERE codigo_PE = @codigo_PE
+
+	FETCH NEXT FROM pasYEncCursor
+		INTO @encomienda_cliente_KG, @id_viaje, @id_butacA, @id_compra, @id_cliente
+	END;
+
+	CLOSE pasYEncCursor;
+	DEALLOCATE pasYEncCursor;
+
+END;
+
+/* Roles y funcionalidades */
+
+-- Se agregan las funcionalidades
+INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('ABM de Rol');
+INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('ABM de Usuario');
+INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('ABM de Administrador');
+INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('ABM de Cliente');
+INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('ABM de Ciudades');
+INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('ABM de Ruta Aerea');
+INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('ABM de Aeronaves');
+INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('Generar Viaje'); 
+INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('Registro de llegada Destino');
+INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('Compra de Pasaje/Encomienda');
+INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('Cancelación/Devolución de pasaje y/o encomienda');
+INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('Consulta de millas de pasajero frecuente');
+INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('Canje de millas de pasajero frecuente');
+INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('Listado Estadístico');
+
+-- insercion del rol administrador
+INSERT INTO DBAS.roles(descripcion) VALUES('Administrador');
+
+-- Se agregan funcionalidades al rol administrador
+INSERT INTO DBAS.rolesPorFuncionalidad(id_rol, id_funcionalidad)
+select tablaRol.id_rol, tablaFuncionalidad.id_funcionalidad from DBAS.roles  tablaRol, DBAS.funcionalidades tablaFuncionalidad
+where tablaRol.descripcion = 'Administrador'
+
+

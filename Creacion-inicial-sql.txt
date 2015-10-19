@@ -85,7 +85,7 @@ CREATE TABLE DBAS.compras (
 
 CREATE TABLE DBAS.roles (
 	id_rol bigint IDENTITY(1,1) PRIMARY KEY,
-	descripcion varchar(100)
+	nombre_rol varchar(100)
 );
 
 CREATE TABLE DBAS.rolesPorFuncionalidad (
@@ -111,10 +111,15 @@ CREATE TABLE DBAS.cancelaciones (
 );
 
 CREATE TABLE DBAS.usuarios (
-	id_usuario bigint IDENTITY(1,1) PRIMARY KEY,
+	id_usuario bigint PRIMARY KEY,
 	username varchar(50) UNIQUE,
 	password varchar(50),
 	id_rol bigint
+);
+
+CREATE TABLE DBAS.usuariosPorRol (
+	id_usuario bigint NOT NULL,
+	id_rol bigint NOT NULL
 );
 
 CREATE TABLE DBAS.ciudades (
@@ -123,16 +128,21 @@ CREATE TABLE DBAS.ciudades (
 );
 
 CREATE TABLE DBAS.clientes (
-	id_cliente bigint IDENTITY(1,1) PRIMARY KEY,
-	dni_cliente bigint,
-	nombre_cliente varchar(100),
-	apellido_cliente varchar(100),
-	direccion_cliente varchar(100),
-	telefono_cliente varchar(50),
-	mail_cliente varchar(100),
-	fecha_nacimiento datetime,
+	id_cliente bigint  IDENTITY(1,1) PRIMARY KEY,
+	id_persona bigint NOT NULL,
 	millas_totales bigint,
 	id_millas bigint
+);
+
+CREATE TABLE DBAS.personas (
+	id_persona bigint IDENTITY(1,1) PRIMARY KEY,
+	dni_persona bigint NOT NULL,
+	nombre_persona varchar(100) NOT NULL,
+	apellido_persona varchar(100) NOT NULL,
+	direccion_persona varchar(100),
+	telefono_persona varchar(50),
+	mail_persona varchar(100),
+	fecha_nacimiento datetime,
 );
 
 CREATE TABLE DBAS.canjes (
@@ -218,6 +228,9 @@ alter table DBAS.cancelaciones add constraint fk_cancelacion_pasaje
 
 alter table DBAS.cancelaciones add constraint fk_cancelacion_encomienda
 	foreign key (codigo_encomienda) references DBAS.pasajesEncomiendas (codigo_PE);
+
+alter table DBAS.cliente add constraint fk_cliente_persona
+	foreign key (id_persona) references DBAS.personas (id_persona);
 
 alter table DBAS.clientes add constraint fk_cliente_millas
 	foreign key (id_millas) references DBAS.millas (id_millas);
@@ -310,50 +323,166 @@ SELECT DISTINCT Butaca_Nro, Butaca_Tipo, Butaca_Piso, Aeronave_Matricula FROM gd
 
 ---
 
-INSERT INTO DBAS.clientes(dni_cliente, nombre_cliente, apellido_cliente, direccion_cliente, telefono_cliente, mail_cliente, fecha_nacimiento)
-SELECT DISTINCT Cli_Dni, Cli_Nombre, Cli_Apellido, Cli_Dir, Cli_Telefono, Cli_Mail, Cli_Fecha_Nac FROM gd_esquema.Maestra
-
---- Falta pasajes, se implementara trigger y cursores
-
-CREATE TRIGGER DBAS.migracionCompras ON DBAS.pasajesEncomiendas
-AFTER INSERT
+CREATE PROCEDURE DBAS.migracionClientes
 AS
 BEGIN
-	DECLARE @id_compra bigint;
-	SET @id_compra = 0;
+	DECLARE @Cli_Dni bigint
+	DECLARE @Cli_Nombre varchar(100)
+	DECLARE @Cli_Apellido varchar(100)
+	DECLARE @Cli_Dir varchar(100) 
+	DECLARE @Cli_Telefono varchar(50)
+	DECLARE @Cli_Mail varchar(100)
+	DECLARE @Cli_Fecha_Nac datetime
 
-	DECLARE pasYEncCursor CURSOR FOR
-	SELECT codigo_PE,encomienda_cliente_KG, id_viaje, id_butaca, id_compra, id_cliente FROM inserted
-	DECLARE @codigo_PE bigint,@encomienda_cliente_KG float(24), @id_viaje bigint,	@id_butaca bigint, @id_cliente bigint
+	-- variable para la asignacion de la pk de persona en cliente
+	DECLARE @id_persona bigint
 
-	OPEN pasYEncCursor;
+	-- creo un cursor para recorrer la seleccion
+	DECLARE migracionClientesCursor CURSOR FOR
+	SELECT DISTINCT Cli_Dni, Cli_Nombre, Cli_Apellido, Cli_Dir, Cli_Telefono, Cli_Mail, Cli_Fecha_Nac FROM gd_esquema.Maestra
 
-	FETCH NEXT FROM pasYEncCursor
-		INTO @codigo_PE, @encomienda_cliente_KG, @id_viaje, @id_butacA, @id_compra, @id_cliente
+	OPEN migracionClientesCursor
+
+	-- Inserto lo que obtiene el cursor en las variables
+	FETCH NEXT FROM migracionClientesCursor
+	INTO @Cli_Dni, @Cli_Nombre, @Cli_Apellido, @Cli_Dir, @Cli_Telefono, @Cli_Mail, @Cli_Fecha_Nac
+
 	WHILE @@FETCH_STATUS = 0
 	BEGIN
-	SET @id_compra += 1;
-	INSERT INTO DBAS.compras(id_compra) VALUES (@id_compra)
+		-- Inserto en la tabla los valores que me devuelve el cursor
+		INSERT INTO DBAS.personas(dni_persona, nombre_persona, apellido_persona, direccion_persona, telefono_persona, mail_persona, fecha_nacimiento)
+		VALUES(@Cli_Dni, @Cli_Nombre, @Cli_Apellido, @Cli_Dir, @Cli_Telefono, @Cli_Mail, @Cli_Fecha_Nac)
 
-	INSERT INTO DBAS.compras(id_compra,fecha_compra_pasaje, fecha_compra_encomienda, precio_encomienda, precio_pasaje)
-	SELECT @id_compra, tablaMaestra.Pasaje_FechaCompra, tablaMaestra.Paquete_FechaCompra, tablaMaestra.Pasaje_Precio, tablaMaestra.Paquete_Precio 
-	FROM DBAS.clientes tablaClientes, DBAS.viajes tablaViajes, DBAS.butacas tablaButacas, gd_esquema.Maestra tablaMaestra
-	WHERE tablaClientes.id_cliente = @id_cliente AND tablaViajes.id_viaje = @id_viaje AND tablaButacas.id_butaca = @id_butaca 
-	AND tablaMaestra.Cli_Dni = tablaClientes.dni_cliente AND tablaMaestra.Cli_Nombre = tablaClientes.nombre_cliente AND tablaMaestra.Cli_Apellido = tablaClientes.apellido_cliente
-	AND tablaMaestra.Aeronave_Matricula = tablaViajes.matricula_aeronave AND tablaMaestra.FechaLLegada = tablaViajes.fecha_llegada AND tablaMaestra.FechaSalida = tablaViajes.fecha_salida
-	AND tablaMaestra.Butaca_Nro = tablaButacas.numero_butaca AND tablaMaestra.Butaca_Piso = tablaButacas.piso_butaca
+		-- Asigno la pk de la insercion en clientes
+		SET @id_persona = SCOPE_IDENTITY()
 
-	UPDATE DBAS.pasajesEncomiendas SET id_compra = @id_compra
-	WHERE codigo_PE = @codigo_PE
+		INSERT INTO DBAS.clientes(id_persona) VALUES(@id_persona)
 
-	FETCH NEXT FROM pasYEncCursor
-		INTO @encomienda_cliente_KG, @id_viaje, @id_butacA, @id_compra, @id_cliente
-	END;
+		-- Inserto lo que obtiene el cursor en las variables
+		FETCH NEXT FROM migracionClientesCursor
+		INTO @Cli_Dni, @Cli_Nombre, @Cli_Apellido, @Cli_Dir, @Cli_Telefono, @Cli_Mail, @Cli_Fecha_Nac
+	END
 
-	CLOSE pasYEncCursor;
-	DEALLOCATE pasYEncCursor;
+	-- Se cierra y elimina el cursor
+	CLOSE migracionClientesCursor
+	DEALLOCATE migracionClientesCursor
 
 END;
+
+-- Ejecuto el procedimiento para la migracion de clientes
+EXECute DBAS.migracionClientes 
+
+--- Falta pasajes, se implementara trigger y cursores
+CREATE PROCEDURE DBAS.obtenerIDPersona (@Dni bigint, @Apellido varchar(100),@Nombre varchar(100), @id bigint OUT)
+AS
+BEGIN
+	DECLARE @p_id bigint
+	DECLARE @p_dni bigint
+	DECLARE @p_nombre varchar(100)
+	DECLARE @p_apellido varchar(100)
+
+	DECLARE obtenerIDPersonaCursor CURSOR FOR
+	SELECT id_persona, dni_persona, apellido_persona, nombre_persona FROM DBAS.personas
+
+	OPEN obtenerIDPersonaCursor
+
+	-- Inserto lo que obtiene el cursor en las variables
+	FETCH NEXT FROM obtenerIDPersonaCursor
+	INTO @p_id, @p_dni, @p_apellido, @p_nombre
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		IF(@p_dni = @Dni AND @Apellido = @p_apellido AND @Nombre = @p_nombre)
+			BEGIN
+				SET @id = @p_id
+			END
+		ELSE
+			BEGIN
+				BREAK
+			END
+	END
+
+	-- Se cierra y elimina el cursor
+	CLOSE obtenerIDPersonaCursor
+	DEALLOCATE obtenerIDPersonaCursor
+
+END;
+
+CREATE PROCEDURE DBAS.obtenerIDCliente (@ID_Persona bigint, @ID_Cliente bigint OUT)
+AS
+BEGIN
+	DECLARE @c_id bigint
+	DECLARE @p_id bigint
+
+	DECLARE obtenerIDClienteCursor CURSOR FOR
+	SELECT id_cliente, id_persona FROM DBAS.clientes
+
+	OPEN obtenerIDClienteCursor
+
+	-- Inserto lo que obtiene el cursor en las variables
+	FETCH NEXT FROM obtenerIDPersonaCursor
+	INTO @c_id, @p_id
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		IF(@p_id = @ID_Persona)
+			BEGIN
+				SET @ID_Cliente = @p_id
+			END
+		ELSE
+			BEGIN
+				BREAK
+			END
+	END
+
+	-- Se cierra y elimina el cursor
+	CLOSE obtenerIDClienteCursor
+	DEALLOCATE obtenerIDClienteCursor
+
+END;
+
+
+CREATE PROCEDURE DBAS.migracionPasajesYCompra
+AS
+BEGIN
+	DECLARE @id_pers bigint
+	DECLARE @id_cli bigint
+	DECLARE @Cli_Dni bigint
+	DECLARE @Cli_Apellido varchar(100)
+	DECLARE @Cli_Nombre varchar(100)
+
+	DECLARE @Pasaje_Codigo bigint
+	DECLARE @Pasaje_Precio float(24)
+	DECLARE @Pasaje_FechaCompra datetime
+	DECLARE @Paquete_Codigo bigint
+	DECLARE @Paquete_Precio float(24)
+	DECLARE @Paquete_KG float(24)
+
+	DECLARE @id_but bigint
+	DECLARE @Butaca_Nro smallint
+	DECLARE @Butaca_Piso tinyint
+
+	DECLARE @id_viaj bigint
+	DECLARE @FechaSalida datetime
+	DECLARE @FechaLLegada datetime
+	DECLARE @Ruta_Ciudad_Origen varchar(100)
+	DECLARE @Ruta_Ciudad_Destino varchar(100)
+	DECLARE @Aeronave_Matricula varchar(100)
+
+	DECLARE migracionPasajesYCompraCursor CURSOR FOR
+	SELECT Cli_Dni, Cli_Apellido, Cli_Nombre, Pasaje_Codigo, Pasaje_Precio, Pasaje_FechaCompra, Paquete_Codigo, Paquete_Precio, Paquete_KG, Butaca_Nro, Butaca_Piso, FechaSalida, FechaLLegada, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino, Aeronave_Matricula FROM gd_esquema.Maestra
+	
+	OPEN migracionPasajesYCompraCursor
+
+	-- Inserto lo que obtiene el cursor en las variables
+	FETCH NEXT FROM migracionPasajesYCompraCursor
+	INTO @Cli_Dni, @Cli_Apellido, @Cli_Nombre, @Pasaje_Codigo, @Pasaje_Precio, @Pasaje_FechaCompra, @Paquete_Codigo, @Paquete_Precio, @Paquete_KG, @Butaca_Nro, @Butaca_Piso, @FechaSalida, @FechaLLegada, @Ruta_Ciudad_Origen, @Ruta_Ciudad_Destino, @Aeronave_Matricula
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		EXECUTE DBAS.obtenerIDPersona @Cli_Dni, @Cli_Apellido, @Cli_Nombre, @id_pers OUT
+		EXECUTE DBAS.obtenerIDCliente @id_pers, @id_cli OUT
+
 
 /* Roles y funcionalidades */
 
@@ -374,11 +503,25 @@ INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('Canje de millas de pasaj
 INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('Listado Estadístico');
 
 -- insercion del rol administrador
-INSERT INTO DBAS.roles(descripcion) VALUES('Administrador');
+INSERT INTO DBAS.roles(descripcion) VALUES('Administrador General');
 
 -- Se agregan funcionalidades al rol administrador
 INSERT INTO DBAS.rolesPorFuncionalidad(id_rol, id_funcionalidad)
 select tablaRol.id_rol, tablaFuncionalidad.id_funcionalidad from DBAS.roles  tablaRol, DBAS.funcionalidades tablaFuncionalidad
-where tablaRol.descripcion = 'Administrador'
+where tablaRol.descripcion = 'Administrador General'
 
+-- Se agregan usuarios administradores
+INSERT INTO DBAS.personas(dni_persona,apellido_persona,nombre_persona)
+VALUES(99999999,'Admin','Admin')
 
+DECLARE @id_p bigint
+SET @id_p = SCOPE_IDENTITY()
+
+-- Se inserta el usuario admin, password w23e
+INSERT INTO DBAS.usuarios(id_usuario,username,password)
+VALUES (@id_p,'admin','5rhwUL/LgUP8uNsBcKTcntANkE3dPipK0bHo3A/cm+c=')
+
+-- Se le asigna el rol administrador general al usuario admin
+INSERT INTO DBAS.usuariosPorRol(id_usuario, id_rol)
+SELECT tablaUsuarios.id_usuario, tablaRoles.id_rol FROM DBAS.usuarios tablaUsuarios, DBAS.roles tablaRoles
+WHERE tablaRoles.descripcion = 'Administrador General' and tablaUsuarios.username = 'admin'

@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Security.Cryptography;
 
+using AerolineaFrba.FormsPrincipales;
+using AerolineaFrba.Dominio;
+
 namespace AerolineaFrba.Login
 {
     public partial class LoginAdministrador : Form
@@ -40,8 +43,13 @@ namespace AerolineaFrba.Login
           //  Sesion.iniciar(username, getSha256(password));
             }
             else{
-              (new  Abm_Rol.Form1()).Show();
-                 }
+                Sesion s = new Sesion();
+                s.iniciar(username,password);
+                Redireccionador redirec = new Redireccionador(/*s.funcionalidadesDisponibles*/);
+            //  (new  Abm_Rol.Form1()).Show();
+                redirec.Show();
+                this.Hide();
+            }
   
         }
 

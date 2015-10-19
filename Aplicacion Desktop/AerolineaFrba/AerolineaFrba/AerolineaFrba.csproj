@@ -137,6 +137,14 @@
     <Compile Include="Devolucion\Listado Estadistico\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Listado Estadistico\Listado.cs" />
+    <Compile Include="Listado Estadistico\Listado.designer.cs">
+      <DependentUpon>Listado.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Listado Estadistico\Seleccionar.cs" />
+    <Compile Include="Listado Estadistico\Seleccionar.designer.cs">
+      <DependentUpon>Seleccionar.cs</DependentUpon>
+    </Compile>
     <Compile Include="Login\LoginAdministrador.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -181,6 +189,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormsPrincipales\Redireccionador.resx">
       <DependentUpon>Redireccionador.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Listado Estadistico\Listado.resx">
+      <DependentUpon>Listado.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Listado Estadistico\Seleccionar.resx">
+      <DependentUpon>Seleccionar.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Login\LoginAdministrador.resx">
       <DependentUpon>LoginAdministrador.cs</DependentUpon>

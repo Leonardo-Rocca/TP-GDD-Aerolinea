@@ -58,7 +58,7 @@ namespace AerolineaFrba.Abm_Rol
                       tblfunc.Rows.Add(i+1);
                    }
                  }
-                MessageBox.Show("Rol agregado", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                MessageBox.Show("Rol agregado", this.Text, MessageBoxButtons.OK, MessageBoxIcon.None);
                 this.Close();
                 return;
          }   

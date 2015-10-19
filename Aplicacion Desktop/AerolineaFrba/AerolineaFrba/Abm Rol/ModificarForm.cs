@@ -30,6 +30,11 @@ namespace AerolineaFrba.Abm_Rol
             buttonGuardar.Text = nombreBoton;
             label1.Text = nombre;
             tipoDeForm = tipo;
+
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct Tipo_Servicio FROM gd_esquema.Maestra");
+            comboBoxRol.DataSource = dt.DefaultView;
+            comboBoxRol.ValueMember = "Tipo_Servicio"; 
+
         }
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {

@@ -123,11 +123,23 @@
     <Compile Include="Generacion Viaje\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Listado Estadistico\Form1.cs">
+    <Compile Include="Devolucion\Listado Estadistico\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Listado Estadistico\Form1.Designer.cs">
+    <Compile Include="Devolucion\Listado Estadistico\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Login\LoginAdministrador.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Login\LoginAdministrador.Designer.cs">
+      <DependentUpon>LoginAdministrador.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PantallaBienvenida.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PantallaBienvenida.Designer.cs">
+      <DependentUpon>PantallaBienvenida.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -159,6 +171,12 @@
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Login\LoginAdministrador.resx">
+      <DependentUpon>LoginAdministrador.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PantallaBienvenida.resx">
+      <DependentUpon>PantallaBienvenida.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -184,7 +202,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Dominio\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

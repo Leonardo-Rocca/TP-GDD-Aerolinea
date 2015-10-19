@@ -45,7 +45,8 @@ namespace AerolineaFrba.Login
             else{
                 Sesion s = new Sesion();
                 s.iniciar(username,password);
-                Redireccionador redirec = new Redireccionador(/*s.funcionalidadesDisponibles*/);
+                Redireccionador redirec = new Redireccionador();
+                redirec.setFunciones(s.getFuncionalidadesDisponibles);
             //  (new  Abm_Rol.Form1()).Show();
                 redirec.Show();
                 this.Hide();

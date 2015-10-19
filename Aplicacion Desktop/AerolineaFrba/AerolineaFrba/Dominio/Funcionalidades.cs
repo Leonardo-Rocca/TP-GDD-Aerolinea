@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace AerolineaFrba.Dominio
 {
-    class Funcionalidades
+    public class Funcionalidades
      {
         int id;
         Form FormAsociado;

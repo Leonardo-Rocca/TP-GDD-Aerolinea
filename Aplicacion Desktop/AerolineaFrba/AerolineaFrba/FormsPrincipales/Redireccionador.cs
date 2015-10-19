@@ -19,11 +19,10 @@ namespace AerolineaFrba.FormsPrincipales
             InitializeComponent();
         }
 
-       /* public Redireccionador(List<Funcionalidades> funciones)
+        public void setFunciones(List<Funcionalidades> funciones)
         {
-            InitializeComponent();
-            //cmbFuncionalidades.DataSource = funciones;
-        }*/
+            cmbFuncionalidades.DataSource = funciones;
+        }
 
         private void Redireccionador_Load(object sender, EventArgs e)
         {
@@ -32,6 +31,7 @@ namespace AerolineaFrba.FormsPrincipales
 
         private void btSeleccion_Click(object sender, EventArgs e)
         {
+            
 
         }
     }

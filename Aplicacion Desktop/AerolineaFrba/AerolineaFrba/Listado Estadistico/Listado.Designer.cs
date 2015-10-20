@@ -59,9 +59,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(13, 46);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(38, 13);
+            this.label2.Size = new System.Drawing.Size(109, 13);
             this.label2.TabIndex = 1;
-            this.label2.Text = "Filtro 1";
+            this.label2.Text = "Roles que contengan";
             // 
             // label3
             // 
@@ -132,9 +132,9 @@
             // 
             // textBoxFiltro1
             // 
-            this.textBoxFiltro1.Location = new System.Drawing.Point(58, 43);
+            this.textBoxFiltro1.Location = new System.Drawing.Point(128, 43);
             this.textBoxFiltro1.Name = "textBoxFiltro1";
-            this.textBoxFiltro1.Size = new System.Drawing.Size(239, 20);
+            this.textBoxFiltro1.Size = new System.Drawing.Size(169, 20);
             this.textBoxFiltro1.TabIndex = 13;
             // 
             // textBoxFiltro2

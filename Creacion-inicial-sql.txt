@@ -1,6 +1,12 @@
+
+
+USE[GD2C2015];
+GO
+
 /* -- Nuevo esquema -- */
 
 CREATE SCHEMA [DBAS] AUTHORIZATION [gd];
+GO
 
 /* -- Tablas y Constraints -- */
 
@@ -15,6 +21,7 @@ CREATE TABLE DBAS.rutas (
 	precio_base_por_pasaje float(24),
 	id_servicio bigint
 );
+GO
 
 CREATE TABLE DBAS.viajes (
 	id_viaje bigint IDENTITY(1,1) PRIMARY KEY,
@@ -25,6 +32,7 @@ CREATE TABLE DBAS.viajes (
 	codigo_ruta bigint,
 	CHECK( (fecha_llegada_estimada <= DATEADD(day, 1, fecha_salida)) AND (fecha_salida < fecha_llegada))
 );
+GO
 
 CREATE TABLE DBAS.aeronaves (
 	matricula_aeronave varchar(100) PRIMARY KEY,
@@ -40,12 +48,14 @@ CREATE TABLE DBAS.aeronaves (
  	id_servicio bigint
 
 );
+GO
 
 CREATE TABLE DBAS.fabricantes (
 	id_fabricante bigint IDENTITY(1,1) PRIMARY KEY,
 	nombre_fabricante varchar(50)
 
 );
+GO
 
 CREATE TABLE DBAS.butacas (
 	id_butaca bigint IDENTITY(1,1) PRIMARY KEY,
@@ -55,6 +65,7 @@ CREATE TABLE DBAS.butacas (
 	matricula_aeronave varchar(100),
 	UNIQUE(numero_butaca, matricula_aeronave, piso_butaca)
 );
+GO
 
 CREATE TABLE DBAS.pasajesEncomiendas (
 	codigo_PE bigint IDENTITY(1,1) PRIMARY KEY,
@@ -65,15 +76,17 @@ CREATE TABLE DBAS.pasajesEncomiendas (
 	id_compra bigint NOT NULL,
 	
 );
+GO
 
 CREATE TABLE DBAS.servicios (
 	id_servicio bigint IDENTITY(1,1) PRIMARY KEY,
 	porcentaje_arancel float(24),
 	tipo_servicio varchar(50)
 );
+GO
 
 CREATE TABLE DBAS.compras (
-	id_compra bigint PRIMARY KEY,
+	id_compra bigint IDENTITY(1,1) PRIMARY KEY,
 	PNR bigint UNIQUE, -- codigo de compra
 	fecha_compra_pasaje datetime NOT NULL,
 	fecha_compra_encomienda datetime NOT NULL,
@@ -82,22 +95,26 @@ CREATE TABLE DBAS.compras (
 	id_cliente bigint
 	
 );
+GO
 
 CREATE TABLE DBAS.roles (
 	id_rol bigint IDENTITY(1,1) PRIMARY KEY,
-	nombre_rol varchar(100)
+	nombre_rol varchar(100),
+	habilitado_rol tinyint default 1
 );
+GO
 
 CREATE TABLE DBAS.rolesPorFuncionalidad (
 	id_rol bigint NOT NULL,
 	id_funcionalidad bigint NOT NULL,
 );
+GO
 
 CREATE TABLE DBAS.funcionalidades (
 	id_funcionalidad bigint IDENTITY(1,1) PRIMARY KEY,
 	descripcion varchar(100)
 );
-
+GO
 
 CREATE TABLE DBAS.cancelaciones (
 	id_cancelacion bigint IDENTITY(1,1) PRIMARY KEY,
@@ -109,23 +126,29 @@ CREATE TABLE DBAS.cancelaciones (
 	codigo_encomienda bigint
 	
 );
+GO
 
 CREATE TABLE DBAS.usuarios (
 	id_usuario bigint PRIMARY KEY,
 	username varchar(50) UNIQUE,
 	password varchar(50),
+	intentos_fallidos tinyint default 0,
+	habilitado tinyint default 1,
 	id_rol bigint
 );
+GO
 
 CREATE TABLE DBAS.usuariosPorRol (
 	id_usuario bigint NOT NULL,
 	id_rol bigint NOT NULL
 );
+GO
 
 CREATE TABLE DBAS.ciudades (
 	id_ciudad bigint IDENTITY(1,1) PRIMARY KEY,
 	nombre_ciudad varchar(100)
 );
+GO
 
 CREATE TABLE DBAS.clientes (
 	id_cliente bigint  IDENTITY(1,1) PRIMARY KEY,
@@ -133,6 +156,7 @@ CREATE TABLE DBAS.clientes (
 	millas_totales bigint,
 	id_millas bigint
 );
+GO
 
 CREATE TABLE DBAS.personas (
 	id_persona bigint IDENTITY(1,1) PRIMARY KEY,
@@ -144,6 +168,7 @@ CREATE TABLE DBAS.personas (
 	mail_persona varchar(100),
 	fecha_nacimiento datetime,
 );
+GO
 
 CREATE TABLE DBAS.canjes (
 	id_canje bigint IDENTITY(1,1) PRIMARY KEY,
@@ -154,6 +179,7 @@ CREATE TABLE DBAS.canjes (
 	id_producto bigint
 	
 );
+GO
 
 CREATE TABLE DBAS.millas (
 	id_millas bigint IDENTITY(1,1) PRIMARY KEY,
@@ -162,6 +188,7 @@ CREATE TABLE DBAS.millas (
 	detalle_millas_realizadas varchar(100),
 	
 );
+GO
 
 CREATE TABLE DBAS.productos (
 	id_producto bigint IDENTITY(1,1) PRIMARY KEY,
@@ -169,6 +196,7 @@ CREATE TABLE DBAS.productos (
 	nombre_producto varchar(100),
 	stock int
 );
+GO
 
 CREATE TABLE DBAS.periodosFueraDeServicio (
 	id_periodo bigint IDENTITY(1,1) PRIMARY KEY,
@@ -176,82 +204,107 @@ CREATE TABLE DBAS.periodosFueraDeServicio (
 	fecha_fuera_servicio datetime,
 	fecha_reinicio_servicio datetime
 );
+GO
 
 --DDL de constraints compuestos
 
 alter table DBAS.rolesPorFuncionalidad add constraint pk_rolesPorFuncionalidad 
 	primary key clustered (id_rol, id_funcionalidad);
+GO
 
 -- DDL de constraints FK
 
 alter table DBAS.rutas add constraint fk_ruta_ciudadOrigen 
 	foreign key (ciudad_origen_id) references DBAS.ciudades (id_ciudad);
+GO
 
 alter table DBAS.rutas add constraint fk_ruta_ciudadDestino 
 	foreign key (ciudad_destino_id) references DBAS.ciudades (id_ciudad);
+GO
 
 alter table DBAS.rutas add constraint fk_ruta_servicio 
 	foreign key (id_servicio) references DBAS.servicios (id_servicio);
+GO
 
 alter table DBAS.viajes add constraint fk_viaje_aeronave 
-	foreign key (matricula_aeronave) references DBAS.aeronaves (matricula_aeronave);	
+	foreign key (matricula_aeronave) references DBAS.aeronaves (matricula_aeronave);
+GO	
 
 alter table DBAS.viajes add constraint fk_viaje_ruta
 	foreign key (codigo_ruta) references DBAS.rutas (codigo_ruta);
+GO
 
 alter table DBAS.aeronaves add constraint fk_aeronave_fabricante
-	foreign key (id_fabricante) references DBAS.fabricantes (id_fabricante); 
+	foreign key (id_fabricante) references DBAS.fabricantes (id_fabricante);
+GO 
 	
 alter table DBAS.aeronaves add constraint fk_aeronave_servicio
-	foreign key (id_servicio) references DBAS.servicios (id_servicio); 
+	foreign key (id_servicio) references DBAS.servicios (id_servicio);
+GO 
 
 alter table DBAS.butacas add constraint fk_butaca_aeronave
 	foreign key (matricula_aeronave) references DBAS.aeronaves (matricula_aeronave);
+GO
 
 alter table DBAS.pasajesEncomiendas add constraint fk_pasaje_cliente
 	foreign key (id_cliente ) references DBAS.clientes (id_cliente); 
+GO
 
 alter table DBAS.pasajesEncomiendas add constraint fk_pasaje_butaca
 	foreign key (id_butaca) references DBAS.butacas (id_butaca);
+GO
 
 alter table DBAS.pasajesEncomiendas add constraint fk_pasaje_compra
 	foreign key (id_compra) references DBAS.compras (id_compra);
+GO
 
 alter table DBAS.pasajesEncomiendas add constraint fk_pasaje_viaje
 	foreign key (id_viaje) references DBAS.viajes (id_viaje);
+GO
 
 alter table DBAS.compras add constraint fk_compra_cliente
 	foreign key (id_cliente ) references DBAS.clientes (id_cliente);
+GO
 
 alter table DBAS.cancelaciones add constraint fk_cancelacion_pasaje
 	foreign key (codigo_pasaje) references DBAS.pasajesEncomiendas (codigo_PE);
+GO
 
 alter table DBAS.cancelaciones add constraint fk_cancelacion_encomienda
 	foreign key (codigo_encomienda) references DBAS.pasajesEncomiendas (codigo_PE);
+GO
 
-alter table DBAS.cliente add constraint fk_cliente_persona
+alter table DBAS.clientes add constraint fk_cliente_persona
 	foreign key (id_persona) references DBAS.personas (id_persona);
+GO
 
 alter table DBAS.clientes add constraint fk_cliente_millas
 	foreign key (id_millas) references DBAS.millas (id_millas);
+GO
 
 alter table DBAS.canjes add constraint fk_canje_cliente
 	foreign key (id_cliente) references DBAS.clientes (id_cliente);
+GO
 
 alter table DBAS.canjes add constraint fk_canje_producto
 	foreign key (id_producto) references DBAS.productos (id_producto);
+GO
 
 alter table DBAS.periodosFueraDeServicio add constraint fk_periodos_aeronave
 	foreign key (matricula_aeronave) references DBAS.aeronaves (matricula_aeronave);	
+GO
 
 alter table DBAS.usuarios add constraint fk_usuario_rol
 	foreign key (id_rol) references DBAS.roles (id_rol);
+GO
 
 alter table DBAS.rolesPorFuncionalidad add constraint fk_rolesPorFuncionalidad_rol
 	foreign key (id_rol) references DBAS.roles (id_rol);
+GO
 
 alter table DBAS.rolesPorFuncionalidad add constraint fk_rolesPorFuncionalidad_funcionalidad
 	foreign key (id_funcionalidad) references DBAS.funcionalidades (id_funcionalidad);
+GO
 
 /* -- Migracion -- */
 
@@ -260,27 +313,31 @@ SELECT * FROM gd_esquema.Maestra
 INSERT INTO DBAS.fabricantes(nombre_fabricante)
 SELECT DISTINCT Aeronave_Fabricante 
 FROM gd_esquema.Maestra
+GO
 
 ---
 
 INSERT INTO DBAS.ciudades(nombre_ciudad)
 SELECT DISTINCT Ruta_Ciudad_Origen FROM gd_esquema.Maestra UNION SELECT DISTINCT Ruta_Ciudad_Destino FROM gd_esquema.Maestra
+GO
 
 ---
 
 INSERT INTO DBAS.servicios(tipo_servicio)
 SELECT DISTINCT Tipo_Servicio FROM gd_esquema.Maestra
+GO
 
 ---
 
 CREATE TABLE DBAS.#temporalRutasOriginales(nom_ruta_orig varchar(100), nom_ruta_dest varchar(100), ruta_PP float(24), ruta_PKG float(24), ruta_servicio varchar(50))
+GO
 
 INSERT INTO #temporalRutasOriginales(nom_ruta_orig, nom_ruta_dest, ruta_PP, ruta_PKG, ruta_servicio)
 SELECT DISTINCT tablaAux1.Ruta_Ciudad_Origen, tablaAux1.Ruta_Ciudad_Destino, tablaAux2.Ruta_Precio_BaseKG, tablaAux1.Ruta_Precio_BasePasaje, tablaAux1.Tipo_Servicio
 		FROM ((SELECT DISTINCT Ruta_Codigo, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BasePasaje, Tipo_Servicio FROM gd_esquema.Maestra WHERE Ruta_Precio_BasePasaje > 0.00) tablaAux1
 			JOIN (SELECT DISTINCT Ruta_Codigo,Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BaseKG, Tipo_Servicio FROM gd_esquema.Maestra WHERE Ruta_Precio_BASEKG > 0.00) tablaAux2
 				ON (tablaAux1.Ruta_Ciudad_Origen = tablaAux2.Ruta_Ciudad_Origen AND tablaAux1.Ruta_Ciudad_Destino = tablaAux2.Ruta_Ciudad_Destino))
-
+GO
 
 INSERT INTO DBAS.rutas(ciudad_origen_id, ciudad_destino_id, precio_base_por_KG, precio_base_por_pasaje, id_servicio)
 SELECT tablaCiudades_orig.id_ciudad, tablaCiudades_dest.id_ciudad, tmpRutas.ruta_PKG, tmpRutas.ruta_PP, tablaServicios.id_servicio
@@ -288,7 +345,7 @@ FROM ((SELECT * FROM DBAS.ciudades) tablaCiudades_orig
 	JOIN  #temporalRutasOriginales tmpRutas ON ( tmpRutas.nom_ruta_orig = tablaCiudades_orig.nombre_ciudad)
 		JOIN (SELECT * FROM DBAS.ciudades) tablaCiudades_dest ON ( tmpRutas.nom_ruta_dest = tablaCiudades_dest.nombre_ciudad) 
 			JOIN (SELECT * FROM DBAS.servicios) tablaServicios ON (tmpRutas.ruta_servicio = tablaServicios.tipo_servicio))
-
+GO
 ---
 
 -- sirve para saber si hay consistencia con el tipo de servicio de la aeronave
@@ -306,6 +363,7 @@ SELECT DISTINCT tablaAux.Aeronave_Matricula, tablaAux.Aeronave_Modelo, tablaAux.
 FROM ((SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Aeronave_Modelo, Tipo_Servicio FROM gd_esquema.Maestra) tablaAux
 	JOIN DBAS.fabricantes tablaFab ON (tablaFab.nombre_fabricante = tablaAux.Aeronave_Fabricante)
 		JOIN DBAS.servicios tablaServ ON (tablaServ.tipo_servicio = tablaAux.Tipo_Servicio))
+GO
 
 ---
 
@@ -315,12 +373,13 @@ FROM ((SELECT FechaSalida, Fecha_LLegada_Estimada, FechaLLegada, Aeronave_Matric
 	JOIN DBAS.ciudades tablaciudad_orig ON (tablaciudad_orig.nombre_ciudad= tablaAux.Ruta_Ciudad_Origen)
 		JOIN DBAS.ciudades tablaciudad_dest ON (tablaciudad_dest.nombre_ciudad = tablaAux.Ruta_Ciudad_Destino)
 			JOIN DBAS.rutas tablaRutas ON (tablaRutas.ciudad_origen_id = tablaciudad_orig.id_ciudad AND tablaRutas.ciudad_destino_id = tablaciudad_dest.id_ciudad))
+GO
 
 ---
 
 INSERT INTO DBAS.butacas (numero_butaca, tipo_butaca, piso_butaca, matricula_aeronave)
 SELECT DISTINCT Butaca_Nro, Butaca_Tipo, Butaca_Piso, Aeronave_Matricula FROM gd_esquema.Maestra
-
+GO
 ---
 
 CREATE PROCEDURE DBAS.migracionClientes
@@ -368,9 +427,11 @@ BEGIN
 	DEALLOCATE migracionClientesCursor
 
 END;
+GO
 
 -- Ejecuto el procedimiento para la migracion de clientes
-EXECute DBAS.migracionClientes 
+EXECUTE DBAS.migracionClientes 
+GO
 
 --- Falta pasajes, se implementara trigger y cursores
 CREATE PROCEDURE DBAS.obtenerIDPersona (@Dni bigint, @Apellido varchar(100),@Nombre varchar(100), @id bigint OUT)
@@ -395,11 +456,12 @@ BEGIN
 		IF(@p_dni = @Dni AND @Apellido = @p_apellido AND @Nombre = @p_nombre)
 			BEGIN
 				SET @id = @p_id
-			END
-		ELSE
-			BEGIN
 				BREAK
 			END
+		
+		-- Inserto lo que obtiene el cursor en las variables
+		FETCH NEXT FROM obtenerIDPersonaCursor
+		INTO @p_id, @p_dni, @p_apellido, @p_nombre
 	END
 
 	-- Se cierra y elimina el cursor
@@ -407,6 +469,7 @@ BEGIN
 	DEALLOCATE obtenerIDPersonaCursor
 
 END;
+GO
 
 CREATE PROCEDURE DBAS.obtenerIDCliente (@ID_Persona bigint, @ID_Cliente bigint OUT)
 AS
@@ -420,7 +483,7 @@ BEGIN
 	OPEN obtenerIDClienteCursor
 
 	-- Inserto lo que obtiene el cursor en las variables
-	FETCH NEXT FROM obtenerIDPersonaCursor
+	FETCH NEXT FROM obtenerIDClienteCursor
 	INTO @c_id, @p_id
 
 	WHILE @@FETCH_STATUS = 0
@@ -428,11 +491,12 @@ BEGIN
 		IF(@p_id = @ID_Persona)
 			BEGIN
 				SET @ID_Cliente = @p_id
-			END
-		ELSE
-			BEGIN
 				BREAK
 			END
+		
+		-- Inserto lo que obtiene el cursor en las variables
+		FETCH NEXT FROM obtenerIDClienteCursor
+		INTO @c_id, @p_id
 	END
 
 	-- Se cierra y elimina el cursor
@@ -440,7 +504,160 @@ BEGIN
 	DEALLOCATE obtenerIDClienteCursor
 
 END;
+GO
 
+CREATE PROCEDURE DBAS.obtenerIDButaca (@Butaca_Nro smallint, @Butaca_Piso tinyint, @Aeronave_Matricula varchar(100),  @id_but bigint OUT)
+AS
+BEGIN
+	DECLARE @b_id bigint
+	DECLARE @b_nro smallint
+	DECLARE @b_piso tinyint
+	DECLARE @aeronave_Mat varchar(100)
+
+	DECLARE obtenerIDButacaCursor CURSOR FOR
+	SELECT id_butaca, numero_butaca, piso_butaca, matricula_aeronave FROM DBAS.butacas
+
+	OPEN obtenerIDButacaCursor
+
+	-- Inserto lo que obtiene el cursor en las variables
+	FETCH NEXT FROM obtenerIDButacaCursor
+	INTO @b_id, @b_nro, @b_piso, @aeronave_Mat
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		IF(@Butaca_Nro = @b_nro AND @Butaca_Piso = @b_piso AND @Aeronave_Matricula = @aeronave_Mat)
+			BEGIN
+				SET @id_but = @b_id
+				BREAK
+			END
+
+		-- Inserto lo que obtiene el cursor en las variables
+		FETCH NEXT FROM obtenerIDButacaCursor
+		INTO @b_id, @b_nro, @b_piso, @aeronave_Mat
+	END
+
+	-- Se cierra y elimina el cursor
+	CLOSE obtenerIDButacaCursor
+	DEALLOCATE obtenerIDButacaCursor
+
+END;
+GO
+
+CREATE PROCEDURE DBAS.obtenerIDCiudad (@ciudad_nombre varchar(100),  @id_ciudad bigint OUT)
+AS
+BEGIN
+	DECLARE @c_id bigint
+	DECLARE @c_nombre varchar(100)
+
+	DECLARE obtenerIDCiudadCursor CURSOR FOR
+	SELECT id_ciudad, nombre_ciudad FROM DBAS.ciudades
+
+	OPEN obtenerIDCiudadCursor
+
+	-- Inserto lo que obtiene el cursor en las variables
+	FETCH NEXT FROM obtenerIDCiudadCursor
+	INTO @c_id, @c_nombre
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		IF(@c_nombre = @ciudad_nombre)
+			BEGIN
+				SET @id_ciudad = @c_id
+				BREAK
+			END
+		
+		-- Inserto lo que obtiene el cursor en las variables
+		FETCH NEXT FROM obtenerIDCiudadCursor
+		INTO @c_id, @c_nombre
+	END
+
+	-- Se cierra y elimina el cursor
+	CLOSE obtenerIDCiudadCursor
+	DEALLOCATE obtenerIDCiudadCursor
+
+END;
+GO
+
+CREATE PROCEDURE DBAS.obtenerIDRuta (@Ruta_Ciudad_Origen varchar(100), @Ruta_Ciudad_Destino varchar(100),  @id_ruta bigint OUT)
+AS
+BEGIN
+	DECLARE @r_id bigint
+	DECLARE @r_Ciudad_Origen  varchar(100)
+	DECLARE @r_Ruta_Ciudad_Destino  varchar(100)
+	DECLARE @r_id_ciud_orig varchar(100)
+	DECLARE @r_id_ciud_dest varchar(100)
+	
+	DECLARE @c_id_ciud_orig varchar(100)
+	DECLARE @c_id_ciud_dest varchar(100)
+
+	EXECUTE DBAS.obtenerIDCiudad @Ruta_Ciudad_Origen, @c_id_ciud_orig OUT
+	EXECUTE DBAS.obtenerIDCiudad @Ruta_Ciudad_Destino, @c_id_ciud_dest OUT
+
+	DECLARE obtenerIDRutaCursor CURSOR FOR
+	SELECT codigo_ruta, ciudad_origen_id, ciudad_destino_id  FROM DBAS.rutas
+
+	OPEN obtenerIDRutaCursor
+
+	-- Inserto lo que obtiene el cursor en las variables
+	FETCH NEXT FROM obtenerIDRutaCursor
+	INTO @r_id, @r_id_ciud_orig, @r_id_ciud_dest
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		IF(@r_id_ciud_orig = @c_id_ciud_orig AND @r_id_ciud_dest = @c_id_ciud_dest)
+			BEGIN
+				SET @id_ruta = @r_id
+				BREAK
+			END
+		
+		-- Inserto lo que obtiene el cursor en las variables
+		FETCH NEXT FROM obtenerIDRutaCursor
+		INTO @r_id, @r_id_ciud_orig, @r_id_ciud_dest
+	END
+
+	-- Se cierra y elimina el cursor
+	CLOSE obtenerIDRutaCursor
+	DEALLOCATE obtenerIDRutaCursor
+
+END;
+GO
+
+CREATE PROCEDURE DBAS.obtenerIDViaje (@FechaSalida datetime, @FechaLLegada datetime, @id_ruta bigint,  @id_viaje bigint OUT)
+AS
+BEGIN
+	DECLARE @v_id bigint
+	DECLARE @v_FSalida datetime
+	DECLARE @v_FLlegada datetime
+	DECLARE @V_codRuta bigint
+
+	DECLARE obtenerIDViajeCursor CURSOR FOR
+	SELECT id_viaje, fecha_llegada, fecha_salida, codigo_ruta  FROM DBAS.viajes
+
+	OPEN obtenerIDViajeCursor
+
+	-- Inserto lo que obtiene el cursor en las variables
+	FETCH NEXT FROM obtenerIDViajeCursor
+	INTO @v_id, @v_FLlegada, @v_FSalida, @V_codRuta
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		IF(@v_FLlegada = @FechaLLegada AND @v_FSalida = @FechaSalida AND @V_codRuta = @id_ruta )
+			BEGIN
+				SET @id_viaje = @v_id
+				BREAK
+			END
+		
+		-- Inserto lo que obtiene el cursor en las variables
+		FETCH NEXT FROM obtenerIDViajeCursor
+		INTO @v_id, @v_FLlegada, @v_FSalida, @V_codRuta
+	END
+
+	-- Se cierra y elimina el cursor
+	CLOSE obtenerIDViajeCursor
+	DEALLOCATE obtenerIDViajeCursor
+
+END;
+GO
 
 CREATE PROCEDURE DBAS.migracionPasajesYCompra
 AS
@@ -454,6 +671,7 @@ BEGIN
 	DECLARE @Pasaje_Codigo bigint
 	DECLARE @Pasaje_Precio float(24)
 	DECLARE @Pasaje_FechaCompra datetime
+	DECLARE @Paquete_FechaCompra datetime
 	DECLARE @Paquete_Codigo bigint
 	DECLARE @Paquete_Precio float(24)
 	DECLARE @Paquete_KG float(24)
@@ -462,26 +680,78 @@ BEGIN
 	DECLARE @Butaca_Nro smallint
 	DECLARE @Butaca_Piso tinyint
 
-	DECLARE @id_viaj bigint
+	DECLARE @id_viaje bigint
+	DECLARE @id_ruta bigint
 	DECLARE @FechaSalida datetime
 	DECLARE @FechaLLegada datetime
 	DECLARE @Ruta_Ciudad_Origen varchar(100)
 	DECLARE @Ruta_Ciudad_Destino varchar(100)
 	DECLARE @Aeronave_Matricula varchar(100)
 
+	DECLARE @ID_Compra bigint
+
+	--Activo la insercion en la variable identity de la tabla
+	SET IDENTITY_INSERT DBAS.pasajesEncomiendas ON
+	
 	DECLARE migracionPasajesYCompraCursor CURSOR FOR
-	SELECT Cli_Dni, Cli_Apellido, Cli_Nombre, Pasaje_Codigo, Pasaje_Precio, Pasaje_FechaCompra, Paquete_Codigo, Paquete_Precio, Paquete_KG, Butaca_Nro, Butaca_Piso, FechaSalida, FechaLLegada, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino, Aeronave_Matricula FROM gd_esquema.Maestra
+	SELECT Cli_Dni, Cli_Apellido, Cli_Nombre, Pasaje_Codigo, Pasaje_Precio, Pasaje_FechaCompra, Paquete_Codigo, Paquete_Precio, Paquete_FechaCompra, Paquete_KG, Butaca_Nro, Butaca_Piso, FechaSalida, FechaLLegada, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino, Aeronave_Matricula FROM gd_esquema.Maestra
 	
 	OPEN migracionPasajesYCompraCursor
 
 	-- Inserto lo que obtiene el cursor en las variables
 	FETCH NEXT FROM migracionPasajesYCompraCursor
-	INTO @Cli_Dni, @Cli_Apellido, @Cli_Nombre, @Pasaje_Codigo, @Pasaje_Precio, @Pasaje_FechaCompra, @Paquete_Codigo, @Paquete_Precio, @Paquete_KG, @Butaca_Nro, @Butaca_Piso, @FechaSalida, @FechaLLegada, @Ruta_Ciudad_Origen, @Ruta_Ciudad_Destino, @Aeronave_Matricula
+	INTO @Cli_Dni, @Cli_Apellido, @Cli_Nombre, @Pasaje_Codigo, @Pasaje_Precio, @Pasaje_FechaCompra, @Paquete_Codigo, @Paquete_Precio, @Paquete_FechaCompra, @Paquete_KG, @Butaca_Nro, @Butaca_Piso, @FechaSalida, @FechaLLegada, @Ruta_Ciudad_Origen, @Ruta_Ciudad_Destino, @Aeronave_Matricula
 
 	WHILE @@FETCH_STATUS = 0
 	BEGIN
 		EXECUTE DBAS.obtenerIDPersona @Cli_Dni, @Cli_Apellido, @Cli_Nombre, @id_pers OUT
 		EXECUTE DBAS.obtenerIDCliente @id_pers, @id_cli OUT
+		EXECUTE DBAS.obtenerIDButaca @Butaca_Nro, @Butaca_Piso, @Aeronave_Matricula, @id_but OUT
+		EXECUTE DBAS.obtenerIDRuta @Ruta_Ciudad_Origen, @Ruta_Ciudad_Destino, @id_ruta OUT
+		EXECUTE DBAS.obtenerIDViaje @FechaSalida, @FechaLLegada, @id_ruta, @id_viaje OUT
+
+		INSERT INTO DBAS.compras(fecha_compra_pasaje, fecha_compra_encomienda, precio_pasaje, precio_encomienda)
+		VALUES(@Pasaje_FechaCompra, @Paquete_FechaCompra, @Pasaje_Precio, @Paquete_Precio)
+
+		SET @ID_Compra = SCOPE_IDENTITY()
+
+		IF(@Pasaje_Codigo != 0)
+			BEGIN
+				INSERT INTO DBAS.pasajesEncomiendas(codigo_PE, encomienda_cliente_KG, id_butaca, id_viaje, id_cliente, id_compra)
+				VALUES(@Pasaje_Codigo, @Paquete_KG, @id_but, @id_viaje, @id_cli, @ID_Compra)
+			END
+		ELSE
+			BEGIN
+				INSERT INTO DBAS.pasajesEncomiendas(codigo_PE, encomienda_cliente_KG, id_butaca, id_viaje, id_cliente, id_compra)
+				VALUES(@Paquete_Codigo, @Paquete_KG, @id_but, @id_viaje, @id_cli, @ID_Compra)
+			END
+
+		-- Inserto lo que obtiene el cursor en las variables
+		FETCH NEXT FROM migracionPasajesYCompraCursor
+		INTO @Cli_Dni, @Cli_Apellido, @Cli_Nombre, @Pasaje_Codigo, @Pasaje_Precio, @Pasaje_FechaCompra, @Paquete_Codigo, @Paquete_Precio, @Paquete_FechaCompra, @Paquete_KG, @Butaca_Nro, @Butaca_Piso, @FechaSalida, @FechaLLegada, @Ruta_Ciudad_Origen, @Ruta_Ciudad_Destino, @Aeronave_Matricula
+	END
+
+	CLOSE migracionPasajesYCompraCursor
+	DEALLOCATE migracionPasajesYCompraCursor
+
+	--Activo elidentity paraque se genere automaticamente
+	SET IDENTITY_INSERT DBAS.pasajesEncomiendas OFF
+
+END;
+GO
+
+
+EXECUTE DBAS.migracionPasajesYCompra
+
+/*
+SELECT * 
+FROM ((SELECT Cli_Dni, Cli_Apellido, Cli_Nombre, Pasaje_Codigo, Pasaje_Precio, Pasaje_FechaCompra, Paquete_Codigo, Paquete_Precio, Paquete_FechaCompra, Paquete_KG, Butaca_Nro, Butaca_Piso, FechaSalida, FechaLLegada, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino, Aeronave_Matricula FROM gd_esquema.Maestra) tablaMaestra
+	JOIN DBAS.personas tablaPersonas ON (tablaPersonas.dni_persona = tablaMaestra.Cli_Dni AND tablaPersonas.nombre_persona = tablaMaestra.Cli_Nombre AND tablaPersonas.apellido_persona = tablaMaestra.Cli_Apellido)
+	JOIN DBAS.clientes tablaCliente ON (tablaPersonas.id_persona = tablaCliente.id_persona)
+	JOIN DBAS.butacas tablaButacas ON (tablaMaestra.Aeronave_Matricula = tablaButacas.matricula_aeronave AND tablaMaestra.Butaca_Nro = tablaButacas.numero_butaca AND tablaMaestra.Butaca_Piso = tablaButacas.piso_butaca)
+	JOIN DBAS.
+
+*/
 
 
 /* Roles y funcionalidades */
@@ -501,14 +771,17 @@ INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('Cancelación/Devolución d
 INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('Consulta de millas de pasajero frecuente');
 INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('Canje de millas de pasajero frecuente');
 INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('Listado Estadístico');
+GO
 
 -- insercion del rol administrador
-INSERT INTO DBAS.roles(descripcion) VALUES('Administrador General');
+INSERT INTO DBAS.roles(nombre_rol) VALUES('Administrador General');
+GO
 
 -- Se agregan funcionalidades al rol administrador
 INSERT INTO DBAS.rolesPorFuncionalidad(id_rol, id_funcionalidad)
 select tablaRol.id_rol, tablaFuncionalidad.id_funcionalidad from DBAS.roles  tablaRol, DBAS.funcionalidades tablaFuncionalidad
-where tablaRol.descripcion = 'Administrador General'
+where tablaRol.nombre_rol = 'Administrador General'
+GO
 
 -- Se agregan usuarios administradores
 INSERT INTO DBAS.personas(dni_persona,apellido_persona,nombre_persona)
@@ -520,8 +793,17 @@ SET @id_p = SCOPE_IDENTITY()
 -- Se inserta el usuario admin, password w23e
 INSERT INTO DBAS.usuarios(id_usuario,username,password)
 VALUES (@id_p,'admin','5rhwUL/LgUP8uNsBcKTcntANkE3dPipK0bHo3A/cm+c=')
+GO
 
 -- Se le asigna el rol administrador general al usuario admin
 INSERT INTO DBAS.usuariosPorRol(id_usuario, id_rol)
 SELECT tablaUsuarios.id_usuario, tablaRoles.id_rol FROM DBAS.usuarios tablaUsuarios, DBAS.roles tablaRoles
-WHERE tablaRoles.descripcion = 'Administrador General' and tablaUsuarios.username = 'admin'
+WHERE tablaRoles.nombre_rol = 'Administrador General' and tablaUsuarios.username = 'admin'
+GO
+
+
+/*	
+SELECT tablaCiudades.nombre_ciudad, COUNT(tablaPE.codigo_PE) FROM DBAS.pasajesEncomiendas tablaPE, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades
+WHERE tablaPE.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaCiudades.id_ciudad = tablaRutas.ciudad_destino_id
+GROUP BY tablaCiudades.nombre_ciudad
+*/

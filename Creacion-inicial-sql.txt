@@ -1,3 +1,24 @@
+DROP TABLE DBAS.cancelaciones
+DROP TABLE DBAS.canjes
+DROP TABLE DBAS.pasajesEncomiendas
+DROP TABLE DBAS.periodosFueraDeServicio
+DROP TABLE DBAS.productos
+DROP TABLE DBAS.rolesPorFuncionalidad
+DROP TABLE DBAS.usuariosPorRol
+DROP TABLE DBAS.usuarios
+DROP TABLE DBAS.viajes
+DROP TABLE DBAS.butacas
+DROP TABLE DBAS.compras
+DROP TABLE DBAS.funcionalidades
+DROP TABLE DBAS.roles
+DROP TABLE DBAS.rutas
+DROP TABLE DBAS.aeronaves
+DROP TABLE DBAS.ciudades
+DROP TABLE DBAS.clientes
+DROP TABLE DBAS.fabricantes
+DROP TABLE DBAS.millas
+DROP TABLE DBAS.servicios
+DROP TABLE DBAS.personas
 
 
 USE[GD2C2015];
@@ -62,7 +83,7 @@ CREATE TABLE DBAS.butacas (
 	numero_butaca smallint,
 	tipo_butaca varchar(15) CHECK(tipo_butaca IN('Pasillo','Ventanilla','0')),
 	piso_butaca tinyint,
-	matricula_aeronave varchar(100),
+	matricula_aeronave varchar(100) NOT NULL,
 	UNIQUE(numero_butaca, matricula_aeronave, piso_butaca)
 );
 GO
@@ -73,7 +94,11 @@ CREATE TABLE DBAS.pasajesEncomiendas (
 	encomienda_cliente_KG float(24),
 	id_viaje bigint NOT NULL,
 	id_butaca bigint,
-	id_compra bigint NOT NULL,
+	fecha_compra_pasaje datetime NOT NULL,
+	fecha_compra_encomienda datetime NOT NULL,
+	precio_encomienda float(24),
+	precio_pasaje float(24),
+	id_compra_PNR bigint
 	
 );
 GO
@@ -86,14 +111,8 @@ CREATE TABLE DBAS.servicios (
 GO
 
 CREATE TABLE DBAS.compras (
-	id_compra bigint IDENTITY(1,1) PRIMARY KEY,
-	PNR bigint UNIQUE, -- codigo de compra
-	fecha_compra_pasaje datetime NOT NULL,
-	fecha_compra_encomienda datetime NOT NULL,
-	precio_encomienda float(24),
-	precio_pasaje float(24),
+	id_compra_PNR bigint IDENTITY(1,1) PRIMARY KEY,
 	id_cliente bigint
-	
 );
 GO
 
@@ -212,6 +231,10 @@ alter table DBAS.rolesPorFuncionalidad add constraint pk_rolesPorFuncionalidad
 	primary key clustered (id_rol, id_funcionalidad);
 GO
 
+alter table DBAS.usuariosPorRol add constraint pk_usuariosPorRol
+	primary key clustered (id_usuario, id_rol);
+GO
+
 -- DDL de constraints FK
 
 alter table DBAS.rutas add constraint fk_ruta_ciudadOrigen 
@@ -247,7 +270,7 @@ alter table DBAS.butacas add constraint fk_butaca_aeronave
 GO
 
 alter table DBAS.pasajesEncomiendas add constraint fk_pasaje_cliente
-	foreign key (id_cliente ) references DBAS.clientes (id_cliente); 
+	foreign key (id_cliente) references DBAS.clientes (id_cliente); 
 GO
 
 alter table DBAS.pasajesEncomiendas add constraint fk_pasaje_butaca
@@ -255,7 +278,7 @@ alter table DBAS.pasajesEncomiendas add constraint fk_pasaje_butaca
 GO
 
 alter table DBAS.pasajesEncomiendas add constraint fk_pasaje_compra
-	foreign key (id_compra) references DBAS.compras (id_compra);
+	foreign key (id_compra_PNR) references DBAS.compras (id_compra_PNR);
 GO
 
 alter table DBAS.pasajesEncomiendas add constraint fk_pasaje_viaje
@@ -306,32 +329,37 @@ alter table DBAS.rolesPorFuncionalidad add constraint fk_rolesPorFuncionalidad_f
 	foreign key (id_funcionalidad) references DBAS.funcionalidades (id_funcionalidad);
 GO
 
+alter table DBAS.usuariosPorRol add constraint fk_usuariosPorRol_usuarios
+	foreign key (id_usuario) references DBAS.usuarios (id_usuario);
+GO
+
+alter table DBAS.usuariosPorRol add constraint fk_usuariosPorRol_rol
+	foreign key (id_rol) references DBAS.roles (id_rol);
+GO
+
 /* -- Migracion -- */
 
-SELECT * FROM gd_esquema.Maestra
-
+--Se migran los fabricante de la tabla Maestra
 INSERT INTO DBAS.fabricantes(nombre_fabricante)
 SELECT DISTINCT Aeronave_Fabricante 
 FROM gd_esquema.Maestra
 GO
 
----
-
+--Se migran las ciudades destino y origen quedando solo las que no se repiten
 INSERT INTO DBAS.ciudades(nombre_ciudad)
 SELECT DISTINCT Ruta_Ciudad_Origen FROM gd_esquema.Maestra UNION SELECT DISTINCT Ruta_Ciudad_Destino FROM gd_esquema.Maestra
 GO
 
----
-
+--Se migran los servivios de la tabla maestra
 INSERT INTO DBAS.servicios(tipo_servicio)
 SELECT DISTINCT Tipo_Servicio FROM gd_esquema.Maestra
 GO
 
----
-
-CREATE TABLE DBAS.#temporalRutasOriginales(nom_ruta_orig varchar(100), nom_ruta_dest varchar(100), ruta_PP float(24), ruta_PKG float(24), ruta_servicio varchar(50))
+--Se crea una tabla temporal para poder manejar el precio del pasaje y kg de la ruta para la migracion
+CREATE TABLE DBAS.#temporalRutasOriginales(nom_ruta_orig varchar(100), nom_ruta_dest varchar(100), ruta_PP float(24), ruta_PKG float(24), ruta_servicio varchar(50));
 GO
 
+--Se insertan los valores que se necesitan de la tabla maestra
 INSERT INTO #temporalRutasOriginales(nom_ruta_orig, nom_ruta_dest, ruta_PP, ruta_PKG, ruta_servicio)
 SELECT DISTINCT tablaAux1.Ruta_Ciudad_Origen, tablaAux1.Ruta_Ciudad_Destino, tablaAux2.Ruta_Precio_BaseKG, tablaAux1.Ruta_Precio_BasePasaje, tablaAux1.Tipo_Servicio
 		FROM ((SELECT DISTINCT Ruta_Codigo, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BasePasaje, Tipo_Servicio FROM gd_esquema.Maestra WHERE Ruta_Precio_BasePasaje > 0.00) tablaAux1
@@ -339,6 +367,7 @@ SELECT DISTINCT tablaAux1.Ruta_Ciudad_Origen, tablaAux1.Ruta_Ciudad_Destino, tab
 				ON (tablaAux1.Ruta_Ciudad_Origen = tablaAux2.Ruta_Ciudad_Origen AND tablaAux1.Ruta_Ciudad_Destino = tablaAux2.Ruta_Ciudad_Destino))
 GO
 
+--Utilizando las tablas temporal, ciudades y servicios migro tantos los datos como las ids de las tablas en rutas
 INSERT INTO DBAS.rutas(ciudad_origen_id, ciudad_destino_id, precio_base_por_KG, precio_base_por_pasaje, id_servicio)
 SELECT tablaCiudades_orig.id_ciudad, tablaCiudades_dest.id_ciudad, tmpRutas.ruta_PKG, tmpRutas.ruta_PP, tablaServicios.id_servicio
 FROM ((SELECT * FROM DBAS.ciudades) tablaCiudades_orig 
@@ -346,8 +375,8 @@ FROM ((SELECT * FROM DBAS.ciudades) tablaCiudades_orig
 		JOIN (SELECT * FROM DBAS.ciudades) tablaCiudades_dest ON ( tmpRutas.nom_ruta_dest = tablaCiudades_dest.nombre_ciudad) 
 			JOIN (SELECT * FROM DBAS.servicios) tablaServicios ON (tmpRutas.ruta_servicio = tablaServicios.tipo_servicio))
 GO
----
 
+/*
 -- sirve para saber si hay consistencia con el tipo de servicio de la aeronave
 SELECT DISTINCT aux1.Aeronave_matricula, aux1.Aeronave_KG_Disponibles, aux1.Aeronave_Fabricante, aux1.Tipo_Servicio 
 FROM ((SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Tipo_Servicio FROM gd_esquema.Maestra) aux1 JOIN (SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Tipo_Servicio FROM gd_esquema.Maestra) aux2 
@@ -357,402 +386,108 @@ ON (aux1.Aeronave_Matricula = aux2.Aeronave_Matricula AND aux1.Tipo_Servicio != 
 SELECT DISTINCT aux1.Aeronave_matricula, aux1.Aeronave_KG_Disponibles, aux1.Aeronave_Fabricante, aux1.Tipo_Servicio 
 FROM ((SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Tipo_Servicio FROM gd_esquema.Maestra) aux1 JOIN (SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Tipo_Servicio FROM gd_esquema.Maestra) aux2 
 ON (aux1.Aeronave_Matricula = aux2.Aeronave_Matricula AND aux1.Aeronave_KG_Disponibles != aux2.Aeronave_KG_Disponibles)) 
+*/
 
+--Migro las aeronaves de la tabla Maestra, utilizando las tablas fabricantes y servicios para obtener sus ids
 INSERT INTO DBAS.aeronaves(matricula_aeronave, modelo_aeronave, kg_disponible_encomienda, id_fabricante, id_servicio)
-SELECT DISTINCT tablaAux.Aeronave_Matricula, tablaAux.Aeronave_Modelo, tablaAux.Aeronave_KG_Disponibles, tablaFab.id_fabricante, tablaServ.id_servicio
-FROM ((SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Aeronave_Modelo, Tipo_Servicio FROM gd_esquema.Maestra) tablaAux
+SELECT tablaAux.Aeronave_Matricula, tablaAux.Aeronave_Modelo, tablaAux.Aeronave_KG_Disponibles, tablaFab.id_fabricante, tablaServ.id_servicio
+FROM ((SELECT DISTINCT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Aeronave_Modelo, Tipo_Servicio FROM gd_esquema.Maestra) tablaAux
 	JOIN DBAS.fabricantes tablaFab ON (tablaFab.nombre_fabricante = tablaAux.Aeronave_Fabricante)
 		JOIN DBAS.servicios tablaServ ON (tablaServ.tipo_servicio = tablaAux.Tipo_Servicio))
 GO
 
----
+--Creo una tabla temporal que va a ser de ayuda para la migracion de los pasajes y asi utilizar menos tabla y ganar tiempo de busqueda de las ids
+CREATE TABLE DBAS.#temporalViajesConRutas(id_viaj bigint, codigo_rut bigint, nom_ruta_orig varchar(100), nom_ruta_dest varchar(100), fecha_salida datetime, fecha_llegada datetime, matricula_aeronave varchar(100));
+GO
 
+--Creo un trigger para la insercion de los valores en la tabla temporal una vez que se insertaron los viajes
+CREATE TRIGGER DBAS.migrarDatosATemporalTrigger ON DBAS.viajes
+AFTER INSERT
+AS
+BEGIN
+	
+	INSERT INTO #temporalViajesConRutas(id_viaj, codigo_rut, nom_ruta_orig, nom_ruta_dest, fecha_salida, fecha_llegada, matricula_aeronave)
+	SELECT tablaViajes.id_viaje, tablaRutas.codigo_ruta, tablaCiudadOrig.nombre_ciudad, tablaCiudadDest.nombre_ciudad, tablaViajes.fecha_salida, tablaViajes.fecha_llegada, tablaViajes.matricula_aeronave 
+	FROM ((SELECT id_viaje, fecha_salida, fecha_llegada, codigo_ruta, matricula_aeronave FROM inserted) tablaViajes
+		JOIN (SELECT codigo_ruta, ciudad_origen_id, ciudad_destino_id FROM DBAS.rutas) tablaRutas
+		ON (tablaViajes.codigo_ruta = tablaRutas.codigo_ruta)
+			JOIN DBAS.ciudades tablaCiudadOrig ON (tablaRutas.ciudad_origen_id = tablaCiudadOrig.id_ciudad)
+			JOIN DBAS.ciudades tablaCiudadDest ON (tablaRutas.ciudad_destino_id = tablaCiudadDest.id_ciudad))
+END;
+GO
+
+--Inserto la cantidad de viajes de la tabla maestra
 INSERT INTO DBAS.viajes (fecha_salida,fecha_llegada_estimada,fecha_llegada,matricula_aeronave,codigo_ruta)
-SELECT DISTINCT tablaAux.FechaSalida, tablaAux.Fecha_LLegada_Estimada, tablaAux.FechaLLegada, tablaAux.Aeronave_Matricula, tablaRutas.codigo_ruta
-FROM ((SELECT FechaSalida, Fecha_LLegada_Estimada, FechaLLegada, Aeronave_Matricula, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino FROM gd_esquema.Maestra) tablaAux 
+SELECT tablaAux.FechaSalida, tablaAux.Fecha_LLegada_Estimada, tablaAux.FechaLLegada, tablaAux.Aeronave_Matricula, tablaRutas.codigo_ruta
+FROM ((SELECT DISTINCT FechaSalida, Fecha_LLegada_Estimada, FechaLLegada, Aeronave_Matricula, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino FROM gd_esquema.Maestra) tablaAux 
 	JOIN DBAS.ciudades tablaciudad_orig ON (tablaciudad_orig.nombre_ciudad= tablaAux.Ruta_Ciudad_Origen)
 		JOIN DBAS.ciudades tablaciudad_dest ON (tablaciudad_dest.nombre_ciudad = tablaAux.Ruta_Ciudad_Destino)
 			JOIN DBAS.rutas tablaRutas ON (tablaRutas.ciudad_origen_id = tablaciudad_orig.id_ciudad AND tablaRutas.ciudad_destino_id = tablaciudad_dest.id_ciudad))
 GO
 
----
-
+--Inserto las butacas de cada avion de la tabla maestra
 INSERT INTO DBAS.butacas (numero_butaca, tipo_butaca, piso_butaca, matricula_aeronave)
 SELECT DISTINCT Butaca_Nro, Butaca_Tipo, Butaca_Piso, Aeronave_Matricula FROM gd_esquema.Maestra
 GO
----
 
-CREATE PROCEDURE DBAS.migracionClientes
+--Creo una tabla temporal con el fin de utilizarla como ayuda para la migracion de los pasajes y asi buscar menos ids y mejorar el tiempo de migracion
+CREATE TABLE DBAS.#temporalPasajesDeClientes(id_cliente bigint, fecha_llegada datetime, fecha_salida datetime, ciudad_origen varchar(100), ciudad_destino varchar(100), Pasaje_Codigo bigint, Pasaje_Precio float(24), Pasaje_FechaCompra datetime, Paquete_Codigo bigint, Paquete_Precio float(24), Paquete_FechaCompra datetime, Paquete_KG float(24), Butaca_Nro smallint, Butaca_Piso tinyint, Aeronave_Matricula varchar(100));
+GO
+
+--Creo un trigger que sirve para asociar el id de un cliente con el de la persona y lo ordeno por su id para 
+--asegurarme de que tanto el id del cliente como el de la persona sean identicos para asi utilizar 
+--el id de la persona sin buscarlo en la tabla clientes para la migracion
+CREATE TRIGGER DBAS.migrarClientesEnPersona ON DBAS.personas
+AFTER INSERT
 AS
 BEGIN
-	DECLARE @Cli_Dni bigint
-	DECLARE @Cli_Nombre varchar(100)
-	DECLARE @Cli_Apellido varchar(100)
-	DECLARE @Cli_Dir varchar(100) 
-	DECLARE @Cli_Telefono varchar(50)
-	DECLARE @Cli_Mail varchar(100)
-	DECLARE @Cli_Fecha_Nac datetime
-
-	-- variable para la asignacion de la pk de persona en cliente
-	DECLARE @id_persona bigint
-
-	-- creo un cursor para recorrer la seleccion
-	DECLARE migracionClientesCursor CURSOR FOR
-	SELECT DISTINCT Cli_Dni, Cli_Nombre, Cli_Apellido, Cli_Dir, Cli_Telefono, Cli_Mail, Cli_Fecha_Nac FROM gd_esquema.Maestra
-
-	OPEN migracionClientesCursor
-
-	-- Inserto lo que obtiene el cursor en las variables
-	FETCH NEXT FROM migracionClientesCursor
-	INTO @Cli_Dni, @Cli_Nombre, @Cli_Apellido, @Cli_Dir, @Cli_Telefono, @Cli_Mail, @Cli_Fecha_Nac
-
-	WHILE @@FETCH_STATUS = 0
-	BEGIN
-		-- Inserto en la tabla los valores que me devuelve el cursor
-		INSERT INTO DBAS.personas(dni_persona, nombre_persona, apellido_persona, direccion_persona, telefono_persona, mail_persona, fecha_nacimiento)
-		VALUES(@Cli_Dni, @Cli_Nombre, @Cli_Apellido, @Cli_Dir, @Cli_Telefono, @Cli_Mail, @Cli_Fecha_Nac)
-
-		-- Asigno la pk de la insercion en clientes
-		SET @id_persona = SCOPE_IDENTITY()
-
-		INSERT INTO DBAS.clientes(id_persona) VALUES(@id_persona)
-
-		-- Inserto lo que obtiene el cursor en las variables
-		FETCH NEXT FROM migracionClientesCursor
-		INTO @Cli_Dni, @Cli_Nombre, @Cli_Apellido, @Cli_Dir, @Cli_Telefono, @Cli_Mail, @Cli_Fecha_Nac
-	END
-
-	-- Se cierra y elimina el cursor
-	CLOSE migracionClientesCursor
-	DEALLOCATE migracionClientesCursor
-
+	INSERT INTO DBAS.clientes(id_persona)
+	SELECT id_persona FROM inserted
+	ORDER BY id_persona
 END;
 GO
 
--- Ejecuto el procedimiento para la migracion de clientes
-EXECUTE DBAS.migracionClientes 
-GO
-
---- Falta pasajes, se implementara trigger y cursores
-CREATE PROCEDURE DBAS.obtenerIDPersona (@Dni bigint, @Apellido varchar(100),@Nombre varchar(100), @id bigint OUT)
+--Creo un trigger en persona para asi una vez insertadas las personas utilizar sus id para la relacionar los pasajes de la maestra con el id del cliente que lo posee
+CREATE TRIGGER DBAS.temporalPasajesDeClientestrigger ON DBAS.personas
+AFTER INSERT
 AS
 BEGIN
-	DECLARE @p_id bigint
-	DECLARE @p_dni bigint
-	DECLARE @p_nombre varchar(100)
-	DECLARE @p_apellido varchar(100)
-
-	DECLARE obtenerIDPersonaCursor CURSOR FOR
-	SELECT id_persona, dni_persona, apellido_persona, nombre_persona FROM DBAS.personas
-
-	OPEN obtenerIDPersonaCursor
-
-	-- Inserto lo que obtiene el cursor en las variables
-	FETCH NEXT FROM obtenerIDPersonaCursor
-	INTO @p_id, @p_dni, @p_apellido, @p_nombre
-
-	WHILE @@FETCH_STATUS = 0
-	BEGIN
-		IF(@p_dni = @Dni AND @Apellido = @p_apellido AND @Nombre = @p_nombre)
-			BEGIN
-				SET @id = @p_id
-				BREAK
-			END
-		
-		-- Inserto lo que obtiene el cursor en las variables
-		FETCH NEXT FROM obtenerIDPersonaCursor
-		INTO @p_id, @p_dni, @p_apellido, @p_nombre
-	END
-
-	-- Se cierra y elimina el cursor
-	CLOSE obtenerIDPersonaCursor
-	DEALLOCATE obtenerIDPersonaCursor
-
+	INSERT INTO #temporalPasajesDeClientes(id_cliente, fecha_llegada, fecha_salida, ciudad_origen, ciudad_destino, Pasaje_Codigo, Pasaje_Precio, Pasaje_FechaCompra, Paquete_Codigo, Paquete_Precio, Paquete_FechaCompra, Paquete_KG, Butaca_Nro, Butaca_Piso, Aeronave_Matricula)
+	SELECT tablaPersona.id_persona, tablaMaestra.FechaLLegada, tablaMaestra.FechaSalida, tablaMaestra.Ruta_Ciudad_Origen, tablaMaestra.Ruta_Ciudad_Destino, tablaMaestra.Pasaje_Codigo, tablaMaestra.Pasaje_Precio, tablaMaestra.Pasaje_FechaCompra, tablaMaestra.Paquete_Codigo, tablaMaestra.Paquete_Precio, tablaMaestra.Paquete_FechaCompra, tablaMaestra.Paquete_KG, tablaMaestra.Butaca_Nro, tablaMaestra.Butaca_Piso, tablaMaestra.Aeronave_Matricula 
+	FROM ((SELECT id_persona, dni_persona, nombre_persona, apellido_persona FROM inserted) tablaPersona
+	JOIN (SELECT Cli_Dni, Cli_Apellido, Cli_Nombre, Pasaje_Codigo, Pasaje_Precio, Pasaje_FechaCompra, Paquete_Codigo, Paquete_Precio, Paquete_FechaCompra, Paquete_KG, Butaca_Nro, Butaca_Piso, FechaSalida, FechaLLegada, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino, Aeronave_Matricula FROM gd_esquema.Maestra) tablaMaestra
+	ON (tablaPersona.dni_persona = tablaMaestra.Cli_Dni AND tablaPersona.nombre_persona = tablaMaestra.Cli_Nombre AND tablaPersona.apellido_persona = tablaMaestra.Cli_Apellido))
 END;
 GO
 
-CREATE PROCEDURE DBAS.obtenerIDCliente (@ID_Persona bigint, @ID_Cliente bigint OUT)
-AS
-BEGIN
-	DECLARE @c_id bigint
-	DECLARE @p_id bigint
-
-	DECLARE obtenerIDClienteCursor CURSOR FOR
-	SELECT id_cliente, id_persona FROM DBAS.clientes
-
-	OPEN obtenerIDClienteCursor
-
-	-- Inserto lo que obtiene el cursor en las variables
-	FETCH NEXT FROM obtenerIDClienteCursor
-	INTO @c_id, @p_id
-
-	WHILE @@FETCH_STATUS = 0
-	BEGIN
-		IF(@p_id = @ID_Persona)
-			BEGIN
-				SET @ID_Cliente = @p_id
-				BREAK
-			END
-		
-		-- Inserto lo que obtiene el cursor en las variables
-		FETCH NEXT FROM obtenerIDClienteCursor
-		INTO @c_id, @p_id
-	END
-
-	-- Se cierra y elimina el cursor
-	CLOSE obtenerIDClienteCursor
-	DEALLOCATE obtenerIDClienteCursor
-
-END;
+--Migro las personas de la tabla maestra
+INSERT INTO DBAS.personas(dni_persona, nombre_persona, apellido_persona, direccion_persona, telefono_persona, mail_persona, fecha_nacimiento)
+SELECT DISTINCT Cli_Dni, Cli_Nombre, Cli_Apellido, Cli_Dir, Cli_Telefono, Cli_Mail, Cli_Fecha_Nac FROM gd_esquema.Maestra
 GO
 
-CREATE PROCEDURE DBAS.obtenerIDButaca (@Butaca_Nro smallint, @Butaca_Piso tinyint, @Aeronave_Matricula varchar(100),  @id_but bigint OUT)
-AS
-BEGIN
-	DECLARE @b_id bigint
-	DECLARE @b_nro smallint
-	DECLARE @b_piso tinyint
-	DECLARE @aeronave_Mat varchar(100)
-
-	DECLARE obtenerIDButacaCursor CURSOR FOR
-	SELECT id_butaca, numero_butaca, piso_butaca, matricula_aeronave FROM DBAS.butacas
-
-	OPEN obtenerIDButacaCursor
-
-	-- Inserto lo que obtiene el cursor en las variables
-	FETCH NEXT FROM obtenerIDButacaCursor
-	INTO @b_id, @b_nro, @b_piso, @aeronave_Mat
-
-	WHILE @@FETCH_STATUS = 0
-	BEGIN
-		IF(@Butaca_Nro = @b_nro AND @Butaca_Piso = @b_piso AND @Aeronave_Matricula = @aeronave_Mat)
-			BEGIN
-				SET @id_but = @b_id
-				BREAK
-			END
-
-		-- Inserto lo que obtiene el cursor en las variables
-		FETCH NEXT FROM obtenerIDButacaCursor
-		INTO @b_id, @b_nro, @b_piso, @aeronave_Mat
-	END
-
-	-- Se cierra y elimina el cursor
-	CLOSE obtenerIDButacaCursor
-	DEALLOCATE obtenerIDButacaCursor
-
-END;
+--Activo la insercion en la variable identity de la tabla
+SET IDENTITY_INSERT DBAS.pasajesEncomiendas ON
 GO
 
-CREATE PROCEDURE DBAS.obtenerIDCiudad (@ciudad_nombre varchar(100),  @id_ciudad bigint OUT)
-AS
-BEGIN
-	DECLARE @c_id bigint
-	DECLARE @c_nombre varchar(100)
-
-	DECLARE obtenerIDCiudadCursor CURSOR FOR
-	SELECT id_ciudad, nombre_ciudad FROM DBAS.ciudades
-
-	OPEN obtenerIDCiudadCursor
-
-	-- Inserto lo que obtiene el cursor en las variables
-	FETCH NEXT FROM obtenerIDCiudadCursor
-	INTO @c_id, @c_nombre
-
-	WHILE @@FETCH_STATUS = 0
-	BEGIN
-		IF(@c_nombre = @ciudad_nombre)
-			BEGIN
-				SET @id_ciudad = @c_id
-				BREAK
-			END
-		
-		-- Inserto lo que obtiene el cursor en las variables
-		FETCH NEXT FROM obtenerIDCiudadCursor
-		INTO @c_id, @c_nombre
-	END
-
-	-- Se cierra y elimina el cursor
-	CLOSE obtenerIDCiudadCursor
-	DEALLOCATE obtenerIDCiudadCursor
-
-END;
+--Inserto los valores de las las tablas temporales que solo tengan pasajes y no encomiendas
+INSERT INTO DBAS.pasajesEncomiendas(codigo_PE, id_cliente, encomienda_cliente_KG, precio_pasaje, precio_encomienda, fecha_compra_pasaje, fecha_compra_encomienda, id_viaje, id_butaca)
+SELECT DISTINCT tablaTemporalPasajes.Pasaje_Codigo, tablaTemporalPasajes.id_cliente, tablaTemporalPasajes.Paquete_KG, tablaTemporalPasajes.Pasaje_Precio, tablaTemporalPasajes.Paquete_Precio, tablaTemporalPasajes.Pasaje_FechaCompra, tablaTemporalPasajes.Paquete_FechaCompra, tablaTemporalViajes.id_viaj, tablaButacas.id_butaca 
+FROM ((SELECT id_cliente, fecha_llegada, fecha_salida, ciudad_origen, ciudad_destino, Pasaje_Codigo, Pasaje_Precio, Pasaje_FechaCompra, Paquete_Codigo, Paquete_Precio, Paquete_FechaCompra, Paquete_KG, Butaca_Nro, Butaca_Piso, Aeronave_Matricula FROM #temporalPasajesDeClientes WHERE Butaca_Piso != 0) tablaTemporalPasajes
+	JOIN DBAS.butacas tablaButacas ON (tablaTemporalPasajes.Aeronave_Matricula = tablaButacas.matricula_aeronave AND tablaTemporalPasajes.Butaca_Nro = tablaButacas.numero_butaca AND tablaTemporalPasajes.Butaca_Piso = tablaButacas.piso_butaca)
+	JOIN #temporalViajesConRutas tablaTemporalViajes ON (tablaTemporalViajes.nom_ruta_orig = tablaTemporalPasajes.ciudad_origen AND tablaTemporalViajes.nom_ruta_dest = tablaTemporalPasajes.ciudad_destino AND tablaTemporalViajes.fecha_salida = tablaTemporalPasajes.fecha_salida AND tablaTemporalViajes.fecha_llegada = tablaTemporalPasajes.fecha_llegada AND tablaTemporalPasajes.Aeronave_Matricula = tablaTemporalViajes.matricula_aeronave))
 GO
 
-CREATE PROCEDURE DBAS.obtenerIDRuta (@Ruta_Ciudad_Origen varchar(100), @Ruta_Ciudad_Destino varchar(100),  @id_ruta bigint OUT)
-AS
-BEGIN
-	DECLARE @r_id bigint
-	DECLARE @r_Ciudad_Origen  varchar(100)
-	DECLARE @r_Ruta_Ciudad_Destino  varchar(100)
-	DECLARE @r_id_ciud_orig varchar(100)
-	DECLARE @r_id_ciud_dest varchar(100)
-	
-	DECLARE @c_id_ciud_orig varchar(100)
-	DECLARE @c_id_ciud_dest varchar(100)
-
-	EXECUTE DBAS.obtenerIDCiudad @Ruta_Ciudad_Origen, @c_id_ciud_orig OUT
-	EXECUTE DBAS.obtenerIDCiudad @Ruta_Ciudad_Destino, @c_id_ciud_dest OUT
-
-	DECLARE obtenerIDRutaCursor CURSOR FOR
-	SELECT codigo_ruta, ciudad_origen_id, ciudad_destino_id  FROM DBAS.rutas
-
-	OPEN obtenerIDRutaCursor
-
-	-- Inserto lo que obtiene el cursor en las variables
-	FETCH NEXT FROM obtenerIDRutaCursor
-	INTO @r_id, @r_id_ciud_orig, @r_id_ciud_dest
-
-	WHILE @@FETCH_STATUS = 0
-	BEGIN
-		IF(@r_id_ciud_orig = @c_id_ciud_orig AND @r_id_ciud_dest = @c_id_ciud_dest)
-			BEGIN
-				SET @id_ruta = @r_id
-				BREAK
-			END
-		
-		-- Inserto lo que obtiene el cursor en las variables
-		FETCH NEXT FROM obtenerIDRutaCursor
-		INTO @r_id, @r_id_ciud_orig, @r_id_ciud_dest
-	END
-
-	-- Se cierra y elimina el cursor
-	CLOSE obtenerIDRutaCursor
-	DEALLOCATE obtenerIDRutaCursor
-
-END;
+--Inserto los valores de las las tablas temporales que solo tengan encomiendas y no pasajes
+INSERT INTO DBAS.pasajesEncomiendas(codigo_PE, id_cliente, encomienda_cliente_KG, precio_pasaje, precio_encomienda, fecha_compra_pasaje, fecha_compra_encomienda, id_viaje, id_butaca)
+SELECT DISTINCT tablaTemporalPasajes.Paquete_Codigo, tablaTemporalPasajes.id_cliente, tablaTemporalPasajes.Paquete_KG, tablaTemporalPasajes.Pasaje_Precio, tablaTemporalPasajes.Paquete_Precio, tablaTemporalPasajes.Pasaje_FechaCompra, tablaTemporalPasajes.Paquete_FechaCompra, tablaTemporalViajes.id_viaj, tablaButacas.id_butaca 
+FROM ((SELECT id_cliente, fecha_llegada, fecha_salida, ciudad_origen, ciudad_destino, Pasaje_Codigo, Pasaje_Precio, Pasaje_FechaCompra, Paquete_Codigo, Paquete_Precio, Paquete_FechaCompra, Paquete_KG, Butaca_Nro, Butaca_Piso, Aeronave_Matricula FROM #temporalPasajesDeClientes WHERE Butaca_Piso = 0) tablaTemporalPasajes
+	JOIN DBAS.butacas tablaButacas ON (tablaTemporalPasajes.Aeronave_Matricula = tablaButacas.matricula_aeronave AND tablaTemporalPasajes.Butaca_Nro = tablaButacas.numero_butaca AND tablaTemporalPasajes.Butaca_Piso = tablaButacas.piso_butaca)
+	JOIN #temporalViajesConRutas tablaTemporalViajes ON (tablaTemporalViajes.nom_ruta_orig = tablaTemporalPasajes.ciudad_origen AND tablaTemporalViajes.nom_ruta_dest = tablaTemporalPasajes.ciudad_destino AND tablaTemporalViajes.fecha_salida = tablaTemporalPasajes.fecha_salida AND tablaTemporalViajes.fecha_llegada = tablaTemporalPasajes.fecha_llegada AND tablaTemporalPasajes.Aeronave_Matricula = tablaTemporalViajes.matricula_aeronave))
 GO
 
-CREATE PROCEDURE DBAS.obtenerIDViaje (@FechaSalida datetime, @FechaLLegada datetime, @id_ruta bigint,  @id_viaje bigint OUT)
-AS
-BEGIN
-	DECLARE @v_id bigint
-	DECLARE @v_FSalida datetime
-	DECLARE @v_FLlegada datetime
-	DECLARE @V_codRuta bigint
-
-	DECLARE obtenerIDViajeCursor CURSOR FOR
-	SELECT id_viaje, fecha_llegada, fecha_salida, codigo_ruta  FROM DBAS.viajes
-
-	OPEN obtenerIDViajeCursor
-
-	-- Inserto lo que obtiene el cursor en las variables
-	FETCH NEXT FROM obtenerIDViajeCursor
-	INTO @v_id, @v_FLlegada, @v_FSalida, @V_codRuta
-
-	WHILE @@FETCH_STATUS = 0
-	BEGIN
-		IF(@v_FLlegada = @FechaLLegada AND @v_FSalida = @FechaSalida AND @V_codRuta = @id_ruta )
-			BEGIN
-				SET @id_viaje = @v_id
-				BREAK
-			END
-		
-		-- Inserto lo que obtiene el cursor en las variables
-		FETCH NEXT FROM obtenerIDViajeCursor
-		INTO @v_id, @v_FLlegada, @v_FSalida, @V_codRuta
-	END
-
-	-- Se cierra y elimina el cursor
-	CLOSE obtenerIDViajeCursor
-	DEALLOCATE obtenerIDViajeCursor
-
-END;
+--Activo el identity para que se genere automaticamente nuevamente
+SET IDENTITY_INSERT DBAS.pasajesEncomiendas OFF
 GO
-
-CREATE PROCEDURE DBAS.migracionPasajesYCompra
-AS
-BEGIN
-	DECLARE @id_pers bigint
-	DECLARE @id_cli bigint
-	DECLARE @Cli_Dni bigint
-	DECLARE @Cli_Apellido varchar(100)
-	DECLARE @Cli_Nombre varchar(100)
-
-	DECLARE @Pasaje_Codigo bigint
-	DECLARE @Pasaje_Precio float(24)
-	DECLARE @Pasaje_FechaCompra datetime
-	DECLARE @Paquete_FechaCompra datetime
-	DECLARE @Paquete_Codigo bigint
-	DECLARE @Paquete_Precio float(24)
-	DECLARE @Paquete_KG float(24)
-
-	DECLARE @id_but bigint
-	DECLARE @Butaca_Nro smallint
-	DECLARE @Butaca_Piso tinyint
-
-	DECLARE @id_viaje bigint
-	DECLARE @id_ruta bigint
-	DECLARE @FechaSalida datetime
-	DECLARE @FechaLLegada datetime
-	DECLARE @Ruta_Ciudad_Origen varchar(100)
-	DECLARE @Ruta_Ciudad_Destino varchar(100)
-	DECLARE @Aeronave_Matricula varchar(100)
-
-	DECLARE @ID_Compra bigint
-
-	--Activo la insercion en la variable identity de la tabla
-	SET IDENTITY_INSERT DBAS.pasajesEncomiendas ON
-	
-	DECLARE migracionPasajesYCompraCursor CURSOR FOR
-	SELECT Cli_Dni, Cli_Apellido, Cli_Nombre, Pasaje_Codigo, Pasaje_Precio, Pasaje_FechaCompra, Paquete_Codigo, Paquete_Precio, Paquete_FechaCompra, Paquete_KG, Butaca_Nro, Butaca_Piso, FechaSalida, FechaLLegada, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino, Aeronave_Matricula FROM gd_esquema.Maestra
-	
-	OPEN migracionPasajesYCompraCursor
-
-	-- Inserto lo que obtiene el cursor en las variables
-	FETCH NEXT FROM migracionPasajesYCompraCursor
-	INTO @Cli_Dni, @Cli_Apellido, @Cli_Nombre, @Pasaje_Codigo, @Pasaje_Precio, @Pasaje_FechaCompra, @Paquete_Codigo, @Paquete_Precio, @Paquete_FechaCompra, @Paquete_KG, @Butaca_Nro, @Butaca_Piso, @FechaSalida, @FechaLLegada, @Ruta_Ciudad_Origen, @Ruta_Ciudad_Destino, @Aeronave_Matricula
-
-	WHILE @@FETCH_STATUS = 0
-	BEGIN
-		EXECUTE DBAS.obtenerIDPersona @Cli_Dni, @Cli_Apellido, @Cli_Nombre, @id_pers OUT
-		EXECUTE DBAS.obtenerIDCliente @id_pers, @id_cli OUT
-		EXECUTE DBAS.obtenerIDButaca @Butaca_Nro, @Butaca_Piso, @Aeronave_Matricula, @id_but OUT
-		EXECUTE DBAS.obtenerIDRuta @Ruta_Ciudad_Origen, @Ruta_Ciudad_Destino, @id_ruta OUT
-		EXECUTE DBAS.obtenerIDViaje @FechaSalida, @FechaLLegada, @id_ruta, @id_viaje OUT
-
-		INSERT INTO DBAS.compras(fecha_compra_pasaje, fecha_compra_encomienda, precio_pasaje, precio_encomienda)
-		VALUES(@Pasaje_FechaCompra, @Paquete_FechaCompra, @Pasaje_Precio, @Paquete_Precio)
-
-		SET @ID_Compra = SCOPE_IDENTITY()
-
-		IF(@Pasaje_Codigo != 0)
-			BEGIN
-				INSERT INTO DBAS.pasajesEncomiendas(codigo_PE, encomienda_cliente_KG, id_butaca, id_viaje, id_cliente, id_compra)
-				VALUES(@Pasaje_Codigo, @Paquete_KG, @id_but, @id_viaje, @id_cli, @ID_Compra)
-			END
-		ELSE
-			BEGIN
-				INSERT INTO DBAS.pasajesEncomiendas(codigo_PE, encomienda_cliente_KG, id_butaca, id_viaje, id_cliente, id_compra)
-				VALUES(@Paquete_Codigo, @Paquete_KG, @id_but, @id_viaje, @id_cli, @ID_Compra)
-			END
-
-		-- Inserto lo que obtiene el cursor en las variables
-		FETCH NEXT FROM migracionPasajesYCompraCursor
-		INTO @Cli_Dni, @Cli_Apellido, @Cli_Nombre, @Pasaje_Codigo, @Pasaje_Precio, @Pasaje_FechaCompra, @Paquete_Codigo, @Paquete_Precio, @Paquete_FechaCompra, @Paquete_KG, @Butaca_Nro, @Butaca_Piso, @FechaSalida, @FechaLLegada, @Ruta_Ciudad_Origen, @Ruta_Ciudad_Destino, @Aeronave_Matricula
-	END
-
-	CLOSE migracionPasajesYCompraCursor
-	DEALLOCATE migracionPasajesYCompraCursor
-
-	--Activo elidentity paraque se genere automaticamente
-	SET IDENTITY_INSERT DBAS.pasajesEncomiendas OFF
-
-END;
-GO
-
-
-EXECUTE DBAS.migracionPasajesYCompra
-
-/*
-SELECT * 
-FROM ((SELECT Cli_Dni, Cli_Apellido, Cli_Nombre, Pasaje_Codigo, Pasaje_Precio, Pasaje_FechaCompra, Paquete_Codigo, Paquete_Precio, Paquete_FechaCompra, Paquete_KG, Butaca_Nro, Butaca_Piso, FechaSalida, FechaLLegada, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino, Aeronave_Matricula FROM gd_esquema.Maestra) tablaMaestra
-	JOIN DBAS.personas tablaPersonas ON (tablaPersonas.dni_persona = tablaMaestra.Cli_Dni AND tablaPersonas.nombre_persona = tablaMaestra.Cli_Nombre AND tablaPersonas.apellido_persona = tablaMaestra.Cli_Apellido)
-	JOIN DBAS.clientes tablaCliente ON (tablaPersonas.id_persona = tablaCliente.id_persona)
-	JOIN DBAS.butacas tablaButacas ON (tablaMaestra.Aeronave_Matricula = tablaButacas.matricula_aeronave AND tablaMaestra.Butaca_Nro = tablaButacas.numero_butaca AND tablaMaestra.Butaca_Piso = tablaButacas.piso_butaca)
-	JOIN DBAS.
-
-*/
-
 
 /* Roles y funcionalidades */
 

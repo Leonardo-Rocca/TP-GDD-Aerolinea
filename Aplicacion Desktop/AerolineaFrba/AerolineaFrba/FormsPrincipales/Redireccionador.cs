@@ -31,7 +31,7 @@ namespace AerolineaFrba.FormsPrincipales
 
         private void btSeleccion_Click(object sender, EventArgs e)
         {
-            
+           (new Form1()).Show();
 
         }
     }

@@ -22,7 +22,7 @@ namespace AerolineaFrba.Dominio
             //OBTENER FUNCDISP SEGUN EL ROL
 
             Form1 prueba= new Form1();
-            funcionalidadesDisponibles.Add(new Funcionalidades(99,"prueba",prueba ));
+            funcionalidadesDisponibles.Add(new Funcionalidades(99,"Administrar Rol",prueba )); 
         }
 
         public List<Funcionalidades> getFuncionalidadesDisponibles{

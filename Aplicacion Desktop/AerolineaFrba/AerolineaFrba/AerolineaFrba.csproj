@@ -50,6 +50,12 @@
     <Compile Include="Abm Aeronave\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Abm Aeronave\ListadoAeronave.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Abm Aeronave\ListadoAeronave.Designer.cs">
+      <DependentUpon>ListadoAeronave.cs</DependentUpon>
+    </Compile>
     <Compile Include="Abm Ciudad\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -182,6 +188,9 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\ConexionSQL.cs" />
+    <EmbeddedResource Include="Abm Aeronave\ListadoAeronave.resx">
+      <DependentUpon>ListadoAeronave.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Abm Rol\CrearRolForm.resx">
       <DependentUpon>CrearRolForm.cs</DependentUpon>
     </EmbeddedResource>

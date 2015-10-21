@@ -18,7 +18,17 @@ namespace AerolineaFrba.Abm_Rol
         public ListadoRol()
         {
             InitializeComponent();
+            iniciar();
+        }
+
+        private void iniciar()
+        {
+            textBoxFiltro1.Text = "";
+            textBoxFiltro2.Text = "";
             radioButHabilitado.Checked = true;
+            dataGridView2.DataSource = null;
+            radioButInhabilitado.Checked = false;
+            checkBox1.Checked = false;
         }
 
         private void ListadoRol_Load(object sender, EventArgs e)
@@ -34,12 +44,9 @@ namespace AerolineaFrba.Abm_Rol
 
         private Boolean hayAlgunFiltro()
         {
-            return (hayAlgunFiltroGeneral() || hayAlgunFiltroParticular());
+            return (radioButHabilitado.Checked || radioButInhabilitado.Checked || textBoxFiltro1.TextLength != 0 || textBoxFiltro2.TextLength != 0);
         }
-        private Boolean hayAlgunFiltroParticular()
-        {
-            return (radioButHabilitado.Checked || radioButInhabilitado.Checked);
-        }
+    
 
         private void optEstadoAlta_CheckedChanged(object sender, EventArgs e)
         {
@@ -56,6 +63,11 @@ namespace AerolineaFrba.Abm_Rol
                 radioButHabilitado.Checked = false;
                 radioButInhabilitado.Checked = false;
             }
+
+            if (!checkBox1.Checked && !radioButHabilitado.Checked && !radioButInhabilitado.Checked)
+            {
+                checkBox1.Checked = true;
+            }
         }
 
         private void radioButInhabilitado_CheckedChanged(object sender, EventArgs e)
@@ -66,17 +78,11 @@ namespace AerolineaFrba.Abm_Rol
             }
         }
 
-        public void limpiarObjetosPropios()
-        {
-            checkBox1.Checked = false;
-            radioButHabilitado.Checked = true;
-            radioButInhabilitado.Checked = false;
-        }
+  
 
         private void button2_Click(object sender, EventArgs e)
         {
-            limpiarObjetosPropios();
-            limpiarObjetosGenerales();
+            iniciar();
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -87,49 +93,46 @@ namespace AerolineaFrba.Abm_Rol
                 return;
             }
 
-            string argregadoAlQuery = "";
+
+            query = query + " WHERE ";
+            if (textBoxFiltro1.TextLength != 0)
+            {
+                string agregado = "nombre_rol" + " LIKE '%" + textBoxFiltro1.Text + "%'";
+                armarQueryCompleja(ref query, agregado, yaTieneCondicion);
+                yaTieneCondicion = true;
+            }
+
+            if (textBoxFiltro2.TextLength != 0)
+            {
+                string agregado = "nombre_rol LIKE '_" + textBoxFiltro2.Text + "'";
+                armarQueryCompleja(ref query, agregado, yaTieneCondicion);
+                yaTieneCondicion = true;
+            }
+
             if (!checkBox1.Checked)
             {
-                yaTieneCondicion = true;
+                string agregado;
                 if (radioButHabilitado.Checked)
                 {
-                    argregadoAlQuery = "habilitado_rol = 1";
+                    agregado = "habilitado_rol = 1";
                 }
                 else
                 {
-                    argregadoAlQuery = "habilitado_rol = 0";
+                    agregado = "habilitado_rol = 0";
                 }
+
+                armarQueryCompleja(ref query, agregado, yaTieneCondicion);
+                yaTieneCondicion = true;
             }
-            armarQueryCompleja(query, argregadoAlQuery,yaTieneCondicion);
+
+            iniciar();
+            hacerQuery(query,dataGridView2);
 
         }
 
-        private void armarQueryCompleja(string query, string agregadoAlQuery, bool yaTieneCondicion)
+        private void groupBox3_Enter_1(object sender, EventArgs e)
         {
-            query = query + " WHERE ";
-            if (filtro1.TextLength != 0)
-            {
-                string agregado = "nombre_rol" + " LIKE '%" + filtro1.Text + "%'";
-                armarQueryCompleja(ref query, agregado, yaTieneCondicion);
-                yaTieneCondicion = true;
-            }
 
-            if (filtro2.TextLength != 0)
-            {
-                string agregado = "nombre_rol LIKE '_" + filtro2.Text + "'";
-                armarQueryCompleja(ref query, agregado, yaTieneCondicion);
-                yaTieneCondicion = true;
-
-            }
-
-            if (agregadoAlQuery.Length != 0) 
-            {
-                armarQueryCompleja(ref query, agregadoAlQuery, yaTieneCondicion);
-            }
-
-            limpiarObjetosGenerales();
-            limpiarObjetosPropios();
-            hacerQuery(query);
         }
 
 

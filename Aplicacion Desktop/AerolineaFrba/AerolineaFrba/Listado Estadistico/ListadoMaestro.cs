@@ -13,14 +13,11 @@ namespace AerolineaFrba.Listado_Estadistico
     public partial class ListadoMaestro : Form
     {
 
-        public TextBox filtro1;
-        public TextBox filtro2;
+     
 
         public ListadoMaestro()
         {
-            InitializeComponent();
-            filtro1 = textBoxFiltro1;
-            filtro2 = textBoxFiltro2;
+       
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)
@@ -38,15 +35,6 @@ namespace AerolineaFrba.Listado_Estadistico
             
         }
 
-       
-
-        public void limpiarObjetosGenerales()
-        {
-            textBoxFiltro1.Text = "";
-            textBoxFiltro2.Text = "";
-            dataGridView1.DataSource = null;
-        }
-
         private void dg_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
@@ -62,11 +50,6 @@ namespace AerolineaFrba.Listado_Estadistico
 
         }
 
-        public Boolean hayAlgunFiltroGeneral()
-        {
-            return (textBoxFiltro1.TextLength != 0 || textBoxFiltro2.TextLength != 0);
-        }
-
         public void armarQueryCompleja(ref string queryBase, string agregado, bool yaTieneCondicion)
         {
             if (yaTieneCondicion)
@@ -77,19 +60,24 @@ namespace AerolineaFrba.Listado_Estadistico
             }
         }
 
-        public void hacerQuery(string query) 
+        public void hacerQuery(string query, DataGridView dataGrid) 
         {
             ConexionSQL conn = new ConexionSQL();
             DataTable dt = conn.cargarTablaSQL(query);
-            dataGridView1.DataSource = dt;
-            dataGridView1.AutoResizeColumns();
-            dataGridView1.AutoResizeRows();
+            dataGrid.DataSource = dt;
+            dataGrid.AutoResizeColumns();
+            dataGrid.AutoResizeRows();
             if (dt.Rows.Count == 0)
             {
                 MessageBox.Show("No se han encontrado resultados en la consulta", "Fallo la busqueda", MessageBoxButtons.OK);
-                dataGridView1.DataSource = null;
+                dataGrid.DataSource = null;
 
             }
+        }
+
+        private void ListadoMaestro_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

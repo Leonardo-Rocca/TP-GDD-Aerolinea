@@ -30,7 +30,7 @@ namespace AerolineaFrba
         private void button1_Click_1(object sender, EventArgs e)
         {
           
-            Abm_Rol.Form1 asa = new Abm_Rol.Form1();
+            Abm_Rol.ABMRolForm asa = new Abm_Rol.ABMRolForm();
             asa.Show();
 
         }

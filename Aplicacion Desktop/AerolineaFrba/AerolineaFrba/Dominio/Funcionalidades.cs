@@ -20,7 +20,11 @@ namespace AerolineaFrba.Dominio
         }
 
         public string Descripcion { get; set; }
-
+    
+        public Form getFormAsociado() { 
+            return FormAsociado;
+        }
+      
         public override string ToString()
         {
             return Descripcion;

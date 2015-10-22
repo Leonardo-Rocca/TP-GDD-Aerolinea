@@ -1,3 +1,4 @@
+/*
 DROP TABLE DBAS.cancelaciones
 DROP TABLE DBAS.canjes
 DROP TABLE DBAS.pasajesEncomiendas
@@ -23,6 +24,7 @@ DROP TABLE DBAS.personas
 
 USE[GD2C2015];
 GO
+*/
 
 /* -- Nuevo esquema -- */
 
@@ -64,7 +66,6 @@ CREATE TABLE DBAS.aeronaves (
 	fecha_reinsercion datetime,
 	fecha_baja_servicio_definitiva datetime,
 	kg_disponible_encomienda float(24),
-	cantidad_butacas bigint,
 	id_fabricante bigint,
  	id_servicio bigint
 
@@ -98,8 +99,8 @@ CREATE TABLE DBAS.pasajesEncomiendas (
 	fecha_compra_encomienda datetime NOT NULL,
 	precio_encomienda float(24),
 	precio_pasaje float(24),
-	id_compra_PNR bigint
-	
+	id_compra_PNR bigint,
+	id_cancelacion bigint
 );
 GO
 
@@ -137,11 +138,8 @@ GO
 
 CREATE TABLE DBAS.cancelaciones (
 	id_cancelacion bigint IDENTITY(1,1) PRIMARY KEY,
-	codigo_cancelacion bigint,
 	fecha_devolucion datetime,
-	id_compra_PNR bigint,
 	motivo_cancelacion varchar(100),
-	codigo_pasajeEncomienda bigint,
 );
 GO
 
@@ -283,16 +281,12 @@ alter table DBAS.pasajesEncomiendas add constraint fk_pasaje_viaje
 	foreign key (id_viaje) references DBAS.viajes (id_viaje);
 GO
 
+alter table DBAS.pasajesEncomiendas add constraint fk_pasaje_cancelacion
+	foreign key (id_cancelacion) references DBAS.cancelaciones (id_cancelacion);
+GO
+
 alter table DBAS.compras add constraint fk_compra_cliente
 	foreign key (id_cliente ) references DBAS.clientes (id_cliente);
-GO
-
-alter table DBAS.cancelaciones add constraint fk_cancelacion_pasaje
-	foreign key (codigo_pasajeEncomienda) references DBAS.pasajesEncomiendas (codigo_PE);
-GO
-
-alter table DBAS.cancelaciones add constraint fk_cancelacion_compra
-	foreign key (id_compra_PNR) references DBAS.compras (id_compra_PNR);
 GO
 
 alter table DBAS.clientes add constraint fk_cliente_persona
@@ -435,7 +429,7 @@ GO
 --Creo un trigger que sirve para asociar el id de un cliente con el de la persona y lo ordeno por su id para 
 --asegurarme de que tanto el id del cliente como el de la persona sean identicos para asi utilizar 
 --el id de la persona sin buscarlo en la tabla clientes para la migracion
-CREATE TRIGGER DBAS.migrarClientesEnPersona ON DBAS.personas
+CREATE TRIGGER DBAS.migrarClientesEnPersonaTrigger ON DBAS.personas
 AFTER INSERT
 AS
 BEGIN
@@ -496,13 +490,20 @@ GO
 DROP TABLE #temporalRutasOriginales
 GO
 
+DROP TRIGGER DBAS.temporalPasajesDeClientestrigger
+GO
+
+DROP TRIGGER DBAS.migrarDatosATemporalTrigger
+GO
+
+DROP TRIGGER DBAS.migrarClientesEnPersonaTrigger
+GO
+
 /* Roles y funcionalidades */
 
 -- Se agregan las funcionalidades
 INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('ABM de Rol');
-INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('ABM de Usuario');
-INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('ABM de Administrador');
-INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('ABM de Cliente');
+INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('Registro de Usuario');
 INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('ABM de Ciudades');
 INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('ABM de Ruta Aerea');
 INSERT INTO DBAS.funcionalidades (descripcion) VALUES ('ABM de Aeronaves');
@@ -586,3 +587,80 @@ GO
 	ORDER BY kg_libres
 	RETURN
 	*/
+
+CREATE FUNCTION DBAS.obtenerFuncionalidadesAsociadas(@nombreRol varchar(100))
+RETURNS TABLE
+AS
+RETURN
+(
+	SELECT tablaFuncionalidades.descripcion FROM ((SELECT * FROM DBAS.roles WHERE nombre_rol = @nombreRol) unRol 
+		JOIN DBAS.rolesPorFuncionalidad tablaRpF ON (unRol.id_rol = tablaRpF.id_rol)
+		JOIN DBAS.funcionalidades tablaFuncionalidades ON (tablaFuncionalidades.id_funcionalidad = tablaRpF.id_funcionalidad))
+);
+GO
+
+/*
+SELECT * FROM DBAS.obtenerFuncionalidadesAsociadas('Administrador General')
+GO
+*/
+
+CREATE PROCEDURE DBAS.logginUsuario(@usuario varchar(100), @pass varchar(100))
+AS
+BEGIN
+	DECLARE @U_id bigint
+	DECLARE @U_password varchar(100)
+	DECLARE @U_habilitado tinyint
+	DECLARE @U_rol_id bigint
+	DECLARE @cantidad_intentos tinyint
+	DECLARE @mensaje_error varchar(100)
+	DECLARE @nombre_rol varchar(100)
+
+	SELECT @U_id = id_usuario, @U_password = password, @U_habilitado = habilitado, @cantidad_intentos = intentos_fallidos, @U_rol_id = id_rol FROM DBAS.usuarios WHERE username = @usuario
+	IF (@U_id != NULL)
+	BEGIN
+		IF(@U_habilitado != 1)
+		BEGIN
+			SET @mensaje_error = 'El usuario ingresado se encuentra deshabilitado'
+			RAISERROR(@mensaje_error, 12, 1)
+		END
+		ELSE
+		BEGIN
+			IF(@U_password != @pass)
+			BEGIN
+				IF(@cantidad_intentos < 2)
+				BEGIN
+					UPDATE DBAS.usuarios SET intentos_fallidos = @cantidad_intentos + 1  WHERE username = @usuario
+					SET @mensaje_error = 'Password invalida'
+					RAISERROR(@mensaje_error, 12, 1)
+				END
+				ELSE
+				BEGIN
+					UPDATE DBAS.usuarios SET intentos_fallidos = @cantidad_intentos + 1, habilitado = 0   WHERE username = @usuario
+					SET @mensaje_error = 'Password invalida, alcanzo la cantidad de intentos maximos. Se desactivara la cuenta por seguridad'
+					RAISERROR(@mensaje_error, 12, 1)
+				END
+			END
+			ELSE
+			BEGIN
+				UPDATE DBAS.usuarios SET intentos_fallidos = 0  WHERE username = @usuario
+
+				SELECT @nombre_rol = nombre_rol FROM DBAS.roles WHERE id_rol = @U_rol_id
+				SELECT * FROM DBAS.obtenerFuncionalidadesAsociadas(@nombre_rol)
+			END
+		END
+	END
+	ELSE
+	BEGIN
+		SET @mensaje_error = 'El usuario ingresado no existe'
+		RAISERROR(@mensaje_error, 12, 1)
+	END
+END;
+GO
+
+/*
+CREATE PROCEDURE DBAS.altaRol(@nombre_rol varchar(100), @nombre_funcionalidades varchar(100))
+AS
+BEGIN
+	DECLARE @mensaje_error varchar(100)
+
+*/

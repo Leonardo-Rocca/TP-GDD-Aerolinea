@@ -35,6 +35,7 @@ namespace AerolineaFrba.Abm_Ciudad
         {
             this.Hide();
             txtNombreCity.Text = "";
+            return;
         }
     }
 }

@@ -104,7 +104,7 @@ namespace AerolineaFrba.Abm_Rol
 
             if (textBoxFiltro2.TextLength != 0)
             {
-                string agregado = "nombre_rol LIKE '_" + textBoxFiltro2.Text + "'";
+                string agregado = "nombre_rol LIKE '" + textBoxFiltro2.Text + "'";
                 armarQueryCompleja(ref query, agregado, yaTieneCondicion);
                 yaTieneCondicion = true;
             }

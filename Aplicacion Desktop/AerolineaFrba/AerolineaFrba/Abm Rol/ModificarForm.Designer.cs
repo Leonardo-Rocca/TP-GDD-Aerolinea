@@ -33,6 +33,7 @@
             this.comboBoxRol = new System.Windows.Forms.ComboBox();
             this.buttonGuardar = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.btFiltro = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -86,11 +87,23 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // btFiltro
+            // 
+            this.btFiltro.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btFiltro.Location = new System.Drawing.Point(513, 93);
+            this.btFiltro.Name = "btFiltro";
+            this.btFiltro.Size = new System.Drawing.Size(122, 52);
+            this.btFiltro.TabIndex = 10;
+            this.btFiltro.Text = "Buscar por filtro";
+            this.btFiltro.UseVisualStyleBackColor = true;
+            this.btFiltro.Click += new System.EventHandler(this.btFiltro_Click);
+            // 
             // ModificarForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(664, 348);
+            this.Controls.Add(this.btFiltro);
             this.Controls.Add(this.buttonGuardar);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.comboBoxRol);
@@ -110,5 +123,6 @@
         private System.Windows.Forms.ComboBox comboBoxRol;
         private System.Windows.Forms.Button buttonGuardar;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btFiltro;
     }
 }

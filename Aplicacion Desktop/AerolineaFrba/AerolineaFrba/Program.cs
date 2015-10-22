@@ -18,7 +18,8 @@ namespace AerolineaFrba
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
           //  Application.Run(new Form1());
-            Application.Run(new Abm_Aeronave.ListadoAeronave());
+
+            Application.Run(new PantallaBienvenidaForm());
         }
     }
 }

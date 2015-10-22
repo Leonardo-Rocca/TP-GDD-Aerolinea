@@ -65,6 +65,12 @@ namespace AerolineaFrba.Listado_Estadistico
             ConexionSQL conn = new ConexionSQL();
             DataTable dt = conn.cargarTablaSQL(query);
             dataGrid.DataSource = dt;
+            DataGridViewButtonColumn boton = new DataGridViewButtonColumn();
+            boton.Name = "Seleccionar";
+            boton.HeaderText = "Seleccionar";
+            boton.Text = "Seleccionar";
+            boton.UseColumnTextForButtonValue = true;
+            dataGrid.Columns.Insert(dataGrid.Columns.Count, boton);
             dataGrid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
             dataGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             if (dt.Rows.Count == 0)
@@ -87,5 +93,13 @@ namespace AerolineaFrba.Listado_Estadistico
             this.formularioAnterior = formulario;
         }
 
+        public void obtenerRespuesta(DataGridView dataGrid)
+        {
+            string contenido = dataGrid[dataGrid.CurrentCell.ColumnIndex-1, dataGrid.CurrentCell.RowIndex].Value.ToString();
+            MessageBox.Show(contenido, "Fallo la busqueda", MessageBoxButtons.OK);
+
+            
+           //formularioAnterior.obtenerResultado(contenido);
+        }
     }
 }

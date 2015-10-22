@@ -49,6 +49,7 @@
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.Size = new System.Drawing.Size(227, 256);
             this.dataGridView2.TabIndex = 34;
+            this.dataGridView2.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView2_CellContentClick);
             // 
             // button3
             // 
@@ -123,6 +124,7 @@
             this.butAceptar.TabIndex = 36;
             this.butAceptar.Text = "Aceptar";
             this.butAceptar.UseVisualStyleBackColor = true;
+            this.butAceptar.Click += new System.EventHandler(this.butAceptar_Click);
             // 
             // butCancelar
             // 

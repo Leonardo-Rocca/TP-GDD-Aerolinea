@@ -68,6 +68,19 @@ private void iniciar()
           dataGridView2.DataSource = null;
 }
 
+private void butAceptar_Click(object sender, EventArgs e)
+{
+    obtenerRespuesta(dataGridView2);
+}
+
+private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
+{
+  
+    {
+        if (dataGridView2.CurrentCell.ColumnIndex == dataGridView2.Columns.Count - 1) { obtenerRespuesta(dataGridView2); }
+    }
+    }
+
     }
 
 }

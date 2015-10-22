@@ -139,6 +139,11 @@ namespace AerolineaFrba.Abm_Rol
 
         }
 
+        private void button4_Click(object sender, EventArgs e)
+        {
+            obtenerRespuesta(dataGridView2);
+        }
+
 
     }
 }

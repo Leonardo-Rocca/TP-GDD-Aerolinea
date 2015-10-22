@@ -282,5 +282,10 @@ namespace AerolineaFrba.Abm_Aeronave
             return (txtMatricula.TextLength != 0 || txtModelo.TextLength != 0 || comboBoxServicio.SelectedIndex != -1 || textFabricante.TextLength != 0 || textButacas.TextLength != 0 || checkPasaje.Checked || checkInhabilitado.Checked || checkHabilitado.Checked || checkEncomienda.Checked);
         }
 
+        private void butAceptar_Click(object sender, EventArgs e)
+        {
+            obtenerRespuesta(dataGridView1);
+        }
+
     }
 }

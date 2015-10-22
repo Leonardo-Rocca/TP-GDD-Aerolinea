@@ -12,6 +12,11 @@ namespace AerolineaFrba.Abm_Rol
 {
     public partial class ABMRolForm : Form
     {
+        Form crear;
+        Form modificar;
+        Form eliminar;
+        string titulo;
+
         public ABMRolForm()
         {
             InitializeComponent();

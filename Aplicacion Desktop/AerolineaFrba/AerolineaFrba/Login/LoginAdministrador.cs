@@ -43,7 +43,7 @@ namespace AerolineaFrba.Login
             }
             else{
                 Sesion s = new Sesion();
-                s.iniciar(username, getSha256(password));
+                s.iniciar(username, getSha256(password),"Administrador");
                 Redireccionador redirec = new Redireccionador();
                 redirec.setFunciones(s.getFuncionalidadesDisponibles);
                 redirec.Show();

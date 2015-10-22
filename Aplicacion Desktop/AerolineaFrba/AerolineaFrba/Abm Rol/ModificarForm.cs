@@ -61,9 +61,7 @@ namespace AerolineaFrba.Abm_Rol
 
         private void button2_Click(object sender, EventArgs e)
         {
-         //   Form1 abm = new Form1();
-         //   abm.Show();
-            this.Close();
+            this.Hide();
         }
 
         private void btFiltro_Click(object sender, EventArgs e)

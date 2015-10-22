@@ -59,8 +59,8 @@ namespace AerolineaFrba.Abm_Rol
 
         private void button2_Click(object sender, EventArgs e)
         {
-            //cancelar
-            this.Close();
+            //cancelar   this.Close();
+            this.Hide();
         }
     }
 }

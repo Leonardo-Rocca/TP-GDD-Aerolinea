@@ -36,7 +36,7 @@ namespace AerolineaFrba
             else
             {
                 Sesion s = new Sesion();
-                s.iniciar("","");
+                s.iniciar("","",cmbRoles.Text);
                 Redireccionador redirec = new Redireccionador();
                 redirec.setFunciones(s.getFuncionalidadesDisponibles);
                 //  (new  Abm_Rol.Form1()).Show();

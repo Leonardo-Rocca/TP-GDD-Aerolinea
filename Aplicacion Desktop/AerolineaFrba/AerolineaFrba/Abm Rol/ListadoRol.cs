@@ -12,8 +12,8 @@ namespace AerolineaFrba.Abm_Rol
 {
     public partial class ListadoRol : Listado_Estadistico.ListadoMaestro
     {
-        private string query = "select distinct nombre_rol FROM DBAS.roles";
-        private Boolean yaTieneCondicion = false;
+        
+      
 
         public ListadoRol()
         {
@@ -92,8 +92,8 @@ namespace AerolineaFrba.Abm_Rol
             {
                 return;
             }
-
-
+            Boolean yaTieneCondicion = false;
+            string query = "select distinct nombre_rol FROM DBAS.roles";
             query = query + " WHERE ";
             if (textBoxFiltro1.TextLength != 0)
             {
@@ -125,7 +125,6 @@ namespace AerolineaFrba.Abm_Rol
                 yaTieneCondicion = true;
             }
 
-            iniciar();
             hacerQuery(query,dataGridView2);
 
         }

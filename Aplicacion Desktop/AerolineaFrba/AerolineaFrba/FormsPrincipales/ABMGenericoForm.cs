@@ -27,7 +27,7 @@ namespace AerolineaFrba.FormsPrincipales
 
         private void btCrear_Click(object sender, EventArgs e)
         {
-            crear.Show();
+           crear.Show();
         }
 
         private void btModificar_Click(object sender, EventArgs e)

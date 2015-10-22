@@ -30,6 +30,9 @@
         {
             this.lblErrores = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.textBoxDesdekg = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.button5 = new System.Windows.Forms.Button();
             this.textFechaHasta = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
@@ -52,13 +55,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
-            this.textServicio = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.label9 = new System.Windows.Forms.Label();
-            this.textBoxDesdekg = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
+            this.comboBoxServicio = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -73,6 +72,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.comboBoxServicio);
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.textBoxDesdekg);
             this.groupBox1.Controls.Add(this.label9);
@@ -102,8 +102,35 @@
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Filtros de Busqueda";
-            this.groupBox1.Visible = false;
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(317, 208);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(35, 13);
+            this.label10.TabIndex = 51;
+            this.label10.Text = "Hasta";
+            this.label10.Visible = false;
+            // 
+            // textBoxDesdekg
+            // 
+            this.textBoxDesdekg.Location = new System.Drawing.Point(222, 205);
+            this.textBoxDesdekg.Name = "textBoxDesdekg";
+            this.textBoxDesdekg.Size = new System.Drawing.Size(81, 20);
+            this.textBoxDesdekg.TabIndex = 50;
+            this.textBoxDesdekg.Visible = false;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(178, 209);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(38, 13);
+            this.label9.TabIndex = 49;
+            this.label9.Text = "Desde";
+            this.label9.Visible = false;
             // 
             // button5
             // 
@@ -304,22 +331,6 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(540, 37);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(108, 21);
-            this.button1.TabIndex = 40;
-            this.button1.Text = "Seleccionar";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // textServicio
-            // 
-            this.textServicio.Location = new System.Drawing.Point(422, 38);
-            this.textServicio.Name = "textServicio";
-            this.textServicio.Size = new System.Drawing.Size(112, 20);
-            this.textServicio.TabIndex = 42;
-            // 
             // label7
             // 
             this.label7.AutoSize = true;
@@ -344,33 +355,13 @@
             this.dataGridView1.Size = new System.Drawing.Size(636, 215);
             this.dataGridView1.TabIndex = 43;
             // 
-            // label9
+            // comboBoxServicio
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(178, 209);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(38, 13);
-            this.label9.TabIndex = 49;
-            this.label9.Text = "Desde";
-            this.label9.Visible = false;
-            // 
-            // textBoxDesdekg
-            // 
-            this.textBoxDesdekg.Location = new System.Drawing.Point(222, 205);
-            this.textBoxDesdekg.Name = "textBoxDesdekg";
-            this.textBoxDesdekg.Size = new System.Drawing.Size(81, 20);
-            this.textBoxDesdekg.TabIndex = 50;
-            this.textBoxDesdekg.Visible = false;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(317, 208);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(35, 13);
-            this.label10.TabIndex = 51;
-            this.label10.Text = "Hasta";
-            this.label10.Visible = false;
+            this.comboBoxServicio.FormattingEnabled = true;
+            this.comboBoxServicio.Location = new System.Drawing.Point(408, 30);
+            this.comboBoxServicio.Name = "comboBoxServicio";
+            this.comboBoxServicio.Size = new System.Drawing.Size(239, 21);
+            this.comboBoxServicio.TabIndex = 52;
             // 
             // ListadoAeronave
             // 
@@ -378,8 +369,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(690, 454);
             this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textServicio);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
@@ -422,12 +411,11 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckBox checkEncomienda;
         private System.Windows.Forms.CheckBox checkPasaje;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textServicio;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox textBoxDesdekg;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ComboBox comboBoxServicio;
     }
 }

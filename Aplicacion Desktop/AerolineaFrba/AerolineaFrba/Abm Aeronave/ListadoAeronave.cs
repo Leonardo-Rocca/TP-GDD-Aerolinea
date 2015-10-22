@@ -13,12 +13,12 @@ namespace AerolineaFrba.Abm_Aeronave
     public partial class ListadoAeronave : Listado_Estadistico.ListadoMaestro
     {
 
-        private string query = "select distinct matricula_aeronave,numero_aeronave,modelo_aeronave FROM DBAS.aeronaves";
-        private Boolean yaTieneCondicion = false;
-
         public ListadoAeronave()
         {
             InitializeComponent();
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct tipo_servicio FROM  DBAS.servicios");
+            comboBoxServicio.DataSource = dt.DefaultView; 
+            comboBoxServicio.ValueMember = "tipo_servicio"; 
             iniciar();
         }
 
@@ -29,7 +29,7 @@ namespace AerolineaFrba.Abm_Aeronave
             textButacas.Text = ""; 
             textFabricante.Text = "";
             textFechaDesde.Text = "";
-            textServicio.Text = "";
+            comboBoxServicio.Text = "";
             textBoxDesdekg.Text = "";
             textBoxHastakg.Text = "";
             textBoxHastakg.Visible = false;
@@ -38,11 +38,10 @@ namespace AerolineaFrba.Abm_Aeronave
             checkHabilitado.Checked = false;
             checkInhabilitado.Checked = false;
             checkPasaje.Checked = false;
-            textServicio.ReadOnly = true;
             label4.Visible = false;
             label9.Visible = false;
             label10.Visible = false;
-         
+            comboBoxServicio.SelectedIndex = -1;      
         }
 
         private void ListadoAeronave_Load(object sender, EventArgs e)
@@ -153,40 +152,47 @@ namespace AerolineaFrba.Abm_Aeronave
                 return;
             }
 
+            string query = "select distinct matricula_aeronave,numero_aeronave,modelo_aeronave FROM DBAS.aeronaves a, DBAS.pasajesEncomiendas p";
+            Boolean yaTieneCondicion = false;
             query = query + " WHERE ";
             if (txtMatricula.TextLength != 0)
             {
-                string agregado = "matricula_aeronave LIKE '_" + txtMatricula.Text + "'";
+                string agregado = "a.matricula_aeronave LIKE '_" + txtMatricula.Text + "'";
                 armarQueryCompleja(ref query, agregado, yaTieneCondicion);
                 yaTieneCondicion = true;
             }
 
             if (txtModelo.TextLength != 0)
             {
-                string agregado = "modelo_aeronave LIKE '_" + txtModelo.Text + "'";
+                string agregado = "a.modelo_aeronave LIKE '_" + txtModelo.Text + "'";
                 armarQueryCompleja(ref query, agregado, yaTieneCondicion);
                 yaTieneCondicion = true;
             }
 
-            //EL DE FABRICANTE
+            if (textFabricante.TextLength != 0)
+            {
+                string agregado = "a.id_Fabricante = (select id_fabricante from DBAS.fabricantes WHERE nombre_fabricante LIKE '" + textFabricante.Text + "')";
+                armarQueryCompleja(ref query, agregado, yaTieneCondicion);
+                yaTieneCondicion = true;
+            }
 
             if (textButacas.TextLength != 0)
             {
-                string agregado = "cantidad_butacas < " + textButacas.Text;
+                string agregado = "a.cantidad_butacas < " + textButacas.Text;
                 armarQueryCompleja(ref query, agregado, yaTieneCondicion);
                 yaTieneCondicion = true;
             }
 
             if (checkPasaje.Checked)
             {
-                string agregado = "kg_disponible_encimienda = 0.0";
+                string agregado = "p.encomienda_cliente_KG = 0";
                 armarQueryCompleja(ref query, agregado, yaTieneCondicion);
                 yaTieneCondicion = true;
             }
 
             if (checkEncomienda.Checked)
             {
-                string agregado = "kg_disponible_encimienda BETWEEN " + textBoxDesdekg.Text + "AND " + textBoxHastakg;
+                string agregado = "kg_disponible_encomienda BETWEEN " + textBoxDesdekg.Text + "AND " + textBoxHastakg.Text;
                 armarQueryCompleja(ref query, agregado, yaTieneCondicion);
                 yaTieneCondicion = true;
             }
@@ -197,10 +203,23 @@ namespace AerolineaFrba.Abm_Aeronave
                 armarQueryCompleja(ref query, agregado, yaTieneCondicion);
                 yaTieneCondicion = true;
             }
-            //DESHABILITADAS
+
+            if (checkInhabilitado.Checked)
+            {
+                string agregado = "baja_fuera_de_servicio = 1 OR baja_vida_util = 1";
+                armarQueryCompleja(ref query, agregado, yaTieneCondicion);
+                yaTieneCondicion = true;
+            }
+
+            if (comboBoxServicio.SelectedIndex != -1)
+            {
+                string agregado = "a.id_servicio = (select id_servicio from DBAS.servicios WHERE tipo_servicio LIKE '" + comboBoxServicio.Text + "')";
+                armarQueryCompleja(ref query, agregado, yaTieneCondicion);
+                yaTieneCondicion = true;
+            }
+
             //POR FECHAS
 
-            iniciar();
             hacerQuery(query, dataGridView1);
         }
 
@@ -233,23 +252,26 @@ namespace AerolineaFrba.Abm_Aeronave
                 }
             }
 
-            if (hayFiltros())
+            if (!hayFiltros())
             {
                 return false;
             }
 
-            int a = Convert.ToInt32(textBoxDesdekg.Text);
-            int b = Convert.ToInt32(textBoxHastakg.Text);
-            if (a<0 || b<0)
+            if (checkEncomienda.Checked)
             {
-                MessageBox.Show("Los kilogramos especificados no son validos", "Fallo la busqueda", MessageBoxButtons.OK);
-                return false;
-            }
-            
-            if (a > b)
-            {
-                MessageBox.Show("El rango de kilogramos esta mal especificado", "Fallo la busqueda", MessageBoxButtons.OK);
-                return false;
+                int a = Convert.ToInt32(textBoxDesdekg.Text);
+                int b = Convert.ToInt32(textBoxHastakg.Text);
+                if (a < 0 || b < 0)
+                {
+                    MessageBox.Show("Los kilogramos especificados no son validos", "Fallo la busqueda", MessageBoxButtons.OK);
+                    return false;
+                }
+
+                if (a > b)
+                {
+                    MessageBox.Show("El rango de kilogramos esta mal especificado", "Fallo la busqueda", MessageBoxButtons.OK);
+                    return false;
+                }
             }
 
             return true;
@@ -257,7 +279,7 @@ namespace AerolineaFrba.Abm_Aeronave
 
         private bool hayFiltros()
         {
-            return (txtMatricula.TextLength != 0 || txtModelo.TextLength != 0 || textServicio.TextLength != 0 || textFabricante.TextLength != 0 || textButacas.TextLength != 0 || checkPasaje.Checked || checkInhabilitado.Checked || checkHabilitado.Checked);
+            return (txtMatricula.TextLength != 0 || txtModelo.TextLength != 0 || comboBoxServicio.SelectedIndex != -1 || textFabricante.TextLength != 0 || textButacas.TextLength != 0 || checkPasaje.Checked || checkInhabilitado.Checked || checkHabilitado.Checked || checkEncomienda.Checked);
         }
 
     }

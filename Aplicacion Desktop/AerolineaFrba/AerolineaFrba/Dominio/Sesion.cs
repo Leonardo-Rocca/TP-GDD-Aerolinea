@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 using AerolineaFrba.FormsPrincipales;
 using AerolineaFrba.Abm_Rol;
+using AerolineaFrba.Abm_Ciudad;
+
 namespace AerolineaFrba.Dominio
 {
     public  class Sesion
@@ -29,11 +31,13 @@ namespace AerolineaFrba.Dominio
             }
             //OBTENER FUNCDISP SEGUN EL ROL
 
+            //--Creo y Agrego ABM ROL
              funcionalidadesDisponibles.Add(new Funcionalidades(99, "ABM ROL",
                  new ABMGenericoForm("ABM Rol", new CrearRolForm(), new ModificarForm("Modificar Rol", "Modificar", 1), new ModificarForm("Eliminar Rol", "Eliminar", 2))));
-           
-            Form1 prueba2= new Form1();
-            funcionalidadesDisponibles.Add(new Funcionalidades(99, "ABM Aeronaves", prueba2)); 
+
+             funcionalidadesDisponibles.Add(new Funcionalidades(99, "ABM Aeoronaves",
+                  new ABMGenericoForm("ABM Aeoronaves", new crearCiudadForm(), null, null)));
+        
         }
 
         public List<Funcionalidades> getFuncionalidadesDisponibles{

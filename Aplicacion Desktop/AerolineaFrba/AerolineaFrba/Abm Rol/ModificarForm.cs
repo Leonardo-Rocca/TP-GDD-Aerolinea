@@ -56,7 +56,7 @@ namespace AerolineaFrba.Abm_Rol
             else{
                 MessageBox.Show("Rol eliminado",this.Text, MessageBoxButtons.OK,MessageBoxIcon.Warning);
             }
-            this.Close();  
+            this.Hide(); //this.Close();  
          }
 
         private void button2_Click(object sender, EventArgs e)

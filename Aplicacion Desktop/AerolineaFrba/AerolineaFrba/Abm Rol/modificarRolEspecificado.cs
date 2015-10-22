@@ -48,7 +48,8 @@ namespace AerolineaFrba.Abm_Rol
                 }
             }
             MessageBox.Show("Rol Modificado", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-            this.Close();
+            //this.Close();
+            this.Hide();
             return;
         }
 

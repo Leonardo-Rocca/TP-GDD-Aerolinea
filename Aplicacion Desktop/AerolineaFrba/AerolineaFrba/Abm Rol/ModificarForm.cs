@@ -65,5 +65,11 @@ namespace AerolineaFrba.Abm_Rol
          //   abm.Show();
             this.Close();
         }
+
+        private void btFiltro_Click(object sender, EventArgs e)
+        {
+            ListadoRol listado = new ListadoRol();
+            listado.Show();
+        }
     }
 }

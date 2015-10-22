@@ -12,6 +12,8 @@ namespace AerolineaFrba.Abm_Rol
 {
     public partial class CrearRolForm : Form
     {
+        string nombreRol;
+
         public CrearRolForm()
         {  
             InitializeComponent();
@@ -72,7 +74,7 @@ namespace AerolineaFrba.Abm_Rol
 
         private void txtNombreRol_TextChanged(object sender, EventArgs e)
         {
-
+           nombreRol = txtNombreRol.Text.ToString();
         }
 
         private void label3_Click(object sender, EventArgs e)

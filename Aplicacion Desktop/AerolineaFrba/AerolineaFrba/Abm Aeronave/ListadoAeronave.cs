@@ -197,7 +197,6 @@ namespace AerolineaFrba.Abm_Aeronave
                 armarQueryCompleja(ref query, agregado, yaTieneCondicion);
                 yaTieneCondicion = true;
             }
-
             //DESHABILITADAS
             //POR FECHAS
 

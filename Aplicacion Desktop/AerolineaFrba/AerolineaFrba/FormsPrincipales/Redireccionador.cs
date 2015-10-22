@@ -31,8 +31,15 @@ namespace AerolineaFrba.FormsPrincipales
 
         private void btSeleccion_Click(object sender, EventArgs e)
         {
-            
+            Funcionalidades funcion = (Funcionalidades)cmbFuncionalidades.SelectedItem;
+            (funcion.getFormAsociado()).Show();
+        }
 
+        private void botonVolver_Click(object sender, EventArgs e)
+        {
+            PantallaBienvenidaForm p = new PantallaBienvenidaForm();
+            p.Show();
+            this.Hide();
         }
     }
 }

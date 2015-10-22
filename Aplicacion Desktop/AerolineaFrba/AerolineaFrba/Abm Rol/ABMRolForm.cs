@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace AerolineaFrba.Abm_Rol
 {
-    public partial class Form1 : Form
+    public partial class ABMRolForm : Form
     {
-        public Form1()
+        public ABMRolForm()
         {
             InitializeComponent();
         }
@@ -39,6 +39,11 @@ namespace AerolineaFrba.Abm_Rol
         {
             ModificarForm modify = new ModificarForm("Eliminar Rol", "Eliminar",2);
             modify.Show();
+        }
+
+        private void botonVolver_Click(object sender, EventArgs e)
+        {
+            this.Hide();
         }
     }
 }

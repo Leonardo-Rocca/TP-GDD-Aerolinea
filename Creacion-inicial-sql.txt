@@ -137,13 +137,11 @@ GO
 
 CREATE TABLE DBAS.cancelaciones (
 	id_cancelacion bigint IDENTITY(1,1) PRIMARY KEY,
-	codigo_cancelacion bigint UNIQUE,
+	codigo_cancelacion bigint,
 	fecha_devolucion datetime,
-	PNR bigint UNIQUE,
+	id_compra_PNR bigint,
 	motivo_cancelacion varchar(100),
-	codigo_pasaje bigint,
-	codigo_encomienda bigint
-	
+	codigo_pasajeEncomienda bigint,
 );
 GO
 
@@ -290,11 +288,11 @@ alter table DBAS.compras add constraint fk_compra_cliente
 GO
 
 alter table DBAS.cancelaciones add constraint fk_cancelacion_pasaje
-	foreign key (codigo_pasaje) references DBAS.pasajesEncomiendas (codigo_PE);
+	foreign key (codigo_pasajeEncomienda) references DBAS.pasajesEncomiendas (codigo_PE);
 GO
 
-alter table DBAS.cancelaciones add constraint fk_cancelacion_encomienda
-	foreign key (codigo_encomienda) references DBAS.pasajesEncomiendas (codigo_PE);
+alter table DBAS.cancelaciones add constraint fk_cancelacion_compra
+	foreign key (id_compra_PNR) references DBAS.compras (id_compra_PNR);
 GO
 
 alter table DBAS.clientes add constraint fk_cliente_persona
@@ -489,6 +487,15 @@ GO
 SET IDENTITY_INSERT DBAS.pasajesEncomiendas OFF
 GO
 
+DROP TABLE #temporalPasajesDeClientes
+GO
+
+DROP TABLE #temporalViajesConRutas
+GO
+
+DROP TABLE #temporalRutasOriginales
+GO
+
 /* Roles y funcionalidades */
 
 -- Se agregan las funcionalidades
@@ -536,9 +543,46 @@ SELECT tablaUsuarios.id_usuario, tablaRoles.id_rol FROM DBAS.usuarios tablaUsuar
 WHERE tablaRoles.nombre_rol = 'Administrador General' and tablaUsuarios.username = 'admin'
 GO
 
+CREATE FUNCTION DBAS.Top5DeLosDestinosConMasPasajesComprados(@semestreDelAnio tinyint, @anio integer)
+RETURNS @TOP5 TABLE ( ciudad_origen varchar(100), ciudad_destino varchar(100), pasajes_comprados bigint)
+AS
+BEGIN
 
-/*	
-SELECT tablaCiudades.nombre_ciudad, COUNT(tablaPE.codigo_PE) FROM DBAS.pasajesEncomiendas tablaPE, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades
-WHERE tablaPE.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaCiudades.id_ciudad = tablaRutas.ciudad_destino_id
-GROUP BY tablaCiudades.nombre_ciudad
-*/
+	DECLARE @anioDelSemestre datetime
+	SET @anioDelSemestre = convert(datetime, concat(@anio, '0701 00:00:00.000'))
+
+	IF (@semestreDelAnio = 1)
+	BEGIN
+
+		INSERT INTO @TOP5(ciudad_origen, ciudad_destino, pasajes_comprados)
+		SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPE.codigo_PE) as pasajes_comprados FROM (SELECT * FROM DBAS.pasajesEncomiendas WHERE encomienda_cliente_KG = 0) tablaPE, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
+		WHERE tablaPE.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id
+			AND tablaPE.fecha_compra_pasaje <  @anioDelSemestre AND DATEPART(year,tablaPE.fecha_compra_pasaje) = DATEPART(year,@anioDelSemestre)
+		GROUP BY tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad
+		ORDER BY pasajes_comprados DESC
+
+		
+	END
+	ELSE
+		BEGIN
+
+			INSERT INTO @TOP5(ciudad_origen, ciudad_destino, pasajes_comprados)
+			SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPE.codigo_PE) as pasajes_comprados FROM DBAS.pasajesEncomiendas tablaPE, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
+			WHERE tablaPE.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id
+			AND tablaPE.fecha_compra_pasaje >=  @anioDelSemestre AND DATEPART(year,tablaPE.fecha_compra_pasaje) = DATEPART(year,@anioDelSemestre)
+			GROUP BY tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad
+			ORDER BY pasajes_comprados DESC
+
+		END
+
+	RETURN
+END;	
+GO
+
+/*
+	SELECT  tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, tablaAeronaves.matricula_aeronave, (SUM(tablaPE.encomienda_cliente_KG)) as kg_libres FROM DBAS.pasajesEncomiendas tablaPE, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2, DBAS.butacas tablaButacas, DBAS.aeronaves tablaAeronaves
+	WHERE tablaPE.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id  AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id AND tablaPE.id_butaca = tablaButacas.id_butaca AND tablaButacas.matricula_aeronave = tablaAeronaves.matricula_aeronave
+	GROUP BY tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, tablaAeronaves.matricula_aeronave
+	ORDER BY kg_libres
+	RETURN
+	*/

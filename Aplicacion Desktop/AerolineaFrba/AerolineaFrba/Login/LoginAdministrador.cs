@@ -31,7 +31,7 @@ namespace AerolineaFrba.Login
 
         private void botonVolver_Click(object sender, EventArgs e)
         {
-            PantallaBienvenida p =new PantallaBienvenida();
+            PantallaBienvenidaForm p =new PantallaBienvenidaForm();
             p.Show();
             this.Hide();
         }
@@ -40,14 +40,12 @@ namespace AerolineaFrba.Login
         {
             if (username == null || password == null){
              MessageBox.Show("Debe ingresar su nombre de usuario y contraseña");
-          //  Sesion.iniciar(username, getSha256(password));
             }
             else{
                 Sesion s = new Sesion();
-                s.iniciar(username,password);
+                s.iniciar(username, getSha256(password));
                 Redireccionador redirec = new Redireccionador();
                 redirec.setFunciones(s.getFuncionalidadesDisponibles);
-            //  (new  Abm_Rol.Form1()).Show();
                 redirec.Show();
                 this.Hide();
             }

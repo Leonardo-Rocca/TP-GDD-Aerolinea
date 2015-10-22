@@ -68,11 +68,11 @@
     <Compile Include="Abm Rol\CrearRolForm.Designer.cs">
       <DependentUpon>CrearRolForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Abm Rol\Form1.cs">
+    <Compile Include="Abm Rol\ABMRolForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Abm Rol\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Abm Rol\ABMRolForm.Designer.cs">
+      <DependentUpon>ABMRolForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Abm Rol\ListadoRol.cs">
       <SubType>Form</SubType>
@@ -167,11 +167,11 @@
     <Compile Include="Login\LoginAdministrador.Designer.cs">
       <DependentUpon>LoginAdministrador.cs</DependentUpon>
     </Compile>
-    <Compile Include="PantallaBienvenida.cs">
+    <Compile Include="PantallaBienvenidaForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PantallaBienvenida.Designer.cs">
-      <DependentUpon>PantallaBienvenida.cs</DependentUpon>
+    <Compile Include="PantallaBienvenidaForm.Designer.cs">
+      <DependentUpon>PantallaBienvenidaForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -190,12 +190,14 @@
     <Compile Include="Utils\ConexionSQL.cs" />
     <EmbeddedResource Include="Abm Aeronave\ListadoAeronave.resx">
       <DependentUpon>ListadoAeronave.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Abm Rol\CrearRolForm.resx">
       <DependentUpon>CrearRolForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Abm Rol\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Abm Rol\ABMRolForm.resx">
+      <DependentUpon>ABMRolForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Abm Rol\ListadoRol.resx">
       <DependentUpon>ListadoRol.cs</DependentUpon>
@@ -221,8 +223,8 @@
     <EmbeddedResource Include="Login\LoginAdministrador.resx">
       <DependentUpon>LoginAdministrador.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PantallaBienvenida.resx">
-      <DependentUpon>PantallaBienvenida.cs</DependentUpon>
+    <EmbeddedResource Include="PantallaBienvenidaForm.resx">
+      <DependentUpon>PantallaBienvenidaForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

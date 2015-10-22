@@ -20,7 +20,6 @@ C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\Aerolinea
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\bin\Debug\AerolineaFrba.pdb
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.csprojResolveAssemblyReference.cache
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Abm_Rol.CrearRolForm.resources
-C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Abm_Rol.Form1.resources
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Abm_Rol.ModificarForm.resources
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Abm_Rol.modificarRolEspecificado.resources
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Form1.resources
@@ -28,9 +27,13 @@ C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\Aerolinea
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Registro_de_Usuario.RegistroUsuarios.resources
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.csproj.GenerateResource.Cache
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Login.LoginAdministrador.resources
-C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.PantallaBienvenida.resources
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.FormsPrincipales.Redireccionador.resources
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Abm_Rol.ListadoRol.resources
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Listado_Estadistico.ListadoMaestro.resources
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Listado_Estadistico.SeleccionarMaestro.resources
+<<<<<<< HEAD
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Abm_Aeronave.ListadoAeronave.resources
+=======
+C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.PantallaBienvenidaForm.resources
+C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Abm_Rol.ABMRolForm.resources
+>>>>>>> 82ea95d880a1ea6c381f3c73bd57f9be23a2070d

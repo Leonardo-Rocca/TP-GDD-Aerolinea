@@ -157,14 +157,14 @@ namespace AerolineaFrba.Abm_Aeronave
             query = query + " WHERE ";
             if (txtMatricula.TextLength != 0)
             {
-                string agregado = "a.matricula_aeronave LIKE '_" + txtMatricula.Text + "'";
+                string agregado = "a.matricula_aeronave LIKE '" + txtMatricula.Text + "'";
                 armarQueryCompleja(ref query, agregado, yaTieneCondicion);
                 yaTieneCondicion = true;
             }
 
             if (txtModelo.TextLength != 0)
             {
-                string agregado = "a.modelo_aeronave LIKE '_" + txtModelo.Text + "'";
+                string agregado = "a.modelo_aeronave LIKE '" + txtModelo.Text + "'";
                 armarQueryCompleja(ref query, agregado, yaTieneCondicion);
                 yaTieneCondicion = true;
             }

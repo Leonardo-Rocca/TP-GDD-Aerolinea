@@ -65,14 +65,17 @@ namespace AerolineaFrba.Listado_Estadistico
             ConexionSQL conn = new ConexionSQL();
             DataTable dt = conn.cargarTablaSQL(query);
             dataGrid.DataSource = dt;
-            dataGrid.AutoResizeColumns();
-            dataGrid.AutoResizeRows();
+            dataGrid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+            dataGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             if (dt.Rows.Count == 0)
             {
                 MessageBox.Show("No se han encontrado resultados en la consulta", "Fallo la busqueda", MessageBoxButtons.OK);
                 dataGrid.DataSource = null;
 
             }
+
+            dataGrid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            
         }
 
         private void ListadoMaestro_Load(object sender, EventArgs e)

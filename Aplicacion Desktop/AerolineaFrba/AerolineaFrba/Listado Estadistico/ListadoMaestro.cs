@@ -12,7 +12,7 @@ namespace AerolineaFrba.Listado_Estadistico
 {
     public partial class ListadoMaestro : Form
     {
-
+        public Form formularioAnterior;
      
 
         public ListadoMaestro()
@@ -82,5 +82,10 @@ namespace AerolineaFrba.Listado_Estadistico
         {
 
         }
+
+        public void setFormAnteriorSup(Form formulario) {
+            this.formularioAnterior = formulario;
+        }
+
     }
 }

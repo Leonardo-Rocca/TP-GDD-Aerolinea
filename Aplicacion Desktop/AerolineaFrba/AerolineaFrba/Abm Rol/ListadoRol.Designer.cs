@@ -40,6 +40,8 @@
             this.textBoxFiltro1 = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
@@ -48,7 +50,7 @@
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(392, 118);
+            this.checkBox1.Location = new System.Drawing.Point(27, 174);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(66, 17);
             this.checkBox1.TabIndex = 24;
@@ -60,7 +62,7 @@
             // 
             this.groupBox2.Controls.Add(this.radioButInhabilitado);
             this.groupBox2.Controls.Add(this.radioButHabilitado);
-            this.groupBox2.Location = new System.Drawing.Point(385, 30);
+            this.groupBox2.Location = new System.Drawing.Point(20, 86);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(140, 84);
             this.groupBox2.TabIndex = 23;
@@ -93,7 +95,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(472, 207);
+            this.button3.Location = new System.Drawing.Point(206, 235);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(108, 21);
             this.button3.TabIndex = 26;
@@ -103,7 +105,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(34, 207);
+            this.button2.Location = new System.Drawing.Point(12, 235);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(108, 21);
             this.button2.TabIndex = 25;
@@ -116,10 +118,12 @@
             this.groupBox3.Controls.Add(this.textBoxFiltro2);
             this.groupBox3.Controls.Add(this.label1);
             this.groupBox3.Controls.Add(this.textBoxFiltro1);
+            this.groupBox3.Controls.Add(this.checkBox1);
             this.groupBox3.Controls.Add(this.label4);
+            this.groupBox3.Controls.Add(this.groupBox2);
             this.groupBox3.Location = new System.Drawing.Point(12, 9);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(578, 176);
+            this.groupBox3.Size = new System.Drawing.Size(313, 201);
             this.groupBox3.TabIndex = 27;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Filtros de Busqueda";
@@ -160,38 +164,50 @@
             // dataGridView2
             // 
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.Location = new System.Drawing.Point(35, 245);
+            this.dataGridView2.Location = new System.Drawing.Point(344, 22);
             this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.Size = new System.Drawing.Size(574, 247);
+            this.dataGridView2.Size = new System.Drawing.Size(236, 293);
             this.dataGridView2.TabIndex = 28;
+            this.dataGridView2.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView2_CellContentClick);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(12, 294);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(108, 21);
+            this.button1.TabIndex = 29;
+            this.button1.Text = "Cancelar";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(206, 294);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(108, 21);
+            this.button4.TabIndex = 30;
+            this.button4.Text = "Aceptar";
+            this.button4.UseVisualStyleBackColor = true;
             // 
             // ListadoRol
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(615, 435);
+            this.ClientSize = new System.Drawing.Size(602, 341);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.button4);
             this.Controls.Add(this.dataGridView2);
-            this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox3);
+            this.Controls.Add(this.button3);
             this.Name = "ListadoRol";
             this.Text = "ListadoRol";
             this.Load += new System.EventHandler(this.ListadoRol_Load);
-            this.Controls.SetChildIndex(this.groupBox3, 0);
-            this.Controls.SetChildIndex(this.groupBox2, 0);
-            this.Controls.SetChildIndex(this.checkBox1, 0);
-            this.Controls.SetChildIndex(this.button2, 0);
-            this.Controls.SetChildIndex(this.button3, 0);
-            this.Controls.SetChildIndex(this.dataGridView2, 0);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -209,6 +225,8 @@
         private System.Windows.Forms.TextBox textBoxFiltro1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.DataGridView dataGridView2;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button4;
 
     }
 }

@@ -104,7 +104,7 @@ namespace AerolineaFrba.Abm_Rol
 
             if (textBoxFiltro2.TextLength != 0)
             {
-                string agregado = "nombre_rol LIKE '" + textBoxFiltro2.Text + "'";
+                string agregado = "nombre_rol LIKE '_" + textBoxFiltro2.Text + "'";
                 armarQueryCompleja(ref query, agregado, yaTieneCondicion);
                 yaTieneCondicion = true;
             }
@@ -130,6 +130,11 @@ namespace AerolineaFrba.Abm_Rol
         }
 
         private void groupBox3_Enter_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
         }

@@ -30,6 +30,7 @@
         {
             this.lblErrores = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.comboBoxServicio = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
             this.textBoxDesdekg = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -57,7 +58,6 @@
             this.button2 = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.comboBoxServicio = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -103,6 +103,14 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Filtros de Busqueda";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // comboBoxServicio
+            // 
+            this.comboBoxServicio.FormattingEnabled = true;
+            this.comboBoxServicio.Location = new System.Drawing.Point(408, 30);
+            this.comboBoxServicio.Name = "comboBoxServicio";
+            this.comboBoxServicio.Size = new System.Drawing.Size(239, 21);
+            this.comboBoxServicio.TabIndex = 52;
             // 
             // label10
             // 
@@ -354,14 +362,6 @@
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.Size = new System.Drawing.Size(636, 215);
             this.dataGridView1.TabIndex = 43;
-            // 
-            // comboBoxServicio
-            // 
-            this.comboBoxServicio.FormattingEnabled = true;
-            this.comboBoxServicio.Location = new System.Drawing.Point(408, 30);
-            this.comboBoxServicio.Name = "comboBoxServicio";
-            this.comboBoxServicio.Size = new System.Drawing.Size(239, 21);
-            this.comboBoxServicio.TabIndex = 52;
             // 
             // ListadoAeronave
             // 

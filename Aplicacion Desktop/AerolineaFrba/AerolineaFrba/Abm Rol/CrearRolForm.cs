@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using AerolineaFrba.Dominio;
+
 namespace AerolineaFrba.Abm_Rol
 {
     public partial class CrearRolForm : Form
@@ -16,13 +18,14 @@ namespace AerolineaFrba.Abm_Rol
 
         public CrearRolForm()
         {  
-            InitializeComponent();
+            InitializeComponent();/*
             chkListaFuncionalidades.Items.Insert(0,"Dar de baja Usuarios");
             chkListaFuncionalidades.Items.Insert(1, "Dar de alta Usuarios");
             chkListaFuncionalidades.Items.Insert(2, "aprobar");
             chkListaFuncionalidades.Items.Insert(3, "Usuarios");
-            chkListaFuncionalidades.SetItemCheckState(3, CheckState.Checked);
-
+            chkListaFuncionalidades.SetItemCheckState(3, CheckState.Checked);*/
+            Funcionalidades funcion = new Funcionalidades(8, "Generar viaje", this);
+            chkListaFuncionalidades.Items.Insert(0, funcion);
         }
    
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -52,19 +55,38 @@ namespace AerolineaFrba.Abm_Rol
                 return;
              };
 
-              DataTable tblfunc = new DataTable("func");
-                tblfunc.Columns.Add("Id",typeof(int));
-                for (int i = 0; i <= chkListaFuncionalidades.Items.Count - 1; i++)
-                {
-                   if (chkListaFuncionalidades.GetItemChecked(i)){
-                      tblfunc.Rows.Add(i+1);
-                   }
-                 }
+              this.agregarRol();
+            
                 MessageBox.Show("Rol agregado", this.Text, MessageBoxButtons.OK, MessageBoxIcon.None);
                 this.Hide(); //.Close();
                 return;
-         }   
-        
+         }
+
+        private void agregarRol()
+        {
+            DataTable tblfunc = new DataTable("func");
+            tblfunc.Columns.Add("Id", typeof(int));
+           /* for (int i = 0; i <= chkListaFuncionalidades.Items.Count - 1; i++)
+            {
+                if (chkListaFuncionalidades.GetItemChecked(i))
+                {
+                    tblfunc.Rows.Add(i + 1);
+                }
+            }*/
+
+            //CAMBIAR NOMBRE DE ESTA TABLA (tempfunci)
+            string comando = "insert into tempfunci (c1,c2)select distinct '" + nombreRol + "', id_funcionalidad FROM DBAS.funcionalidades WHERE descripcion IN ( ";
+
+            foreach (Funcionalidades elemento in chkListaFuncionalidades.CheckedItems)
+            {
+                comando = comando + " '" + elemento.Descripcion + "',";
+            }
+            comando = comando + "'lalala' )";
+            MessageBox.Show(comando, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Question);
+            (new ConexionSQL()).ejecutarComandoSQL(comando);
+
+
+        }
 
         private void button2_Click(object sender, EventArgs e)
         {

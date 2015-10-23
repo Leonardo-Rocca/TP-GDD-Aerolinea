@@ -11,6 +11,7 @@ namespace AerolineaFrba.Dominio
      {
         int id;
         Form FormAsociado;
+        string description;
 
         public Funcionalidades(int identifyer, string descripcion,Form elFormCaracteristico)
         {

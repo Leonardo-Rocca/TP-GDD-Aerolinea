@@ -19,7 +19,7 @@ namespace AerolineaFrba
             Application.SetCompatibleTextRenderingDefault(false);
           //  Application.Run(new Form1());
 
-            Application.Run(new Abm_Ciudad.ListadoCiudad());//PantallaBienvenidaForm());
+            Application.Run(new PantallaBienvenidaForm());
         }
     }
 }

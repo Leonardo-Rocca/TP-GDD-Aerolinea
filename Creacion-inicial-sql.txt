@@ -580,13 +580,64 @@ BEGIN
 END;	
 GO
 
-/*
-	SELECT  tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, tablaAeronaves.matricula_aeronave, (SUM(tablaPE.encomienda_cliente_KG)) as kg_libres FROM DBAS.pasajesEncomiendas tablaPE, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2, DBAS.butacas tablaButacas, DBAS.aeronaves tablaAeronaves
-	WHERE tablaPE.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id  AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id AND tablaPE.id_butaca = tablaButacas.id_butaca AND tablaButacas.matricula_aeronave = tablaAeronaves.matricula_aeronave
-	GROUP BY tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, tablaAeronaves.matricula_aeronave
-	ORDER BY kg_libres
+
+CREATE FUNCTION DBAS.aeronaves_dias_fuera_de_servicio(@semestreDelAnio tinyint, @anio integer)
+RETURNS @aeronaves_dias_fuera_de_servicio TABLE ( aeronave varchar(100), dias_fuera_de_servicio bigint)
+AS
+BEGIN
+
+	DECLARE @anioDelSemestre datetime
+	SET @anioDelSemestre = convert(datetime, concat(@anio, '0701 00:00:00.000'))
+
+	IF (@semestreDelAnio = 1)
+	BEGIN
+		
+		INSERT INTO @aeronaves_dias_fuera_de_servicio(aeronave, dias_fuera_de_servicio)
+		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,tablaPeriodos.fecha_reinicio_servicio)) as cantidad_dias_fuera_de_servicio 
+		FROM DBAS.periodosFueraDeServicio tablaPeriodos, DBAS.aeronaves tablaAeronaves
+		WHERE tablaPeriodos.fecha_reinicio_servicio != null AND tablaPeriodos.fecha_reinicio_servicio < @anioDelSemestre AND DATEPART(year,tablaPeriodos.fecha_reinicio_servicio) = DATEPART(year,@anioDelSemestre)
+		GROUP BY tablaAeronaves.matricula_aeronave) 
+		UNION ALL
+		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,GETDATE())) as cantidad_dias_fuera_de_servicio 
+		FROM DBAS.periodosFueraDeServicio tablaPeriodos, DBAS.aeronaves tablaAeronaves
+		WHERE tablaPeriodos.fecha_reinicio_servicio = null AND GETDATE() < @anioDelSemestre AND DATEPART(year,GETDATE()) = DATEPART(year,@anioDelSemestre)
+		GROUP BY tablaAeronaves.matricula_aeronave)
+				
+	END
+	ELSE
+	BEGIN
+
+		INSERT INTO @aeronaves_dias_fuera_de_servicio(aeronave, dias_fuera_de_servicio)
+		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,tablaPeriodos.fecha_reinicio_servicio)) as cantidad_dias_fuera_de_servicio 
+		FROM DBAS.periodosFueraDeServicio tablaPeriodos, DBAS.aeronaves tablaAeronaves
+		WHERE tablaPeriodos.fecha_reinicio_servicio != null AND tablaPeriodos.fecha_reinicio_servicio >= @anioDelSemestre AND DATEPART(year,tablaPeriodos.fecha_reinicio_servicio) = DATEPART(year,@anioDelSemestre)
+		GROUP BY tablaAeronaves.matricula_aeronave) 
+		UNION ALL
+		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,GETDATE())) as cantidad_dias_fuera_de_servicio 
+		FROM DBAS.periodosFueraDeServicio tablaPeriodos, DBAS.aeronaves tablaAeronaves
+		WHERE tablaPeriodos.fecha_reinicio_servicio = null AND GETDATE() >= @anioDelSemestre AND DATEPART(year,GETDATE()) = DATEPART(year,@anioDelSemestre)
+		GROUP BY tablaAeronaves.matricula_aeronave)
+
+	END
+
 	RETURN
-	*/
+END;	
+GO
+
+CREATE FUNCTION DBAS.Top5AeronavesConMayorCantidadDeDiasFueraDeServicio(@semestreDelAnio tinyint, @anio integer)
+RETURNS @TOP5 TABLE ( aeronave varchar(100), dias_fuera_de_servicio bigint)
+AS
+BEGIN
+	INSERT INTO @TOP5(aeronave, dias_fuera_de_servicio)
+	SELECT TOP 5 tablaDias.aeronave,SUM(tablaDias.dias_fuera_de_servicio)
+	FROM DBAS.aeronaves_dias_fuera_de_servicio(@semestreDelAnio, @anio) tablaDias
+	GROUP BY tablaDias.aeronave
+	ORDER BY tablaDias.dias_fuera_de_servicio DESC
+				
+	RETURN
+END;	
+GO
+
 
 CREATE FUNCTION DBAS.obtenerFuncionalidadesAsociadas(@nombreRol varchar(100))
 RETURNS TABLE
@@ -657,10 +708,21 @@ BEGIN
 END;
 GO
 
-/*
+
 CREATE PROCEDURE DBAS.altaRol(@nombre_rol varchar(100), @nombre_funcionalidades varchar(100))
 AS
 BEGIN
 	DECLARE @mensaje_error varchar(100)
+	DECLARE @rol_id bigint
 
-*/
+	INSERT INTO DBAS.roles (nombre_rol) VALUES (@nombre_rol)
+
+	SET @rol_id = SCOPE_IDENTITY()
+
+	INSERT INTO DBAS.rolesPorFuncionalidad(id_rol, id_funcionalidad)
+	SELECT @rol_id, id_funcionalidad FROM DBAS.funcionalidades
+	WHERE descripcion = @nombre_funcionalidades
+
+END;
+GO
+

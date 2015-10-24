@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AerolineaFrba.FormsPrincipales;
 using AerolineaFrba.Abm_Rol;
 using AerolineaFrba.Abm_Ciudad;
+using AerolineaFrba.Abm_Ruta;
 
 namespace AerolineaFrba.Dominio
 {
@@ -24,10 +25,7 @@ namespace AerolineaFrba.Dominio
             if (username == "" && password == "") //---> es usuario
             {
               //TO-DO
-                ListadoRol lf = new ListadoRol();
-                funcionalidadesDisponibles.Add(new Funcionalidades(99, "Listado Rol", lf));
-                funcionalidadesDisponibles.Add(new Funcionalidades(99, "aeronave", new ABMGenericoForm("ABM Aernaves",new CrearRolForm(),null,null)));
-                return;
+    
             }
             //OBTENER FUNCDISP SEGUN EL ROL
 
@@ -37,7 +35,9 @@ namespace AerolineaFrba.Dominio
 
              funcionalidadesDisponibles.Add(new Funcionalidades(99, "ABM Ciudades",
                   new ABMGenericoForm("ABM Ciudades", new crearCiudadForm(), null, null)));
-        
+
+             funcionalidadesDisponibles.Add(new Funcionalidades(99, "ABM Rutas",
+                new ABMGenericoForm("ABM Rutas", new crearRutaForm(), new crearRutaForm(), new crearRutaForm())));
         }
 
         public List<Funcionalidades> getFuncionalidadesDisponibles{

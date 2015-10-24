@@ -104,6 +104,12 @@
     <Compile Include="Abm Rol\modificarRolEspecificado.Designer.cs">
       <DependentUpon>modificarRolEspecificado.cs</DependentUpon>
     </Compile>
+    <Compile Include="Abm Ruta\crearRutaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Abm Ruta\crearRutaForm.Designer.cs">
+      <DependentUpon>crearRutaForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Abm Ruta\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -231,6 +237,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Abm Rol\modificarRolEspecificado.resx">
       <DependentUpon>modificarRolEspecificado.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Abm Ruta\crearRutaForm.resx">
+      <DependentUpon>crearRutaForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

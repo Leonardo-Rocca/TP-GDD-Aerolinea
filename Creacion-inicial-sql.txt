@@ -1,5 +1,4 @@
-/*
-DROP TABLE DBAS.cancelaciones
+/*DROP TABLE DBAS.cancelaciones
 DROP TABLE DBAS.canjes
 DROP TABLE DBAS.pasajesEncomiendas
 DROP TABLE DBAS.periodosFueraDeServicio
@@ -168,8 +167,7 @@ GO
 CREATE TABLE DBAS.clientes (
 	id_cliente bigint  IDENTITY(1,1) PRIMARY KEY,
 	id_persona bigint NOT NULL,
-	millas_totales bigint,
-	id_millas bigint
+	millas_totales bigint
 );
 GO
 
@@ -200,8 +198,9 @@ CREATE TABLE DBAS.millas (
 	id_millas bigint IDENTITY(1,1) PRIMARY KEY,
 	valor_millas bigint,
 	validez_millas int default 365,
+	fecha_adquirida datetime,
 	detalle_millas_realizadas varchar(100),
-	
+	id_cliente bigint
 );
 GO
 
@@ -293,8 +292,8 @@ alter table DBAS.clientes add constraint fk_cliente_persona
 	foreign key (id_persona) references DBAS.personas (id_persona);
 GO
 
-alter table DBAS.clientes add constraint fk_cliente_millas
-	foreign key (id_millas) references DBAS.millas (id_millas);
+alter table DBAS.millas add constraint fk_cliente_millas
+	foreign key (id_cliente) references DBAS.clientes (id_cliente);
 GO
 
 alter table DBAS.canjes add constraint fk_canje_cliente
@@ -636,6 +635,25 @@ BEGIN
 				
 	RETURN
 END;	
+GO
+
+--Destinos con mas cancelaciones
+SELECT nombre_ciudad,COUNT(id_ciudad) as cantidad_devoluciones FROM
+((SELECT * FROM DBAS.pasajesEncomiendas P WHERE P.id_cancelacion is not null) PE JOIN DBAS.viajes V ON (PE.id_viaje = V.id_viaje)
+JOIN DBAS.rutas R ON (V.codigo_ruta = R.codigo_ruta)
+JOIN DBAS.ciudades C ON (R.ciudad_destino_id = C.id_ciudad)) 
+GROUP BY nombre_ciudad
+ORDER BY cantidad_devoluciones DESC
+GO
+
+
+CREATE FUNCTION fx_calcular_millas(@PRECIOENCOMIENDA float(24), @PRECIOPASAJE float(24))
+RETURNS bigint
+AS BEGIN
+	DECLARE @RETORNO bigint
+	SET @RETORNO = @PRECIOENCOMIENDA / 0.1 + @PRECIOPASAJE / 0.1
+RETURN @RETORNO
+END
 GO
 
 

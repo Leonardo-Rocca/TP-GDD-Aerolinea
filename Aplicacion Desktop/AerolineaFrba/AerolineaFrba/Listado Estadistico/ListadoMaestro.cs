@@ -98,8 +98,7 @@ namespace AerolineaFrba.Listado_Estadistico
             string contenido = dataGrid[dataGrid.CurrentCell.ColumnIndex-1, dataGrid.CurrentCell.RowIndex].Value.ToString();
             MessageBox.Show(contenido, "Fallo la busqueda", MessageBoxButtons.OK);
 
-            
-           //formularioAnterior.obtenerResultado(contenido);
+          // formularioAnterior.obtenerResultado(contenido);
         }
     }
 }

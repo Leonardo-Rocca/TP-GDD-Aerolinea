@@ -110,11 +110,11 @@
     <Compile Include="Abm Ruta\crearRutaForm.Designer.cs">
       <DependentUpon>crearRutaForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Abm Ruta\Form1.cs">
+    <Compile Include="Abm Ruta\ModificarEliminarRuta.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Abm Ruta\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Abm Ruta\ModificarEliminarRuta.Designer.cs">
+      <DependentUpon>ModificarEliminarRuta.cs</DependentUpon>
     </Compile>
     <Compile Include="Canje Millas\Form1.cs">
       <SubType>Form</SubType>
@@ -240,6 +240,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Abm Ruta\crearRutaForm.resx">
       <DependentUpon>crearRutaForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Abm Ruta\ModificarEliminarRuta.resx">
+      <DependentUpon>ModificarEliminarRuta.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

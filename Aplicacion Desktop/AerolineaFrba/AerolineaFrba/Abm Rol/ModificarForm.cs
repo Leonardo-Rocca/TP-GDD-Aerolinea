@@ -67,7 +67,13 @@ namespace AerolineaFrba.Abm_Rol
         private void btFiltro_Click(object sender, EventArgs e)
         {
             ListadoRol listado = new ListadoRol();
+            listado.setFormAnteriorSup(this);
             listado.Show();
+        }
+
+        public void obtenerResultado(string nombreRolDesdeListado)
+        {
+            comboBoxRol.Text = nombreRolDesdeListado;
         }
     }
 }

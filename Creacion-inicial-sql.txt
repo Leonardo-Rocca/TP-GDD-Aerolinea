@@ -1,6 +1,8 @@
-/*DROP TABLE DBAS.cancelaciones
+/*
 DROP TABLE DBAS.canjes
-DROP TABLE DBAS.pasajesEncomiendas
+DROP TABLE DBAS.pasajes
+DROP TABLE DBAS.encomiendas
+DROP TABLE DBAS.cancelaciones
 DROP TABLE DBAS.periodosFueraDeServicio
 DROP TABLE DBAS.productos
 DROP TABLE DBAS.rolesPorFuncionalidad
@@ -11,14 +13,25 @@ DROP TABLE DBAS.butacas
 DROP TABLE DBAS.compras
 DROP TABLE DBAS.funcionalidades
 DROP TABLE DBAS.roles
+DROP TABLE DBAS.serviciosPorRutas
 DROP TABLE DBAS.rutas
 DROP TABLE DBAS.aeronaves
 DROP TABLE DBAS.ciudades
 DROP TABLE DBAS.clientes
 DROP TABLE DBAS.fabricantes
-DROP TABLE DBAS.millas
 DROP TABLE DBAS.servicios
 DROP TABLE DBAS.personas
+
+DROP PROCEDURE DBAS.migracionFabricantes
+DROP PROCEDURE DBAS.migracionCiudades
+DROP PROCEDURE DBAS.migracionServicios
+DROP PROCEDURE DBAS.migracionRutas
+DROP PROCEDURE DBAS.migracionAeronaves
+DROP PROCEDURE DBAS.migracionViajes
+DROP PROCEDURE DBAS.migracionButacas
+DROP PROCEDURE DBAS.migracionClientes
+DROP PROCEDURE DBAS.migracionPasajes
+DROP PROCEDURE DBAS.migracionEncomiendas
 
 
 USE[GD2C2015];
@@ -41,7 +54,6 @@ CREATE TABLE DBAS.rutas (
 	ciudad_destino_id bigint,
 	precio_base_por_KG float(24),
 	precio_base_por_pasaje float(24),
-	id_servicio bigint
 );
 GO
 
@@ -88,25 +100,40 @@ CREATE TABLE DBAS.butacas (
 );
 GO
 
-CREATE TABLE DBAS.pasajesEncomiendas (
-	codigo_PE bigint IDENTITY(1,1) PRIMARY KEY,
-	id_cliente  bigint,
-	encomienda_cliente_KG float(24),
+CREATE TABLE DBAS.pasajes (
+	codigo_pasaje bigint IDENTITY(1,1) PRIMARY KEY,
+	id_cliente  bigint NOT NULL,
 	id_viaje bigint NOT NULL,
 	id_butaca bigint,
 	fecha_compra_pasaje datetime NOT NULL,
-	fecha_compra_encomienda datetime NOT NULL,
-	precio_encomienda float(24),
 	precio_pasaje float(24),
 	id_compra_PNR bigint,
 	id_cancelacion bigint
 );
 GO
 
+CREATE TABLE DBAS.encomiendas (
+	codigo_encomienda bigint IDENTITY(1,1) PRIMARY KEY,
+	id_cliente bigint NOT NULL,
+	encomienda_cliente_KG float(24),
+	id_viaje bigint NOT NULL,
+	id_butaca bigint,
+	fecha_compra_encomienda datetime NOT NULL,
+	precio_encomienda float(24),
+	id_compra_PNR bigint,
+	id_cancelacion bigint
+);
+
 CREATE TABLE DBAS.servicios (
 	id_servicio bigint IDENTITY(1,1) PRIMARY KEY,
 	porcentaje_arancel float(24),
 	tipo_servicio varchar(50)
+);
+GO
+
+CREATE TABLE DBAS.serviciosPorRutas (
+	codigo_ruta bigint NOT NULL,
+	id_servicio bigint NOT NULL
 );
 GO
 
@@ -148,7 +175,6 @@ CREATE TABLE DBAS.usuarios (
 	password varchar(50),
 	intentos_fallidos tinyint default 0,
 	habilitado tinyint default 1,
-	id_rol bigint
 );
 GO
 
@@ -167,7 +193,6 @@ GO
 CREATE TABLE DBAS.clientes (
 	id_cliente bigint  IDENTITY(1,1) PRIMARY KEY,
 	id_persona bigint NOT NULL,
-	millas_totales bigint
 );
 GO
 
@@ -194,16 +219,6 @@ CREATE TABLE DBAS.canjes (
 );
 GO
 
-CREATE TABLE DBAS.millas (
-	id_millas bigint IDENTITY(1,1) PRIMARY KEY,
-	valor_millas bigint,
-	validez_millas int default 365,
-	fecha_adquirida datetime,
-	detalle_millas_realizadas varchar(100),
-	id_cliente bigint
-);
-GO
-
 CREATE TABLE DBAS.productos (
 	id_producto bigint IDENTITY(1,1) PRIMARY KEY,
 	valor_en_milas int,
@@ -222,6 +237,10 @@ GO
 
 --DDL de constraints compuestos
 
+alter table DBAS.serviciosPorRutas add constraint pk_serviciosPorRutas
+	primary key clustered (codigo_ruta,	id_servicio);
+GO
+
 alter table DBAS.rolesPorFuncionalidad add constraint pk_rolesPorFuncionalidad 
 	primary key clustered (id_rol, id_funcionalidad);
 GO
@@ -238,10 +257,6 @@ GO
 
 alter table DBAS.rutas add constraint fk_ruta_ciudadDestino 
 	foreign key (ciudad_destino_id) references DBAS.ciudades (id_ciudad);
-GO
-
-alter table DBAS.rutas add constraint fk_ruta_servicio 
-	foreign key (id_servicio) references DBAS.servicios (id_servicio);
 GO
 
 alter table DBAS.viajes add constraint fk_viaje_aeronave 
@@ -264,23 +279,43 @@ alter table DBAS.butacas add constraint fk_butaca_aeronave
 	foreign key (matricula_aeronave) references DBAS.aeronaves (matricula_aeronave);
 GO
 
-alter table DBAS.pasajesEncomiendas add constraint fk_pasaje_cliente
+alter table DBAS.pasajes add constraint fk_pasaje_cliente
 	foreign key (id_cliente) references DBAS.clientes (id_cliente); 
 GO
 
-alter table DBAS.pasajesEncomiendas add constraint fk_pasaje_butaca
+alter table DBAS.pasajes add constraint fk_pasaje_butaca
 	foreign key (id_butaca) references DBAS.butacas (id_butaca);
 GO
 
-alter table DBAS.pasajesEncomiendas add constraint fk_pasaje_compra
+alter table DBAS.pasajes add constraint fk_pasaje_compra
 	foreign key (id_compra_PNR) references DBAS.compras (id_compra_PNR);
 GO
 
-alter table DBAS.pasajesEncomiendas add constraint fk_pasaje_viaje
+alter table DBAS.pasajes add constraint fk_pasaje_viaje
 	foreign key (id_viaje) references DBAS.viajes (id_viaje);
 GO
 
-alter table DBAS.pasajesEncomiendas add constraint fk_pasaje_cancelacion
+alter table DBAS.pasajes add constraint fk_pasaje_cancelacion
+	foreign key (id_cancelacion) references DBAS.cancelaciones (id_cancelacion);
+GO
+
+alter table DBAS.encomiendas add constraint fk_encomienda_cliente
+	foreign key (id_cliente) references DBAS.clientes (id_cliente); 
+GO
+
+alter table DBAS.encomiendas add constraint fk_encomienda_butaca
+	foreign key (id_butaca) references DBAS.butacas (id_butaca);
+GO
+
+alter table DBAS.encomiendas add constraint fk_encomienda_compra
+	foreign key (id_compra_PNR) references DBAS.compras (id_compra_PNR);
+GO
+
+alter table DBAS.encomiendas add constraint fk_encomienda_viaje
+	foreign key (id_viaje) references DBAS.viajes (id_viaje);
+GO
+
+alter table DBAS.encomiendas add constraint fk_encomienda_cancelacion
 	foreign key (id_cancelacion) references DBAS.cancelaciones (id_cancelacion);
 GO
 
@@ -290,10 +325,6 @@ GO
 
 alter table DBAS.clientes add constraint fk_cliente_persona
 	foreign key (id_persona) references DBAS.personas (id_persona);
-GO
-
-alter table DBAS.millas add constraint fk_cliente_millas
-	foreign key (id_cliente) references DBAS.clientes (id_cliente);
 GO
 
 alter table DBAS.canjes add constraint fk_canje_cliente
@@ -306,10 +337,6 @@ GO
 
 alter table DBAS.periodosFueraDeServicio add constraint fk_periodos_aeronave
 	foreign key (matricula_aeronave) references DBAS.aeronaves (matricula_aeronave);	
-GO
-
-alter table DBAS.usuarios add constraint fk_usuario_rol
-	foreign key (id_rol) references DBAS.roles (id_rol);
 GO
 
 alter table DBAS.rolesPorFuncionalidad add constraint fk_rolesPorFuncionalidad_rol
@@ -330,100 +357,17 @@ GO
 
 /* -- Migracion -- */
 
---Se migran los fabricante de la tabla Maestra
-INSERT INTO DBAS.fabricantes(nombre_fabricante)
-SELECT DISTINCT Aeronave_Fabricante 
-FROM gd_esquema.Maestra
-GO
-
---Se migran las ciudades destino y origen quedando solo las que no se repiten
-INSERT INTO DBAS.ciudades(nombre_ciudad)
-SELECT DISTINCT Ruta_Ciudad_Origen FROM gd_esquema.Maestra UNION SELECT DISTINCT Ruta_Ciudad_Destino FROM gd_esquema.Maestra
-GO
-
---Se migran los servivios de la tabla maestra
-INSERT INTO DBAS.servicios(tipo_servicio)
-SELECT DISTINCT Tipo_Servicio FROM gd_esquema.Maestra
-GO
-
---Se crea una tabla temporal para poder manejar el precio del pasaje y kg de la ruta para la migracion
-CREATE TABLE DBAS.#temporalRutasOriginales(nom_ruta_orig varchar(100), nom_ruta_dest varchar(100), ruta_PP float(24), ruta_PKG float(24), ruta_servicio varchar(50));
-GO
-
---Se insertan los valores que se necesitan de la tabla maestra
-INSERT INTO #temporalRutasOriginales(nom_ruta_orig, nom_ruta_dest, ruta_PP, ruta_PKG, ruta_servicio)
-SELECT DISTINCT tablaAux1.Ruta_Ciudad_Origen, tablaAux1.Ruta_Ciudad_Destino, tablaAux2.Ruta_Precio_BaseKG, tablaAux1.Ruta_Precio_BasePasaje, tablaAux1.Tipo_Servicio
-		FROM ((SELECT DISTINCT Ruta_Codigo, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BasePasaje, Tipo_Servicio FROM gd_esquema.Maestra WHERE Ruta_Precio_BasePasaje > 0.00) tablaAux1
-			JOIN (SELECT DISTINCT Ruta_Codigo,Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BaseKG, Tipo_Servicio FROM gd_esquema.Maestra WHERE Ruta_Precio_BASEKG > 0.00) tablaAux2
-				ON (tablaAux1.Ruta_Ciudad_Origen = tablaAux2.Ruta_Ciudad_Origen AND tablaAux1.Ruta_Ciudad_Destino = tablaAux2.Ruta_Ciudad_Destino))
-GO
-
---Utilizando las tablas temporal, ciudades y servicios migro tantos los datos como las ids de las tablas en rutas
-INSERT INTO DBAS.rutas(ciudad_origen_id, ciudad_destino_id, precio_base_por_KG, precio_base_por_pasaje, id_servicio)
-SELECT tablaCiudades_orig.id_ciudad, tablaCiudades_dest.id_ciudad, tmpRutas.ruta_PKG, tmpRutas.ruta_PP, tablaServicios.id_servicio
-FROM ((SELECT * FROM DBAS.ciudades) tablaCiudades_orig 
-	JOIN  #temporalRutasOriginales tmpRutas ON ( tmpRutas.nom_ruta_orig = tablaCiudades_orig.nombre_ciudad)
-		JOIN (SELECT * FROM DBAS.ciudades) tablaCiudades_dest ON ( tmpRutas.nom_ruta_dest = tablaCiudades_dest.nombre_ciudad) 
-			JOIN (SELECT * FROM DBAS.servicios) tablaServicios ON (tmpRutas.ruta_servicio = tablaServicios.tipo_servicio))
-GO
-
-/*
--- sirve para saber si hay consistencia con el tipo de servicio de la aeronave
-SELECT DISTINCT aux1.Aeronave_matricula, aux1.Aeronave_KG_Disponibles, aux1.Aeronave_Fabricante, aux1.Tipo_Servicio 
-FROM ((SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Tipo_Servicio FROM gd_esquema.Maestra) aux1 JOIN (SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Tipo_Servicio FROM gd_esquema.Maestra) aux2 
-ON (aux1.Aeronave_Matricula = aux2.Aeronave_Matricula AND aux1.Tipo_Servicio != aux2.Tipo_Servicio)) 
-
--- sirve para saber si hay consistencia con kg disponibles
-SELECT DISTINCT aux1.Aeronave_matricula, aux1.Aeronave_KG_Disponibles, aux1.Aeronave_Fabricante, aux1.Tipo_Servicio 
-FROM ((SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Tipo_Servicio FROM gd_esquema.Maestra) aux1 JOIN (SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Tipo_Servicio FROM gd_esquema.Maestra) aux2 
-ON (aux1.Aeronave_Matricula = aux2.Aeronave_Matricula AND aux1.Aeronave_KG_Disponibles != aux2.Aeronave_KG_Disponibles)) 
-*/
-
---Migro las aeronaves de la tabla Maestra, utilizando las tablas fabricantes y servicios para obtener sus ids
-INSERT INTO DBAS.aeronaves(matricula_aeronave, modelo_aeronave, kg_disponible_encomienda, id_fabricante, id_servicio)
-SELECT tablaAux.Aeronave_Matricula, tablaAux.Aeronave_Modelo, tablaAux.Aeronave_KG_Disponibles, tablaFab.id_fabricante, tablaServ.id_servicio
-FROM ((SELECT DISTINCT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Aeronave_Modelo, Tipo_Servicio FROM gd_esquema.Maestra) tablaAux
-	JOIN DBAS.fabricantes tablaFab ON (tablaFab.nombre_fabricante = tablaAux.Aeronave_Fabricante)
-		JOIN DBAS.servicios tablaServ ON (tablaServ.tipo_servicio = tablaAux.Tipo_Servicio))
-GO
+--Tablas temporales para la migracion
 
 --Creo una tabla temporal que va a ser de ayuda para la migracion de los pasajes y asi utilizar menos tabla y ganar tiempo de busqueda de las ids
 CREATE TABLE DBAS.#temporalViajesConRutas(id_viaj bigint, codigo_rut bigint, nom_ruta_orig varchar(100), nom_ruta_dest varchar(100), fecha_salida datetime, fecha_llegada datetime, matricula_aeronave varchar(100));
 GO
 
---Creo un trigger para la insercion de los valores en la tabla temporal una vez que se insertaron los viajes
-CREATE TRIGGER DBAS.migrarDatosATemporalTrigger ON DBAS.viajes
-AFTER INSERT
-AS
-BEGIN
-	
-	INSERT INTO #temporalViajesConRutas(id_viaj, codigo_rut, nom_ruta_orig, nom_ruta_dest, fecha_salida, fecha_llegada, matricula_aeronave)
-	SELECT tablaViajes.id_viaje, tablaRutas.codigo_ruta, tablaCiudadOrig.nombre_ciudad, tablaCiudadDest.nombre_ciudad, tablaViajes.fecha_salida, tablaViajes.fecha_llegada, tablaViajes.matricula_aeronave 
-	FROM ((SELECT id_viaje, fecha_salida, fecha_llegada, codigo_ruta, matricula_aeronave FROM inserted) tablaViajes
-		JOIN (SELECT codigo_ruta, ciudad_origen_id, ciudad_destino_id FROM DBAS.rutas) tablaRutas
-		ON (tablaViajes.codigo_ruta = tablaRutas.codigo_ruta)
-			JOIN DBAS.ciudades tablaCiudadOrig ON (tablaRutas.ciudad_origen_id = tablaCiudadOrig.id_ciudad)
-			JOIN DBAS.ciudades tablaCiudadDest ON (tablaRutas.ciudad_destino_id = tablaCiudadDest.id_ciudad))
-END;
-GO
-
---Inserto la cantidad de viajes de la tabla maestra
-INSERT INTO DBAS.viajes (fecha_salida,fecha_llegada_estimada,fecha_llegada,matricula_aeronave,codigo_ruta)
-SELECT tablaAux.FechaSalida, tablaAux.Fecha_LLegada_Estimada, tablaAux.FechaLLegada, tablaAux.Aeronave_Matricula, tablaRutas.codigo_ruta
-FROM ((SELECT DISTINCT FechaSalida, Fecha_LLegada_Estimada, FechaLLegada, Aeronave_Matricula, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino FROM gd_esquema.Maestra) tablaAux 
-	JOIN DBAS.ciudades tablaciudad_orig ON (tablaciudad_orig.nombre_ciudad= tablaAux.Ruta_Ciudad_Origen)
-		JOIN DBAS.ciudades tablaciudad_dest ON (tablaciudad_dest.nombre_ciudad = tablaAux.Ruta_Ciudad_Destino)
-			JOIN DBAS.rutas tablaRutas ON (tablaRutas.ciudad_origen_id = tablaciudad_orig.id_ciudad AND tablaRutas.ciudad_destino_id = tablaciudad_dest.id_ciudad))
-GO
-
---Inserto las butacas de cada avion de la tabla maestra
-INSERT INTO DBAS.butacas (numero_butaca, tipo_butaca, piso_butaca, matricula_aeronave)
-SELECT DISTINCT Butaca_Nro, Butaca_Tipo, Butaca_Piso, Aeronave_Matricula FROM gd_esquema.Maestra
-GO
-
 --Creo una tabla temporal con el fin de utilizarla como ayuda para la migracion de los pasajes y asi buscar menos ids y mejorar el tiempo de migracion
 CREATE TABLE DBAS.#temporalPasajesDeClientes(id_cliente bigint, fecha_llegada datetime, fecha_salida datetime, ciudad_origen varchar(100), ciudad_destino varchar(100), Pasaje_Codigo bigint, Pasaje_Precio float(24), Pasaje_FechaCompra datetime, Paquete_Codigo bigint, Paquete_Precio float(24), Paquete_FechaCompra datetime, Paquete_KG float(24), Butaca_Nro smallint, Butaca_Piso tinyint, Aeronave_Matricula varchar(100));
 GO
+
+--Creacion de triggers para la migracion
 
 --Creo un trigger que sirve para asociar el id de un cliente con el de la persona y lo ordeno por su id para 
 --asegurarme de que tanto el id del cliente como el de la persona sean identicos para asi utilizar 
@@ -451,34 +395,220 @@ BEGIN
 END;
 GO
 
---Migro las personas de la tabla maestra
-INSERT INTO DBAS.personas(dni_persona, nombre_persona, apellido_persona, direccion_persona, telefono_persona, mail_persona, fecha_nacimiento)
-SELECT DISTINCT Cli_Dni, Cli_Nombre, Cli_Apellido, Cli_Dir, Cli_Telefono, Cli_Mail, Cli_Fecha_Nac FROM gd_esquema.Maestra
+--Creo un trigger para la insercion de los valores en la tabla temporal una vez que se insertaron los viajes
+CREATE TRIGGER DBAS.migrarDatosATemporalTrigger ON DBAS.viajes
+AFTER INSERT
+AS
+BEGIN
+	
+	INSERT INTO #temporalViajesConRutas(id_viaj, codigo_rut, nom_ruta_orig, nom_ruta_dest, fecha_salida, fecha_llegada, matricula_aeronave)
+	SELECT tablaViajes.id_viaje, tablaRutas.codigo_ruta, tablaCiudadOrig.nombre_ciudad, tablaCiudadDest.nombre_ciudad, tablaViajes.fecha_salida, tablaViajes.fecha_llegada, tablaViajes.matricula_aeronave 
+	FROM ((SELECT id_viaje, fecha_salida, fecha_llegada, codigo_ruta, matricula_aeronave FROM inserted) tablaViajes
+		JOIN (SELECT codigo_ruta, ciudad_origen_id, ciudad_destino_id FROM DBAS.rutas) tablaRutas
+		ON (tablaViajes.codigo_ruta = tablaRutas.codigo_ruta)
+			JOIN DBAS.ciudades tablaCiudadOrig ON (tablaRutas.ciudad_origen_id = tablaCiudadOrig.id_ciudad)
+			JOIN DBAS.ciudades tablaCiudadDest ON (tablaRutas.ciudad_destino_id = tablaCiudadDest.id_ciudad))
+END;
 GO
 
---Activo la insercion en la variable identity de la tabla
-SET IDENTITY_INSERT DBAS.pasajesEncomiendas ON
+--Creo stored procedures para la migracion
+
+CREATE PROCEDURE DBAS.migracionFabricantes
+AS
+BEGIN
+
+	--Se migran los fabricante de la tabla Maestra
+	INSERT INTO DBAS.fabricantes(nombre_fabricante)
+	SELECT DISTINCT Aeronave_Fabricante 
+	FROM gd_esquema.Maestra
+
+END;
 GO
 
---Inserto los valores de las las tablas temporales que solo tengan pasajes y no encomiendas
-INSERT INTO DBAS.pasajesEncomiendas(codigo_PE, id_cliente, encomienda_cliente_KG, precio_pasaje, precio_encomienda, fecha_compra_pasaje, fecha_compra_encomienda, id_viaje, id_butaca)
-SELECT DISTINCT tablaTemporalPasajes.Pasaje_Codigo, tablaTemporalPasajes.id_cliente, tablaTemporalPasajes.Paquete_KG, tablaTemporalPasajes.Pasaje_Precio, tablaTemporalPasajes.Paquete_Precio, tablaTemporalPasajes.Pasaje_FechaCompra, tablaTemporalPasajes.Paquete_FechaCompra, tablaTemporalViajes.id_viaj, tablaButacas.id_butaca 
-FROM ((SELECT id_cliente, fecha_llegada, fecha_salida, ciudad_origen, ciudad_destino, Pasaje_Codigo, Pasaje_Precio, Pasaje_FechaCompra, Paquete_Codigo, Paquete_Precio, Paquete_FechaCompra, Paquete_KG, Butaca_Nro, Butaca_Piso, Aeronave_Matricula FROM #temporalPasajesDeClientes WHERE Butaca_Piso != 0) tablaTemporalPasajes
-	JOIN DBAS.butacas tablaButacas ON (tablaTemporalPasajes.Aeronave_Matricula = tablaButacas.matricula_aeronave AND tablaTemporalPasajes.Butaca_Nro = tablaButacas.numero_butaca AND tablaTemporalPasajes.Butaca_Piso = tablaButacas.piso_butaca)
-	JOIN #temporalViajesConRutas tablaTemporalViajes ON (tablaTemporalViajes.nom_ruta_orig = tablaTemporalPasajes.ciudad_origen AND tablaTemporalViajes.nom_ruta_dest = tablaTemporalPasajes.ciudad_destino AND tablaTemporalViajes.fecha_salida = tablaTemporalPasajes.fecha_salida AND tablaTemporalViajes.fecha_llegada = tablaTemporalPasajes.fecha_llegada AND tablaTemporalPasajes.Aeronave_Matricula = tablaTemporalViajes.matricula_aeronave))
+CREATE PROCEDURE DBAS.migracionCiudades
+AS
+BEGIN
+	
+	--Se migran las ciudades destino y origen quedando solo las que no se repiten
+	INSERT INTO DBAS.ciudades(nombre_ciudad)
+	SELECT DISTINCT Ruta_Ciudad_Origen FROM gd_esquema.Maestra UNION SELECT DISTINCT Ruta_Ciudad_Destino FROM gd_esquema.Maestra
+
+END;
 GO
 
---Inserto los valores de las las tablas temporales que solo tengan encomiendas y no pasajes
-INSERT INTO DBAS.pasajesEncomiendas(codigo_PE, id_cliente, encomienda_cliente_KG, precio_pasaje, precio_encomienda, fecha_compra_pasaje, fecha_compra_encomienda, id_viaje, id_butaca)
-SELECT DISTINCT tablaTemporalPasajes.Paquete_Codigo, tablaTemporalPasajes.id_cliente, tablaTemporalPasajes.Paquete_KG, tablaTemporalPasajes.Pasaje_Precio, tablaTemporalPasajes.Paquete_Precio, tablaTemporalPasajes.Pasaje_FechaCompra, tablaTemporalPasajes.Paquete_FechaCompra, tablaTemporalViajes.id_viaj, tablaButacas.id_butaca 
-FROM ((SELECT id_cliente, fecha_llegada, fecha_salida, ciudad_origen, ciudad_destino, Pasaje_Codigo, Pasaje_Precio, Pasaje_FechaCompra, Paquete_Codigo, Paquete_Precio, Paquete_FechaCompra, Paquete_KG, Butaca_Nro, Butaca_Piso, Aeronave_Matricula FROM #temporalPasajesDeClientes WHERE Butaca_Piso = 0) tablaTemporalPasajes
-	JOIN DBAS.butacas tablaButacas ON (tablaTemporalPasajes.Aeronave_Matricula = tablaButacas.matricula_aeronave AND tablaTemporalPasajes.Butaca_Nro = tablaButacas.numero_butaca AND tablaTemporalPasajes.Butaca_Piso = tablaButacas.piso_butaca)
-	JOIN #temporalViajesConRutas tablaTemporalViajes ON (tablaTemporalViajes.nom_ruta_orig = tablaTemporalPasajes.ciudad_origen AND tablaTemporalViajes.nom_ruta_dest = tablaTemporalPasajes.ciudad_destino AND tablaTemporalViajes.fecha_salida = tablaTemporalPasajes.fecha_salida AND tablaTemporalViajes.fecha_llegada = tablaTemporalPasajes.fecha_llegada AND tablaTemporalPasajes.Aeronave_Matricula = tablaTemporalViajes.matricula_aeronave))
+CREATE PROCEDURE DBAS.migracionServicios
+AS
+BEGIN
+	--Se migran los servivios de la tabla maestra
+	INSERT INTO DBAS.servicios(tipo_servicio)
+	SELECT DISTINCT Tipo_Servicio FROM gd_esquema.Maestra
+END;
 GO
 
---Activo el identity para que se genere automaticamente nuevamente
-SET IDENTITY_INSERT DBAS.pasajesEncomiendas OFF
+CREATE PROCEDURE DBAS.migracionRutas
+AS
+BEGIN
+	DECLARE @id_ciudad_original bigint
+	DECLARE @id_ciudad_destino bigint
+	DECLARE @precio_KG float(24)
+	DECLARE @precio_pasaje float(24)
+	DECLARE @id_servicio bigint
+	DECLARE @id_ruta bigint
+	
+	DECLARE migrarRutasConServicios CURSOR FOR
+	SELECT DISTINCT tablaCiudades_orig.id_ciudad, tablaCiudades_dest.id_ciudad, tablaAux2.Ruta_Precio_BaseKG, tablaAux1.Ruta_Precio_BasePasaje, tablaServicios.id_servicio
+			FROM ((SELECT DISTINCT Ruta_Codigo, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BasePasaje, Tipo_Servicio FROM gd_esquema.Maestra WHERE Ruta_Precio_BasePasaje > 0.00) tablaAux1
+				JOIN (SELECT DISTINCT Ruta_Codigo,Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BaseKG, Tipo_Servicio FROM gd_esquema.Maestra WHERE Ruta_Precio_BASEKG > 0.00) tablaAux2
+					ON (tablaAux1.Ruta_Ciudad_Origen = tablaAux2.Ruta_Ciudad_Origen AND tablaAux1.Ruta_Ciudad_Destino = tablaAux2.Ruta_Ciudad_Destino)
+					JOIN DBAS.ciudades tablaCiudades_dest ON ( tablaAux1.Ruta_Ciudad_Destino = tablaCiudades_dest.nombre_ciudad)
+					JOIN DBAS.ciudades  tablaCiudades_orig ON (tablaAux1.Ruta_Ciudad_Origen = tablaCiudades_orig.nombre_ciudad)
+					JOIN DBAS.servicios tablaServicios ON (tablaAux1.Tipo_Servicio = tablaServicios.tipo_servicio))
+
+	OPEN migrarRutasConServicios
+
+	-- Inserto lo que obtiene el cursor en las variables
+	FETCH NEXT FROM migrarRutasConServicios
+	INTO @id_ciudad_original, @id_ciudad_destino, @precio_KG, @precio_pasaje, @id_servicio
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		
+		INSERT INTO DBAS.rutas(ciudad_origen_id, ciudad_destino_id, precio_base_por_KG, precio_base_por_pasaje)
+		VALUES(@id_ciudad_original, @id_ciudad_destino, @precio_KG, @precio_pasaje)
+
+		SET @id_ruta = SCOPE_IDENTITY()
+
+		INSERT INTO DBAS.serviciosPorRutas(codigo_ruta, id_servicio)
+		VALUES(@id_ruta, @id_servicio)
+
+		-- Inserto lo que obtiene el cursor en las variables
+		FETCH NEXT FROM migrarRutasConServicios
+		INTO @id_ciudad_original, @id_ciudad_destino, @precio_KG, @precio_pasaje, @id_servicio
+
+	END 
+	
+	CLOSE migrarRutasConServicios
+	DEALLOCATE migrarRutasConServicios
+
+END;
 GO
+
+/*
+-- sirve para saber si hay consistencia con el tipo de servicio de la aeronave
+SELECT DISTINCT aux1.Aeronave_matricula, aux1.Aeronave_KG_Disponibles, aux1.Aeronave_Fabricante, aux1.Tipo_Servicio 
+FROM ((SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Tipo_Servicio FROM gd_esquema.Maestra) aux1 JOIN (SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Tipo_Servicio FROM gd_esquema.Maestra) aux2 
+ON (aux1.Aeronave_Matricula = aux2.Aeronave_Matricula AND aux1.Tipo_Servicio != aux2.Tipo_Servicio)) 
+
+-- sirve para saber si hay consistencia con kg disponibles
+SELECT DISTINCT aux1.Aeronave_matricula, aux1.Aeronave_KG_Disponibles, aux1.Aeronave_Fabricante, aux1.Tipo_Servicio 
+FROM ((SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Tipo_Servicio FROM gd_esquema.Maestra) aux1 JOIN (SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Tipo_Servicio FROM gd_esquema.Maestra) aux2 
+ON (aux1.Aeronave_Matricula = aux2.Aeronave_Matricula AND aux1.Aeronave_KG_Disponibles != aux2.Aeronave_KG_Disponibles)) 
+*/
+
+CREATE PROCEDURE DBAS.migracionAeronaves
+AS
+BEGIN
+
+	--Migro las aeronaves de la tabla Maestra, utilizando las tablas fabricantes y servicios para obtener sus ids
+	INSERT INTO DBAS.aeronaves(matricula_aeronave, modelo_aeronave, kg_disponible_encomienda, id_fabricante, id_servicio)
+	SELECT tablaAux.Aeronave_Matricula, tablaAux.Aeronave_Modelo, tablaAux.Aeronave_KG_Disponibles, tablaFab.id_fabricante, tablaServ.id_servicio
+	FROM ((SELECT DISTINCT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Aeronave_Modelo, Tipo_Servicio FROM gd_esquema.Maestra) tablaAux
+		JOIN DBAS.fabricantes tablaFab ON (tablaFab.nombre_fabricante = tablaAux.Aeronave_Fabricante)
+			JOIN DBAS.servicios tablaServ ON (tablaServ.tipo_servicio = tablaAux.Tipo_Servicio))
+END;
+GO
+
+CREATE PROCEDURE DBAS.migracionViajes
+AS
+BEGIN
+
+	--Inserto la cantidad de viajes de la tabla maestra
+	INSERT INTO DBAS.viajes (fecha_salida,fecha_llegada_estimada,fecha_llegada,matricula_aeronave,codigo_ruta)
+	SELECT tablaAux.FechaSalida, tablaAux.Fecha_LLegada_Estimada, tablaAux.FechaLLegada, tablaAux.Aeronave_Matricula, tablaRutas.codigo_ruta
+	FROM ((SELECT DISTINCT FechaSalida, Fecha_LLegada_Estimada, FechaLLegada, Aeronave_Matricula, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino FROM gd_esquema.Maestra) tablaAux 
+		JOIN DBAS.ciudades tablaciudad_orig ON (tablaciudad_orig.nombre_ciudad= tablaAux.Ruta_Ciudad_Origen)
+			JOIN DBAS.ciudades tablaciudad_dest ON (tablaciudad_dest.nombre_ciudad = tablaAux.Ruta_Ciudad_Destino)
+				JOIN DBAS.rutas tablaRutas ON (tablaRutas.ciudad_origen_id = tablaciudad_orig.id_ciudad AND tablaRutas.ciudad_destino_id = tablaciudad_dest.id_ciudad))
+END;
+GO
+
+CREATE PROCEDURE DBAS.migracionButacas
+AS
+BEGIN
+
+	--Inserto las butacas de cada avion de la tabla maestra
+	INSERT INTO DBAS.butacas (numero_butaca, tipo_butaca, piso_butaca, matricula_aeronave)
+	SELECT DISTINCT Butaca_Nro, Butaca_Tipo, Butaca_Piso, Aeronave_Matricula FROM gd_esquema.Maestra
+
+END;
+GO
+
+CREATE PROCEDURE DBAS.migracionClientes
+AS
+BEGIN
+
+	--Migro las personas de la tabla maestra
+	INSERT INTO DBAS.personas(dni_persona, nombre_persona, apellido_persona, direccion_persona, telefono_persona, mail_persona, fecha_nacimiento)
+	SELECT DISTINCT Cli_Dni, Cli_Nombre, Cli_Apellido, Cli_Dir, Cli_Telefono, Cli_Mail, Cli_Fecha_Nac FROM gd_esquema.Maestra
+
+END;
+GO
+
+CREATE PROCEDURE DBAS.migracionPasajes
+AS
+BEGIN
+
+	--Activo la insercion en la variable identity de la tabla
+	SET IDENTITY_INSERT DBAS.pasajes ON
+
+	--Inserto los valores de las las tablas temporales que solo tengan pasajes y no encomiendas
+	INSERT INTO DBAS.pasajes(codigo_pasaje, id_cliente, precio_pasaje, fecha_compra_pasaje, id_viaje, id_butaca)
+	SELECT DISTINCT tablaTemporalPasajes.Pasaje_Codigo, tablaTemporalPasajes.id_cliente, tablaTemporalPasajes.Pasaje_Precio, tablaTemporalPasajes.Paquete_FechaCompra, tablaTemporalViajes.id_viaj, tablaButacas.id_butaca 
+	FROM ((SELECT id_cliente, fecha_llegada, fecha_salida, ciudad_origen, ciudad_destino, Pasaje_Codigo, Pasaje_Precio, Pasaje_FechaCompra, Paquete_Codigo, Paquete_Precio, Paquete_FechaCompra, Paquete_KG, Butaca_Nro, Butaca_Piso, Aeronave_Matricula FROM #temporalPasajesDeClientes WHERE Butaca_Piso != 0) tablaTemporalPasajes
+		JOIN DBAS.butacas tablaButacas ON (tablaTemporalPasajes.Aeronave_Matricula = tablaButacas.matricula_aeronave AND tablaTemporalPasajes.Butaca_Nro = tablaButacas.numero_butaca AND tablaTemporalPasajes.Butaca_Piso = tablaButacas.piso_butaca)
+		JOIN #temporalViajesConRutas tablaTemporalViajes ON (tablaTemporalViajes.nom_ruta_orig = tablaTemporalPasajes.ciudad_origen AND tablaTemporalViajes.nom_ruta_dest = tablaTemporalPasajes.ciudad_destino AND tablaTemporalViajes.fecha_salida = tablaTemporalPasajes.fecha_salida AND tablaTemporalViajes.fecha_llegada = tablaTemporalPasajes.fecha_llegada AND tablaTemporalPasajes.Aeronave_Matricula = tablaTemporalViajes.matricula_aeronave))
+
+	--Activo el identity para que se genere automaticamente nuevamente
+	SET IDENTITY_INSERT DBAS.pasajes OFF
+
+END;
+GO
+
+CREATE PROCEDURE DBAS.migracionEncomiendas
+AS
+BEGIN
+
+	--Activo la insercion en la variable identity de la tabla
+	SET IDENTITY_INSERT DBAS.encomiendas ON
+
+	--Inserto los valores de las las tablas temporales que solo tengan encomiendas y no pasajes
+	INSERT INTO DBAS.encomiendas(codigo_encomienda, id_cliente, encomienda_cliente_KG, precio_encomienda, fecha_compra_encomienda, id_viaje, id_butaca)
+	SELECT DISTINCT tablaTemporalPasajes.Paquete_Codigo, tablaTemporalPasajes.id_cliente, tablaTemporalPasajes.Paquete_KG, tablaTemporalPasajes.Paquete_Precio, tablaTemporalPasajes.Paquete_FechaCompra, tablaTemporalViajes.id_viaj, tablaButacas.id_butaca 
+	FROM ((SELECT id_cliente, fecha_llegada, fecha_salida, ciudad_origen, ciudad_destino, Pasaje_Codigo, Pasaje_Precio, Pasaje_FechaCompra, Paquete_Codigo, Paquete_Precio, Paquete_FechaCompra, Paquete_KG, Butaca_Nro, Butaca_Piso, Aeronave_Matricula FROM #temporalPasajesDeClientes WHERE Butaca_Piso = 0) tablaTemporalPasajes
+		JOIN DBAS.butacas tablaButacas ON (tablaTemporalPasajes.Aeronave_Matricula = tablaButacas.matricula_aeronave AND tablaTemporalPasajes.Butaca_Nro = tablaButacas.numero_butaca AND tablaTemporalPasajes.Butaca_Piso = tablaButacas.piso_butaca)
+		JOIN #temporalViajesConRutas tablaTemporalViajes ON (tablaTemporalViajes.nom_ruta_orig = tablaTemporalPasajes.ciudad_origen AND tablaTemporalViajes.nom_ruta_dest = tablaTemporalPasajes.ciudad_destino AND tablaTemporalViajes.fecha_salida = tablaTemporalPasajes.fecha_salida AND tablaTemporalViajes.fecha_llegada = tablaTemporalPasajes.fecha_llegada AND tablaTemporalPasajes.Aeronave_Matricula = tablaTemporalViajes.matricula_aeronave))
+
+
+	--Activo el identity para que se genere automaticamente nuevamente
+	SET IDENTITY_INSERT DBAS.encomiendas OFF
+
+END;
+GO
+
+--Ejecuto los stored procedures
+EXECUTE DBAS.migracionFabricantes
+EXECUTE DBAS.migracionCiudades
+EXECUTE DBAS.migracionServicios
+EXECUTE DBAS.migracionRutas
+EXECUTE DBAS.migracionAeronaves
+EXECUTE DBAS.migracionViajes
+EXECUTE DBAS.migracionButacas
+EXECUTE DBAS.migracionClientes
+EXECUTE DBAS.migracionPasajes
+EXECUTE DBAS.migracionEncomiendas
+GO
+
+--Elimino las tablas temporales de la migracion
 
 DROP TABLE #temporalPasajesDeClientes
 GO
@@ -486,8 +616,7 @@ GO
 DROP TABLE #temporalViajesConRutas
 GO
 
-DROP TABLE #temporalRutasOriginales
-GO
+--Elimino los triggers de la migracion
 
 DROP TRIGGER DBAS.temporalPasajesDeClientestrigger
 GO
@@ -555,9 +684,9 @@ BEGIN
 	BEGIN
 
 		INSERT INTO @TOP5(ciudad_origen, ciudad_destino, pasajes_comprados)
-		SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPE.codigo_PE) as pasajes_comprados FROM (SELECT * FROM DBAS.pasajesEncomiendas WHERE encomienda_cliente_KG = 0) tablaPE, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
-		WHERE tablaPE.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id
-			AND tablaPE.fecha_compra_pasaje <  @anioDelSemestre AND DATEPART(year,tablaPE.fecha_compra_pasaje) = DATEPART(year,@anioDelSemestre)
+		SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPasajes.codigo_pasaje) as pasajes_comprados FROM DBAS.pasajes tablaPasajes, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
+		WHERE tablaPasajes.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id
+			AND tablaPasajes.fecha_compra_pasaje <  @anioDelSemestre AND DATEPART(year,tablaPasajes.fecha_compra_pasaje) = DATEPART(year,@anioDelSemestre)
 		GROUP BY tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad
 		ORDER BY pasajes_comprados DESC
 
@@ -567,9 +696,9 @@ BEGIN
 		BEGIN
 
 			INSERT INTO @TOP5(ciudad_origen, ciudad_destino, pasajes_comprados)
-			SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPE.codigo_PE) as pasajes_comprados FROM DBAS.pasajesEncomiendas tablaPE, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
-			WHERE tablaPE.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id
-			AND tablaPE.fecha_compra_pasaje >=  @anioDelSemestre AND DATEPART(year,tablaPE.fecha_compra_pasaje) = DATEPART(year,@anioDelSemestre)
+			SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPasajes.codigo_pasaje) as pasajes_comprados FROM DBAS.pasajes tablaPasajes, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
+			WHERE tablaPasajes.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id
+			AND tablaPasajes.fecha_compra_pasaje >=  @anioDelSemestre AND DATEPART(year,tablaPasajes.fecha_compra_pasaje) = DATEPART(year,@anioDelSemestre)
 			GROUP BY tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad
 			ORDER BY pasajes_comprados DESC
 
@@ -594,12 +723,12 @@ BEGIN
 		INSERT INTO @aeronaves_dias_fuera_de_servicio(aeronave, dias_fuera_de_servicio)
 		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,tablaPeriodos.fecha_reinicio_servicio)) as cantidad_dias_fuera_de_servicio 
 		FROM DBAS.periodosFueraDeServicio tablaPeriodos, DBAS.aeronaves tablaAeronaves
-		WHERE tablaPeriodos.fecha_reinicio_servicio != null AND tablaPeriodos.fecha_reinicio_servicio < @anioDelSemestre AND DATEPART(year,tablaPeriodos.fecha_reinicio_servicio) = DATEPART(year,@anioDelSemestre)
+		WHERE tablaPeriodos.fecha_reinicio_servicio IS NOT null AND tablaPeriodos.fecha_reinicio_servicio < @anioDelSemestre AND DATEPART(year,tablaPeriodos.fecha_reinicio_servicio) = DATEPART(year,@anioDelSemestre)
 		GROUP BY tablaAeronaves.matricula_aeronave) 
 		UNION ALL
 		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,GETDATE())) as cantidad_dias_fuera_de_servicio 
 		FROM DBAS.periodosFueraDeServicio tablaPeriodos, DBAS.aeronaves tablaAeronaves
-		WHERE tablaPeriodos.fecha_reinicio_servicio = null AND GETDATE() < @anioDelSemestre AND DATEPART(year,GETDATE()) = DATEPART(year,@anioDelSemestre)
+		WHERE tablaPeriodos.fecha_reinicio_servicio IS null AND GETDATE() < @anioDelSemestre AND DATEPART(year,GETDATE()) = DATEPART(year,@anioDelSemestre)
 		GROUP BY tablaAeronaves.matricula_aeronave)
 				
 	END
@@ -609,12 +738,12 @@ BEGIN
 		INSERT INTO @aeronaves_dias_fuera_de_servicio(aeronave, dias_fuera_de_servicio)
 		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,tablaPeriodos.fecha_reinicio_servicio)) as cantidad_dias_fuera_de_servicio 
 		FROM DBAS.periodosFueraDeServicio tablaPeriodos, DBAS.aeronaves tablaAeronaves
-		WHERE tablaPeriodos.fecha_reinicio_servicio != null AND tablaPeriodos.fecha_reinicio_servicio >= @anioDelSemestre AND DATEPART(year,tablaPeriodos.fecha_reinicio_servicio) = DATEPART(year,@anioDelSemestre)
+		WHERE tablaPeriodos.fecha_reinicio_servicio IS NOT null AND tablaPeriodos.fecha_reinicio_servicio >= @anioDelSemestre AND DATEPART(year,tablaPeriodos.fecha_reinicio_servicio) = DATEPART(year,@anioDelSemestre)
 		GROUP BY tablaAeronaves.matricula_aeronave) 
 		UNION ALL
 		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,GETDATE())) as cantidad_dias_fuera_de_servicio 
 		FROM DBAS.periodosFueraDeServicio tablaPeriodos, DBAS.aeronaves tablaAeronaves
-		WHERE tablaPeriodos.fecha_reinicio_servicio = null AND GETDATE() >= @anioDelSemestre AND DATEPART(year,GETDATE()) = DATEPART(year,@anioDelSemestre)
+		WHERE tablaPeriodos.fecha_reinicio_servicio IS null AND GETDATE() >= @anioDelSemestre AND DATEPART(year,GETDATE()) = DATEPART(year,@anioDelSemestre)
 		GROUP BY tablaAeronaves.matricula_aeronave)
 
 	END
@@ -635,25 +764,6 @@ BEGIN
 				
 	RETURN
 END;	
-GO
-
---Destinos con mas cancelaciones
-SELECT nombre_ciudad,COUNT(id_ciudad) as cantidad_devoluciones FROM
-((SELECT * FROM DBAS.pasajesEncomiendas P WHERE P.id_cancelacion is not null) PE JOIN DBAS.viajes V ON (PE.id_viaje = V.id_viaje)
-JOIN DBAS.rutas R ON (V.codigo_ruta = R.codigo_ruta)
-JOIN DBAS.ciudades C ON (R.ciudad_destino_id = C.id_ciudad)) 
-GROUP BY nombre_ciudad
-ORDER BY cantidad_devoluciones DESC
-GO
-
-
-CREATE FUNCTION fx_calcular_millas(@PRECIOENCOMIENDA float(24), @PRECIOPASAJE float(24))
-RETURNS bigint
-AS BEGIN
-	DECLARE @RETORNO bigint
-	SET @RETORNO = @PRECIOENCOMIENDA / 0.1 + @PRECIOPASAJE / 0.1
-RETURN @RETORNO
-END
 GO
 
 
@@ -684,8 +794,8 @@ BEGIN
 	DECLARE @mensaje_error varchar(100)
 	DECLARE @nombre_rol varchar(100)
 
-	SELECT @U_id = id_usuario, @U_password = password, @U_habilitado = habilitado, @cantidad_intentos = intentos_fallidos, @U_rol_id = id_rol FROM DBAS.usuarios WHERE username = @usuario
-	IF (@U_id != NULL)
+	SELECT @U_id = tablaUsuarios.id_usuario, @U_password = password, @U_habilitado = habilitado, @cantidad_intentos = intentos_fallidos, @U_rol_id = tablaUporR.id_rol FROM DBAS.usuarios tablaUsuarios, DBAS.usuariosPorRol tablaUporR WHERE tablaUsuarios.username = @usuario AND tablaUporR.id_usuario = tablaUsuarios.id_usuario
+	IF (@U_id IS NOT NULL)
 	BEGIN
 		IF(@U_habilitado != 1)
 		BEGIN
@@ -744,3 +854,163 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE DBAS.modificarRol(@id_rol bigint, @nombre_rol_nuevo varchar(100), @id_funcionalidad bigint, @habilitado tinyint)
+AS
+BEGIN
+	DECLARE @habilitado_estado tinyint
+	DECLARE @mensaje_error varchar(100)
+
+	SELECT @habilitado_estado = habilitado_rol FROM DBAS.roles
+
+	IF(@habilitado_estado = 1 AND @habilitado = 0)
+	BEGIN
+		DELETE FROM DBAS.usuariosPorRol WHERE id_rol = @id_rol
+	END
+
+	UPDATE DBAS.roles SET nombre_rol = @nombre_rol_nuevo, habilitado_rol = @habilitado WHERE id_rol = @id_rol
+
+	DELETE FROM DBAS.rolesPorFuncionalidad
+	WHERE id_rol = @id_rol
+
+	INSERT INTO DBAS.rolesPorFuncionalidad(id_rol, id_funcionalidad)
+	VALUES(@id_rol, @id_funcionalidad)
+
+END;
+GO
+
+CREATE PROCEDURE DBAS.altaPersona(
+	@dni_persona bigint ,
+	@nombre_persona varchar(100),
+	@apellido_persona varchar(100),
+	@direccion_persona varchar(100),
+	@telefono_persona varchar(50),
+	@mail_persona varchar(100),
+	@fecha_nacimiento datetime,
+	@ID_persona bigint OUT)
+AS
+BEGIN
+	
+	INSERT INTO DBAS.personas(dni_persona,nombre_persona,apellido_persona,direccion_persona,telefono_persona,mail_persona,fecha_nacimiento)
+	VALUES( @dni_persona,@nombre_persona,@apellido_persona,@direccion_persona,@telefono_persona,@mail_persona,@fecha_nacimiento)
+
+	SET @ID_persona = SCOPE_IDENTITY()
+
+END;
+GO
+
+CREATE PROCEDURE DBAS.altaCliente(@dni_persona bigint ,
+	@nombre_persona varchar(100),
+	@apellido_persona varchar(100),
+	@direccion_persona varchar(100),
+	@telefono_persona varchar(50),
+	@mail_persona varchar(100),
+	@fecha_nacimiento datetime)
+AS
+BEGIN
+	DECLARE @ID_persona bigint
+
+	EXECUTE DBAS.altaPersona @dni_persona,@nombre_persona,@apellido_persona,@direccion_persona,	@telefono_persona,@mail_persona,@fecha_nacimiento, @ID_persona OUT
+
+	INSERT INTO DBAS.clientes(id_persona)
+	VALUES (@ID_persona)
+
+END;
+GO
+
+CREATE PROCEDURE DBAS.altaAeronave(@ID_fabricante bigint, @ID_servicio bigint, @matricula_aeronave varchar(100), @modelo varchar(100), @KG_disponible float(24), @butacas_pasillo bigint, @butacas_ventana bigint, @piso tinyint)
+AS
+BEGIN
+	DECLARE @mensaje_error varchar(100)
+	DECLARE @nro_butaca bigint
+	
+	SET @nro_butaca = 0
+	
+	IF EXISTS(SELECT * FROM DBAS.aeronaves WHERE matricula_aeronave = @matricula_aeronave)
+	BEGIN
+		SET @mensaje_error = 'La matricula ingresada ya existe'
+		RAISERROR(@mensaje_error, 12, 1)
+	END
+	ELSE
+	BEGIN
+		INSERT INTO DBAS.aeronaves(matricula_aeronave, modelo_aeronave, kg_disponible_encomienda, id_fabricante, id_servicio)
+		VALUES(@matricula_aeronave, @modelo, @KG_disponible, @ID_fabricante, @ID_servicio)
+
+		WHILE(@butacas_pasillo = 0)
+		BEGIN
+			SET @nro_butaca += 1
+
+			INSERT INTO DBAS.butacas(matricula_aeronave, numero_butaca, piso_butaca, tipo_butaca)
+			VALUES(@matricula_aeronave, @nro_butaca, @piso, 'Pasillo')
+
+			SET @butacas_pasillo -= 1
+		END
+
+		WHILE(@butacas_ventana = 0)
+		BEGIN
+			SET @nro_butaca += 1
+
+			INSERT INTO DBAS.butacas(matricula_aeronave, numero_butaca, piso_butaca, tipo_butaca)
+			VALUES(@matricula_aeronave, @nro_butaca, @piso, 'Ventanilla')
+
+			SET @butacas_ventana -= 1
+		END
+
+		INSERT INTO DBAS.butacas(matricula_aeronave, numero_butaca, piso_butaca, tipo_butaca)
+		VALUES(@matricula_aeronave, 0, 0, '0')
+
+	END
+END;
+GO
+
+
+CREATE PROCEDURE DBAS.cancelacionPasaje(@motivo_cancelacion varchar(100), @ID_cancelacion bigint OUT)
+AS
+BEGIN
+	INSERT INTO DBAS.cancelaciones(fecha_devolucion, motivo_cancelacion)
+	VALUES(GETDATE(), @motivo_cancelacion)
+
+	SET @ID_cancelacion = SCOPE_IDENTITY()
+
+END;
+GO
+
+CREATE PROCEDURE DBAS.cancelacionPasajesBajaAeronave(@fecha datetime, @motivo_cancelacion varchar(100), @matricula_aeronave varchar(100), @tipo_cancelacion tinyint)
+AS
+BEGIN
+	DECLARE @ID_cancelacion bigint
+
+	EXECUTE DBAS.cancelacionPasaje @motivo_cancelacion, @ID_cancelacion OUT
+
+	IF(@tipo_cancelacion = 1)
+	BEGIN
+		UPDATE tablaPasajes SET tablaPasajes.id_cancelacion = @ID_cancelacion 
+		FROM  DBAS.viajes tablaViajes, DBAS.butacas tablaButacasPasajes, DBAS.pasajes tablaPasajes
+		WHERE tablaViajes.fecha_llegada IS NULL AND tablaViajes.fecha_llegada_estimada < @fecha 
+		AND tablaPasajes.id_viaje = tablaViajes.id_viaje
+		AND tablaButacasPasajes.matricula_aeronave = @matricula_aeronave AND tablaButacasPasajes.id_butaca = tablaPasajes.id_butaca
+	
+		UPDATE tablaEncomiendas SET tablaEncomiendas.id_cancelacion = @ID_cancelacion 
+		FROM  DBAS.viajes tablaViajes, DBAS.butacas tablaButacasEncomiendas, DBAS.encomiendas tablaEncomiendas
+		WHERE tablaViajes.fecha_llegada IS NULL AND tablaViajes.fecha_llegada_estimada < @fecha 
+		AND tablaEncomiendas.id_viaje = tablaViajes.id_viaje
+		AND tablaButacasEncomiendas.matricula_aeronave = @matricula_aeronave AND tablaEncomiendas.id_butaca = tablaEncomiendas.id_butaca
+	
+	END
+	ELSE
+	BEGIN
+
+		UPDATE tablaPasajes SET tablaPasajes.id_cancelacion = @ID_cancelacion 
+		FROM  DBAS.viajes tablaViajes, DBAS.butacas tablaButacasPasajes, DBAS.pasajes tablaPasajes
+		WHERE tablaViajes.fecha_llegada IS NULL AND tablaViajes.fecha_salida >= @fecha 
+		AND tablaPasajes.id_viaje = tablaViajes.id_viaje
+		AND tablaButacasPasajes.matricula_aeronave = @matricula_aeronave AND tablaButacasPasajes.id_butaca = tablaPasajes.id_butaca
+		
+		UPDATE tablaEncomiendas SET tablaEncomiendas.id_cancelacion = @ID_cancelacion 
+		FROM  DBAS.viajes tablaViajes, DBAS.butacas tablaButacasEncomiendas, DBAS.encomiendas tablaEncomiendas
+		WHERE tablaViajes.fecha_llegada IS NULL AND tablaViajes.fecha_salida >= @fecha 
+		AND tablaEncomiendas.id_viaje = tablaViajes.id_viaje
+		AND tablaButacasEncomiendas.matricula_aeronave = @matricula_aeronave AND tablaEncomiendas.id_butaca = tablaEncomiendas.id_butaca
+		
+	END
+END;
+GO

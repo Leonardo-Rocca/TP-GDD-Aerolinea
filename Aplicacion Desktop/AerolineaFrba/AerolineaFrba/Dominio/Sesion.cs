@@ -8,6 +8,8 @@ using AerolineaFrba.FormsPrincipales;
 using AerolineaFrba.Abm_Rol;
 using AerolineaFrba.Abm_Ciudad;
 using AerolineaFrba.Abm_Ruta;
+using AerolineaFrba.Abm_Aeronave;
+
 
 namespace AerolineaFrba.Dominio
 {
@@ -38,6 +40,9 @@ namespace AerolineaFrba.Dominio
 
              funcionalidadesDisponibles.Add(new Funcionalidades(99, "ABM Rutas",
                 new ABMGenericoForm("ABM Rutas", new crearRutaForm(), new crearRutaForm(), new crearRutaForm())));
+
+             funcionalidadesDisponibles.Add(new Funcionalidades(99, "ABM Aeronave",
+               new ABMGenericoForm("ABM Aeronave", new AltaAeronave(), new crearRutaForm(), new crearRutaForm())));
         }
 
         public List<Funcionalidades> getFuncionalidadesDisponibles{

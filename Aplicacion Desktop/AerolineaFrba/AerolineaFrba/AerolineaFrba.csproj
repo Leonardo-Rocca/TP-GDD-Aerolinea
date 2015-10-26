@@ -62,11 +62,17 @@
     <Compile Include="Abm Ciudad\crearCiudadForm.Designer.cs">
       <DependentUpon>crearCiudadForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Abm Ciudad\Form1.cs">
+    <Compile Include="Abm Ciudad\ModificarCiudadForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Abm Ciudad\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Abm Ciudad\ModificarCiudadForm.Designer.cs">
+      <DependentUpon>ModificarCiudadForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Abm Ciudad\modificarEliminarCityForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Abm Ciudad\modificarEliminarCityForm.Designer.cs">
+      <DependentUpon>modificarEliminarCityForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Abm Ciudad\ListadoCiudad.cs">
       <SubType>Form</SubType>
@@ -221,6 +227,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Abm Ciudad\ListadoCiudad.resx">
       <DependentUpon>ListadoCiudad.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Abm Ciudad\ModificarCiudadForm.resx">
+      <DependentUpon>ModificarCiudadForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Abm Ciudad\modificarEliminarCityForm.resx">
+      <DependentUpon>modificarEliminarCityForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Abm Rol\CrearRolForm.resx">
       <DependentUpon>CrearRolForm.cs</DependentUpon>

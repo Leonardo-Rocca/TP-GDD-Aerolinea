@@ -31,6 +31,16 @@
             this.label7 = new System.Windows.Forms.Label();
             this.lblErrores = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.textKdDisponibles = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.textButacasPasillo = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.textButacasVentanilla = new System.Windows.Forms.TextBox();
+            this.textPisos = new System.Windows.Forms.TextBox();
+            this.comboBoxFabricante = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.comboBoxServicio = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.txtMatricula = new System.Windows.Forms.TextBox();
@@ -40,16 +50,6 @@
             this.butAceptar = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
-            this.comboBoxFabricante = new System.Windows.Forms.ComboBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.textPisos = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.textButacasPasillo = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.textButacasVentanilla = new System.Windows.Forms.TextBox();
-            this.textKdDisponibles = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -95,6 +95,89 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Formulario de Alta";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // textKdDisponibles
+            // 
+            this.textKdDisponibles.Location = new System.Drawing.Point(188, 164);
+            this.textKdDisponibles.Name = "textKdDisponibles";
+            this.textKdDisponibles.Size = new System.Drawing.Size(116, 20);
+            this.textKdDisponibles.TabIndex = 63;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(17, 167);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(160, 13);
+            this.label4.TabIndex = 62;
+            this.label4.Text = "Kg disponibles para encomienda";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(318, 136);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(53, 13);
+            this.label12.TabIndex = 61;
+            this.label12.Text = "Ventanilla";
+            // 
+            // textButacasPasillo
+            // 
+            this.textButacasPasillo.Location = new System.Drawing.Point(167, 133);
+            this.textButacasPasillo.Name = "textButacasPasillo";
+            this.textButacasPasillo.Size = new System.Drawing.Size(81, 20);
+            this.textButacasPasillo.TabIndex = 60;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(123, 137);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(37, 13);
+            this.label13.TabIndex = 59;
+            this.label13.Text = "Pasillo";
+            // 
+            // textButacasVentanilla
+            // 
+            this.textButacasVentanilla.Location = new System.Drawing.Point(376, 133);
+            this.textButacasVentanilla.Name = "textButacasVentanilla";
+            this.textButacasVentanilla.Size = new System.Drawing.Size(79, 20);
+            this.textButacasVentanilla.TabIndex = 58;
+            // 
+            // textPisos
+            // 
+            this.textPisos.Location = new System.Drawing.Point(121, 99);
+            this.textPisos.Name = "textPisos";
+            this.textPisos.Size = new System.Drawing.Size(183, 20);
+            this.textPisos.TabIndex = 56;
+            // 
+            // comboBoxFabricante
+            // 
+            this.comboBoxFabricante.FormattingEnabled = true;
+            this.comboBoxFabricante.Location = new System.Drawing.Point(415, 66);
+            this.comboBoxFabricante.Name = "comboBoxFabricante";
+            this.comboBoxFabricante.Size = new System.Drawing.Size(239, 21);
+            this.comboBoxFabricante.TabIndex = 54;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(17, 102);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(76, 13);
+            this.label5.TabIndex = 55;
+            this.label5.Text = "Cantidad pisos";
+            this.label5.Click += new System.EventHandler(this.label5_Click_1);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(317, 71);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(94, 13);
+            this.label6.TabIndex = 53;
+            this.label6.Text = "Nombre fabricante";
+            this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
             // comboBoxServicio
             // 
@@ -164,6 +247,7 @@
             this.button2.TabIndex = 47;
             this.button2.Text = "Cancelar";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // label8
             // 
@@ -172,89 +256,6 @@
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(0, 13);
             this.label8.TabIndex = 46;
-            // 
-            // comboBoxFabricante
-            // 
-            this.comboBoxFabricante.FormattingEnabled = true;
-            this.comboBoxFabricante.Location = new System.Drawing.Point(415, 66);
-            this.comboBoxFabricante.Name = "comboBoxFabricante";
-            this.comboBoxFabricante.Size = new System.Drawing.Size(239, 21);
-            this.comboBoxFabricante.TabIndex = 54;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(317, 71);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(94, 13);
-            this.label6.TabIndex = 53;
-            this.label6.Text = "Nombre fabricante";
-            this.label6.Click += new System.EventHandler(this.label6_Click);
-            // 
-            // textPisos
-            // 
-            this.textPisos.Location = new System.Drawing.Point(121, 99);
-            this.textPisos.Name = "textPisos";
-            this.textPisos.Size = new System.Drawing.Size(183, 20);
-            this.textPisos.TabIndex = 56;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(17, 102);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(76, 13);
-            this.label5.TabIndex = 55;
-            this.label5.Text = "Cantidad pisos";
-            this.label5.Click += new System.EventHandler(this.label5_Click_1);
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(318, 136);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(53, 13);
-            this.label12.TabIndex = 61;
-            this.label12.Text = "Ventanilla";
-            // 
-            // textButacasPasillo
-            // 
-            this.textButacasPasillo.Location = new System.Drawing.Point(167, 133);
-            this.textButacasPasillo.Name = "textButacasPasillo";
-            this.textButacasPasillo.Size = new System.Drawing.Size(81, 20);
-            this.textButacasPasillo.TabIndex = 60;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(123, 137);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(37, 13);
-            this.label13.TabIndex = 59;
-            this.label13.Text = "Pasillo";
-            // 
-            // textButacasVentanilla
-            // 
-            this.textButacasVentanilla.Location = new System.Drawing.Point(376, 133);
-            this.textButacasVentanilla.Name = "textButacasVentanilla";
-            this.textButacasVentanilla.Size = new System.Drawing.Size(79, 20);
-            this.textButacasVentanilla.TabIndex = 58;
-            // 
-            // textKdDisponibles
-            // 
-            this.textKdDisponibles.Location = new System.Drawing.Point(188, 164);
-            this.textKdDisponibles.Name = "textKdDisponibles";
-            this.textKdDisponibles.Size = new System.Drawing.Size(116, 20);
-            this.textKdDisponibles.TabIndex = 63;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(17, 167);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(160, 13);
-            this.label4.TabIndex = 62;
-            this.label4.Text = "Kg disponibles para encomienda";
             // 
             // AltaAeronave
             // 

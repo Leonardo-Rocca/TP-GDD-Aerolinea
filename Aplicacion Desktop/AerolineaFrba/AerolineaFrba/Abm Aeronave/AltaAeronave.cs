@@ -119,24 +119,32 @@ namespace AerolineaFrba.Abm_Aeronave
                
             }
 
-
-
+            int a = Convert.ToInt32(textButacasPasillo.Text);
+            int b = Convert.ToInt32(textButacasVentanilla.Text);
+            int c = Convert.ToInt32(textPisos.Text);
+            if (a < 1 || b < 1)
             {
-
-                DataTable dta = (new ConexionSQL()).cargarTablaSQL("select distinct matricula_aeronave FROM DBAS.aeronaves where matricula_aeronave like '" + txtMatricula.Text + "'");
-                if (dta.Rows.Count != 0)
-                {
-                    MessageBox.Show("El numero de matricula ya existe", "Matricula invalida", MessageBoxButtons.OK);
-                    return false;
-                }
-
+                MessageBox.Show("Cantidad de butacas invalida", "Error", MessageBoxButtons.OK);
+                return false;
             }
+            if (c < 1)
+            {
+                MessageBox.Show("Cantidad de pisos invalida", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
             return true;
         }
 
         private bool estaCompleto()
         {
             return (txtMatricula.TextLength != 0 && txtModelo.TextLength != 0 && textPisos.TextLength != 0 && textKdDisponibles.TextLength != 0 && textButacasVentanilla.TextLength != 0 && textButacasPasillo.TextLength != 0); //&& comboBoxFabricante.SelectedIndex != -1 && comboBoxServicio.SelectedIndex != -1);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            iniciar();
+            this.Hide();
         }
     }
 }

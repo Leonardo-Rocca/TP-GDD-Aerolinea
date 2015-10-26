@@ -12,6 +12,8 @@ namespace AerolineaFrba.FormsPrincipales
 {
     public partial class FormGenerico : Form
     {
+        FormGenerico formAnterior;
+
         public FormGenerico()
         {
             InitializeComponent();
@@ -20,6 +22,11 @@ namespace AerolineaFrba.FormsPrincipales
         private void FormGenerico_Load(object sender, EventArgs e)
         {
 
+        }
+
+        public void setFormAnterior(FormGenerico formulario)
+        {
+            this.formAnterior = formulario;
         }
 
         public void obtenerResultado(object contenido,Form quienLoEnvia){

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using AerolineaFrba.Dominio;
+using AerolineaFrba.FormsPrincipales;
 
 namespace AerolineaFrba.Abm_Rol
 {
@@ -105,6 +106,15 @@ namespace AerolineaFrba.Abm_Rol
         private void txtNombreRol_TextChanged(object sender, EventArgs e)
         {
            nombreRol = txtNombreRol.Text.ToString();
+        }
+        private void txtCaracter_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!(char.IsLetter(e.KeyChar)) && (e.KeyChar != (char)Keys.Back))
+            {
+                MessageBox.Show("Solo se permiten letras", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                e.Handled = true;
+                return;
+            }
         }
 
         private void label3_Click(object sender, EventArgs e)

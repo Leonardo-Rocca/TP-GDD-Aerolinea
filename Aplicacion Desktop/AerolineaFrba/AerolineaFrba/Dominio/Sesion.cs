@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data;
 
 using AerolineaFrba.FormsPrincipales;
 using AerolineaFrba.Abm_Rol;
@@ -23,6 +24,13 @@ namespace AerolineaFrba.Dominio
            //("chequear_login", username, password);
        
           //  Sesion.Usuario = new Usuario(Convert.ToInt32(tablaUsuario.Rows[0]["id_usuario"]), tablaUsuario.Rows[0]["username"].ToString());
+            if (rol == "Administrador")
+            {
+          
+                 string comando = "execute dbas.loginUsuario '"+ username +"', '" +password+ "'"; 
+                 DataTable dt =  (new ConexionSQL()).cargarTablaSQL(comando);
+               
+            }
 
             if (username == "" && password == "") //---> es usuario
             {

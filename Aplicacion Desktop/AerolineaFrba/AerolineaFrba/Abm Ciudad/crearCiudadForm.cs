@@ -25,6 +25,20 @@ namespace AerolineaFrba.Abm_Ciudad
                 MessageBox.Show("Falta agregar nombre", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct nombre_ciudad FROM  DBAS.ciudades WHERE nombre_ciudad LIKE '_" + txtNombreCity.Text + "'OR nombre_ciudad LIKE '" + txtNombreCity.Text + "' ");
+            //--pregunto si hay alguna fila cuyo nombre coincida con el ingresado-- 
+            if (dt.Rows.Count == 0)
+            {
+                //ALTA DE CIUDADES 
+                string comando = "INSERT INTO DBAS.ciudades (nombre_ciudad) values ('" + txtNombreCity.Text + "')";
+                (new ConexionSQL()).ejecutarComandoSQL(comando);
+                MessageBox.Show("Ciudad Agregada (posta)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else
+            {
+                MessageBox.Show("La ciudad ya existe", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             MessageBox.Show("Ciudad agregada", this.Text, MessageBoxButtons.OK, MessageBoxIcon.None);
             this.Hide(); //.Close();
             txtNombreCity.Text = "";

@@ -36,7 +36,7 @@ namespace AerolineaFrba.Dominio
                  new ABMGenericoForm("ABM Rol", new CrearRolForm(), new ModificarForm("Modificar Rol", "Modificar", 1), new ModificarForm("Eliminar Rol", "Eliminar", 2))));
 
              funcionalidadesDisponibles.Add(new Funcionalidades(99, "ABM Ciudades",
-                  new ABMGenericoForm("ABM Ciudades", new crearCiudadForm(), null, null)));
+                  new ABMGenericoForm("ABM Ciudades", new crearCiudadForm(), new modificarEliminarCityForm("Modificar ciudad","Modificar",1), new modificarEliminarCityForm("Eliminar Ciudad","Eliminar",2) )));
 
              funcionalidadesDisponibles.Add(new Funcionalidades(99, "ABM Rutas",
                 new ABMGenericoForm("ABM Rutas", new crearRutaForm(), new crearRutaForm(), new crearRutaForm())));

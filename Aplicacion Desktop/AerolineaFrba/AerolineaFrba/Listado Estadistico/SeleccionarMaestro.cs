@@ -16,5 +16,10 @@ namespace AerolineaFrba.Listado_Estadistico
         {
             InitializeComponent();
         }
+
+        private void buttonBuscar_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -12,6 +12,7 @@ namespace AerolineaFrba.Abm_Aeronave
 {
     public partial class ListadoAeronave : Listado_Estadistico.ListadoMaestro
     {
+        public ModificarAeronave modifAnterior;
 
         public ListadoAeronave()
         {
@@ -152,7 +153,7 @@ namespace AerolineaFrba.Abm_Aeronave
                 return;
             }
 
-            string query = "select distinct matricula_aeronave,numero_aeronave,modelo_aeronave FROM DBAS.aeronaves a, DBAS.pasajesEncomiendas p";
+            string query = "select distinct matricula_aeronave,numero_aeronave,modelo_aeronave,kg_disponible_encomienda,id_fabricante,id_servicio FROM DBAS.aeronaves a, DBAS.pasajesEncomiendas p";
             Boolean yaTieneCondicion = false;
             query = query + " WHERE ";
             if (txtMatricula.TextLength != 0)
@@ -287,5 +288,41 @@ namespace AerolineaFrba.Abm_Aeronave
             obtenerRespuesta(dataGridView1);
         }
 
+        public void cargarModificado(ModificarAeronave form)
+        {
+            modifAnterior = form;
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dataGridView1.CurrentCell.ColumnIndex == dataGridView1.Columns.Count - 1) { completar(dataGridView1); }
+        }
+
+        private void completar(DataGridView dataGridView1)
+        {
+            string matricula = dataGridView1[0, dataGridView1.CurrentCell.RowIndex].Value.ToString();
+            string modelo = dataGridView1[2, dataGridView1.CurrentCell.RowIndex].Value.ToString();
+            string idTipoServicio = dataGridView1[5, dataGridView1.CurrentCell.RowIndex].Value.ToString();
+            string idFabricante = dataGridView1[4, dataGridView1.CurrentCell.RowIndex].Value.ToString();
+            string kg = dataGridView1[3, dataGridView1.CurrentCell.RowIndex].Value.ToString();
+            string fabricante = ((new ConexionSQL()).cargarTablaSQL("select distinct nombre_fabricante FROM DBAS.fabricantes where id_fabricante = " + idFabricante)).Rows[0][0].ToString();
+            string tipoServicio = ((new ConexionSQL()).cargarTablaSQL("select distinct tipo_servicio FROM DBAS.servicios where id_servicio = " + idTipoServicio)).Rows[0][0].ToString();
+            DataTable dt = ((new ConexionSQL()).cargarTablaSQL("select count(b1.id_butaca),count(b2.id_butaca),count(distinct b1.piso_butaca) from dbas.butacas b1, dbas.butacas b2 where b1.tipo_butaca like 'Pasillo' and b2.tipo_butaca like 'Ventanilla' and b1.matricula_aeronave like '"+matricula+"' and b2.matricula_aeronave like '"+matricula+"'"));
+            string cantPasillo = dt.Rows[0][0].ToString();
+            string cantVentanila = dt.Rows[0][1].ToString();
+            string cantPisos = dt.Rows[0][2].ToString();
+
+
+          
+            ((TextBox)modifAnterior.Controls["txtMatricula"]).Text = matricula;
+            ((TextBox)modifAnterior.Controls["txtModelo"]).Text = modelo;
+            ((TextBox)modifAnterior.Controls["textPisos"]).Text = cantPisos;
+            ((TextBox)modifAnterior.Controls["textButacasPasillo"]).Text = cantPasillo;
+            ((TextBox)modifAnterior.Controls["textButacasVentanilla"]).Text = cantVentanila;
+            ((TextBox)modifAnterior.Controls["textKdDisponibles"]).Text = kg;
+            ((ComboBox)modifAnterior.Controls["comboBoxServicio"]).Text = tipoServicio;
+            ((ComboBox)modifAnterior.Controls["comboBoxFabricante"]).Text = fabricante;
+        
+        }
     }
 }

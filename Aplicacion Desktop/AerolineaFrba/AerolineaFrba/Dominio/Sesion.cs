@@ -42,7 +42,7 @@ namespace AerolineaFrba.Dominio
                 new ABMGenericoForm("ABM Rutas", new crearRutaForm(), new crearRutaForm(), new crearRutaForm())));
 
              funcionalidadesDisponibles.Add(new Funcionalidades(99, "ABM Aeronave",
-               new ABMGenericoForm("ABM Aeronave", new AltaAeronave(), new crearRutaForm(), new crearRutaForm())));
+               new ABMGenericoForm("ABM Aeronave", new AltaAeronave(), new ModificarAeronave(), new crearRutaForm())));
         }
 
         public List<Funcionalidades> getFuncionalidadesDisponibles{

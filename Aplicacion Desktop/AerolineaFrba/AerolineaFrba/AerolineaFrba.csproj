@@ -161,6 +161,12 @@
     <Compile Include="FormsPrincipales\ABMGenericoForm.Designer.cs">
       <DependentUpon>ABMGenericoForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormsPrincipales\FormGenerico.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsPrincipales\FormGenerico.Designer.cs">
+      <DependentUpon>FormGenerico.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormsPrincipales\Redireccionador.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -261,6 +267,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormsPrincipales\ABMGenericoForm.resx">
       <DependentUpon>ABMGenericoForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsPrincipales\FormGenerico.resx">
+      <DependentUpon>FormGenerico.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormsPrincipales\Redireccionador.resx">
       <DependentUpon>Redireccionador.cs</DependentUpon>

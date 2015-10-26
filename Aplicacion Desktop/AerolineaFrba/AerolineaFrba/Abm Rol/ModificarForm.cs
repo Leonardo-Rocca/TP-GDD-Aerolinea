@@ -8,9 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using AerolineaFrba.FormsPrincipales;
 namespace AerolineaFrba.Abm_Rol
 {
-    public partial class ModificarForm : Form
+    public partial class ModificarForm : FormGenerico
     {
         int tipoDeForm; //1=modificar 2=eliminar
 

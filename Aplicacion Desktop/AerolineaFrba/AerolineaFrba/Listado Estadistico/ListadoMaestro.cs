@@ -8,12 +8,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using AerolineaFrba.FormsPrincipales;
+
 namespace AerolineaFrba.Listado_Estadistico
 {
     public partial class ListadoMaestro : Form
     {
-        public Form formularioAnterior;
-     
+        public FormGenerico formularioAnterior;
+        int numeroListado; //para cuando los forms piden distintos listados
 
         public ListadoMaestro()
         {
@@ -89,16 +91,33 @@ namespace AerolineaFrba.Listado_Estadistico
 
         }
 
-        public void setFormAnteriorSup(Form formulario) {
+        public void setFormAnteriorSup(FormGenerico formulario) {
             this.formularioAnterior = formulario;
         }
+
+        public void setNumeroListado(int n){
+              this.numeroListado = n;
+        }
+
+        public int getNumeroListado()
+        {
+            return numeroListado;
+        }     
 
         public void obtenerRespuesta(DataGridView dataGrid)
         {
             string contenido = dataGrid[dataGrid.CurrentCell.ColumnIndex-1, dataGrid.CurrentCell.RowIndex].Value.ToString();
-            MessageBox.Show(contenido, "Fallo la busqueda", MessageBoxButtons.OK);
-
-          // formularioAnterior.obtenerResultado(contenido);
+         
+        //    this.formularioAnterior.setBufferSeleccion( contenido);
+            ((TextBox)formularioAnterior.Controls[buffer.Name]).Text = contenido;
+            this.Hide();
+       //    formularioAnterior.obtenerResultado(contenido,this);
         }
+        public void setBuffer(ref TextBox bufferRespuesta)
+        {
+            this.buffer = bufferRespuesta;
+        }
+
+        public TextBox buffer;// { get; set; }
     }
 }

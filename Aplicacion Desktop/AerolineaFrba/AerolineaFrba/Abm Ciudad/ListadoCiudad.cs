@@ -71,6 +71,7 @@ private void iniciar()
 private void butAceptar_Click(object sender, EventArgs e)
 {
     obtenerRespuesta(dataGridView2);
+    this.Close();
 }
 
 private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -81,6 +82,8 @@ private void dataGridView2_CellContentClick(object sender, DataGridViewCellEvent
     }
     }
 
-    }
+
+
+       }
 
 }

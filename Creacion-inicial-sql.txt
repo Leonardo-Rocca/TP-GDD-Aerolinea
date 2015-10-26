@@ -172,7 +172,7 @@ GO
 CREATE TABLE DBAS.usuarios (
 	id_usuario bigint PRIMARY KEY,
 	username varchar(50) UNIQUE,
-	password varchar(50),
+	password varchar(250),
 	intentos_fallidos tinyint default 0,
 	habilitado tinyint default 1,
 );

@@ -52,9 +52,9 @@ namespace AerolineaFrba.Login
                 redirec.Show();
                 this.Hide();
                       }
-                      catch
+                      catch(Exception er)
                       {
-                          MessageBox.Show("El usuario y contraseña no coinciden");
+                          MessageBox.Show(er.Message );
                       }
             
             }

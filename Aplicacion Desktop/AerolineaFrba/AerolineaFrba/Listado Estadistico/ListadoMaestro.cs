@@ -15,8 +15,7 @@ namespace AerolineaFrba.Listado_Estadistico
     public partial class ListadoMaestro : Form
     {
         public FormGenerico formularioAnterior;
-        int numeroListado; //para cuando los forms piden distintos listados
-
+       
         public ListadoMaestro()
         {
        
@@ -94,15 +93,6 @@ namespace AerolineaFrba.Listado_Estadistico
         public void setFormAnteriorSup(FormGenerico formulario) {
             this.formularioAnterior = formulario;
         }
-
-        public void setNumeroListado(int n){
-              this.numeroListado = n;
-        }
-
-        public int getNumeroListado()
-        {
-            return numeroListado;
-        }     
 
         public void obtenerRespuesta(DataGridView dataGrid)
         {

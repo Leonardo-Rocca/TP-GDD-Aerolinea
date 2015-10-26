@@ -34,6 +34,7 @@
             this.buttonCancelar = new System.Windows.Forms.Button();
             this.comboBoxCity = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.resultadoFiltro = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // lbtitulo
@@ -97,11 +98,20 @@
             this.label2.TabIndex = 11;
             this.label2.Text = "Seleccione Ciudad";
             // 
+            // resultadoFiltro
+            // 
+            this.resultadoFiltro.Location = new System.Drawing.Point(522, 162);
+            this.resultadoFiltro.Name = "resultadoFiltro";
+            this.resultadoFiltro.Size = new System.Drawing.Size(51, 20);
+            this.resultadoFiltro.TabIndex = 16;
+            this.resultadoFiltro.TextChanged += new System.EventHandler(this.resultadoFiltro_TextChanged);
+            // 
             // modificarEliminarCityForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(624, 369);
+            this.Controls.Add(this.resultadoFiltro);
             this.Controls.Add(this.btFiltro);
             this.Controls.Add(this.buttonGuardar);
             this.Controls.Add(this.buttonCancelar);
@@ -123,5 +133,6 @@
         private System.Windows.Forms.Button buttonCancelar;
         private System.Windows.Forms.ComboBox comboBoxCity;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox resultadoFiltro;
     }
 }

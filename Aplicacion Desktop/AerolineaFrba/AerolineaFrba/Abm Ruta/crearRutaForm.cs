@@ -43,7 +43,6 @@ namespace AerolineaFrba.Abm_Ruta
             ListadoCiudad lOrigen = new ListadoCiudad();
            lOrigen.setFormAnteriorSup(this);
            lOrigen.setBuffer(ref txtCOrigen);
-           //lOrigen.setNumeroListado(1);  //EL PRIMER SELECCIONAR
            lOrigen.Show();
 
            
@@ -55,8 +54,7 @@ namespace AerolineaFrba.Abm_Ruta
             ListadoCiudad lOrigen = new ListadoCiudad();
             lOrigen.setFormAnteriorSup(this);
             lOrigen.setBuffer(ref txtCDestino);
-            lOrigen.setNumeroListado(2);  //EL PRIMER SELECCIONAR
-            lOrigen.Show();
+             lOrigen.Show();
         }
 
         public void obtenerResultado(object contenido, Form emisor)

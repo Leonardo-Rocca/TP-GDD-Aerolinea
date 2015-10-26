@@ -8,9 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using AerolineaFrba.FormsPrincipales;
 namespace AerolineaFrba.Abm_Ciudad
 {
-    public partial class modificarEliminarCityForm : Form
+    public partial class modificarEliminarCityForm : FormGenerico
     {
         int tipoDeForm; //1 modificar ,2 eliminar
 
@@ -22,6 +23,7 @@ namespace AerolineaFrba.Abm_Ciudad
             lbtitulo.Text = nombre;
             buttonGuardar.Text = nombreBoton;
             cargarComboSeleccion();
+            resultadoFiltro.Visible = false;
         }
 
         public void cargarComboSeleccion()
@@ -54,8 +56,15 @@ namespace AerolineaFrba.Abm_Ciudad
 
         private void btFiltro_Click(object sender, EventArgs e)
         {
-            (new ListadoCiudad()).Show();
+            ListadoCiudad lOrigen = new ListadoCiudad();
+            lOrigen.setFormAnteriorSup(this);
+            lOrigen.setBuffer(ref resultadoFiltro);
+            lOrigen.Show();
+        }
 
+        private void resultadoFiltro_TextChanged(object sender, EventArgs e)
+        {
+            comboBoxCity.Text = resultadoFiltro.Text;
         }
     }
 }

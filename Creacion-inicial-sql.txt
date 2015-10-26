@@ -172,7 +172,7 @@ GO
 CREATE TABLE DBAS.usuarios (
 	id_usuario bigint PRIMARY KEY,
 	username varchar(50) UNIQUE,
-	password varchar(50),
+	password varchar(250),
 	intentos_fallidos tinyint default 0,
 	habilitado tinyint default 1,
 );
@@ -663,7 +663,7 @@ SET @id_p = SCOPE_IDENTITY()
 
 -- Se inserta el usuario admin, password w23e
 INSERT INTO DBAS.usuarios(id_usuario,username,password)
-VALUES (@id_p,'admin','5rhwUL/LgUP8uNsBcKTcntANkE3dPipK0bHo3A/cm+c=')
+VALUES (@id_p,'admin','e6b87050bfcb8143fcb8db0170a4dc9ed00d904ddd3e2a4ad1b1e8dc0fdc')
 GO
 
 -- Se le asigna el rol administrador general al usuario admin
@@ -783,7 +783,7 @@ SELECT * FROM DBAS.obtenerFuncionalidadesAsociadas('Administrador General')
 GO
 */
 
-CREATE PROCEDURE DBAS.logginUsuario(@usuario varchar(100), @pass varchar(100))
+CREATE PROCEDURE DBAS.loginUsuario(@usuario varchar(100), @pass varchar(100))
 AS
 BEGIN
 	DECLARE @U_id bigint

@@ -100,6 +100,7 @@
             this.txtCOrigen.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtCOrigen.Location = new System.Drawing.Point(229, 259);
             this.txtCOrigen.Name = "txtCOrigen";
+            this.txtCOrigen.ReadOnly = true;
             this.txtCOrigen.Size = new System.Drawing.Size(319, 26);
             this.txtCOrigen.TabIndex = 9;
             this.txtCOrigen.TextChanged += new System.EventHandler(this.txtCOrigen_TextChanged);
@@ -131,6 +132,7 @@
             this.txtCDestino.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtCDestino.Location = new System.Drawing.Point(229, 324);
             this.txtCDestino.Name = "txtCDestino";
+            this.txtCDestino.ReadOnly = true;
             this.txtCDestino.Size = new System.Drawing.Size(319, 26);
             this.txtCDestino.TabIndex = 12;
             // 

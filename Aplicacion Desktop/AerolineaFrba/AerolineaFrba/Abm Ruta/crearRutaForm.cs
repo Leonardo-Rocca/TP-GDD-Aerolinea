@@ -33,9 +33,25 @@ namespace AerolineaFrba.Abm_Ruta
 
         private void buttonGuardar_Click(object sender, EventArgs e)
         {
+            if (chkListaServicios.CheckedIndices.Count == 0)
+            {
+                MessageBox.Show("Falta elegir tipos de servicio", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                return;
+            }
+            if (txtCDestino.Text.Equals(string.Empty) || txtCodigo.Text.Equals(string.Empty) || txtCOrigen.Text.Equals(string.Empty) || txtPrecioPasaje.Text.Equals(string.Empty) || txtPregiokg.Text.Equals(string.Empty)){
+                MessageBox.Show("Debe completar todos los campos", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            agregarRuta();
             MessageBox.Show("Ruta agregada (dammy)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.None);
             this.Hide(); 
             return;
+        }
+
+        private void agregarRuta()
+        {
+            //TO DO
+            string comando = "INSERT INTO DBAS.rutas";
         }
 
         private void btsOringen_Click(object sender, EventArgs e)

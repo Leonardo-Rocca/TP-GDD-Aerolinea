@@ -1014,3 +1014,54 @@ BEGIN
 	END
 END;
 GO
+
+CREATE VIEW DBAS.rolesConFuncionalidades AS
+SELECT tablaRoles.nombre_rol, tablaRporF.id_funcionalidad FROM DBAS.rolesPorFuncionalidad tablaRporF, DBAS.roles tablaRoles 
+WHERE tablaRporF.id_rol = tablaRoles.id_rol
+GO
+
+CREATE TRIGGER DBAS.crearRolConFuncionalidades ON DBAS.rolesConFuncionalidades
+INSTEAD OF INSERT
+AS
+BEGIN
+
+	DECLARE @nombre_rol varchar(100)
+	DECLARE @id_funcionalidad bigint
+	DECLARE @id_rol bigint
+	DECLARE @valor_insertado tinyint
+
+	SET @valor_insertado = 0
+	
+	DECLARE obtenerRolYFuncionalidades CURSOR FOR
+	SELECT nombre_rol, id_funcionalidad FROM inserted
+
+	OPEN obtenerRolYFuncionalidades
+
+	-- Inserto lo que obtiene el cursor en las variables
+	FETCH NEXT FROM obtenerRolYFuncionalidades
+	INTO @nombre_rol, @id_funcionalidad
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		IF(@valor_insertado = 0)
+		BEGIN
+			INSERT INTO DBAS.roles(nombre_rol)
+			VALUES(@nombre_rol)
+
+			SET @id_rol = SCOPE_IDENTITY()
+			SET @valor_insertado =1
+		END
+
+		INSERT INTO rolesPorFuncionalidad(id_rol, id_funcionalidad)
+		VALUES(@id_rol, @id_funcionalidad)
+
+		-- Inserto lo que obtiene el cursor en las variables
+		FETCH NEXT FROM obtenerRolYFuncionalidades
+		INTO @nombre_rol, @id_funcionalidad
+
+	END
+END;
+GO
+
+
+

@@ -26,7 +26,7 @@ namespace AerolineaFrba.Abm_Ciudad
 
         public void cargarComboSeleccion()
         {
-            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct nombre_ciudad FROM DBAS.ciudades");
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct nombre_ciudad FROM DBAS.ciudades ORDER BY 1");
             comboBoxCity.DataSource = dt.DefaultView;
             comboBoxCity.ValueMember = "nombre_ciudad";
         }
@@ -36,7 +36,7 @@ namespace AerolineaFrba.Abm_Ciudad
             if (tipoDeForm == 1)
             {
                 string cadena = comboBoxCity.Text;
-                ModificarCiudadForm modify = new ModificarCiudadForm(cadena);
+                ModificarCiudadForm modify = new ModificarCiudadForm(cadena,this);
                 modify.Show();
             }
             else

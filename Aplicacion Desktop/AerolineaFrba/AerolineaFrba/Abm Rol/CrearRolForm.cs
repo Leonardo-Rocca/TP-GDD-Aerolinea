@@ -24,10 +24,19 @@ namespace AerolineaFrba.Abm_Rol
             chkListaFuncionalidades.Items.Insert(2, "aprobar");
             chkListaFuncionalidades.Items.Insert(3, "Usuarios");
             chkListaFuncionalidades.SetItemCheckState(3, CheckState.Checked);*/
+
+            cargarChkFuncionalidades();
             Funcionalidades funcion = new Funcionalidades(8, "Generar viaje", this);
-            chkListaFuncionalidades.Items.Insert(0, funcion);
+           // chkListaFuncionalidades.Items.Insert(0, funcion);
         }
    
+        private void cargarChkFuncionalidades()
+        {
+             chkListaFuncionalidades.Items.Insert(0, new Funcionalidades(0,"ABM de ROL",this));
+             chkListaFuncionalidades.Items.Insert(1, new Funcionalidades(3, "ABM de Ciudad", this));
+             chkListaFuncionalidades.Items.Insert(2, new Funcionalidades(8, "Generar viaje", this));
+        }
+       
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
@@ -57,7 +66,7 @@ namespace AerolineaFrba.Abm_Rol
 
               this.agregarRol();
             
-                MessageBox.Show("Rol agregado", this.Text, MessageBoxButtons.OK, MessageBoxIcon.None);
+                MessageBox.Show("Rol agregado (dammy)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.None);
                 this.Hide(); //.Close();
                 return;
          }
@@ -74,8 +83,7 @@ namespace AerolineaFrba.Abm_Rol
                 }
             }*/
 
-            //CAMBIAR NOMBRE DE ESTA TABLA (tempfunci)
-            string comando = "insert into tempfunci (c1,c2)select distinct '" + nombreRol + "', id_funcionalidad FROM DBAS.funcionalidades WHERE descripcion IN ( ";
+            string comando = "insert into DBAS.rolesConFuncionalidades (nombre_rol,id_funcionalidad)select distinct '" + nombreRol + "', id_funcionalidad FROM DBAS.funcionalidades WHERE descripcion IN ( ";
 
             foreach (Funcionalidades elemento in chkListaFuncionalidades.CheckedItems)
             {

@@ -13,13 +13,15 @@ namespace AerolineaFrba.Abm_Ciudad
     public partial class ModificarCiudadForm : Form
     {
         string nombreDeLaCiudadAModificar;
+        modificarEliminarCityForm formAnterior;
 
-        public ModificarCiudadForm(string ciudad)
+        public ModificarCiudadForm(string ciudad,Form elFormAnterior)
         {
             InitializeComponent();
             lbtitulo.Text = lbtitulo.Text + ciudad;
             txtNombreCiudad.Text = ciudad;
             nombreDeLaCiudadAModificar = ciudad;
+            formAnterior = (modificarEliminarCityForm)elFormAnterior;
         }
 
         private void buttonGuardar_Click(object sender, EventArgs e)
@@ -37,6 +39,7 @@ namespace AerolineaFrba.Abm_Ciudad
                 string comando = "UPDATE DBAS.ciudades  SET nombre_ciudad = '" + txtNombreCiudad.Text + "' WHERE nombre_ciudad = '" + nombreDeLaCiudadAModificar +"'";
                 (new ConexionSQL()).ejecutarComandoSQL(comando);
                 MessageBox.Show("Ciudad Modificada (posta)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                formAnterior.cargarComboSeleccion();
             }
             else
             {       //falta ver si es la misma ciudad
@@ -44,7 +47,7 @@ namespace AerolineaFrba.Abm_Ciudad
                 return;
             }
 
-            this.Hide(); //.Close();
+            this.Close();
             txtNombreCiudad.Text = "";
             return;
         }

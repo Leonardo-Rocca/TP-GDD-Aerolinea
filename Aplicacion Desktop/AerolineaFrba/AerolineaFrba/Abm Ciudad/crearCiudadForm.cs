@@ -29,8 +29,10 @@ namespace AerolineaFrba.Abm_Ciudad
             //--pregunto si hay alguna fila cuyo nombre coincida con el ingresado-- 
             if (dt.Rows.Count == 0)
             {
-                //TO-DO
-                MessageBox.Show("Ciudad Agregada (DAMMY)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //ALTA DE CIUDADES 
+                string comando = "INSERT INTO DBAS.ciudades (nombre_ciudad) values ('" + txtNombreCity.Text + "')";
+                (new ConexionSQL()).ejecutarComandoSQL(comando);
+                MessageBox.Show("Ciudad Agregada (posta)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             else
             {

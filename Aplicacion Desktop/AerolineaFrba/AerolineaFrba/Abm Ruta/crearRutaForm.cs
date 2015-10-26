@@ -59,7 +59,6 @@ namespace AerolineaFrba.Abm_Ruta
 
         public void obtenerResultado(object contenido, Form emisor)
         {
-         //   if(emisor.getNumeroListado()==1)
             MessageBox.Show("Resultado", this.Text, MessageBoxButtons.OK, MessageBoxIcon.None);
         }
 

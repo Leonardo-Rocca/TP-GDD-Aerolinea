@@ -49,6 +49,11 @@ namespace AerolineaFrba.Abm_Ciudad
             }
             else
             {
+                if (MessageBox.Show("¿Realmente desea dar de baja el rol " + comboBoxCity.Text + " ?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                {
+                    return;
+                }
+                //dar baja logica
                 navegacion.AuxiliarForm = this;
                 MessageBox.Show("Ciudad eliminada (dammy)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }

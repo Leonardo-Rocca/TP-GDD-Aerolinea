@@ -31,12 +31,17 @@ namespace AerolineaFrba.Abm_Rol
             buttonGuardar.Text = nombreBoton;
             label1.Text = nombre;
             tipoDeForm = tipo;
-
-            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct nombre_rol FROM DBAS.roles");
-            comboBoxRol.DataSource = dt.DefaultView;
-            comboBoxRol.ValueMember = "nombre_rol"; 
+            Inicializar();
 
         }
+
+        private void Inicializar()
+        {
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct nombre_rol FROM DBAS.roles");
+            comboBoxRol.DataSource = dt.DefaultView;
+            comboBoxRol.ValueMember = "nombre_rol";
+        }
+
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
@@ -55,7 +60,13 @@ namespace AerolineaFrba.Abm_Rol
             modify.Show();
             }
             else{
-                MessageBox.Show("Rol eliminado",this.Text, MessageBoxButtons.OK,MessageBoxIcon.Warning);
+             
+                if (MessageBox.Show("¿Realmente desea dar de baja el rol " + comboBoxRol.Text + "?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                {
+                    return;
+                }
+                //dar baja logica
+                MessageBox.Show("Rol eliminado (dammy)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             this.Hide(); //this.Close();  
          }

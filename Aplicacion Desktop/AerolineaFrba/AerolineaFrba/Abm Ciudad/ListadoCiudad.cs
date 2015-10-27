@@ -25,12 +25,24 @@ namespace AerolineaFrba.Abm_Ciudad
 
         private void button3_Click(object sender, EventArgs e)
         {
+
+
+            Boolean yaTieneCondicion = false;
+            string query = "select distinct nombre_ciudad FROM DBAS.ciudades";
+            if (textBoxFiltro1.TextLength == 0 && textBoxFiltro2.TextLength == 0)
+            {
+                hacerQuery(query, dataGridView2);
+                return;
+            }
+
+
              if (!this.hayAlgunFiltro())
             {
                 return;
             }
-            Boolean yaTieneCondicion = false;
-            string query = "select distinct nombre_ciudad FROM DBAS.ciudades";
+
+           
+      
             query = query + " WHERE ";
            
             if (textBoxFiltro1.TextLength != 0)
@@ -58,6 +70,7 @@ namespace AerolineaFrba.Abm_Ciudad
 
         private void button2_Click(object sender, EventArgs e)
         {
+            if (dataGridView2.DataSource != null) dataGridView2.Columns.Remove("Seleccionar");
             iniciar();
         }
 

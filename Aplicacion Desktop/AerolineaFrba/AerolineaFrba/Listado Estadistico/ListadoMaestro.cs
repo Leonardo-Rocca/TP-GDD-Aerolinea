@@ -65,24 +65,28 @@ namespace AerolineaFrba.Listado_Estadistico
         {
             ConexionSQL conn = new ConexionSQL();
             DataTable dt = conn.cargarTablaSQL(query);
+            if (dataGrid.DataSource != null) dataGrid.Columns.Remove("seleccionar"); 
+
             dataGrid.DataSource = dt;
-            DataGridViewButtonColumn boton = new DataGridViewButtonColumn();
-            boton.Name = "Seleccionar";
-            boton.HeaderText = "Seleccionar";
-            boton.Text = "Seleccionar";
-            boton.UseColumnTextForButtonValue = true;
-            dataGrid.Columns.Insert(dataGrid.Columns.Count, boton);
-            dataGrid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
-            dataGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
             if (dt.Rows.Count == 0)
             {
                 MessageBox.Show("No se han encontrado resultados en la consulta", "Fallo la busqueda", MessageBoxButtons.OK);
                 dataGrid.DataSource = null;
 
             }
-
-            dataGrid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            
+            else
+            {
+                DataGridViewButtonColumn boton = new DataGridViewButtonColumn();
+                boton.Name = "Seleccionar";
+                boton.HeaderText = "Seleccionar";
+                boton.Text = "Seleccionar";
+                boton.UseColumnTextForButtonValue = true;
+                dataGrid.Columns.Insert(dataGrid.Columns.Count, boton);
+                dataGrid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+                dataGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                dataGrid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            }
         }
 
         private void ListadoMaestro_Load(object sender, EventArgs e)

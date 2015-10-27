@@ -36,6 +36,8 @@
             this.buttonGuardar = new System.Windows.Forms.Button();
             this.chkListaFuncionalidades = new System.Windows.Forms.CheckedListBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.chkHabilitado = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -108,7 +110,7 @@
             this.chkListaFuncionalidades.FormattingEnabled = true;
             this.chkListaFuncionalidades.Location = new System.Drawing.Point(186, 128);
             this.chkListaFuncionalidades.Name = "chkListaFuncionalidades";
-            this.chkListaFuncionalidades.Size = new System.Drawing.Size(319, 175);
+            this.chkListaFuncionalidades.Size = new System.Drawing.Size(319, 156);
             this.chkListaFuncionalidades.TabIndex = 8;
             this.chkListaFuncionalidades.SelectedIndexChanged += new System.EventHandler(this.checkedListBox1_SelectedIndexChanged);
             // 
@@ -122,12 +124,34 @@
             this.label4.Text = "Hacer doble click para marcar funcionalides";
             this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(33, 278);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(80, 20);
+            this.label5.TabIndex = 10;
+            this.label5.Text = "Habilitado";
+            // 
+            // chkHabilitado
+            // 
+            this.chkHabilitado.AutoSize = true;
+            this.chkHabilitado.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkHabilitado.Location = new System.Drawing.Point(132, 284);
+            this.chkHabilitado.Name = "chkHabilitado";
+            this.chkHabilitado.Size = new System.Drawing.Size(15, 14);
+            this.chkHabilitado.TabIndex = 11;
+            this.chkHabilitado.UseVisualStyleBackColor = true;
+            // 
             // CrearRolForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.ClientSize = new System.Drawing.Size(637, 403);
+            this.Controls.Add(this.chkHabilitado);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.chkListaFuncionalidades);
             this.Controls.Add(this.buttonGuardar);
@@ -153,6 +177,8 @@
         private System.Windows.Forms.Button buttonGuardar;
         private System.Windows.Forms.CheckedListBox chkListaFuncionalidades;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.CheckBox chkHabilitado;
 
     }
 }

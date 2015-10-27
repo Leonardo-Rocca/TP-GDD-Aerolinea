@@ -141,11 +141,23 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="BDComun.cs" />
-    <Compile Include="Compra\Form1.cs">
+    <Compile Include="Compra\compraForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Compra\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Compra\compraForm.Designer.cs">
+      <DependentUpon>compraForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Compra\compraPasajeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Compra\compraPasajeForm.Designer.cs">
+      <DependentUpon>compraPasajeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Compra\datosPasajeroForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Compra\datosPasajeroForm.Designer.cs">
+      <DependentUpon>datosPasajeroForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Consulta Millas\Form1.cs">
       <SubType>Form</SubType>
@@ -160,7 +172,9 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Dominio\Funcionalidades.cs" />
+    <Compile Include="Dominio\navegacion.cs" />
     <Compile Include="Dominio\Sesion.cs" />
+    <Compile Include="Dominio\Usuario.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -285,6 +299,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Abm Ruta\ModificarEliminarRuta.resx">
       <DependentUpon>ModificarEliminarRuta.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Compra\compraForm.resx">
+      <DependentUpon>compraForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Compra\compraPasajeForm.resx">
+      <DependentUpon>compraPasajeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Compra\datosPasajeroForm.resx">
+      <DependentUpon>datosPasajeroForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

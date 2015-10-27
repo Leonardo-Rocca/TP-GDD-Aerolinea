@@ -42,13 +42,13 @@ namespace AerolineaFrba.Login
              MessageBox.Show("Debe ingresar su nombre de usuario y contraseña");
             }
             else{
-                Sesion s = new Sesion();
+               // Sesion s = new Sesion();
                       try{
-                          MessageBox.Show("contraseña:" + getSha256(password));
-                s.iniciar(username, getSha256(password),"Administrador");
-                MessageBox.Show("bien");
+                         // MessageBox.Show("contraseña:" + getSha256(password));
+                Sesion.iniciar(username, getSha256(password),"Administrador");
+
                 Redireccionador redirec = new Redireccionador();
-                redirec.setFunciones(s.getFuncionalidadesDisponibles);
+                redirec.setFunciones(Sesion.getFuncionalidadesDisponibles);
                 redirec.Show();
                 this.Hide();
                       }

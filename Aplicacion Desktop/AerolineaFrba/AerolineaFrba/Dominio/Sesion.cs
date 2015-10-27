@@ -4,22 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data;
+using System.Windows.Forms;
 
 using AerolineaFrba.FormsPrincipales;
 using AerolineaFrba.Abm_Rol;
 using AerolineaFrba.Abm_Ciudad;
 using AerolineaFrba.Abm_Ruta;
 using AerolineaFrba.Abm_Aeronave;
-
+using AerolineaFrba.Compra;
 
 namespace AerolineaFrba.Dominio
 {
-    public  class Sesion
+    public static class Sesion
     {
-        public List<Funcionalidades> funcionalidadesDisponibles = new List<Funcionalidades>();
-        //public static Usuario Usuario;
+        public static List<Funcionalidades> funcionalidadesDisponibles = new List<Funcionalidades>();
+        private static Usuario Usuario =new Usuario("a","p","r",9999);
 
-        public  void iniciar(string username, string password,string rol)
+        public static void iniciar(string username, string password,string rol)
         {
            //("chequear_login", username, password);
        
@@ -51,9 +52,15 @@ namespace AerolineaFrba.Dominio
 
              funcionalidadesDisponibles.Add(new Funcionalidades(99, "ABM Aeronave",
                new ABMGenericoForm("ABM Aeronave", new AltaAeronave(), new ModificarAeronave(), new crearRutaForm())));
+
+            funcionalidadesDisponibles.Add(new Funcionalidades(99, "c1",new compraForm()));
+            funcionalidadesDisponibles.Add(new Funcionalidades(99, "c2",new compraPasajeForm() ));
+            funcionalidadesDisponibles.Add(new Funcionalidades(99, "c3",new datosPasajeroForm()));
+
+
         }
 
-        public List<Funcionalidades> getFuncionalidadesDisponibles{
+        public static List<Funcionalidades> getFuncionalidadesDisponibles{
            get {return funcionalidadesDisponibles ;}
         }
 

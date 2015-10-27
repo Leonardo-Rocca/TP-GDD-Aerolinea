@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using AerolineaFrba.FormsPrincipales;
+using AerolineaFrba.Dominio;
 namespace AerolineaFrba.Abm_Ciudad
 {
     public partial class modificarEliminarCityForm : FormGenerico
@@ -24,25 +25,36 @@ namespace AerolineaFrba.Abm_Ciudad
             buttonGuardar.Text = nombreBoton;
             cargarComboSeleccion();
             resultadoFiltro.Visible = false;
+
+            cargarReferenciasAForms();
         }
+
 
         public void cargarComboSeleccion()
         {
-            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct nombre_ciudad FROM DBAS.ciudades ORDER BY 1");
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct nombre_ciudad FROM DBAS.ciudades ORDER BY nombre_ciudad");
             comboBoxCity.DataSource = dt.DefaultView;
             comboBoxCity.ValueMember = "nombre_ciudad";
         }
 
         private void buttonGuardar_Click(object sender, EventArgs e)
         {
+
             if (tipoDeForm == 1)
             {
+                navegacion.Owner = this;
                 string cadena = comboBoxCity.Text;
                 ModificarCiudadForm modify = new ModificarCiudadForm(cadena,this);
                 modify.Show();
             }
             else
             {
+                if (MessageBox.Show("¿Realmente desea dar de baja el rol " + comboBoxCity.Text + " ?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                {
+                    return;
+                }
+                //dar baja logica
+                navegacion.AuxiliarForm = this;
                 MessageBox.Show("Ciudad eliminada (dammy)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             this.Hide(); 
@@ -66,5 +78,16 @@ namespace AerolineaFrba.Abm_Ciudad
         {
             comboBoxCity.Text = resultadoFiltro.Text;
         }
+
+        private void cargarReferenciasAForms()
+        {
+            if (tipoDeForm == 1) { 
+                navegacion.Owner = this;
+            }
+            else
+            {   navegacion.AuxiliarForm = this;
+            }
+        }
+
     }
 }

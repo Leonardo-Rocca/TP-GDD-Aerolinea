@@ -39,6 +39,7 @@
             this.lbAerolinea.AutoSize = true;
             this.lbAerolinea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lbAerolinea.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbAerolinea.ForeColor = System.Drawing.Color.Red;
             this.lbAerolinea.Location = new System.Drawing.Point(124, 24);
             this.lbAerolinea.Name = "lbAerolinea";
             this.lbAerolinea.Size = new System.Drawing.Size(252, 33);
@@ -79,6 +80,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.Silver;
             this.ClientSize = new System.Drawing.Size(532, 290);
             this.Controls.Add(this.cmbRoles);
             this.Controls.Add(this.lbseleccion);

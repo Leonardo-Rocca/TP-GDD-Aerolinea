@@ -22,13 +22,11 @@ namespace AerolineaFrba.Abm_Rol
             InitializeComponent();/*
             chkListaFuncionalidades.Items.Insert(0,"Dar de baja Usuarios");
             chkListaFuncionalidades.Items.Insert(1, "Dar de alta Usuarios");
-            chkListaFuncionalidades.Items.Insert(2, "aprobar");
-            chkListaFuncionalidades.Items.Insert(3, "Usuarios");
             chkListaFuncionalidades.SetItemCheckState(3, CheckState.Checked);*/
 
+            chkHabilitado.Checked = true;
             cargarChkFuncionalidades();
-            Funcionalidades funcion = new Funcionalidades(8, "Generar viaje", this);
-           // chkListaFuncionalidades.Items.Insert(0, funcion);
+
         }
    
         private void cargarChkFuncionalidades()
@@ -66,8 +64,8 @@ namespace AerolineaFrba.Abm_Rol
              };
 
               this.agregarRol();
-            
-                MessageBox.Show("Rol agregado (dammy)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.None);
+           
+                MessageBox.Show("Rol agregado (posta)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.None);
                 this.Hide(); //.Close();
                 return;
          }

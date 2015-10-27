@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using AerolineaFrba.Dominio;
+
 namespace AerolineaFrba.FormsPrincipales
 {
     public partial class ABMGenericoForm : Form
@@ -28,11 +30,13 @@ namespace AerolineaFrba.FormsPrincipales
         private void btCrear_Click(object sender, EventArgs e)
         {
            crear.Show();
+    
         }
 
         private void btModificar_Click(object sender, EventArgs e)
         {
             modificar.Show();
+
         }
 
         private void btEliminar_Click(object sender, EventArgs e)

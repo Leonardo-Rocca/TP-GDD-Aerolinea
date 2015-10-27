@@ -70,7 +70,6 @@ namespace AerolineaFrba.Abm_Ciudad
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if (dataGridView2.DataSource != null) dataGridView2.Columns.Remove("Seleccionar");
             iniciar();
         }
 
@@ -78,7 +77,6 @@ private void iniciar()
 {
           textBoxFiltro1.Text = "";
           textBoxFiltro2.Text = "";
-          dataGridView2.DataSource = null;
 }
 
 private void butAceptar_Click(object sender, EventArgs e)

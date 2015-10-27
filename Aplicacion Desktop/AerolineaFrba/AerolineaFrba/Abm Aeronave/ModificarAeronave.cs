@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AerolineaFrba.FormsPrincipales;
 
 namespace AerolineaFrba.Abm_Aeronave
 {
@@ -20,7 +21,10 @@ namespace AerolineaFrba.Abm_Aeronave
         private void button1_Click(object sender, EventArgs e)
         {
             ListadoAeronave listado = new ListadoAeronave();
-            listado.cargarModificado(this);
+            listado.setAnterior(this);
+            _Aeronave paquete = new _Aeronave(txtMatricula,txtModelo,textPisos,textButacasPasillo,textButacasVentanilla,textKdDisponibles,comboBoxServicio,comboBoxFabricante);
+            listado.cargarModificado(paquete);
+            this.Hide();
             listado.Show();
         }
 

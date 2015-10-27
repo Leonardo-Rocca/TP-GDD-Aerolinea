@@ -185,6 +185,12 @@
     <Compile Include="FormsPrincipales\Redireccionador.Designer.cs">
       <DependentUpon>Redireccionador.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormsPrincipales\_Aeronave.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsPrincipales\_Aeronave.Designer.cs">
+      <DependentUpon>_Aeronave.cs</DependentUpon>
+    </Compile>
     <Compile Include="Generacion Viaje\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -291,6 +297,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormsPrincipales\Redireccionador.resx">
       <DependentUpon>Redireccionador.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsPrincipales\_Aeronave.resx">
+      <DependentUpon>_Aeronave.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Listado Estadistico\ListadoMaestro.resx">
       <DependentUpon>ListadoMaestro.cs</DependentUpon>

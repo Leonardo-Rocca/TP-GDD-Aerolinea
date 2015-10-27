@@ -44,3 +44,4 @@ C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\Aerolinea
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Abm_Ciudad.modificarEliminarCityForm.resources
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.FormsPrincipales.FormGenerico.resources
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Abm_Aeronave.ModificarAeronave.resources
+C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.FormsPrincipales._Aeronave.resources

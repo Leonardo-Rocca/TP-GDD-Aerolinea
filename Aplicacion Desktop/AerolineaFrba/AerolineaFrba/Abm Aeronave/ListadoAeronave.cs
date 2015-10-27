@@ -7,12 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AerolineaFrba.FormsPrincipales;
 
 namespace AerolineaFrba.Abm_Aeronave
 {
     public partial class ListadoAeronave : Listado_Estadistico.ListadoMaestro
     {
-        public ModificarAeronave modifAnterior;
+        public _Aeronave modifAnterior;
+        public Form llamada;
 
         public ListadoAeronave()
         {
@@ -153,7 +155,7 @@ namespace AerolineaFrba.Abm_Aeronave
                 return;
             }
 
-            string query = "select distinct matricula_aeronave,numero_aeronave,modelo_aeronave,kg_disponible_encomienda,id_fabricante,id_servicio FROM DBAS.aeronaves a, DBAS.pasajesEncomiendas p";
+            string query = "select distinct matricula_aeronave,numero_aeronave,modelo_aeronave,kg_disponible_encomienda,id_fabricante,id_servicio FROM DBAS.aeronaves a, DBAS.encomiendas p";
             Boolean yaTieneCondicion = false;
             query = query + " WHERE ";
             if (txtMatricula.TextLength != 0)
@@ -288,7 +290,7 @@ namespace AerolineaFrba.Abm_Aeronave
             obtenerRespuesta(dataGridView1);
         }
 
-        public void cargarModificado(ModificarAeronave form)
+        public void cargarModificado(_Aeronave form)
         {
             modifAnterior = form;
         }
@@ -314,15 +316,23 @@ namespace AerolineaFrba.Abm_Aeronave
 
 
           
-            ((TextBox)modifAnterior.Controls["txtMatricula"]).Text = matricula;
-            ((TextBox)modifAnterior.Controls["txtModelo"]).Text = modelo;
-            ((TextBox)modifAnterior.Controls["textPisos"]).Text = cantPisos;
-            ((TextBox)modifAnterior.Controls["textButacasPasillo"]).Text = cantPasillo;
-            ((TextBox)modifAnterior.Controls["textButacasVentanilla"]).Text = cantVentanila;
-            ((TextBox)modifAnterior.Controls["textKdDisponibles"]).Text = kg;
-            ((ComboBox)modifAnterior.Controls["comboBoxServicio"]).Text = tipoServicio;
-            ((ComboBox)modifAnterior.Controls["comboBoxFabricante"]).Text = fabricante;
-        
+            modifAnterior.textBox1.Text = matricula;
+            modifAnterior.textBox2.Text = modelo;
+            modifAnterior.textBox3.Text = cantPisos;
+            modifAnterior.textBox4.Text = cantPasillo;
+            modifAnterior.textBox5.Text = cantVentanila;
+            modifAnterior.textBox6.Text = kg;
+            modifAnterior.combo1.Text = tipoServicio;
+            modifAnterior.combo2.Text = fabricante;
+
+            this.iniciar();
+            this.Hide();
+            this.llamada.Show();
+        }
+
+        public void setAnterior(Form anterior) 
+        {
+            llamada = anterior;
         }
     }
 }

@@ -47,7 +47,7 @@ namespace AerolineaFrba.Abm_Rol
                     tblfunc.Rows.Add(i + 1);
                 }
             }
-            MessageBox.Show("Rol Modificado", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            MessageBox.Show("Rol Modificado(dammy)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             //this.Close();
             this.Hide();
             return;

@@ -1,0 +1,36 @@
+DROP TABLE DBAS.canjes
+DROP TABLE DBAS.pasajes
+DROP TABLE DBAS.encomiendas
+DROP TABLE DBAS.cancelaciones
+DROP TABLE DBAS.periodosFueraDeServicio
+DROP TABLE DBAS.productos
+DROP TABLE DBAS.rolesPorFuncionalidad
+DROP TABLE DBAS.usuariosPorRol
+DROP TABLE DBAS.usuarios
+DROP TABLE DBAS.viajes
+DROP TABLE DBAS.butacas
+DROP TABLE DBAS.compras
+DROP TABLE DBAS.funcionalidades
+DROP TABLE DBAS.roles
+DROP TABLE DBAS.serviciosPorRutas
+DROP TABLE DBAS.rutas
+DROP TABLE DBAS.aeronaves
+DROP TABLE DBAS.ciudades
+DROP TABLE DBAS.clientes
+DROP TABLE DBAS.fabricantes
+DROP TABLE DBAS.servicios
+DROP TABLE DBAS.personas
+DROP TABLE DBAS.tarjetas
+DROP TABLE DBAS.tiposTarjeta  
+
+
+DROP PROCEDURE DBAS.migracionFabricantes
+DROP PROCEDURE DBAS.migracionCiudades
+DROP PROCEDURE DBAS.migracionServicios
+DROP PROCEDURE DBAS.migracionRutas
+DROP PROCEDURE DBAS.migracionAeronaves
+DROP PROCEDURE DBAS.migracionViajes
+DROP PROCEDURE DBAS.migracionButacas
+DROP PROCEDURE DBAS.migracionClientes
+DROP PROCEDURE DBAS.migracionPasajes
+DROP PROCEDURE DBAS.migracionEncomiendas

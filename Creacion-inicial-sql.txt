@@ -827,43 +827,57 @@ END;
 GO
 
 
-CREATE PROCEDURE DBAS.altaRol(@nombre_rol varchar(100), @nombre_funcionalidades varchar(100))
-AS
-BEGIN
-	DECLARE @mensaje_error varchar(100)
-	DECLARE @rol_id bigint
-
-	INSERT INTO DBAS.roles (nombre_rol) VALUES (@nombre_rol)
-
-	SET @rol_id = SCOPE_IDENTITY()
-
-	INSERT INTO DBAS.rolesPorFuncionalidad(id_rol, id_funcionalidad)
-	SELECT @rol_id, id_funcionalidad FROM DBAS.funcionalidades
-	WHERE descripcion = @nombre_funcionalidades
-
-END;
+CREATE VIEW DBAS.modificarRoles AS
+SELECT tablaRoles.id_rol, tablaRoles.nombre_rol, tablaRoles.habilitado_rol, tablaRporF.id_funcionalidad FROM DBAS.rolesPorFuncionalidad tablaRporF, DBAS.roles tablaRoles 
+WHERE tablaRporF.id_rol = tablaRoles.id_rol
 GO
 
-CREATE PROCEDURE DBAS.modificarRol(@id_rol bigint, @nombre_rol_nuevo varchar(100), @id_funcionalidad bigint, @habilitado tinyint)
+CREATE TRIGGER DBAS.modificarRol ON DBAS.modificarRoles
+INSTEAD OF INSERT
 AS
 BEGIN
+	DECLARE @habilitado_rol tinyint
+	DECLARE @nombre_rol varchar(100)
+	DECLARE @id_funcionalidad bigint
+	DECLARE @id_rol bigint
+	DECLARE @valor_insertado tinyint
 	DECLARE @habilitado_estado tinyint
-	DECLARE @mensaje_error varchar(100)
 
-	SELECT @habilitado_estado = habilitado_rol FROM DBAS.roles
+	DECLARE obtenerRolYFuncionalidades CURSOR FOR
+	SELECT id_rol, nombre_rol, habilitado_rol, id_funcionalidad FROM inserted
 
-	IF(@habilitado_estado = 1 AND @habilitado = 0)
+	OPEN obtenerRolYFuncionalidades
+
+	-- Inserto lo que obtiene el cursor en las variables
+	FETCH NEXT FROM obtenerRolYFuncionalidades
+	INTO @id_rol, @nombre_rol, @habilitado_rol, @id_funcionalidad
+
+	SELECT @habilitado_estado = habilitado_rol FROM DBAS.roles WHERE id_rol = @id_rol
+
+	IF(@habilitado_estado = 1 AND @habilitado_rol = 0)
 	BEGIN
 		DELETE FROM DBAS.usuariosPorRol WHERE id_rol = @id_rol
 	END
 
-	UPDATE DBAS.roles SET nombre_rol = @nombre_rol_nuevo, habilitado_rol = @habilitado WHERE id_rol = @id_rol
+	UPDATE DBAS.roles SET nombre_rol = @nombre_rol, habilitado_rol = @habilitado_rol WHERE id_rol = @id_rol
 
 	DELETE FROM DBAS.rolesPorFuncionalidad
 	WHERE id_rol = @id_rol
 
-	INSERT INTO DBAS.rolesPorFuncionalidad(id_rol, id_funcionalidad)
-	VALUES(@id_rol, @id_funcionalidad)
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+
+		INSERT INTO DBAS.rolesPorFuncionalidad(id_rol, id_funcionalidad)
+		VALUES(@id_rol, @id_funcionalidad)
+
+		-- Inserto lo que obtiene el cursor en las variables
+		FETCH NEXT FROM obtenerRolYFuncionalidades
+		INTO @nombre_rol, @id_funcionalidad
+
+	END
+
+	CLOSE obtenerRolYFuncionalidades
+	DEALLOCATE obtenerRolYFuncionalidades
 
 END;
 GO
@@ -1324,4 +1338,13 @@ BEGIN
 END;
 GO
 
+/* -- Rutas -- */
 
+CREATE VIEW DBAS.caracteristicasRutas AS
+SELECT tablaRutas.codigo_ruta, tablaCiudad_origen.nombre_ciudad as ciudad_Origen, tablaCiudad_destino.nombre_ciudad as ciudad_Destino, tablaServicios.tipo_servicio, tablaServicios.porcentaje_arancel
+FROM DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudad_origen, DBAS.ciudades tablaCiudad_destino, DBAS.servicios tablaServicios, DBAS.serviciosPorRutas tablaSporR
+WHERE tablaRutas.ciudad_origen_id = tablaCiudad_origen.id_ciudad AND tablaRutas.ciudad_destino_id = tablaCiudad_destino.id_ciudad
+AND tablaSporR.codigo_ruta = tablaRutas.codigo_ruta AND tablaServicios.id_servicio = tablaSporR.id_servicio
+GO
+
+		

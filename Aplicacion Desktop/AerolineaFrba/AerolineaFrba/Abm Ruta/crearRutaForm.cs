@@ -21,9 +21,19 @@ namespace AerolineaFrba.Abm_Ruta
             InitializeComponent();
 
          //   DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct tipo_servicio FROM DBAS.servicios");
-            chkListaServicios.Items.Insert(0,"Primera Clase");
+            inicializar();
+        }
+
+        private void inicializar()
+        {
+            chkListaServicios.Items.Insert(0, "Primera Clase");
             chkListaServicios.Items.Insert(1, "Ejecutivo");
-            chkListaServicios.Items.Insert(2, "Turista");   
+            chkListaServicios.Items.Insert(2, "Turista");
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select top 1 (codigo_ruta +1)AS codigo_ruta FROM DBAS.rutas ORDER BY codigo_ruta DESC");
+            DataRow row = dt.Rows[0];
+
+            txtCodigo.Text = row.ToString();
+           // txtCodigo.Text = "-1";
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -51,7 +61,8 @@ namespace AerolineaFrba.Abm_Ruta
         private void agregarRuta()
         {
             //TO DO
-            string comando = "INSERT INTO DBAS.rutas";
+            // Cambiar por vista
+            string comando = "INSERT INTO DBAS.rutasvISTA values " + txtCOrigen.Text + "," + txtCDestino.Text + " , ";
         }
 
         private void btsOringen_Click(object sender, EventArgs e)

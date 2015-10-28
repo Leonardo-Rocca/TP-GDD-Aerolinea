@@ -334,5 +334,10 @@ namespace AerolineaFrba.Abm_Aeronave
         {
             llamada = anterior;
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

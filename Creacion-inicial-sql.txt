@@ -10,8 +10,6 @@ DROP TABLE DBAS.usuariosPorRol
 DROP TABLE DBAS.usuarios
 DROP TABLE DBAS.viajes
 DROP TABLE DBAS.butacas
-DROP TABLE DBAS.tarjetas
-DROP TABLE DBAS.tiposTarjeta  
 DROP TABLE DBAS.compras
 DROP TABLE DBAS.funcionalidades
 DROP TABLE DBAS.roles
@@ -23,6 +21,8 @@ DROP TABLE DBAS.clientes
 DROP TABLE DBAS.fabricantes
 DROP TABLE DBAS.servicios
 DROP TABLE DBAS.personas
+DROP TABLE DBAS.tarjetas
+DROP TABLE DBAS.tiposTarjeta  
 
 
 DROP PROCEDURE DBAS.migracionFabricantes
@@ -89,7 +89,6 @@ GO
 CREATE TABLE DBAS.fabricantes (
 	id_fabricante bigint IDENTITY(1,1) PRIMARY KEY,
 	nombre_fabricante varchar(50)
-
 );
 GO
 
@@ -412,7 +411,7 @@ AFTER INSERT
 AS
 BEGIN
 	INSERT INTO #temporalPasajesDeClientes(id_cliente, fecha_llegada, fecha_salida, ciudad_origen, ciudad_destino, Pasaje_Codigo, Pasaje_Precio, Pasaje_FechaCompra, Paquete_Codigo, Paquete_Precio, Paquete_FechaCompra, Paquete_KG, Butaca_Nro, Butaca_Piso, Aeronave_Matricula)
-	SELECT tablaPersona.id_persona, tablaMaestra.FechaLLegada, tablaMaestra.FechaSalida, tablaMaestra.Ruta_Ciudad_Origen, tablaMaestra.Ruta_Ciudad_Destino, tablaMaestra.Pasaje_Codigo, tablaMaestra.Pasaje_Precio, tablaMaestra.Pasaje_FechaCompra, tablaMaestra.Paquete_Codigo, tablaMaestra.Paquete_Precio, tablaMaestra.Paquete_FechaCompra, tablaMaestra.Paquete_KG, tablaMaestra.Butaca_Nro, tablaMaestra.Butaca_Piso, tablaMaestra.Aeronave_Matricula 
+	SELECT tablaPersona.id_persona, tablaMaestra.FechaLLegada, tablaMaestra.FechaSalida,  SUBSTRING(tablaMaestra.Ruta_Ciudad_Origen,2,LEN(tablaMaestra.Ruta_Ciudad_Origen)-1) , SUBSTRING(tablaMaestra.Ruta_Ciudad_Destino,2,LEN(tablaMaestra.Ruta_Ciudad_Destino)-1), tablaMaestra.Pasaje_Codigo, tablaMaestra.Pasaje_Precio, tablaMaestra.Pasaje_FechaCompra, tablaMaestra.Paquete_Codigo, tablaMaestra.Paquete_Precio, tablaMaestra.Paquete_FechaCompra, tablaMaestra.Paquete_KG, tablaMaestra.Butaca_Nro, tablaMaestra.Butaca_Piso, tablaMaestra.Aeronave_Matricula 
 	FROM ((SELECT id_persona, dni_persona, nombre_persona, apellido_persona FROM inserted) tablaPersona
 	JOIN (SELECT Cli_Dni, Cli_Apellido, Cli_Nombre, Pasaje_Codigo, Pasaje_Precio, Pasaje_FechaCompra, Paquete_Codigo, Paquete_Precio, Paquete_FechaCompra, Paquete_KG, Butaca_Nro, Butaca_Piso, FechaSalida, FechaLLegada, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino, Aeronave_Matricula FROM gd_esquema.Maestra) tablaMaestra
 	ON (tablaPersona.dni_persona = tablaMaestra.Cli_Dni AND tablaPersona.nombre_persona = tablaMaestra.Cli_Nombre AND tablaPersona.apellido_persona = tablaMaestra.Cli_Apellido))
@@ -455,7 +454,7 @@ BEGIN
 	
 	--Se migran las ciudades destino y origen quedando solo las que no se repiten
 	INSERT INTO DBAS.ciudades(nombre_ciudad)
-	SELECT DISTINCT Ruta_Ciudad_Origen FROM gd_esquema.Maestra UNION SELECT DISTINCT Ruta_Ciudad_Destino FROM gd_esquema.Maestra
+	SELECT DISTINCT SUBSTRING(Ruta_Ciudad_Origen,2,LEN(Ruta_Ciudad_Origen)-1) FROM gd_esquema.Maestra UNION SELECT DISTINCT SUBSTRING(Ruta_Ciudad_Destino,2,LEN(Ruta_Ciudad_Origen)-1) FROM gd_esquema.Maestra
 
 END;
 GO
@@ -464,8 +463,10 @@ CREATE PROCEDURE DBAS.migracionServicios
 AS
 BEGIN
 	--Se migran los servivios de la tabla maestra
-	INSERT INTO DBAS.servicios(tipo_servicio)
-	SELECT DISTINCT Tipo_Servicio FROM gd_esquema.Maestra
+	INSERT INTO DBAS.servicios(tipo_servicio, porcentaje_arancel)
+	SELECT Tipo_Servicio, ROUND(SUM(Pasaje_Precio/Ruta_Precio_BasePasaje)/COUNT(Pasaje_Codigo),2) FROM gd_esquema.Maestra 
+	WHERE Pasaje_Codigo != 0
+	GROUP BY Tipo_Servicio
 END;
 GO
 
@@ -484,8 +485,8 @@ BEGIN
 			FROM ((SELECT DISTINCT Ruta_Codigo, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BasePasaje, Tipo_Servicio FROM gd_esquema.Maestra WHERE Ruta_Precio_BasePasaje > 0.00) tablaAux1
 				JOIN (SELECT DISTINCT Ruta_Codigo,Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BaseKG, Tipo_Servicio FROM gd_esquema.Maestra WHERE Ruta_Precio_BASEKG > 0.00) tablaAux2
 					ON (tablaAux1.Ruta_Ciudad_Origen = tablaAux2.Ruta_Ciudad_Origen AND tablaAux1.Ruta_Ciudad_Destino = tablaAux2.Ruta_Ciudad_Destino)
-					JOIN DBAS.ciudades tablaCiudades_dest ON ( tablaAux1.Ruta_Ciudad_Destino = tablaCiudades_dest.nombre_ciudad)
-					JOIN DBAS.ciudades  tablaCiudades_orig ON (tablaAux1.Ruta_Ciudad_Origen = tablaCiudades_orig.nombre_ciudad)
+					JOIN DBAS.ciudades tablaCiudades_dest ON ( SUBSTRING(tablaAux1.Ruta_Ciudad_Destino,2,LEN(tablaAux1.Ruta_Ciudad_Destino)-1) = tablaCiudades_dest.nombre_ciudad)
+					JOIN DBAS.ciudades  tablaCiudades_orig ON ( SUBSTRING(tablaAux1.Ruta_Ciudad_Origen,2,LEN(tablaAux1.Ruta_Ciudad_Origen)-1) = tablaCiudades_orig.nombre_ciudad)
 					JOIN DBAS.servicios tablaServicios ON (tablaAux1.Tipo_Servicio = tablaServicios.tipo_servicio))
 
 	OPEN migrarRutasConServicios
@@ -550,8 +551,8 @@ BEGIN
 	INSERT INTO DBAS.viajes (fecha_salida,fecha_llegada_estimada,fecha_llegada,matricula_aeronave,codigo_ruta)
 	SELECT tablaAux.FechaSalida, tablaAux.Fecha_LLegada_Estimada, tablaAux.FechaLLegada, tablaAux.Aeronave_Matricula, tablaRutas.codigo_ruta
 	FROM ((SELECT DISTINCT FechaSalida, Fecha_LLegada_Estimada, FechaLLegada, Aeronave_Matricula, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino FROM gd_esquema.Maestra) tablaAux 
-		JOIN DBAS.ciudades tablaciudad_orig ON (tablaciudad_orig.nombre_ciudad= tablaAux.Ruta_Ciudad_Origen)
-			JOIN DBAS.ciudades tablaciudad_dest ON (tablaciudad_dest.nombre_ciudad = tablaAux.Ruta_Ciudad_Destino)
+		JOIN DBAS.ciudades tablaciudad_orig ON (tablaciudad_orig.nombre_ciudad= SUBSTRING(tablaAux.Ruta_Ciudad_Origen,2,LEN(tablaAux.Ruta_Ciudad_Origen)-1) )
+			JOIN DBAS.ciudades tablaciudad_dest ON (tablaciudad_dest.nombre_ciudad =   SUBSTRING(tablaAux.Ruta_Ciudad_Destino,2,LEN(tablaAux.Ruta_Ciudad_Destino)-1) )
 				JOIN DBAS.rutas tablaRutas ON (tablaRutas.ciudad_origen_id = tablaciudad_orig.id_ciudad AND tablaRutas.ciudad_destino_id = tablaciudad_dest.id_ciudad))
 END;
 GO
@@ -1360,3 +1361,5 @@ BEGIN
 	END
 END;
 GO
+
+

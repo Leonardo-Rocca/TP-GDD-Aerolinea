@@ -95,12 +95,19 @@ namespace AerolineaFrba.Abm_Aeronave
 
         private void buttonAceptar_Click(object sender, EventArgs e)
         {
+           
+            if (!validaciones())
+            {
+                return;
+            }
+            this.Hide();
+            this.iniciar();
             int motivo;
             if (checkBoxBajaDefinitiva.Checked) textBoxFecha.Text = monthCalendarFecha.TodayDate.ToString();
             if(checkBoxFueraDeServicio.Checked){
-             motivo=1;
+                motivo=1;
             }else{
-                motivo=2;
+                motivo=0;
             }
             string query = "execute dbas.bajaAeronave " + DateTime.Parse(textBoxFecha.Text.ToString()).ToString() + ", " + anterior.Controls["txtMatricula"] + ", " + motivo.ToString();
             try
@@ -115,9 +122,28 @@ namespace AerolineaFrba.Abm_Aeronave
                 }
                 else
                 {
-
+                    MessageBox.Show("BOOOOOM", "Baja aeronave", MessageBoxButtons.OKCancel);
+                    return;
                 }
             }
+
+            MessageBox.Show("Baja de aeronave exitosa", "Baja aeronave", MessageBoxButtons.OK);
+
+        }
+
+        private bool validaciones()
+        {
+            if (checkBoxFueraDeServicio.Checked)
+            {
+                if (textBoxFecha.TextLength != 0) return true;
+                MessageBox.Show("Falta especificar fecha de reinsercion", "Error en los datos", MessageBoxButtons.OK);
+                return false;
+            }
+
+            if (checkBoxBajaDefinitiva.Checked) return true;
+
+            MessageBox.Show("Falta seleccionar un motivo", "Error en los datos", MessageBoxButtons.OK);
+            return false;
         }
     }
 }

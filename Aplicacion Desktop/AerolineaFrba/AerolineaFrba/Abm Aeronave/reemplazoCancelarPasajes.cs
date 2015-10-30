@@ -16,5 +16,10 @@ namespace AerolineaFrba.Abm_Aeronave
         {
             InitializeComponent();
         }
+
+        private void buttonCancelarPasajes_Click(object sender, EventArgs e)
+        {
+            string query = "select * from dbas.";
+        }
     }
 }

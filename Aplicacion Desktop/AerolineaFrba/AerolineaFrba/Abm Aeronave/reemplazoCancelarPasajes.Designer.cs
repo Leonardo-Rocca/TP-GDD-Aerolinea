@@ -51,6 +51,7 @@
             this.buttonCancelarPasajes.TabIndex = 39;
             this.buttonCancelarPasajes.Text = "Cancelar los pasajes";
             this.buttonCancelarPasajes.UseVisualStyleBackColor = true;
+            this.buttonCancelarPasajes.Click += new System.EventHandler(this.buttonCancelarPasajes_Click);
             // 
             // label1
             // 

@@ -114,5 +114,12 @@ namespace AerolineaFrba.Abm_Aeronave
             textButacasVentanilla.Text = "";
             textKdDisponibles.Text = "";
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            MotivoDeBaja motivo = new MotivoDeBaja(this);
+            this.Hide();
+            motivo.Show();
+        }
     }
 }

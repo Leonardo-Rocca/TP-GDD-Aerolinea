@@ -1347,4 +1347,59 @@ WHERE tablaRutas.ciudad_origen_id = tablaCiudad_origen.id_ciudad AND tablaRutas.
 AND tablaSporR.codigo_ruta = tablaRutas.codigo_ruta AND tablaServicios.id_servicio = tablaSporR.id_servicio
 GO
 
+
+/* -- Calculo de millas -- */
+
+CREATE FUNCTION DBAS.preciosPasajes(@dni_persona bigint) 
+RETURNS @pasajes TABLE (id_cliente bigint, dni_persona bigint, id_viaje bigint, fecha_llegada datetime, precio_base_por_pasaje float(24), porcentaje_arancel float(24),precio_pasaje float(24))
+AS
+BEGIN
+	INSERT INTO @pasajes
+	SELECT tablaClientes.id_cliente, tablaPersonas.dni_persona, tablaViajes.id_viaje, tablaViajes.fecha_llegada, tablaRutas.precio_base_por_pasaje, tablaServicios.porcentaje_arancel, precio_base_por_pasaje*porcentaje_arancel
+	FROM DBAS.pasajes tablaPasajes, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.personas tablaPersonas, DBAS.clientes tablaClientes, DBAS.serviciosPorRutas tablaServiciosPorRutas, DBAS.servicios tablaServicios
+	WHERE tablaClientes.id_cliente = tablaPasajes.id_cliente AND tablaPasajes.id_cliente = tablaPersonas.id_persona 
+	AND tablaPersonas.dni_persona = @dni_persona AND tablaPasajes.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta
+	AND tablaRutas.codigo_ruta = tablaServiciosPorRutas.codigo_ruta AND tablaServiciosPorRutas.id_servicio = tablaServicios.id_servicio AND tablaViajes.fecha_llegada IS NOT NULL
+	RETURN
+END;
+GO
+
+CREATE FUNCTION DBAS.preciosEncomiendas(@dni_persona bigint) 
+RETURNS @encomiendas TABLE (id_cliente bigint, dni_persona bigint, id_viaje bigint, fecha_llegada datetime, precio_base_por_kg float(24), porcentaje_arancel float(24),precio_encomienda float(24))
+AS
+BEGIN
+	INSERT INTO @encomiendas
+	SELECT tablaClientes.id_cliente, tablaPersonas.dni_persona, tablaViajes.id_viaje, tablaViajes.fecha_llegada, tablaRutas.precio_base_por_KG, tablaServicios.porcentaje_arancel, precio_base_por_KG*encomienda_cliente_KG*porcentaje_arancel
+	FROM DBAS.encomiendas tablaEncomiendas, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.personas tablaPersonas, DBAS.clientes tablaClientes, DBAS.serviciosPorRutas tablaServiciosPorRutas, DBAS.servicios tablaServicios
+	WHERE tablaClientes.id_cliente = tablaEncomiendas.id_cliente AND tablaEncomiendas.id_cliente = tablaPersonas.id_persona 
+	AND tablaPersonas.dni_persona = @dni_persona AND tablaEncomiendas.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta
+	AND tablaRutas.codigo_ruta = tablaServiciosPorRutas.codigo_ruta AND tablaServiciosPorRutas.id_servicio = tablaServicios.id_servicio AND tablaViajes.fecha_llegada IS NOT NULL
+	RETURN
+END;
+GO
+
+CREATE FUNCTION DBAS.historialMillas(@dni_persona bigint)
+RETURNS @millas TABLE (id_cliente bigint, dni_persona bigint, id_viaje bigint, cantidad_millas bigint, fecha_obtencion_millas datetime, tipo varchar(20))
+AS
+BEGIN
+	INSERT INTO @millas
+	SELECT id_cliente,dni_persona,id_viaje, precio_pasaje/10, fecha_llegada,'Pasaje' FROM DBAS.preciosPasajes(@dni_persona)
+	INSERT INTO @millas
+	SELECT id_cliente,dni_persona,id_viaje, precio_encomienda/10, fecha_llegada,'Encomienda' FROM DBAS.preciosEncomiendas(@dni_persona)
+	RETURN
+END;
+GO
+
+CREATE FUNCTION DBAS.millasVigentes(@dni_persona bigint)
+RETURNS bigint
+AS
+BEGIN
+	DECLARE @millas TABLE (dni_persona bigint, millas bigint)
+	INSERT INTO @millas
+	SELECT SUM(cantidad_millas) as millas FROM DBAS.historialMillas(@dni_persona) 
+	WHERE DATEDIFF(day,fecha_obtencion_millas,GETDATE()) <= 365
+	GROUP BY dni_persona
+	RETURN 0
+END;
+GO
 		

@@ -133,6 +133,7 @@ namespace AerolineaFrba.Abm_Aeronave
 
         private bool validaciones()
         {
+          
             if (checkBoxFueraDeServicio.Checked)
             {
                 if (textBoxFecha.TextLength != 0) return true;

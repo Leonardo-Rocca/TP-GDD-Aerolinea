@@ -20,7 +20,8 @@ namespace AerolineaFrba
           //  Application.Run(new Form1());
 
         Application.Run(new PantallaBienvenidaForm());
-  
+       // Application.Run(new Abm_Aeronave.ModificarAeronave());
+
 
         
         }

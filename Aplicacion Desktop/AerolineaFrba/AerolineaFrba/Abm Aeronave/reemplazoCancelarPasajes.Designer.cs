@@ -42,6 +42,7 @@
             this.buttonReemplazar.TabIndex = 40;
             this.buttonReemplazar.Text = "Reemplazar aeronave";
             this.buttonReemplazar.UseVisualStyleBackColor = true;
+            this.buttonReemplazar.Click += new System.EventHandler(this.buttonReemplazar_Click);
             // 
             // buttonCancelarPasajes
             // 

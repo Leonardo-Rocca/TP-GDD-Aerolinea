@@ -11,10 +11,10 @@ using System.Data.SqlClient;
 
 namespace AerolineaFrba.Abm_Aeronave
 {
-    public partial class MotivoDeBaja : Form
+    public class MotivoDeBaja : Form
     {
         public Form anterior;
-
+        public int motivo;
         public MotivoDeBaja(Form ant)
         {
             InitializeComponent();
@@ -102,7 +102,7 @@ namespace AerolineaFrba.Abm_Aeronave
             }
             this.Hide();
             this.iniciar();
-            int motivo;
+         
             if (checkBoxBajaDefinitiva.Checked) textBoxFecha.Text = monthCalendarFecha.TodayDate.ToString();
             if(checkBoxFueraDeServicio.Checked){
                 motivo=1;
@@ -119,9 +119,11 @@ namespace AerolineaFrba.Abm_Aeronave
                 if (sqlEx.Message.StartsWith("No puede dar de baja la aeronave, esta en vuelo"))
                 {
                     MessageBox.Show("No puede dar de baja la aeronave, esta en vuelo. Intentelo en otro momento", "Baja aeronave", MessageBoxButtons.OKCancel);
+                    return;
                 }
                 else
                 {
+                    reemplazoCancelarPasajes proximo = new reemplazoCancelarPasajes(anterior,this);
                     MessageBox.Show("BOOOOOM", "Baja aeronave", MessageBoxButtons.OKCancel);
                     return;
                 }

@@ -31,12 +31,12 @@
             this.checkBoxFueraDeServicio = new System.Windows.Forms.CheckBox();
             this.checkBoxBajaDefinitiva = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.textBoxFecha = new System.Windows.Forms.TextBox();
+            this.monthCalendarFecha = new System.Windows.Forms.MonthCalendar();
+            this.buttonSeleccionar = new System.Windows.Forms.Button();
             this.labelFechaDeReinsercion = new System.Windows.Forms.Label();
+            this.textBoxFecha = new System.Windows.Forms.TextBox();
             this.buttonAceptar = new System.Windows.Forms.Button();
             this.buttonCancelar = new System.Windows.Forms.Button();
-            this.buttonSeleccionar = new System.Windows.Forms.Button();
-            this.monthCalendarFecha = new System.Windows.Forms.MonthCalendar();
             this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -78,13 +78,24 @@
             this.groupBox3.Text = "Motivo de Baja";
             this.groupBox3.Enter += new System.EventHandler(this.groupBox3_Enter);
             // 
-            // textBoxFecha
+            // monthCalendarFecha
             // 
-            this.textBoxFecha.Location = new System.Drawing.Point(266, 32);
-            this.textBoxFecha.Name = "textBoxFecha";
-            this.textBoxFecha.Size = new System.Drawing.Size(91, 20);
-            this.textBoxFecha.TabIndex = 35;
-            this.textBoxFecha.Visible = false;
+            this.monthCalendarFecha.Location = new System.Drawing.Point(206, 15);
+            this.monthCalendarFecha.Name = "monthCalendarFecha";
+            this.monthCalendarFecha.TabIndex = 46;
+            this.monthCalendarFecha.Visible = false;
+            this.monthCalendarFecha.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.monthCalendarFecha_DateChanged);
+            // 
+            // buttonSeleccionar
+            // 
+            this.buttonSeleccionar.Location = new System.Drawing.Point(363, 32);
+            this.buttonSeleccionar.Name = "buttonSeleccionar";
+            this.buttonSeleccionar.Size = new System.Drawing.Size(109, 21);
+            this.buttonSeleccionar.TabIndex = 39;
+            this.buttonSeleccionar.Text = "Seleccionar";
+            this.buttonSeleccionar.UseVisualStyleBackColor = true;
+            this.buttonSeleccionar.Visible = false;
+            this.buttonSeleccionar.Click += new System.EventHandler(this.buttonSeleccionar_Click);
             // 
             // labelFechaDeReinsercion
             // 
@@ -95,6 +106,14 @@
             this.labelFechaDeReinsercion.TabIndex = 36;
             this.labelFechaDeReinsercion.Text = "Fecha de reinsercion:";
             this.labelFechaDeReinsercion.Visible = false;
+            // 
+            // textBoxFecha
+            // 
+            this.textBoxFecha.Location = new System.Drawing.Point(266, 32);
+            this.textBoxFecha.Name = "textBoxFecha";
+            this.textBoxFecha.Size = new System.Drawing.Size(91, 20);
+            this.textBoxFecha.TabIndex = 35;
+            this.textBoxFecha.Visible = false;
             // 
             // buttonAceptar
             // 
@@ -115,25 +134,6 @@
             this.buttonCancelar.Text = "Cancelar";
             this.buttonCancelar.UseVisualStyleBackColor = true;
             this.buttonCancelar.Click += new System.EventHandler(this.buttonCancelar_Click);
-            // 
-            // buttonSeleccionar
-            // 
-            this.buttonSeleccionar.Location = new System.Drawing.Point(363, 32);
-            this.buttonSeleccionar.Name = "buttonSeleccionar";
-            this.buttonSeleccionar.Size = new System.Drawing.Size(109, 21);
-            this.buttonSeleccionar.TabIndex = 39;
-            this.buttonSeleccionar.Text = "Seleccionar";
-            this.buttonSeleccionar.UseVisualStyleBackColor = true;
-            this.buttonSeleccionar.Visible = false;
-            this.buttonSeleccionar.Click += new System.EventHandler(this.buttonSeleccionar_Click);
-            // 
-            // monthCalendarFecha
-            // 
-            this.monthCalendarFecha.Location = new System.Drawing.Point(180, 15);
-            this.monthCalendarFecha.Name = "monthCalendarFecha";
-            this.monthCalendarFecha.TabIndex = 46;
-            this.monthCalendarFecha.Visible = false;
-            this.monthCalendarFecha.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.monthCalendarFecha_DateChanged);
             // 
             // MotivoDeBaja
             // 

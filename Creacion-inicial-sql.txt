@@ -1073,7 +1073,7 @@ BEGIN
 	RETURN (SELECT TOP 1 tablaCiudades.id_ciudad FROM DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades 
 	WHERE tablaViajes.matricula_aeronave = @matricula_aeronave AND tablaViajes.fecha_llegada <= GETDATE() 
 	AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaRutas.ciudad_destino_id = tablaCiudades.id_ciudad
-	ORDER BY fecha_llegada DESC)
+	ORDER BY tablaViajes.fecha_llegada DESC)
 	
 END;
 GO
@@ -1086,9 +1086,20 @@ CREATE FUNCTION DBAS.ultimaLlegadaConfirmadaAeronave(@matricula_aeronave varchar
 RETURNS bigint
 AS
 BEGIN
+	DECLARE @id_viaje bigint
 
-	RETURN (SELECT TOP 1 id_viaje FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave AND fecha_llegada IS NULL ORDER BY fecha_salida DESC)
+	SELECT TOP 1 @id_viaje = id_viaje FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave ORDER BY fecha_salida DESC
 	
+	IF NOT EXISTS(SELECT TOP 1 id_viaje FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave AND fecha_llegada IS NULL)
+	BEGIN
+		SELECT TOP 1 @id_viaje = id_viaje FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave ORDER BY fecha_salida DESC
+	END
+	ELSE
+	BEGIN
+		SET @id_viaje = NULL
+	END
+	
+	RETURN @id_viaje
 END;
 GO
 
@@ -1099,6 +1110,8 @@ BEGIN
 
 	DECLARE @matriculaAer varchar (100)
 	DECLARE @id_Viaje bigint
+
+	DELETE #aeronavesConUltimoVueloConfirmado
 
 	DECLARE aeronaves CURSOR FOR
 	SELECT matricula_aeronave FROM DBAS.aeronaves
@@ -1276,19 +1289,19 @@ GO
 CREATE PROCEDURE DBAS.reemplazarAeronave(@matricula_aeronave_original varchar(100),@matricula_aeronave_nueva varchar(100),@baja_temporal tinyint, @fecha datetime)
 AS 
 BEGIN
-	IF (@baja_temporal = 0)
-	BEGIN
-
-		UPDATE DBAS.viajes SET matricula_aeronave = @matricula_aeronave_nueva 
-		WHERE fecha_salida > GETDATE() AND matricula_aeronave = @matricula_aeronave_original
-
-	END
-	ELSE
+	IF (@baja_temporal = 1)
 	BEGIN
 
 		UPDATE DBAS.viajes SET matricula_aeronave = @matricula_aeronave_nueva 
 		WHERE fecha_salida > GETDATE() AND fecha_salida < @fecha AND matricula_aeronave = @matricula_aeronave_original
-				
+
+	END
+	ELSE
+	BEGIN
+	
+		UPDATE DBAS.viajes SET matricula_aeronave = @matricula_aeronave_nueva 
+		WHERE fecha_salida > GETDATE() AND matricula_aeronave = @matricula_aeronave_original
+
 	END
 END;
 GO
@@ -1299,8 +1312,6 @@ RETURNS @avionesSinVuelo TABLE (matricula_aeronave varchar(100), cantidad_butaca
 AS 
 BEGIN
 	
-	DECLARE @ciudad_actual_id bigint
-
 	EXECUTE DBAS.aeronavesDisponiblesParaReemplazo
 
 	INSERT INTO @avionesSinVuelo

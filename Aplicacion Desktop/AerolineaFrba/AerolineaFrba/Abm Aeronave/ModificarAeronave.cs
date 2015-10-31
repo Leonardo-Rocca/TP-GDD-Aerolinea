@@ -159,5 +159,10 @@ namespace AerolineaFrba.Abm_Aeronave
 
             return true;
         }
+
+        public string getMatricula()
+        {
+            return txtMatricula.Text;
+        }
     }
 }

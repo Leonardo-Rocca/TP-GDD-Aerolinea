@@ -11,11 +11,10 @@ using System.Data.SqlClient;
 
 namespace AerolineaFrba.Abm_Aeronave
 {
-    public class MotivoDeBaja : Form
+    public partial class MotivoDeBaja : Form
     {
-        public Form anterior;
-        public int motivo;
-        public MotivoDeBaja(Form ant)
+        public ModificarAeronave anterior;
+        public MotivoDeBaja(ModificarAeronave ant)
         {
             InitializeComponent();
             iniciar();
@@ -24,6 +23,7 @@ namespace AerolineaFrba.Abm_Aeronave
 
         private void iniciar()
         {
+            textBoxFecha.Text = "";
             checkBoxFueraDeServicio.Checked = false;
             checkBoxBajaDefinitiva.Checked = false;
             labelFechaDeReinsercion.Visible = false;
@@ -101,15 +101,11 @@ namespace AerolineaFrba.Abm_Aeronave
                 return;
             }
             this.Hide();
-            this.iniciar();
-         
             if (checkBoxBajaDefinitiva.Checked) textBoxFecha.Text = monthCalendarFecha.TodayDate.ToString();
-            if(checkBoxFueraDeServicio.Checked){
-                motivo=1;
-            }else{
-                motivo=0;
-            }
-            string query = "execute dbas.bajaAeronave " + DateTime.Parse(textBoxFecha.Text.ToString()).ToString() + ", " + anterior.Controls["txtMatricula"] + ", " + motivo.ToString();
+           // this.iniciar();
+            string fecha = DateTime.Parse(textBoxFecha.Text).ToString();
+            string query = "execute dbas.bajaAeronave '" + fecha +"', '" + anterior.getMatricula() + "', " + this.motivo();            
+            
             try
             {
                 (new ConexionSQL()).cargarTablaSQL(query);
@@ -123,9 +119,20 @@ namespace AerolineaFrba.Abm_Aeronave
                 }
                 else
                 {
-                    reemplazoCancelarPasajes proximo = new reemplazoCancelarPasajes(anterior,this);
-                    MessageBox.Show("BOOOOOM", "Baja aeronave", MessageBoxButtons.OKCancel);
-                    return;
+                    if (sqlEx.Message.StartsWith("La aeronave esta en uso"))
+                    {
+                        reemplazoCancelarPasajes proximo = new reemplazoCancelarPasajes(anterior, this);
+                        proximo.Show();
+                        this.Hide();
+                        return;
+                    }
+                    else
+                    {
+                        throw new Exception();
+                        this.iniciar();
+                        MessageBox.Show("BOOOOOM", "Baja aeronave", MessageBoxButtons.OKCancel);
+                        return;
+                    }
                 }
             }
 
@@ -147,6 +154,26 @@ namespace AerolineaFrba.Abm_Aeronave
 
             MessageBox.Show("Falta seleccionar un motivo", "Error en los datos", MessageBoxButtons.OK);
             return false;
+        }
+
+        public string motivo()
+        {
+            int motivo;
+           
+            if (checkBoxFueraDeServicio.Checked)
+            {
+                motivo = 1;
+            }
+            else
+            {
+                motivo = 0;
+            }
+
+            return motivo.ToString();
+        }
+
+       public string getFecha(){
+           return textBoxFecha.Text;
         }
     }
 }

@@ -80,7 +80,7 @@
             // 
             // monthCalendarFecha
             // 
-            this.monthCalendarFecha.Location = new System.Drawing.Point(206, 15);
+            this.monthCalendarFecha.Location = new System.Drawing.Point(205, 15);
             this.monthCalendarFecha.Name = "monthCalendarFecha";
             this.monthCalendarFecha.TabIndex = 46;
             this.monthCalendarFecha.Visible = false;

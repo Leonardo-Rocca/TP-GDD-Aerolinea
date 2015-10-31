@@ -34,10 +34,14 @@ namespace AerolineaFrba.Abm_Ruta
 
             txtCodigo.Text = row.ToString();
            // txtCodigo.Text = "-1";
+            vaciarTextos();
+
         }
 
+      
         private void button2_Click(object sender, EventArgs e)
         {
+            inicializar();
             this.Hide();
         }
 
@@ -53,16 +57,35 @@ namespace AerolineaFrba.Abm_Ruta
                 return;
             }
             agregarRuta();
-            MessageBox.Show("Ruta agregada (dammy)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.None);
+
             this.Hide(); 
             return;
         }
 
         private void agregarRuta()
         {
-            //TO DO
-            // Cambiar por vista
-            string comando = "INSERT INTO DBAS.rutasvISTA values " + txtCOrigen.Text + "," + txtCDestino.Text + " , ";
+            // probar  (es posible q haya que cambiar los nombres de atributos en la vista)
+            string comando = "INSERT INTO DBAS.caracteristicasRutas (precio_base_por_KG,precio_base_por_pasaje,ciudad_Origen,ciudad_Destino,tipo_servicio)" +
+                        "select distinct '" + txtPregiokg.Text + "' , '" + txtPrecioPasaje + "','"  + txtCOrigen.Text + "','" + txtCDestino.Text + "' , tipo_servicio FROM DBAS.servicios WHERE tipo_servicio IN ( "; 
+        
+              foreach (Object elemento in chkListaServicios.CheckedItems)
+            {
+                comando = comando + " '" + elemento.ToString() + "',";
+            }
+            comando = comando + "'lalala' )";
+
+            try
+            {
+                (new ConexionSQL()).ejecutarComandoSQL(comando);
+            }
+            catch (Exception er)
+            {
+                MessageBox.Show(er.Message);
+                return;
+            }
+
+            MessageBox.Show("Ruta creada (falta probar)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            inicializar();
         }
 
         private void btsOringen_Click(object sender, EventArgs e)
@@ -87,6 +110,15 @@ namespace AerolineaFrba.Abm_Ruta
         public void obtenerResultado(object contenido, Form emisor)
         {
             MessageBox.Show("Resultado", this.Text, MessageBoxButtons.OK, MessageBoxIcon.None);
+        }
+
+        private void vaciarTextos()
+        {
+             txtCOrigen.Text = "";
+             txtCDestino.Text = "";
+             txtPrecioPasaje.Text = "";
+             txtPregiokg.Text = "";
+
         }
 
         private void txtCOrigen_TextChanged(object sender, EventArgs e)

@@ -16,13 +16,21 @@ namespace AerolineaFrba.Abm_Ciudad
     {
         int tipoDeForm; //1 modificar ,2 eliminar
 
-        public modificarEliminarCityForm(string nombre, string nombreBoton, int tipo)
+        public modificarEliminarCityForm(int tipo)
         {
             InitializeComponent();
 
             tipoDeForm = tipo;
-            lbtitulo.Text = nombre;
-            buttonGuardar.Text = nombreBoton;
+            if (tipo == 1)
+            {
+                lbtitulo.Text = "Modificar Ciudad";
+                buttonGuardar.Text = "modificar";
+            }
+            else
+            {
+                lbtitulo.Text = "Eliminar Ciudad";
+                buttonGuardar.Text = "eliminar";
+            }
             cargarComboSeleccion();
             resultadoFiltro.Visible = false;
 

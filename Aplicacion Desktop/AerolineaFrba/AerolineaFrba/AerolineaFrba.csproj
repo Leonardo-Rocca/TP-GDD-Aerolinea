@@ -68,6 +68,18 @@
     <Compile Include="Abm Aeronave\ModificarAeronave.Designer.cs">
       <DependentUpon>ModificarAeronave.cs</DependentUpon>
     </Compile>
+    <Compile Include="Abm Aeronave\MotivoDeBaja.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Abm Aeronave\MotivoDeBaja.Designer.cs">
+      <DependentUpon>MotivoDeBaja.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Abm Aeronave\reemplazoCancelarPasajes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Abm Aeronave\reemplazoCancelarPasajes.Designer.cs">
+      <DependentUpon>reemplazoCancelarPasajes.cs</DependentUpon>
+    </Compile>
     <Compile Include="Abm Ciudad\crearCiudadForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -265,6 +277,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Abm Aeronave\ModificarAeronave.resx">
       <DependentUpon>ModificarAeronave.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Abm Aeronave\MotivoDeBaja.resx">
+      <DependentUpon>MotivoDeBaja.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Abm Aeronave\reemplazoCancelarPasajes.resx">
+      <DependentUpon>reemplazoCancelarPasajes.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Abm Ciudad\crearCiudadForm.resx">
       <DependentUpon>crearCiudadForm.cs</DependentUpon>

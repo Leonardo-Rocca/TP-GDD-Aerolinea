@@ -19,6 +19,7 @@ CREATE TABLE DBAS.rutas (
 	ciudad_destino_id bigint,
 	precio_base_por_KG float(24),
 	precio_base_por_pasaje float(24),
+	habilitada_ruta tinyint default 1
 );
 GO
 
@@ -1072,7 +1073,7 @@ BEGIN
 	RETURN (SELECT TOP 1 tablaCiudades.id_ciudad FROM DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades 
 	WHERE tablaViajes.matricula_aeronave = @matricula_aeronave AND tablaViajes.fecha_llegada <= GETDATE() 
 	AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaRutas.ciudad_destino_id = tablaCiudades.id_ciudad
-	ORDER BY fecha_llegada DESC)
+	ORDER BY tablaViajes.fecha_llegada DESC)
 	
 END;
 GO
@@ -1085,9 +1086,20 @@ CREATE FUNCTION DBAS.ultimaLlegadaConfirmadaAeronave(@matricula_aeronave varchar
 RETURNS bigint
 AS
 BEGIN
+	DECLARE @id_viaje bigint
 
-	RETURN (SELECT TOP 1 id_viaje FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave AND fecha_llegada IS NULL ORDER BY fecha_salida DESC)
+	SELECT TOP 1 @id_viaje = id_viaje FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave ORDER BY fecha_salida DESC
 	
+	IF NOT EXISTS(SELECT TOP 1 id_viaje FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave AND fecha_llegada IS NULL)
+	BEGIN
+		SELECT TOP 1 @id_viaje = id_viaje FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave ORDER BY fecha_salida DESC
+	END
+	ELSE
+	BEGIN
+		SET @id_viaje = NULL
+	END
+	
+	RETURN @id_viaje
 END;
 GO
 
@@ -1098,6 +1110,8 @@ BEGIN
 
 	DECLARE @matriculaAer varchar (100)
 	DECLARE @id_Viaje bigint
+
+	DELETE #aeronavesConUltimoVueloConfirmado
 
 	DECLARE aeronaves CURSOR FOR
 	SELECT matricula_aeronave FROM DBAS.aeronaves
@@ -1275,19 +1289,19 @@ GO
 CREATE PROCEDURE DBAS.reemplazarAeronave(@matricula_aeronave_original varchar(100),@matricula_aeronave_nueva varchar(100),@baja_temporal tinyint, @fecha datetime)
 AS 
 BEGIN
-	IF (@baja_temporal = 0)
-	BEGIN
-
-		UPDATE DBAS.viajes SET matricula_aeronave = @matricula_aeronave_nueva 
-		WHERE fecha_salida > GETDATE() AND matricula_aeronave = @matricula_aeronave_original
-
-	END
-	ELSE
+	IF (@baja_temporal = 1)
 	BEGIN
 
 		UPDATE DBAS.viajes SET matricula_aeronave = @matricula_aeronave_nueva 
 		WHERE fecha_salida > GETDATE() AND fecha_salida < @fecha AND matricula_aeronave = @matricula_aeronave_original
-				
+
+	END
+	ELSE
+	BEGIN
+	
+		UPDATE DBAS.viajes SET matricula_aeronave = @matricula_aeronave_nueva 
+		WHERE fecha_salida > GETDATE() AND matricula_aeronave = @matricula_aeronave_original
+
 	END
 END;
 GO
@@ -1298,8 +1312,6 @@ RETURNS @avionesSinVuelo TABLE (matricula_aeronave varchar(100), cantidad_butaca
 AS 
 BEGIN
 	
-	DECLARE @ciudad_actual_id bigint
-
 	EXECUTE DBAS.aeronavesDisponiblesParaReemplazo
 
 	INSERT INTO @avionesSinVuelo
@@ -1341,10 +1353,148 @@ GO
 /* -- Rutas -- */
 
 CREATE VIEW DBAS.caracteristicasRutas AS
-SELECT tablaRutas.codigo_ruta, tablaCiudad_origen.nombre_ciudad as ciudad_Origen, tablaCiudad_destino.nombre_ciudad as ciudad_Destino, tablaServicios.tipo_servicio, tablaServicios.porcentaje_arancel
+SELECT tablaRutas.codigo_ruta, tablaRutas.precio_base_por_KG, tablaRutas.precio_base_por_pasaje, tablaCiudad_origen.nombre_ciudad as ciudad_Origen, tablaCiudad_destino.nombre_ciudad as ciudad_Destino, tablaServicios.tipo_servicio, tablaServicios.porcentaje_arancel
 FROM DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudad_origen, DBAS.ciudades tablaCiudad_destino, DBAS.servicios tablaServicios, DBAS.serviciosPorRutas tablaSporR
-WHERE tablaRutas.ciudad_origen_id = tablaCiudad_origen.id_ciudad AND tablaRutas.ciudad_destino_id = tablaCiudad_destino.id_ciudad
+WHERE tablaRutas.habilitada_ruta = 1 AND tablaRutas.ciudad_origen_id = tablaCiudad_origen.id_ciudad AND tablaRutas.ciudad_destino_id = tablaCiudad_destino.id_ciudad
 AND tablaSporR.codigo_ruta = tablaRutas.codigo_ruta AND tablaServicios.id_servicio = tablaSporR.id_servicio
 GO
 
+CREATE TRIGGER DBAS.altaRutas ON DBAS.caracteristicasRutas
+INSTEAD OF INSERT
+AS
+BEGIN
+	DECLARE @codigo_ruta bigint
+	DECLARE @ciudad_Origen varchar(100)
+	DECLARE @ciudad_Destino varchar(100)
+	DECLARE @ID_ciudad_Origen bigint
+	DECLARE @ID_ciudad_Destino bigint
+	DECLARE @tipo_servicio varchar(100)
+	DECLARE @porcentaje_arancel float(24)
+	DECLARE @precio_KG float(24)
+	DECLARE @precio_pasaje float(24)
+	DECLARE @id_servicio bigint
+
+	DECLARE rutasCursor CURSOR FOR
+	SELECT precio_base_por_KG, precio_base_por_pasaje, ciudad_Origen, ciudad_Destino, tipo_servicio, porcentaje_arancel FROM inserted
+
+	OPEN rutasCursor
+
+	FETCH NEXT FROM rutasCursor
+	INTO @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio, @porcentaje_arancel
+
+	SELECT @ID_ciudad_Origen = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Origen
+	SELECT @ID_ciudad_Destino = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Destino
+
+	INSERT INTO DBAS.rutas(precio_base_por_KG, precio_base_por_pasaje, ciudad_origen_id, ciudad_destino_id)
+	VALUES (@precio_KG, @precio_pasaje, @ID_ciudad_Origen, @ID_ciudad_Destino)
+
+	SET @codigo_ruta = SCOPE_IDENTITY()
+	
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		SELECT @id_servicio = id_servicio FROM DBAS.servicios WHERE tipo_servicio = @tipo_servicio
+
+		INSERT INTO DBAS.serviciosPorRutas(codigo_ruta, id_servicio)
+		VALUES (@codigo_ruta, @id_servicio)
+
+		FETCH NEXT FROM rutasCursor
+		INTO @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio, @porcentaje_arancel
+	END
+
+	CLOSE rutasCursor
+	DEALLOCATE rutasCursor
+
+END;
+GO
+
+
+CREATE TRIGGER DBAS.modificacionRutas ON DBAS.caracteristicasRutas
+INSTEAD OF UPDATE
+AS
+BEGIN
+	DECLARE @codigo_ruta bigint
+	DECLARE @ciudad_Origen varchar(100)
+	DECLARE @ciudad_Destino varchar(100)
+	DECLARE @ID_ciudad_Origen bigint
+	DECLARE @ID_ciudad_Destino bigint
+	DECLARE @tipo_servicio varchar(100)
+	DECLARE @porcentaje_arancel float(24)
+	DECLARE @precio_KG float(24)
+	DECLARE @precio_pasaje float(24)
+	DECLARE @id_servicio bigint
+
+	DECLARE rutasCursor CURSOR FOR
+	SELECT codigo_ruta, precio_base_por_KG, precio_base_por_pasaje, ciudad_Origen, ciudad_Destino, tipo_servicio, porcentaje_arancel FROM inserted
+
+	OPEN rutasCursor
+
+	FETCH NEXT FROM rutasCursor
+	INTO @codigo_ruta, @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio, @porcentaje_arancel
+
+	SELECT @ID_ciudad_Origen = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Origen
+	SELECT @ID_ciudad_Destino = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Destino
+
+	UPDATE DBAS.rutas SET precio_base_por_KG = @precio_KG, precio_base_por_pasaje = @precio_pasaje, ciudad_origen_id = @ID_ciudad_Origen, ciudad_destino_id = @ID_ciudad_Destino WHERE codigo_ruta = @codigo_ruta
+
+	DELETE FROM DBAS.serviciosPorRutas
+	WHERE codigo_ruta = @codigo_ruta
+	
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		SELECT @id_servicio = id_servicio FROM DBAS.servicios WHERE tipo_servicio = @tipo_servicio
+
+		INSERT INTO DBAS.serviciosPorRutas(codigo_ruta, id_servicio)
+		VALUES (@codigo_ruta, @id_servicio)
+
+		FETCH NEXT FROM rutasCursor
+		INTO @codigo_ruta, @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio, @porcentaje_arancel
+
+	END
+
+	CLOSE rutasCursor
+	DEALLOCATE rutasCursor
+
+END;
+GO
+
+CREATE PROCEDURE DBAS.bajaRuta(@codigo_ruta bigint)
+AS
+BEGIN
+	DECLARE @mensaje_error varchar(100)
+	
+	IF EXISTS(SELECT * FROM DBAS.viajes WHERE codigo_ruta = @codigo_ruta AND fecha_salida > GETDATE())
+	BEGIN
+		SET @mensaje_error = 'Hay viajes viajes futuros por esta ruta'
+		RAISERROR(@mensaje_error, 12, 1)
+	END
+	ELSE
+	BEGIN
+		UPDATE DBAS.rutas SET habilitada_ruta = 0 WHERE codigo_ruta = @codigo_ruta
+	END
+END;
+GO
+
+CREATE PROCEDURE DBAS.bajaRutaYCancelarPasajes(@codigo_ruta bigint)
+AS
+BEGIN
+	DECLARE @motivo_cancelacion varchar(100)
+	DECLARE @ID_cancelacion bigint
+	
+	SET @motivo_cancelacion = 'Baja ruta de vuelo' 
+
+	EXECUTE DBAS.cancelacionPasaje @motivo_cancelacion, @ID_cancelacion OUT
 		
+	UPDATE tablaPasajes SET tablaPasajes.id_cancelacion = @ID_cancelacion 
+	FROM  DBAS.viajes tablaViajes, DBAS.pasajes tablaPasajes
+	WHERE tablaViajes.fecha_salida > GETDATE()
+	AND tablaPasajes.id_viaje = tablaViajes.id_viaje
+	AND tablaViajes.codigo_ruta= @codigo_ruta
+	
+	UPDATE tablaEncomiendas SET tablaEncomiendas.id_cancelacion = @ID_cancelacion 
+	FROM  DBAS.viajes tablaViajes, DBAS.encomiendas tablaEncomiendas
+	WHERE  tablaViajes.fecha_salida > GETDATE()
+	AND tablaEncomiendas.id_viaje = tablaViajes.id_viaje
+	AND tablaViajes.codigo_ruta= @codigo_ruta
+
+END;
+GO

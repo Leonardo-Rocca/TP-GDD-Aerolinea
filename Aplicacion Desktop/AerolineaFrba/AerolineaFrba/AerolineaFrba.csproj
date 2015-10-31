@@ -50,6 +50,12 @@
     <Compile Include="Abm Aeronave\AltaAeronave.Designer.cs">
       <DependentUpon>AltaAeronave.cs</DependentUpon>
     </Compile>
+    <Compile Include="Abm Aeronave\DeseaDarDeAltaUnaAeronave.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Abm Aeronave\DeseaDarDeAltaUnaAeronave.Designer.cs">
+      <DependentUpon>DeseaDarDeAltaUnaAeronave.cs</DependentUpon>
+    </Compile>
     <Compile Include="Abm Aeronave\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -270,6 +276,9 @@
     <Compile Include="Utils\ConexionSQL.cs" />
     <EmbeddedResource Include="Abm Aeronave\AltaAeronave.resx">
       <DependentUpon>AltaAeronave.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Abm Aeronave\DeseaDarDeAltaUnaAeronave.resx">
+      <DependentUpon>DeseaDarDeAltaUnaAeronave.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Abm Aeronave\ListadoAeronave.resx">
       <DependentUpon>ListadoAeronave.cs</DependentUpon>

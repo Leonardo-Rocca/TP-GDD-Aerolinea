@@ -49,6 +49,8 @@ namespace AerolineaFrba.Abm_Aeronave
 
         private void ListadoAeronave_Load(object sender, EventArgs e)
         {
+            string query = "select distinct matricula_aeronave,numero_aeronave,modelo_aeronave,kg_disponible_encomienda,id_fabricante,id_servicio FROM DBAS.aeronaves a, DBAS.encomiendas p";
+            hacerQuery(query, dataGridView1);
 
         }
 

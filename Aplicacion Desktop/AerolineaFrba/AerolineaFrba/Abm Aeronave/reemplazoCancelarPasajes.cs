@@ -29,6 +29,9 @@ namespace AerolineaFrba.Abm_Aeronave
             string query = "execute dbas.cancelacionPasajesBajaAeronave '" + fecha + "', '" + matricula + "', "+ motivo;
             (new ConexionSQL()).cargarTablaSQL(query);
             MessageBox.Show("Pasajes cancelados", "Baja Aeronave", MessageBoxButtons.OK);
+            llamado.Close();
+            anterior.Close();
+            this.Close();
 
         }
 
@@ -45,7 +48,9 @@ namespace AerolineaFrba.Abm_Aeronave
             }
             else
             {
-                //otra cosa
+                //--------------COMO LO DEVUELVE ??? ----------------
+                SeleccionarCualReemplazar form = new SeleccionarCualReemplazar(dt,this);
+                form.Show();
             }
         }
 
@@ -55,5 +60,16 @@ namespace AerolineaFrba.Abm_Aeronave
             llamado.Close();
             this.Close();
         }
+
+        public void modificaPorEsta(string matriculaParaReemplazar)
+        {
+            string query = "execute dbas.reemplazarAeronave '" + llamado.getMatricula() + "', '" + matriculaParaReemplazar + "', " + anterior.motivo() + ", '" + anterior.getFecha() + "'";
+            (new ConexionSQL()).cargarTablaSQL(query);
+            MessageBox.Show("Baja de aeronave exitosa", "Baja aeronave", MessageBoxButtons.OK);
+            anterior.Close();
+            llamado.Close();
+            this.Close();
+        }
+
     }
 }

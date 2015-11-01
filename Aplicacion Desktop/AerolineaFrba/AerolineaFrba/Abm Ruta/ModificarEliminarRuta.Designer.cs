@@ -59,12 +59,14 @@
             // 
             // btBuscar
             // 
+            this.btBuscar.BackColor = System.Drawing.Color.DarkTurquoise;
+            this.btBuscar.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btBuscar.Location = new System.Drawing.Point(786, 325);
             this.btBuscar.Name = "btBuscar";
             this.btBuscar.Size = new System.Drawing.Size(139, 50);
             this.btBuscar.TabIndex = 67;
             this.btBuscar.Text = "Buscar";
-            this.btBuscar.UseVisualStyleBackColor = true;
+            this.btBuscar.UseVisualStyleBackColor = false;
             this.btBuscar.Click += new System.EventHandler(this.btBuscar_Click);
             // 
             // chkListaServicios
@@ -89,7 +91,7 @@
             // txtPasajeSuperior
             // 
             this.txtPasajeSuperior.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPasajeSuperior.Location = new System.Drawing.Point(835, 236);
+            this.txtPasajeSuperior.Location = new System.Drawing.Point(857, 236);
             this.txtPasajeSuperior.Name = "txtPasajeSuperior";
             this.txtPasajeSuperior.Size = new System.Drawing.Size(107, 26);
             this.txtPasajeSuperior.TabIndex = 64;
@@ -98,7 +100,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(806, 239);
+            this.label3.Location = new System.Drawing.Point(828, 239);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(23, 18);
             this.label3.TabIndex = 63;
@@ -107,7 +109,7 @@
             // txtPasajeLimInferior
             // 
             this.txtPasajeLimInferior.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPasajeLimInferior.Location = new System.Drawing.Point(651, 234);
+            this.txtPasajeLimInferior.Location = new System.Drawing.Point(673, 234);
             this.txtPasajeLimInferior.Name = "txtPasajeLimInferior";
             this.txtPasajeLimInferior.Size = new System.Drawing.Size(107, 26);
             this.txtPasajeLimInferior.TabIndex = 62;
@@ -116,7 +118,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(600, 236);
+            this.label4.Location = new System.Drawing.Point(622, 236);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(45, 18);
             this.label4.TabIndex = 61;
@@ -125,7 +127,7 @@
             // txtPKGSuperior
             // 
             this.txtPKGSuperior.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPKGSuperior.Location = new System.Drawing.Point(835, 135);
+            this.txtPKGSuperior.Location = new System.Drawing.Point(857, 135);
             this.txtPKGSuperior.Name = "txtPKGSuperior";
             this.txtPKGSuperior.Size = new System.Drawing.Size(107, 26);
             this.txtPKGSuperior.TabIndex = 60;
@@ -134,7 +136,7 @@
             // 
             this.lby.AutoSize = true;
             this.lby.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lby.Location = new System.Drawing.Point(806, 138);
+            this.lby.Location = new System.Drawing.Point(828, 138);
             this.lby.Name = "lby";
             this.lby.Size = new System.Drawing.Size(23, 18);
             this.lby.TabIndex = 59;
@@ -143,7 +145,7 @@
             // txtPKGLimInferior
             // 
             this.txtPKGLimInferior.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPKGLimInferior.Location = new System.Drawing.Point(651, 133);
+            this.txtPKGLimInferior.Location = new System.Drawing.Point(673, 133);
             this.txtPKGLimInferior.Name = "txtPKGLimInferior";
             this.txtPKGLimInferior.Size = new System.Drawing.Size(107, 26);
             this.txtPKGLimInferior.TabIndex = 58;
@@ -152,7 +154,7 @@
             // 
             this.lbEntre.AutoSize = true;
             this.lbEntre.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbEntre.Location = new System.Drawing.Point(600, 135);
+            this.lbEntre.Location = new System.Drawing.Point(622, 135);
             this.lbEntre.Name = "lbEntre";
             this.lbEntre.Size = new System.Drawing.Size(45, 18);
             this.lbEntre.TabIndex = 57;
@@ -162,7 +164,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(585, 197);
+            this.label2.Location = new System.Drawing.Point(607, 197);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(173, 20);
             this.label2.TabIndex = 55;
@@ -172,7 +174,7 @@
             // 
             this.lbPrecioKG.AutoSize = true;
             this.lbPrecioKG.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbPrecioKG.Location = new System.Drawing.Point(585, 95);
+            this.lbPrecioKG.Location = new System.Drawing.Point(607, 95);
             this.lbPrecioKG.Name = "lbPrecioKG";
             this.lbPrecioKG.Size = new System.Drawing.Size(148, 20);
             this.lbPrecioKG.TabIndex = 53;
@@ -181,7 +183,7 @@
             // btsDestino
             // 
             this.btsDestino.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btsDestino.Location = new System.Drawing.Point(438, 197);
+            this.btsDestino.Location = new System.Drawing.Point(431, 197);
             this.btsDestino.Name = "btsDestino";
             this.btsDestino.Size = new System.Drawing.Size(108, 29);
             this.btsDestino.TabIndex = 52;
@@ -192,7 +194,7 @@
             // btsOringen
             // 
             this.btsOringen.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btsOringen.Location = new System.Drawing.Point(438, 132);
+            this.btsOringen.Location = new System.Drawing.Point(431, 132);
             this.btsOringen.Name = "btsOringen";
             this.btsOringen.Size = new System.Drawing.Size(108, 29);
             this.btsOringen.TabIndex = 51;
@@ -278,6 +280,7 @@
             // 
             // butCancelar
             // 
+            this.butCancelar.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butCancelar.Location = new System.Drawing.Point(34, 601);
             this.butCancelar.Name = "butCancelar";
             this.butCancelar.Size = new System.Drawing.Size(138, 50);
@@ -293,6 +296,7 @@
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.Size = new System.Drawing.Size(947, 190);
             this.dataGridView2.TabIndex = 40;
+            this.dataGridView2.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView2_CellContentClick);
             // 
             // button2
             // 
@@ -307,6 +311,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.LightBlue;
             this.ClientSize = new System.Drawing.Size(1109, 676);
             this.Controls.Add(this.btBuscar);
             this.Controls.Add(this.chkListaServicios);

@@ -12,6 +12,9 @@ namespace AerolineaFrba.Abm_Aeronave
 {
     public partial class AltaAeronave : Form
     {
+        public int discriminador;
+        public MotivoDeBaja datosSobreModificacion;
+        public ModificarAeronave datosParaModificacion;
         public AltaAeronave()
         {
             InitializeComponent();
@@ -63,6 +66,7 @@ namespace AerolineaFrba.Abm_Aeronave
 
         private void iniciar()
         {
+            discriminador = 0;
             txtMatricula.Text = "";
             txtModelo.Text = "";
             textPisos.Text = "";
@@ -83,8 +87,16 @@ namespace AerolineaFrba.Abm_Aeronave
 
         private void butAceptar_Click(object sender, EventArgs e)
         {
+            
             if(!Validaciones())
             {
+                return;
+            }
+
+            if (discriminador == 1)
+            {
+                altaParaLaBaja();
+                discriminador = 0;
                 return;
             }
 
@@ -96,7 +108,10 @@ namespace AerolineaFrba.Abm_Aeronave
             
             MessageBox.Show("Alta aeronave exitosa", "Alta aeronave", MessageBoxButtons.OK);
             iniciar();
+            this.Close();
         }
+
+       
 
         private bool Validaciones()
         {
@@ -145,6 +160,34 @@ namespace AerolineaFrba.Abm_Aeronave
         {
             iniciar();
             this.Hide();
+        }
+
+        public void setDiscriminador(ModificarAeronave form,MotivoDeBaja form2)
+        {
+            discriminador = 1;
+            datosParaModificacion = form;
+            datosSobreModificacion = form2;
+        }
+
+        private void altaParaLaBaja()
+        {
+            if (!validacionParaModificacion())
+            {
+                MessageBox.Show("La cantidad de butacas y pisos debe ser mayor que en la aeronave a reemplazar", "Datos invalidos", MessageBoxButtons.OK);
+                return;
+            }
+            string query = "execute dbas.bajaAeronave '" + datosSobreModificacion.getFecha() +"', '" + datosParaModificacion.getMatricula() + "', " + datosSobreModificacion.motivo();            
+            (new ConexionSQL()).cargarTablaSQL(query);
+            MessageBox.Show("Baja de aeronave exitosa", "Baja aeronave", MessageBoxButtons.OK);
+            datosParaModificacion.Close();
+            datosSobreModificacion.Close();
+            iniciar();
+            this.Close();
+        }
+
+        private bool validacionParaModificacion()
+        {
+            return (Convert.ToInt32(textButacasPasillo.Text) >= Convert.ToInt32(datosParaModificacion.getButacasPasillo()) && Convert.ToInt32(textButacasVentanilla.Text) >= Convert.ToInt32(datosParaModificacion.getButacasVentanilla()) && Convert.ToInt32(textPisos.Text) >= Convert.ToInt32(datosParaModificacion.getPisos()));
         }
     }
 }

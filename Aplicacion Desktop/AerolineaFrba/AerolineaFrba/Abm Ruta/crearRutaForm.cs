@@ -69,8 +69,9 @@ namespace AerolineaFrba.Abm_Ruta
         private void agregarRuta()
         {
             // probar  (es posible q haya que cambiar los nombres de atributos en la vista)
-            string comando = "INSERT INTO DBAS.caracteristicasRutas (precio_base_por_KG,precio_base_por_pasaje,ciudad_Origen,ciudad_Destino,tipo_servicio)" +
-                        "select distinct '" + txtPregiokg.Text + "' , '" + txtPrecioPasaje + "','"  + txtCOrigen.Text + "','" + txtCDestino.Text + "' , tipo_servicio FROM DBAS.servicios WHERE tipo_servicio IN ( "; 
+            string comando = "INSERT INTO DBAS.caracteristicasRutas   "+
+                           "( precio_base_por_KG,  precio_base_por_pasaje,ciudad_Origen, ciudad_Destino, tipo_servicio) " +  //porcentaje_arancel
+           "select distinct '" + txtPregiokg.Text + "' , '" + txtPrecioPasaje + "','"  + txtCOrigen.Text + "','" + txtCDestino.Text + "' , tipo_servicio FROM DBAS.servicios WHERE tipo_servicio IN ( "; 
         
               foreach (Object elemento in chkListaServicios.CheckedItems)
             {

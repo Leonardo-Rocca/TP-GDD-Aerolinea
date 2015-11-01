@@ -44,8 +44,9 @@ namespace AerolineaFrba.Abm_Ruta
             chkListaServicios.Items.Insert(0, "Primera Clase");
             chkListaServicios.Items.Insert(1, "Ejecutivo");
             chkListaServicios.Items.Insert(2, "Turista");
-            
+            vaciarTextos();
         }
+
 
         private void button3_Click(object sender, EventArgs e)
         {
@@ -68,7 +69,20 @@ namespace AerolineaFrba.Abm_Ruta
 
         private void eliminarRuta()
         {
-            
+            string codigo_ruta = dataGridView2[0, dataGridView2.CurrentCell.RowIndex].Value.ToString();
+            string query = "execute dbas.bajaRuta '" + codigo_ruta + "'";
+
+            try
+            {
+                (new ConexionSQL()).cargarTablaSQL(query);
+                MessageBox.Show("Ruta Eliminada", "Baja ", MessageBoxButtons.OKCancel);
+            }
+            catch (Exception er)
+            {
+                MessageBox.Show(er.Message, "Baja ", MessageBoxButtons.OKCancel);
+
+            }
+
         }
 
         private void btsOringen_Click(object sender, EventArgs e)
@@ -95,42 +109,42 @@ namespace AerolineaFrba.Abm_Ruta
  
             if (txtCodigo.TextLength != 0)
             {
-                query = query + "AND codigo_ruta = " + txtCodigo.Text;
+                query = query + " AND codigo_ruta = " + txtCodigo.Text;
             }
 
             if (txtCOrigen.TextLength != 0)
-            {
-                query = query + "AND ciudad_Origen = " + txtCOrigen.Text;
+            { 
+                query = query + " AND ciudad_Origen = " + txtCOrigen.Text;
             }
 
             if (txtCDestino.TextLength != 0)
             {
-                query = query + "AND ciudad_Destino = " + txtCDestino.Text;
+                query = query + " AND ciudad_Destino = " + txtCDestino.Text;
             }
 
             if (txtPasajeLimInferior.TextLength != 0)
             {
-                query = query + "AND precio_base_por_pasaje > " + txtPasajeLimInferior.Text;
+                query = query + " AND precio_base_por_pasaje > " + txtPasajeLimInferior.Text;
             }
 
             if (txtPasajeSuperior.TextLength != 0)
             {
-                query = query + "AND precio_base_por_pasaje < " + txtPasajeSuperior.Text;
+                query = query + " AND precio_base_por_pasaje < " + txtPasajeSuperior.Text;
             }
 
             if (txtPKGLimInferior.TextLength != 0)
             {
-                query = query + "AND precio_base_por_KG > " + txtPKGLimInferior.Text;  
+                query = query + " AND precio_base_por_KG > " + txtPKGLimInferior.Text;  
             }
 
             if (txtPKGSuperior.TextLength != 0)
             {
-                query = query + "AND precio_base_por_KG < " + txtPKGSuperior.Text;
+                query = query + " AND precio_base_por_KG < " + txtPKGSuperior.Text;
             }
 
             if (chkListaServicios.CheckedItems.Count != 0 ){
 
-                query = query + "AND tipo_servicio IN (";
+                query = query + " AND tipo_servicio IN (";
                 foreach (Object service in chkListaServicios.CheckedItems)
                 {
                     query = query + "'"+ service.ToString()+"',"; 
@@ -139,7 +153,7 @@ namespace AerolineaFrba.Abm_Ruta
             }
 
             //--sacada del listador generico--
-            MessageBox.Show(query, " la busqueda", MessageBoxButtons.OK); 
+          //  MessageBox.Show(query, " la busqueda", MessageBoxButtons.OK); 
             hacerQuery(query, dataGridView2);
         }
 
@@ -177,6 +191,54 @@ namespace AerolineaFrba.Abm_Ruta
         {
             inicializar();
             this.Hide();
+        }
+
+        private void vaciarTextos()
+        {
+            txtCodigo.Text = "";
+            txtCOrigen.Text = "";
+            txtCDestino.Text = "";
+            txtPasajeLimInferior.Text = "";
+            txtPasajeSuperior.Text = "";
+            txtPKGLimInferior.Text = "";
+            txtPKGSuperior.Text = "";
+        }
+
+        private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dataGridView2.CurrentCell.ColumnIndex == dataGridView2.Columns.Count - 1) {
+                if (tipoDeForm == 1)
+                {
+                    completar(dataGridView2);
+                }
+                else
+                {
+                    eliminarRuta();
+                }
+            }
+        }
+
+        private void completar(DataGridView dataGridView1)
+        {
+
+            string codigo_ruta = dataGridView2[0, dataGridView2.CurrentCell.RowIndex].Value.ToString();
+            string ciudad_Origen = dataGridView2[1, dataGridView2.CurrentCell.RowIndex].Value.ToString();
+            string ciudad_Destino = dataGridView1[2, dataGridView1.CurrentCell.RowIndex].Value.ToString();
+            string tipo_servicio = dataGridView1[5, dataGridView1.CurrentCell.RowIndex].Value.ToString();
+            string precio_base_por_KG = dataGridView1[4, dataGridView1.CurrentCell.RowIndex].Value.ToString();
+            string precio_base_por_pasaje = dataGridView1[3, dataGridView1.CurrentCell.RowIndex].Value.ToString();
+            string porcentaje_arancel = dataGridView1[4, dataGridView1.CurrentCell.RowIndex].Value.ToString();
+
+        /*    string fabricante = ((new ConexionSQL()).cargarTablaSQL("select distinct nombre_fabricante FROM DBAS.fabricantes where id_fabricante = " + idFabricante)).Rows[0][0].ToString();
+            string tipoServicio = ((new ConexionSQL()).cargarTablaSQL("select distinct tipo_servicio FROM DBAS.servicios where id_servicio = " + idTipoServicio)).Rows[0][0].ToString();
+            DataTable dt = ((new ConexionSQL()).cargarTablaSQL("select count(b1.id_butaca),count(b2.id_butaca),count(distinct b1.piso_butaca) from dbas.butacas b1, dbas.butacas b2 where b1.tipo_butaca like 'Pasillo' and b2.tipo_butaca like 'Ventanilla' and b1.matricula_aeronave like '" + matricula + "' and b2.matricula_aeronave like '" + matricula + "'"));
+            string cantPasillo = dt.Rows[0][0].ToString();
+            string cantVentanila = dt.Rows[0][1].ToString();
+            string cantPisos = dt.Rows[0][2].ToString();
+
+            this.iniciar();
+            this.Hide();
+            this.llamada.Show();*/
         }
 
     }

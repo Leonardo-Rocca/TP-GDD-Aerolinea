@@ -27,13 +27,33 @@ namespace AerolineaFrba.Abm_Aeronave
             string motivo = anterior.motivo();
             string matricula = llamado.getMatricula();
             string query = "execute dbas.cancelacionPasajesBajaAeronave '" + fecha + "', '" + matricula + "', "+ motivo;
-            MessageBox.Show(query, "Va queriendo", MessageBoxButtons.OK);
+            (new ConexionSQL()).cargarTablaSQL(query);
+            MessageBox.Show("Pasajes cancelados", "Baja Aeronave", MessageBoxButtons.OK);
 
         }
 
         private void buttonReemplazar_Click(object sender, EventArgs e)
         {
+            string matricula = llamado.getMatricula();
+            string query = "select * from dbas.aeronavesDeReemplazo('" + matricula + "')";
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
+            if (dt.Rows.Count == 0)
+            {
+                DeseaDarDeAltaUnaAeronave form = new DeseaDarDeAltaUnaAeronave(llamado,anterior);
+                this.Hide();
+                form.Show();
+            }
+            else
+            {
+                //otra cosa
+            }
+        }
 
+        private void buttonCancelar_Click(object sender, EventArgs e)
+        {
+            anterior.Close();
+            llamado.Close();
+            this.Close();
         }
     }
 }

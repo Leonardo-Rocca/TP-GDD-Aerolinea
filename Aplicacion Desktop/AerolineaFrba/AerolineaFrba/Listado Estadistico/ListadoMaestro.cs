@@ -72,7 +72,6 @@ namespace AerolineaFrba.Listado_Estadistico
             if (dt.Rows.Count == 0)
             {
                 MessageBox.Show("No se han encontrado resultados en la consulta", "Fallo la busqueda", MessageBoxButtons.OK);
-                dataGrid.DataSource = null;
 
             }
             else

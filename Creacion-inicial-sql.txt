@@ -1078,10 +1078,6 @@ BEGIN
 END;
 GO
 
-CREATE TABLE DBAS.#aeronavesConUltimoVueloConfirmado (matricula_aeronave varchar(100),id_viaje bigint)
-GO
-
-
 CREATE FUNCTION DBAS.ultimaLlegadaConfirmadaAeronave(@matricula_aeronave varchar(100)) 
 RETURNS bigint
 AS
@@ -1103,15 +1099,13 @@ BEGIN
 END;
 GO
 
-
-CREATE PROCEDURE DBAS.aeronavesDisponiblesParaReemplazo
+CREATE FUNCTION DBAS.aeronavesDisponiblesParaReemplazo()
+RETURNS @aeronavesDisponiblesParaReemplazo TABLE (matricula_aeronave varchar(100),id_viaje bigint)
 AS
 BEGIN
 
 	DECLARE @matriculaAer varchar (100)
 	DECLARE @id_Viaje bigint
-
-	DELETE #aeronavesConUltimoVueloConfirmado
 
 	DECLARE aeronaves CURSOR FOR
 	SELECT matricula_aeronave FROM DBAS.aeronaves
@@ -1128,12 +1122,12 @@ BEGIN
 			SET @id_Viaje = DBAS.ultimaLlegadaConfirmadaAeronave(@matriculaAer)
 			IF(@id_Viaje IS NOT NULL)
 			BEGIN
-				INSERT INTO #aeronavesConUltimoVueloConfirmado VALUES (@matriculaAer,@id_Viaje)
+				INSERT INTO @aeronavesDisponiblesParaReemplazo VALUES (@matriculaAer,@id_Viaje)
 			END
 		END
 		ELSE
 		BEGIN
-			INSERT INTO #aeronavesConUltimoVueloConfirmado VALUES (@matriculaAer,NULL)
+			INSERT INTO @aeronavesDisponiblesParaReemplazo VALUES (@matriculaAer,NULL)
 		END
 		
 		FETCH NEXT FROM aeronaves
@@ -1142,6 +1136,8 @@ BEGIN
 
 	CLOSE aeronaves
 	DEALLOCATE aeronaves
+
+	RETURN
 
 END;
 GO
@@ -1155,7 +1151,7 @@ BEGIN
 	SET @ciudad_actual_id = DBAS.ciudadAeronave(@matricula_aeronave)
 	
 	INSERT INTO  @avionesSinVuelo
-	SELECT DISTINCT tablaViajes.matricula_aeronave FROM DBAS.viajes tablaViajes,#aeronavesConUltimoVueloConfirmado tablaAeronavesTemp, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades
+	SELECT DISTINCT tablaViajes.matricula_aeronave FROM DBAS.viajes tablaViajes, DBAS.aeronavesDisponiblesParaReemplazo() tablaAeronavesTemp, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades
 	WHERE (tablaAeronavesTemp.id_viaje = tablaViajes.id_viaje OR tablaAeronavesTemp.id_viaje IS NULL) AND tablaViajes.fecha_llegada <= GETDATE() 
 	AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaRutas.ciudad_destino_id = @ciudad_actual_id
 
@@ -1314,8 +1310,6 @@ CREATE FUNCTION DBAS.aeronavesDeReemplazo(@matricula_aeronave varchar(100))
 RETURNS @avionesSinVuelo TABLE (matricula_aeronave varchar(100), cantidad_butacas bigint)
 AS 
 BEGIN
-	
-	EXECUTE DBAS.aeronavesDisponiblesParaReemplazo
 
 	INSERT INTO @avionesSinVuelo
 	SELECT tablaAeronaves1.matricula_aeronave, DBAS.cantidadButacas(tablaAeronaves1.matricula_aeronave) FROM  DBAS.aeronavesDisponiblesSinVuelo(@matricula_aeronave) avionesDisponibles, DBAS.aeronaves tablaAeronaves1, DBAS.aeronaves tablaAeronaves2
@@ -1572,7 +1566,3 @@ GO
 
 				
 				 
-
-	
-
-

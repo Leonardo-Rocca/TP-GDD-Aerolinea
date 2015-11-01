@@ -10,12 +10,15 @@ using System.Windows.Forms;
 
 using AerolineaFrba.FormsPrincipales;
 using AerolineaFrba.Abm_Ciudad;
+using AerolineaFrba.Dominio;
 
 namespace AerolineaFrba.Abm_Ruta
 {
     public partial class crearRutaForm : FormGenerico
     {
-       
+        int tipo = 0;//0 crear, 1 modificar
+        private Ruta miRuta;
+
         public crearRutaForm()
         {
             InitializeComponent();
@@ -23,6 +26,19 @@ namespace AerolineaFrba.Abm_Ruta
          //   DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct tipo_servicio FROM DBAS.servicios");
 
             inicializar();
+        }
+
+        public crearRutaForm(int tipoF)
+        {
+            tipo = tipoF;
+            InitializeComponent();
+            inicializar();
+            if (tipo == 1)
+            {
+                lbTitle.Text = "ModificarRuta";
+                buttonGuardar.Text = "Modificar";
+            }
+
         }
 
         private void inicializar()
@@ -46,7 +62,15 @@ namespace AerolineaFrba.Abm_Ruta
         private void button2_Click(object sender, EventArgs e)
         {
             inicializar();
-            this.Hide();
+            if (tipo == 0)
+            {
+                this.Hide();
+            }
+            else
+            {
+                this.Close();
+            }
+
         }
 
         private void buttonGuardar_Click(object sender, EventArgs e)
@@ -60,8 +84,14 @@ namespace AerolineaFrba.Abm_Ruta
                 MessageBox.Show("Debe completar todos los campos", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            agregarRuta();
-
+            if (tipo == 0)
+            {
+                agregarRuta();
+            }
+            else
+            {
+                modificarRuta();
+            }
             this.Hide(); 
             return;
         }
@@ -71,7 +101,7 @@ namespace AerolineaFrba.Abm_Ruta
             // probar  (es posible q haya que cambiar los nombres de atributos en la vista)
             string comando = "INSERT INTO DBAS.caracteristicasRutas   "+
                            "( precio_base_por_KG,  precio_base_por_pasaje,ciudad_Origen, ciudad_Destino, tipo_servicio) " +  //porcentaje_arancel
-           "select distinct '" + txtPregiokg.Text + "' , '" + txtPrecioPasaje + "','"  + txtCOrigen.Text + "','" + txtCDestino.Text + "' , tipo_servicio FROM DBAS.servicios WHERE tipo_servicio IN ( "; 
+           "select distinct '" + txtPregiokg.Text + "' , '" + txtPrecioPasaje.Text + "','"  + txtCOrigen.Text + "','" + txtCDestino.Text + "' , tipo_servicio FROM DBAS.servicios WHERE tipo_servicio IN ( "; 
         
               foreach (Object elemento in chkListaServicios.CheckedItems)
             {
@@ -89,8 +119,13 @@ namespace AerolineaFrba.Abm_Ruta
                 return;
             }
 
-            MessageBox.Show("Ruta creada (falta probar)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Ruta creada (posta)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
             inicializar();
+        }
+
+        private void modificarRuta()
+        {
+            
         }
 
         private void btsOringen_Click(object sender, EventArgs e)
@@ -99,8 +134,6 @@ namespace AerolineaFrba.Abm_Ruta
            lOrigen.setFormAnteriorSup(this);
            lOrigen.setBuffer(ref txtCOrigen);
            lOrigen.Show();
-
-           
 
         }
 
@@ -129,6 +162,15 @@ namespace AerolineaFrba.Abm_Ruta
         private void txtCOrigen_TextChanged(object sender, EventArgs e)
         {
          
+        }
+
+        public void cargarRuta(Ruta r)
+        {
+            txtCodigo.Text = r.idRuta.ToString();
+            txtCOrigen.Text = r.ciudad_Origen;
+            txtCDestino.Text = r.ciudad_Destino;
+            txtPrecioPasaje.Text = r.precio_base_por_pasaje;
+            txtPregiokg.Text = r.precio_base_por_KG;
         }
     }
 }

@@ -49,8 +49,8 @@ namespace AerolineaFrba.Abm_Aeronave
             else
             {
                 //--------------COMO LO DEVUELVE ??? ----------------
-                SeleccionarCualReemplazar form = new SeleccionarCualReemplazar(dt,this);
-                form.Show();
+            //    SeleccionarCualReemplazar form = new SeleccionarCualReemplazar(dt,this);
+            //    form.Show();
             }
         }
 

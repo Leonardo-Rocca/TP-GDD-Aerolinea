@@ -71,6 +71,11 @@ namespace AerolineaFrba.Abm_Ruta
         {
             string codigo_ruta = dataGridView2[0, dataGridView2.CurrentCell.RowIndex].Value.ToString();
             string query = "execute dbas.bajaRuta '" + codigo_ruta + "'";
+           
+            if (MessageBox.Show("¿Realmente desea dar de baja la ruta " + codigo_ruta + "?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            {
+                return;
+            }
 
             try
             {
@@ -114,12 +119,12 @@ namespace AerolineaFrba.Abm_Ruta
 
             if (txtCOrigen.TextLength != 0)
             { 
-                query = query + " AND ciudad_Origen = " + txtCOrigen.Text;
+                query = query + " AND ciudad_Origen Like '" + txtCOrigen.Text+ "'";
             }
 
             if (txtCDestino.TextLength != 0)
             {
-                query = query + " AND ciudad_Destino = " + txtCDestino.Text;
+                query = query + " AND ciudad_Destino Like '" + txtCDestino.Text+ "'";
             }
 
             if (txtPasajeLimInferior.TextLength != 0)
@@ -153,7 +158,7 @@ namespace AerolineaFrba.Abm_Ruta
             }
 
             //--sacada del listador generico--
-          //  MessageBox.Show(query, " la busqueda", MessageBoxButtons.OK); 
+           // MessageBox.Show(query, " la busqueda", MessageBoxButtons.OK); 
             hacerQuery(query, dataGridView2);
         }
 
@@ -220,8 +225,8 @@ namespace AerolineaFrba.Abm_Ruta
 
         private void completar(DataGridView dataGridView1)
         {
-
             string codigo_ruta = dataGridView2[0, dataGridView2.CurrentCell.RowIndex].Value.ToString();
+
             string ciudad_Origen = dataGridView2[1, dataGridView2.CurrentCell.RowIndex].Value.ToString();
             string ciudad_Destino = dataGridView1[2, dataGridView1.CurrentCell.RowIndex].Value.ToString();
             string tipo_servicio = dataGridView1[5, dataGridView1.CurrentCell.RowIndex].Value.ToString();
@@ -229,16 +234,20 @@ namespace AerolineaFrba.Abm_Ruta
             string precio_base_por_pasaje = dataGridView1[3, dataGridView1.CurrentCell.RowIndex].Value.ToString();
             string porcentaje_arancel = dataGridView1[4, dataGridView1.CurrentCell.RowIndex].Value.ToString();
 
-        /*    string fabricante = ((new ConexionSQL()).cargarTablaSQL("select distinct nombre_fabricante FROM DBAS.fabricantes where id_fabricante = " + idFabricante)).Rows[0][0].ToString();
-            string tipoServicio = ((new ConexionSQL()).cargarTablaSQL("select distinct tipo_servicio FROM DBAS.servicios where id_servicio = " + idTipoServicio)).Rows[0][0].ToString();
-            DataTable dt = ((new ConexionSQL()).cargarTablaSQL("select count(b1.id_butaca),count(b2.id_butaca),count(distinct b1.piso_butaca) from dbas.butacas b1, dbas.butacas b2 where b1.tipo_butaca like 'Pasillo' and b2.tipo_butaca like 'Ventanilla' and b1.matricula_aeronave like '" + matricula + "' and b2.matricula_aeronave like '" + matricula + "'"));
-            string cantPasillo = dt.Rows[0][0].ToString();
-            string cantVentanila = dt.Rows[0][1].ToString();
-            string cantPisos = dt.Rows[0][2].ToString();
+            string query = "";
+            ConexionSQL conn = new ConexionSQL();
+            DataTable dt = conn.cargarTablaSQL(query);
+            
+        //    List<string> servicios = dt;
+            Ruta aModificar = new Ruta(Convert.ToInt32(codigo_ruta), ciudad_Origen, ciudad_Destino, precio_base_por_pasaje, precio_base_por_KG, tipo_servicio, porcentaje_arancel);
 
-            this.iniciar();
+            crearRutaForm modify =new crearRutaForm(1);
+           // modify.MiRuta = aModificar;
+            modify.cargarRuta(aModificar);
+
+            this.inicializar();
             this.Hide();
-            this.llamada.Show();*/
+            modify.Show();
         }
 
         private void button2_Click(object sender, EventArgs e)

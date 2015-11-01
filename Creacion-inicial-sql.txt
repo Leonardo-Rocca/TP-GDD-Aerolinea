@@ -1366,18 +1366,17 @@ BEGIN
 	DECLARE @ID_ciudad_Origen bigint
 	DECLARE @ID_ciudad_Destino bigint
 	DECLARE @tipo_servicio varchar(100)
-	DECLARE @porcentaje_arancel float(24)
 	DECLARE @precio_KG float(24)
 	DECLARE @precio_pasaje float(24)
 	DECLARE @id_servicio bigint
 
 	DECLARE rutasCursor CURSOR FOR
-	SELECT precio_base_por_KG, precio_base_por_pasaje, ciudad_Origen, ciudad_Destino, tipo_servicio, porcentaje_arancel FROM inserted
+	SELECT CAST(precio_base_por_KG AS float(24)), CAST(precio_base_por_pasaje AS float(24)), ciudad_Origen, ciudad_Destino, tipo_servicio FROM inserted
 
 	OPEN rutasCursor
 
 	FETCH NEXT FROM rutasCursor
-	INTO @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio, @porcentaje_arancel
+	INTO @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
 
 	SELECT @ID_ciudad_Origen = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Origen
 	SELECT @ID_ciudad_Destino = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Destino
@@ -1395,7 +1394,7 @@ BEGIN
 		VALUES (@codigo_ruta, @id_servicio)
 
 		FETCH NEXT FROM rutasCursor
-		INTO @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio, @porcentaje_arancel
+		INTO @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
 	END
 
 	CLOSE rutasCursor
@@ -1415,18 +1414,17 @@ BEGIN
 	DECLARE @ID_ciudad_Origen bigint
 	DECLARE @ID_ciudad_Destino bigint
 	DECLARE @tipo_servicio varchar(100)
-	DECLARE @porcentaje_arancel float(24)
 	DECLARE @precio_KG float(24)
 	DECLARE @precio_pasaje float(24)
 	DECLARE @id_servicio bigint
 
 	DECLARE rutasCursor CURSOR FOR
-	SELECT codigo_ruta, precio_base_por_KG, precio_base_por_pasaje, ciudad_Origen, ciudad_Destino, tipo_servicio, porcentaje_arancel FROM inserted
+	SELECT codigo_ruta, CAST(precio_base_por_KG AS float(24)), CAST(precio_base_por_pasaje AS float(24)), ciudad_Origen, ciudad_Destino, tipo_servicio FROM inserted
 
 	OPEN rutasCursor
 
 	FETCH NEXT FROM rutasCursor
-	INTO @codigo_ruta, @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio, @porcentaje_arancel
+	INTO @codigo_ruta, @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
 
 	SELECT @ID_ciudad_Origen = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Origen
 	SELECT @ID_ciudad_Destino = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Destino
@@ -1444,7 +1442,7 @@ BEGIN
 		VALUES (@codigo_ruta, @id_servicio)
 
 		FETCH NEXT FROM rutasCursor
-		INTO @codigo_ruta, @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio, @porcentaje_arancel
+		INTO @codigo_ruta, @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
 
 	END
 
@@ -1566,3 +1564,7 @@ GO
 
 				
 				 
+
+	
+
+

@@ -234,15 +234,20 @@ namespace AerolineaFrba.Abm_Ruta
             string precio_base_por_pasaje = dataGridView1[3, dataGridView1.CurrentCell.RowIndex].Value.ToString();
             string porcentaje_arancel = dataGridView1[4, dataGridView1.CurrentCell.RowIndex].Value.ToString();
 
-            string query = "";
+            string query = "select tipo_servicio FROM DBAS.caracteristicasRutas WHERE codigo_ruta = "+codigo_ruta ;
             ConexionSQL conn = new ConexionSQL();
             DataTable dt = conn.cargarTablaSQL(query);
-            
-        //    List<string> servicios = dt;
-            Ruta aModificar = new Ruta(Convert.ToInt32(codigo_ruta), ciudad_Origen, ciudad_Destino, precio_base_por_pasaje, precio_base_por_KG, tipo_servicio, porcentaje_arancel);
+
+           List<string> servicios = new List<string>();
+
+           foreach (DataRow dr in dt.Rows)
+           {
+               servicios.Add(dr.ToString());
+           }
+
+            Ruta aModificar = new Ruta(Convert.ToInt32(codigo_ruta), ciudad_Origen, ciudad_Destino, precio_base_por_pasaje, precio_base_por_KG, tipo_servicio, porcentaje_arancel,servicios);
 
             crearRutaForm modify =new crearRutaForm(1);
-           // modify.MiRuta = aModificar;
             modify.cargarRuta(aModificar);
 
             this.inicializar();

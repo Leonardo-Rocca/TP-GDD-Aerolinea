@@ -171,6 +171,26 @@ namespace AerolineaFrba.Abm_Ruta
             txtCDestino.Text = r.ciudad_Destino;
             txtPrecioPasaje.Text = r.precio_base_por_pasaje;
             txtPregiokg.Text = r.precio_base_por_KG;
+
+              for (int i = 0; i <= (chkListaServicios.Items.Count - 1); i++) {
+      
+                  if (r.servicios.Contains(chkListaServicios.Items.ToString()))//.GetItemText(i).ToString()) )
+               {
+                      chkListaServicios.SetItemCheckState(i, CheckState.Checked);
+               }
+                  else
+                  {
+                     chkListaServicios.SetItemCheckState(i, CheckState.Unchecked);
+                  }
+              }
+
+         /*   foreach (Object service in chkListaServicios.Items)
+            {
+                if(r.servicios.Contains(service.ToString()) )
+                    service
+            }*/
+
         }
+
     }
 }

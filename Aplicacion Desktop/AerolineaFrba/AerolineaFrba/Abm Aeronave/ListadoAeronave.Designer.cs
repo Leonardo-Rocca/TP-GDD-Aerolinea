@@ -58,7 +58,6 @@
             this.button2 = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.butAceptar = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -366,22 +365,11 @@
             this.dataGridView1.TabIndex = 43;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
-            // butAceptar
-            // 
-            this.butAceptar.Location = new System.Drawing.Point(294, 253);
-            this.butAceptar.Name = "butAceptar";
-            this.butAceptar.Size = new System.Drawing.Size(108, 21);
-            this.butAceptar.TabIndex = 44;
-            this.butAceptar.Text = "Aceptar";
-            this.butAceptar.UseVisualStyleBackColor = true;
-            this.butAceptar.Click += new System.EventHandler(this.butAceptar_Click);
-            // 
             // ListadoAeronave
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(690, 454);
-            this.Controls.Add(this.butAceptar);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.button3);
@@ -431,6 +419,5 @@
         private System.Windows.Forms.TextBox textBoxDesdekg;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ComboBox comboBoxServicio;
-        private System.Windows.Forms.Button butAceptar;
     }
 }

@@ -39,7 +39,7 @@ namespace AerolineaFrba.Abm_Aeronave
             DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
             if (dt.Rows.Count == 0)
             {
-                DeseaDarDeAltaUnaAeronave form = new DeseaDarDeAltaUnaAeronave();
+                DeseaDarDeAltaUnaAeronave form = new DeseaDarDeAltaUnaAeronave(llamado,anterior);
                 this.Hide();
                 form.Show();
             }
@@ -47,6 +47,13 @@ namespace AerolineaFrba.Abm_Aeronave
             {
                 //otra cosa
             }
+        }
+
+        private void buttonCancelar_Click(object sender, EventArgs e)
+        {
+            anterior.Close();
+            llamado.Close();
+            this.Close();
         }
     }
 }

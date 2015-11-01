@@ -52,6 +52,7 @@
             this.buttonCancelarPasajes.TabIndex = 42;
             this.buttonCancelarPasajes.Text = "Cancelar";
             this.buttonCancelarPasajes.UseVisualStyleBackColor = true;
+            this.buttonCancelarPasajes.Click += new System.EventHandler(this.buttonCancelarPasajes_Click);
             // 
             // label2
             // 
@@ -70,6 +71,7 @@
             this.button1.TabIndex = 45;
             this.button1.Text = "Aceptar";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // DeseaDarDeAltaUnaAeronave
             // 

@@ -88,9 +88,9 @@ namespace AerolineaFrba.Abm_Aeronave
 
         private void buttonCancelar_Click(object sender, EventArgs e)
         {
-            this.Hide();
-            iniciar();
             anterior.Show();
+            iniciar();
+            this.Close();
         }
 
         private void buttonAceptar_Click(object sender, EventArgs e)
@@ -129,9 +129,7 @@ namespace AerolineaFrba.Abm_Aeronave
                     else
                     {
                         throw new Exception();
-                        this.iniciar();
-                        MessageBox.Show("BOOOOOM", "Baja aeronave", MessageBoxButtons.OKCancel);
-                        return;
+                       
                     }
                 }
             }
@@ -173,7 +171,8 @@ namespace AerolineaFrba.Abm_Aeronave
         }
 
        public string getFecha(){
-           return textBoxFecha.Text;
+           return DateTime.Parse(textBoxFecha.Text).ToString();
         }
+
     }
 }

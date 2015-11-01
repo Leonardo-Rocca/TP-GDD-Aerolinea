@@ -33,7 +33,6 @@ namespace AerolineaFrba.Abm_Aeronave
             listado.setAnterior(this);
             _Aeronave paquete = new _Aeronave(txtMatricula,txtModelo,textPisos,textButacasPasillo,textButacasVentanilla,textKdDisponibles,comboBoxServicio,comboBoxFabricante);
             listado.cargarModificado(paquete);
-            this.Hide();
             listado.Show();
         }
 
@@ -164,5 +163,21 @@ namespace AerolineaFrba.Abm_Aeronave
         {
             return txtMatricula.Text;
         }
+
+        public string getPisos()
+        {
+            return textPisos.Text;
+        }
+
+        public string getButacasPasillo()
+        {
+            return textButacasPasillo.Text;
+        }
+
+        public string getButacasVentanilla()
+        {
+            return textButacasVentanilla.Text;
+        }
+
     }
 }

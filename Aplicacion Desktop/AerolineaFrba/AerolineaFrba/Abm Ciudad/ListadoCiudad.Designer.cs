@@ -36,8 +36,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxFiltro1 = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.butAceptar = new System.Windows.Forms.Button();
-            this.butCancelar = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.groupBox3.SuspendLayout();
             this.SuspendLayout();
@@ -116,32 +114,11 @@
             this.label4.TabIndex = 22;
             this.label4.Text = "Por igualdad de palabra";
             // 
-            // butAceptar
-            // 
-            this.butAceptar.Location = new System.Drawing.Point(227, 248);
-            this.butAceptar.Name = "butAceptar";
-            this.butAceptar.Size = new System.Drawing.Size(108, 21);
-            this.butAceptar.TabIndex = 36;
-            this.butAceptar.Text = "Aceptar";
-            this.butAceptar.UseVisualStyleBackColor = true;
-            this.butAceptar.Click += new System.EventHandler(this.butAceptar_Click);
-            // 
-            // butCancelar
-            // 
-            this.butCancelar.Location = new System.Drawing.Point(13, 248);
-            this.butCancelar.Name = "butCancelar";
-            this.butCancelar.Size = new System.Drawing.Size(108, 21);
-            this.butCancelar.TabIndex = 35;
-            this.butCancelar.Text = "Cancelar";
-            this.butCancelar.UseVisualStyleBackColor = true;
-            // 
             // ListadoCiudad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(623, 288);
-            this.Controls.Add(this.butAceptar);
-            this.Controls.Add(this.butCancelar);
             this.Controls.Add(this.dataGridView2);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
@@ -166,7 +143,5 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBoxFiltro1;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button butAceptar;
-        private System.Windows.Forms.Button butCancelar;
     }
 }

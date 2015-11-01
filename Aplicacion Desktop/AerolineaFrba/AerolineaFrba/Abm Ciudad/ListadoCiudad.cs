@@ -15,13 +15,13 @@ namespace AerolineaFrba.Abm_Ciudad
         public ListadoCiudad()
         {
             InitializeComponent();
-            string query = "select distinct nombre_ciudad FROM DBAS.ciudades";
-            hacerQuery(query, dataGridView2);
+           
         }
 
         private void Listado_Load(object sender, EventArgs e)
         {
-
+            string query = "select distinct nombre_ciudad FROM DBAS.ciudades";
+            hacerQuery(query, dataGridView2);
         }
 
         private void button3_Click(object sender, EventArgs e)

@@ -28,118 +28,177 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.butAceptar = new System.Windows.Forms.Button();
-            this.butCancelar = new System.Windows.Forms.Button();
-            this.dataGridView2 = new System.Windows.Forms.DataGridView();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.lbTitle = new System.Windows.Forms.Label();
-            this.lbSeleccion = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.txtCodigo = new System.Windows.Forms.TextBox();
-            this.txtCDestino = new System.Windows.Forms.TextBox();
-            this.lbDestino = new System.Windows.Forms.Label();
-            this.txtCOrigen = new System.Windows.Forms.TextBox();
-            this.lbOrigen = new System.Windows.Forms.Label();
-            this.btsDestino = new System.Windows.Forms.Button();
-            this.btsOringen = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.lbPrecioKG = new System.Windows.Forms.Label();
-            this.lbEntre = new System.Windows.Forms.Label();
-            this.txtPKGLimInferior = new System.Windows.Forms.TextBox();
-            this.txtPKGSuperior = new System.Windows.Forms.TextBox();
-            this.lby = new System.Windows.Forms.Label();
+            this.btBuscar = new System.Windows.Forms.Button();
+            this.chkListaServicios = new System.Windows.Forms.CheckedListBox();
+            this.lbService = new System.Windows.Forms.Label();
             this.txtPasajeSuperior = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.txtPasajeLimInferior = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.chkListaServicios = new System.Windows.Forms.CheckedListBox();
-            this.lbService = new System.Windows.Forms.Label();
+            this.txtPKGSuperior = new System.Windows.Forms.TextBox();
+            this.lby = new System.Windows.Forms.Label();
+            this.txtPKGLimInferior = new System.Windows.Forms.TextBox();
+            this.lbEntre = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.lbPrecioKG = new System.Windows.Forms.Label();
+            this.btsDestino = new System.Windows.Forms.Button();
+            this.btsOringen = new System.Windows.Forms.Button();
+            this.txtCDestino = new System.Windows.Forms.TextBox();
+            this.lbDestino = new System.Windows.Forms.Label();
+            this.txtCOrigen = new System.Windows.Forms.TextBox();
+            this.lbOrigen = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtCodigo = new System.Windows.Forms.TextBox();
+            this.lbSeleccion = new System.Windows.Forms.Label();
+            this.lbTitle = new System.Windows.Forms.Label();
+            this.butCancelar = new System.Windows.Forms.Button();
+            this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.SuspendLayout();
             // 
-            // butAceptar
+            // btBuscar
             // 
-            this.butAceptar.Location = new System.Drawing.Point(909, 579);
-            this.butAceptar.Name = "butAceptar";
-            this.butAceptar.Size = new System.Drawing.Size(138, 50);
-            this.butAceptar.TabIndex = 42;
-            this.butAceptar.Text = "Aceptar";
-            this.butAceptar.UseVisualStyleBackColor = true;
-            this.butAceptar.Click += new System.EventHandler(this.butAceptar_Click);
+            this.btBuscar.Location = new System.Drawing.Point(786, 325);
+            this.btBuscar.Name = "btBuscar";
+            this.btBuscar.Size = new System.Drawing.Size(139, 50);
+            this.btBuscar.TabIndex = 67;
+            this.btBuscar.Text = "Buscar";
+            this.btBuscar.UseVisualStyleBackColor = true;
+            this.btBuscar.Click += new System.EventHandler(this.btBuscar_Click);
             // 
-            // butCancelar
+            // chkListaServicios
             // 
-            this.butCancelar.Location = new System.Drawing.Point(71, 579);
-            this.butCancelar.Name = "butCancelar";
-            this.butCancelar.Size = new System.Drawing.Size(138, 50);
-            this.butCancelar.TabIndex = 41;
-            this.butCancelar.Text = "Cancelar";
-            this.butCancelar.UseVisualStyleBackColor = true;
+            this.chkListaServicios.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkListaServicios.FormattingEnabled = true;
+            this.chkListaServicios.Location = new System.Drawing.Point(224, 252);
+            this.chkListaServicios.Name = "chkListaServicios";
+            this.chkListaServicios.Size = new System.Drawing.Size(199, 99);
+            this.chkListaServicios.TabIndex = 66;
             // 
-            // dataGridView2
+            // lbService
             // 
-            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.Location = new System.Drawing.Point(557, 328);
-            this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.Size = new System.Drawing.Size(406, 223);
-            this.dataGridView2.TabIndex = 40;
+            this.lbService.AutoSize = true;
+            this.lbService.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbService.Location = new System.Drawing.Point(30, 259);
+            this.lbService.Name = "lbService";
+            this.lbService.Size = new System.Drawing.Size(120, 20);
+            this.lbService.TabIndex = 65;
+            this.lbService.Text = "Tipo de Servicio";
             // 
-            // button3
+            // txtPasajeSuperior
             // 
-            this.button3.Location = new System.Drawing.Point(285, 436);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(138, 50);
-            this.button3.TabIndex = 38;
-            this.button3.Text = "Buscar";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.txtPasajeSuperior.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPasajeSuperior.Location = new System.Drawing.Point(835, 236);
+            this.txtPasajeSuperior.Name = "txtPasajeSuperior";
+            this.txtPasajeSuperior.Size = new System.Drawing.Size(107, 26);
+            this.txtPasajeSuperior.TabIndex = 64;
             // 
-            // button2
+            // label3
             // 
-            this.button2.Location = new System.Drawing.Point(71, 436);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(138, 50);
-            this.button2.TabIndex = 37;
-            this.button2.Text = "Limpiar";
-            this.button2.UseVisualStyleBackColor = true;
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(806, 239);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(23, 18);
+            this.label3.TabIndex = 63;
+            this.label3.Text = "y :";
             // 
-            // lbTitle
+            // txtPasajeLimInferior
             // 
-            this.lbTitle.AutoSize = true;
-            this.lbTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbTitle.Location = new System.Drawing.Point(483, 9);
-            this.lbTitle.Name = "lbTitle";
-            this.lbTitle.Size = new System.Drawing.Size(63, 25);
-            this.lbTitle.TabIndex = 43;
-            this.lbTitle.Text = " Ruta";
+            this.txtPasajeLimInferior.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPasajeLimInferior.Location = new System.Drawing.Point(651, 234);
+            this.txtPasajeLimInferior.Name = "txtPasajeLimInferior";
+            this.txtPasajeLimInferior.Size = new System.Drawing.Size(107, 26);
+            this.txtPasajeLimInferior.TabIndex = 62;
             // 
-            // lbSeleccion
+            // label4
             // 
-            this.lbSeleccion.AutoSize = true;
-            this.lbSeleccion.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbSeleccion.Location = new System.Drawing.Point(47, 53);
-            this.lbSeleccion.Name = "lbSeleccion";
-            this.lbSeleccion.Size = new System.Drawing.Size(192, 24);
-            this.lbSeleccion.TabIndex = 44;
-            this.lbSeleccion.Text = " Seleccione la Ruta a ";
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(600, 236);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(45, 18);
+            this.label4.TabIndex = 61;
+            this.label4.Text = "entre:";
             // 
-            // label1
+            // txtPKGSuperior
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(30, 95);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(63, 20);
-            this.label1.TabIndex = 45;
-            this.label1.Text = "Codigo:";
+            this.txtPKGSuperior.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPKGSuperior.Location = new System.Drawing.Point(835, 135);
+            this.txtPKGSuperior.Name = "txtPKGSuperior";
+            this.txtPKGSuperior.Size = new System.Drawing.Size(107, 26);
+            this.txtPKGSuperior.TabIndex = 60;
             // 
-            // txtCodigo
+            // lby
             // 
-            this.txtCodigo.Location = new System.Drawing.Point(224, 97);
-            this.txtCodigo.Name = "txtCodigo";
-            this.txtCodigo.Size = new System.Drawing.Size(180, 20);
-            this.txtCodigo.TabIndex = 46;
+            this.lby.AutoSize = true;
+            this.lby.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lby.Location = new System.Drawing.Point(806, 138);
+            this.lby.Name = "lby";
+            this.lby.Size = new System.Drawing.Size(23, 18);
+            this.lby.TabIndex = 59;
+            this.lby.Text = "y :";
+            // 
+            // txtPKGLimInferior
+            // 
+            this.txtPKGLimInferior.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPKGLimInferior.Location = new System.Drawing.Point(651, 133);
+            this.txtPKGLimInferior.Name = "txtPKGLimInferior";
+            this.txtPKGLimInferior.Size = new System.Drawing.Size(107, 26);
+            this.txtPKGLimInferior.TabIndex = 58;
+            // 
+            // lbEntre
+            // 
+            this.lbEntre.AutoSize = true;
+            this.lbEntre.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbEntre.Location = new System.Drawing.Point(600, 135);
+            this.lbEntre.Name = "lbEntre";
+            this.lbEntre.Size = new System.Drawing.Size(45, 18);
+            this.lbEntre.TabIndex = 57;
+            this.lbEntre.Text = "entre:";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(585, 197);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(173, 20);
+            this.label2.TabIndex = 55;
+            this.label2.Text = "Precio Base por Pasaje";
+            // 
+            // lbPrecioKG
+            // 
+            this.lbPrecioKG.AutoSize = true;
+            this.lbPrecioKG.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbPrecioKG.Location = new System.Drawing.Point(585, 95);
+            this.lbPrecioKG.Name = "lbPrecioKG";
+            this.lbPrecioKG.Size = new System.Drawing.Size(148, 20);
+            this.lbPrecioKG.TabIndex = 53;
+            this.lbPrecioKG.Text = "Precio Base por KG";
+            // 
+            // btsDestino
+            // 
+            this.btsDestino.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btsDestino.Location = new System.Drawing.Point(438, 197);
+            this.btsDestino.Name = "btsDestino";
+            this.btsDestino.Size = new System.Drawing.Size(108, 29);
+            this.btsDestino.TabIndex = 52;
+            this.btsDestino.Text = "Seleccionar";
+            this.btsDestino.UseVisualStyleBackColor = true;
+            this.btsDestino.Click += new System.EventHandler(this.btsDestino_Click);
+            // 
+            // btsOringen
+            // 
+            this.btsOringen.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btsOringen.Location = new System.Drawing.Point(438, 132);
+            this.btsOringen.Name = "btsOringen";
+            this.btsOringen.Size = new System.Drawing.Size(108, 29);
+            this.btsOringen.TabIndex = 51;
+            this.btsOringen.Text = "Seleccionar";
+            this.btsOringen.UseVisualStyleBackColor = true;
+            this.btsOringen.Click += new System.EventHandler(this.btsOringen_Click);
             // 
             // txtCDestino
             // 
@@ -179,142 +238,77 @@
             this.lbOrigen.TabIndex = 47;
             this.lbOrigen.Text = "Ciudad Origen";
             // 
-            // btsDestino
+            // label1
             // 
-            this.btsDestino.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btsDestino.Location = new System.Drawing.Point(438, 197);
-            this.btsDestino.Name = "btsDestino";
-            this.btsDestino.Size = new System.Drawing.Size(108, 29);
-            this.btsDestino.TabIndex = 52;
-            this.btsDestino.Text = "Seleccionar";
-            this.btsDestino.UseVisualStyleBackColor = true;
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(30, 95);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(63, 20);
+            this.label1.TabIndex = 45;
+            this.label1.Text = "Codigo:";
             // 
-            // btsOringen
+            // txtCodigo
             // 
-            this.btsOringen.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btsOringen.Location = new System.Drawing.Point(438, 132);
-            this.btsOringen.Name = "btsOringen";
-            this.btsOringen.Size = new System.Drawing.Size(108, 29);
-            this.btsOringen.TabIndex = 51;
-            this.btsOringen.Text = "Seleccionar";
-            this.btsOringen.UseVisualStyleBackColor = true;
+            this.txtCodigo.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCodigo.Location = new System.Drawing.Point(224, 97);
+            this.txtCodigo.Name = "txtCodigo";
+            this.txtCodigo.Size = new System.Drawing.Size(180, 24);
+            this.txtCodigo.TabIndex = 46;
             // 
-            // label2
+            // lbSeleccion
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(585, 197);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(173, 20);
-            this.label2.TabIndex = 55;
-            this.label2.Text = "Precio Base por Pasaje";
+            this.lbSeleccion.AutoSize = true;
+            this.lbSeleccion.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbSeleccion.Location = new System.Drawing.Point(47, 53);
+            this.lbSeleccion.Name = "lbSeleccion";
+            this.lbSeleccion.Size = new System.Drawing.Size(192, 24);
+            this.lbSeleccion.TabIndex = 44;
+            this.lbSeleccion.Text = " Seleccione la Ruta a ";
             // 
-            // lbPrecioKG
+            // lbTitle
             // 
-            this.lbPrecioKG.AutoSize = true;
-            this.lbPrecioKG.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbPrecioKG.Location = new System.Drawing.Point(585, 95);
-            this.lbPrecioKG.Name = "lbPrecioKG";
-            this.lbPrecioKG.Size = new System.Drawing.Size(148, 20);
-            this.lbPrecioKG.TabIndex = 53;
-            this.lbPrecioKG.Text = "Precio Base por KG";
+            this.lbTitle.AutoSize = true;
+            this.lbTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbTitle.Location = new System.Drawing.Point(483, 9);
+            this.lbTitle.Name = "lbTitle";
+            this.lbTitle.Size = new System.Drawing.Size(63, 25);
+            this.lbTitle.TabIndex = 43;
+            this.lbTitle.Text = " Ruta";
             // 
-            // lbEntre
+            // butCancelar
             // 
-            this.lbEntre.AutoSize = true;
-            this.lbEntre.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbEntre.Location = new System.Drawing.Point(600, 135);
-            this.lbEntre.Name = "lbEntre";
-            this.lbEntre.Size = new System.Drawing.Size(45, 18);
-            this.lbEntre.TabIndex = 57;
-            this.lbEntre.Text = "entre:";
+            this.butCancelar.Location = new System.Drawing.Point(34, 601);
+            this.butCancelar.Name = "butCancelar";
+            this.butCancelar.Size = new System.Drawing.Size(138, 50);
+            this.butCancelar.TabIndex = 41;
+            this.butCancelar.Text = "Cancelar";
+            this.butCancelar.UseVisualStyleBackColor = true;
+            this.butCancelar.Click += new System.EventHandler(this.butCancelar_Click);
             // 
-            // txtPKGLimInferior
+            // dataGridView2
             // 
-            this.txtPKGLimInferior.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPKGLimInferior.Location = new System.Drawing.Point(651, 133);
-            this.txtPKGLimInferior.Name = "txtPKGLimInferior";
-            this.txtPKGLimInferior.Size = new System.Drawing.Size(107, 26);
-            this.txtPKGLimInferior.TabIndex = 58;
+            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView2.Location = new System.Drawing.Point(51, 391);
+            this.dataGridView2.Name = "dataGridView2";
+            this.dataGridView2.Size = new System.Drawing.Size(947, 190);
+            this.dataGridView2.TabIndex = 40;
             // 
-            // txtPKGSuperior
+            // button2
             // 
-            this.txtPKGSuperior.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPKGSuperior.Location = new System.Drawing.Point(835, 135);
-            this.txtPKGSuperior.Name = "txtPKGSuperior";
-            this.txtPKGSuperior.Size = new System.Drawing.Size(107, 26);
-            this.txtPKGSuperior.TabIndex = 60;
-            // 
-            // lby
-            // 
-            this.lby.AutoSize = true;
-            this.lby.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lby.Location = new System.Drawing.Point(806, 138);
-            this.lby.Name = "lby";
-            this.lby.Size = new System.Drawing.Size(23, 18);
-            this.lby.TabIndex = 59;
-            this.lby.Text = "y :";
-            // 
-            // txtPasajeSuperior
-            // 
-            this.txtPasajeSuperior.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPasajeSuperior.Location = new System.Drawing.Point(835, 236);
-            this.txtPasajeSuperior.Name = "txtPasajeSuperior";
-            this.txtPasajeSuperior.Size = new System.Drawing.Size(107, 26);
-            this.txtPasajeSuperior.TabIndex = 64;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(806, 239);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(23, 18);
-            this.label3.TabIndex = 63;
-            this.label3.Text = "y :";
-            // 
-            // txtPasajeLimInferior
-            // 
-            this.txtPasajeLimInferior.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPasajeLimInferior.Location = new System.Drawing.Point(651, 234);
-            this.txtPasajeLimInferior.Name = "txtPasajeLimInferior";
-            this.txtPasajeLimInferior.Size = new System.Drawing.Size(107, 26);
-            this.txtPasajeLimInferior.TabIndex = 62;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(600, 236);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(45, 18);
-            this.label4.TabIndex = 61;
-            this.label4.Text = "entre:";
-            // 
-            // chkListaServicios
-            // 
-            this.chkListaServicios.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkListaServicios.FormattingEnabled = true;
-            this.chkListaServicios.Location = new System.Drawing.Point(224, 252);
-            this.chkListaServicios.Name = "chkListaServicios";
-            this.chkListaServicios.Size = new System.Drawing.Size(199, 99);
-            this.chkListaServicios.TabIndex = 66;
-            // 
-            // lbService
-            // 
-            this.lbService.AutoSize = true;
-            this.lbService.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbService.Location = new System.Drawing.Point(30, 259);
-            this.lbService.Name = "lbService";
-            this.lbService.Size = new System.Drawing.Size(120, 20);
-            this.lbService.TabIndex = 65;
-            this.lbService.Text = "Tipo de Servicio";
+            this.button2.Location = new System.Drawing.Point(544, 325);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(138, 50);
+            this.button2.TabIndex = 37;
+            this.button2.Text = "Limpiar";
+            this.button2.UseVisualStyleBackColor = true;
             // 
             // ModificarEliminarRuta
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1103, 654);
+            this.ClientSize = new System.Drawing.Size(1109, 676);
+            this.Controls.Add(this.btBuscar);
             this.Controls.Add(this.chkListaServicios);
             this.Controls.Add(this.lbService);
             this.Controls.Add(this.txtPasajeSuperior);
@@ -337,10 +331,8 @@
             this.Controls.Add(this.txtCodigo);
             this.Controls.Add(this.lbSeleccion);
             this.Controls.Add(this.lbTitle);
-            this.Controls.Add(this.butAceptar);
             this.Controls.Add(this.butCancelar);
             this.Controls.Add(this.dataGridView2);
-            this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Name = "ModificarEliminarRuta";
             this.Text = "Form1";
@@ -352,10 +344,8 @@
 
         #endregion
 
-        private System.Windows.Forms.Button butAceptar;
         private System.Windows.Forms.Button butCancelar;
         private System.Windows.Forms.DataGridView dataGridView2;
-        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label lbTitle;
         private System.Windows.Forms.Label lbSeleccion;
@@ -379,5 +369,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckedListBox chkListaServicios;
         private System.Windows.Forms.Label lbService;
+        private System.Windows.Forms.Button btBuscar;
     }
 }

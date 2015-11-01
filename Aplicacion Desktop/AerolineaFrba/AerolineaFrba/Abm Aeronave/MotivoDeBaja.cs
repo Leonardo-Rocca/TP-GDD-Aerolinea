@@ -135,6 +135,8 @@ namespace AerolineaFrba.Abm_Aeronave
             }
 
             MessageBox.Show("Baja de aeronave exitosa", "Baja aeronave", MessageBoxButtons.OK);
+            anterior.Close();
+            this.Close();
 
         }
 

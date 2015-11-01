@@ -241,5 +241,10 @@ namespace AerolineaFrba.Abm_Ruta
             this.llamada.Show();*/
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            inicializar();
+        }
+
     }
 }

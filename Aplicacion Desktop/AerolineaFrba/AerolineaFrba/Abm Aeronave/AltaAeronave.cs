@@ -96,7 +96,6 @@ namespace AerolineaFrba.Abm_Aeronave
             if (discriminador == 1)
             {
                 altaParaLaBaja();
-                discriminador = 0;
                 return;
             }
 
@@ -176,7 +175,8 @@ namespace AerolineaFrba.Abm_Aeronave
                 MessageBox.Show("La cantidad de butacas y pisos debe ser mayor que en la aeronave a reemplazar", "Datos invalidos", MessageBoxButtons.OK);
                 return;
             }
-            string query = "execute dbas.bajaAeronave '" + datosSobreModificacion.getFecha() +"', '" + datosParaModificacion.getMatricula() + "', " + datosSobreModificacion.motivo();            
+            discriminador = 0;
+            string query = "execute dbas.reemplazarAeronave '" + datosParaModificacion.getMatricula() + "', '" + txtMatricula.Text + "', " + datosSobreModificacion.motivo() + ", '" + datosSobreModificacion.getFecha()+"'";            
             (new ConexionSQL()).cargarTablaSQL(query);
             MessageBox.Show("Baja de aeronave exitosa", "Baja aeronave", MessageBoxButtons.OK);
             datosParaModificacion.Close();

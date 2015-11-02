@@ -753,23 +753,35 @@ BEGIN
 END;	
 GO
 
+
 /*--CREATE FUNCTION DBAS.Top5ClientesConMasPuntosAcumulados(@semestreDelAnio tinyint, @anio integer)
 RETURNS @TOP5 TABLE (nombre_persona varchar(100), dni_persona bigint, puntos_acumulados bigint)
 AS
 BEGIN
 	DECLARE @anioDelSemestre datetime
-	SET @anioDelSemestre = convert(datetime, concat(@anio, '0701 00:00:00.000'))
+	SET @anioDelSemestre = convert(datetime, concat(@anio,'0701 00:00:00.000'))
+
+	DECLARE @comienzoAnio datetime
+	SET @comienzoAnio = convert(datetime,concat(@anio,'0101 00:00:00.000'))
+
+	DECLARE @finAnio datetime
+	SET @finAnio = convert(datetime,concat(@anio,'1231 00:00:00.000'))
 
 	IF (@semestreDelAnio = 1)
 	BEGIN
 		INSERT INTO @TOP5(nombre_persona,dni_persona,puntos_acumulados)
-		SELECT nombre_persona, dni_persona, SUM(cantidad_millas) FROM DBAS.personas tablaPersonas, DBAS.historialMillas(dni_persona)
-		WHERE fecha_obtencion_millas
+		SELECT TOP 5 nombre_persona, apellido_persona, dni_persona, DBAS.millasAcumuladasEntre(dni_persona,@comienzoAnio,@anioDelSemestre) as puntos
+		FROM DBAS.personas personas, DBAS.clientes clientes WHERE clientes.id_persona = personas.id_persona
+		ORDER BY puntos DESC
 	END
 	ELSE
 	BEGIN
-		
+		INSERT INTO @TOP5(nombre_persona,dni_persona,puntos_acumulados)
+		SELECT TOP 5 nombre_persona, apellido_persona, dni_persona, DBAS.millasAcumuladasEntre(dni_persona,@anioDelSemestre,@finAnio) as puntos
+		FROM DBAS.personas, DBAS.clientes clientes WHERE clientes.id_persona = personas.id_persona
+		ORDER BY puntos DESC
 	END
+	RETURN
 END;
 GO-- */
 
@@ -1635,6 +1647,15 @@ BEGIN
 	WHERE tablaCanjes.id_cliente = tablaClientes.id_cliente AND tablaClientes.id_persona = tablaPersonas.id_persona
 	AND tablaPersonas.dni_persona = @dni_persona AND DATEDIFF(day,fecha_canje,GETDATE()) <= 365
 	GROUP BY id_canje),0)))
+END;
+GO
+
+CREATE FUNCTION DBAS.millasAcumuladasEntre(@dni_persona bigint,@fecha_desde datetime, @fecha_hasta datetime)
+RETURNS bigint
+AS
+BEGIN
+	RETURN ISNULL((SELECT SUM(cantidad_millas) FROM DBAS.historialMillas(@dni_persona) 
+	WHERE fecha_obtencion_millas >= @fecha_desde AND fecha_obtencion_millas < @fecha_hasta),0)
 END;
 GO
 

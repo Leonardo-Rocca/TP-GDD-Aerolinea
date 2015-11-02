@@ -34,12 +34,6 @@
             this.label10 = new System.Windows.Forms.Label();
             this.textBoxDesdekg = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
-            this.button5 = new System.Windows.Forms.Button();
-            this.textFechaHasta = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.button4 = new System.Windows.Forms.Button();
-            this.textFechaDesde = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.checkInhabilitado = new System.Windows.Forms.CheckBox();
             this.checkHabilitado = new System.Windows.Forms.CheckBox();
             this.textBoxHastakg = new System.Windows.Forms.TextBox();
@@ -76,12 +70,6 @@
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.textBoxDesdekg);
             this.groupBox1.Controls.Add(this.label9);
-            this.groupBox1.Controls.Add(this.button5);
-            this.groupBox1.Controls.Add(this.textFechaHasta);
-            this.groupBox1.Controls.Add(this.label8);
-            this.groupBox1.Controls.Add(this.button4);
-            this.groupBox1.Controls.Add(this.textFechaDesde);
-            this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.checkInhabilitado);
             this.groupBox1.Controls.Add(this.checkHabilitado);
             this.groupBox1.Controls.Add(this.textBoxHastakg);
@@ -140,61 +128,10 @@
             this.label9.Text = "Desde";
             this.label9.Visible = false;
             // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(539, 134);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(108, 21);
-            this.button5.TabIndex = 46;
-            this.button5.Text = "Seleccionar";
-            this.button5.UseVisualStyleBackColor = true;
-            // 
-            // textFechaHasta
-            // 
-            this.textFechaHasta.Location = new System.Drawing.Point(367, 135);
-            this.textFechaHasta.Name = "textFechaHasta";
-            this.textFechaHasta.Size = new System.Drawing.Size(166, 20);
-            this.textFechaHasta.TabIndex = 48;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(324, 138);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(35, 13);
-            this.label8.TabIndex = 47;
-            this.label8.Text = "Hasta";
-            // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(539, 100);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(108, 21);
-            this.button4.TabIndex = 43;
-            this.button4.Text = "Seleccionar";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
-            // 
-            // textFechaDesde
-            // 
-            this.textFechaDesde.Location = new System.Drawing.Point(367, 101);
-            this.textFechaDesde.Name = "textFechaDesde";
-            this.textFechaDesde.Size = new System.Drawing.Size(166, 20);
-            this.textFechaDesde.TabIndex = 45;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(324, 104);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(38, 13);
-            this.label6.TabIndex = 44;
-            this.label6.Text = "Desde";
-            // 
             // checkInhabilitado
             // 
             this.checkInhabilitado.AutoSize = true;
-            this.checkInhabilitado.Location = new System.Drawing.Point(471, 70);
+            this.checkInhabilitado.Location = new System.Drawing.Point(378, 104);
             this.checkInhabilitado.Name = "checkInhabilitado";
             this.checkInhabilitado.Size = new System.Drawing.Size(80, 17);
             this.checkInhabilitado.TabIndex = 43;
@@ -205,7 +142,7 @@
             // checkHabilitado
             // 
             this.checkHabilitado.AutoSize = true;
-            this.checkHabilitado.Location = new System.Drawing.Point(327, 70);
+            this.checkHabilitado.Location = new System.Drawing.Point(378, 68);
             this.checkHabilitado.Name = "checkHabilitado";
             this.checkHabilitado.Size = new System.Drawing.Size(73, 17);
             this.checkHabilitado.TabIndex = 42;
@@ -401,12 +338,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.TextBox textFechaHasta;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.TextBox textFechaDesde;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox checkInhabilitado;
         private System.Windows.Forms.CheckBox checkHabilitado;
         private System.Windows.Forms.TextBox textBoxHastakg;

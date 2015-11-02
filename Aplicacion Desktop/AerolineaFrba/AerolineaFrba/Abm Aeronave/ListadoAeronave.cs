@@ -33,7 +33,6 @@ namespace AerolineaFrba.Abm_Aeronave
             txtModelo.Text = "";
             textButacas.Text = ""; 
             textFabricante.Text = "";
-            textFechaDesde.Text = "";
             comboBoxServicio.Text = "";
             textBoxDesdekg.Text = "";
             textBoxHastakg.Text = "";
@@ -246,20 +245,6 @@ namespace AerolineaFrba.Abm_Aeronave
                 }
             }
 
-            if ((textFechaHasta.TextLength == 0 && textFechaDesde.TextLength == 0))
-            {
-            }
-            else
-            {
-                if ((textFechaDesde.TextLength != 0 && textFechaHasta.TextLength != 0))
-                {
-                }
-                else
-                {
-                    MessageBox.Show("Falta especificar rango de fechas para la busqueda", "Fallo la busqueda", MessageBoxButtons.OK);
-                    return false;
-                }
-            }
 
             if (!hayFiltros())
             {

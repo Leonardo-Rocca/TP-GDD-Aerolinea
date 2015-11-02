@@ -37,7 +37,8 @@ namespace AerolineaFrba.Abm_Aeronave
 
         private void buttonCancelarPasajes_Click(object sender, EventArgs e)
         {
-            datos.Close();
+            datos.Hide();
+            datos.iniciar();
             datosBaja.Close();
             this.Close();
         }

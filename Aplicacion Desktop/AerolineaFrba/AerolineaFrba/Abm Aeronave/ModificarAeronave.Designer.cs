@@ -74,6 +74,7 @@
             this.button2.TabIndex = 54;
             this.button2.Text = "Cancelar";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click_1);
             // 
             // label8
             // 
@@ -124,6 +125,7 @@
             this.groupBox1.TabIndex = 50;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Formulario de Alta";
+            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
             // textKdDisponibles
             // 
@@ -276,7 +278,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(444, 262);
+            this.button3.Location = new System.Drawing.Point(577, 262);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(108, 21);
             this.button3.TabIndex = 66;
@@ -300,6 +302,7 @@
             this.Controls.Add(this.groupBox1);
             this.Name = "ModificarAeronave";
             this.Text = "ModificarAeronave";
+            this.Load += new System.EventHandler(this.ModificarAeronave_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);

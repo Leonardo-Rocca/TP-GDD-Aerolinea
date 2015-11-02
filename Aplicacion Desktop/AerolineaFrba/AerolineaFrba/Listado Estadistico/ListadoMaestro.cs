@@ -65,8 +65,11 @@ namespace AerolineaFrba.Listado_Estadistico
         {
             ConexionSQL conn = new ConexionSQL();
             DataTable dt = conn.cargarTablaSQL(query);
-            if (dataGrid.DataSource != null) dataGrid.Columns.Remove("seleccionar"); 
-
+            try
+            {
+                dataGrid.Columns.Remove("seleccionar");
+            }
+            catch { }
             dataGrid.DataSource = dt;
 
             if (dt.Rows.Count == 0)
@@ -76,6 +79,7 @@ namespace AerolineaFrba.Listado_Estadistico
             }
             else
             {
+
                 DataGridViewButtonColumn boton = new DataGridViewButtonColumn();
                 boton.Name = "Seleccionar";
                 boton.HeaderText = "Seleccionar";

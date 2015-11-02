@@ -49,7 +49,7 @@ namespace AerolineaFrba.Abm_Aeronave
 
         private void ListadoAeronave_Load(object sender, EventArgs e)
         {
-            string query = "select distinct matricula_aeronave,numero_aeronave,modelo_aeronave,kg_disponible_encomienda,id_fabricante,id_servicio FROM DBAS.aeronaves a, DBAS.encomiendas p";
+            string query = "select matricula_aeronave,numero_aeronave,modelo_aeronave,kg_disponible_encomienda,id_fabricante,id_servicio FROM DBAS.aeronaves a";
             hacerQuery(query, dataGridView1);
 
         }
@@ -157,9 +157,9 @@ namespace AerolineaFrba.Abm_Aeronave
                 return;
             }
 
-            string query = "select distinct matricula_aeronave,numero_aeronave,modelo_aeronave,kg_disponible_encomienda,id_fabricante,id_servicio FROM DBAS.aeronaves a, DBAS.encomiendas p";
-            Boolean yaTieneCondicion = false;
-            query = query + " WHERE ";
+            string query = "select matricula_aeronave,numero_aeronave,modelo_aeronave,kg_disponible_encomienda,id_fabricante,id_servicio FROM DBAS.aeronaves a";
+            Boolean yaTieneCondicion = true;
+            query = query + " WHERE (fecha_reinsercion <= GETDATE() or fecha_reinsercion IS NULL) AND fecha_baja_servicio_definitiva is NULL ";
             if (txtMatricula.TextLength != 0)
             {
                 string agregado = "a.matricula_aeronave LIKE '" + txtMatricula.Text + "'";
@@ -190,6 +190,7 @@ namespace AerolineaFrba.Abm_Aeronave
 
             if (checkPasaje.Checked)
             {
+                //hay que chequear
                 string agregado = "p.encomienda_cliente_KG = 0";
                 armarQueryCompleja(ref query, agregado, yaTieneCondicion);
                 yaTieneCondicion = true;

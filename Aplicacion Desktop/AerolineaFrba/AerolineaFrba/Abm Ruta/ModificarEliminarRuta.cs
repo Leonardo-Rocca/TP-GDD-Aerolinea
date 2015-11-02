@@ -250,11 +250,7 @@ namespace AerolineaFrba.Abm_Ruta
                servicios.Add(dt.Rows[i][ 0].ToString());
                MessageBox.Show(dt.Rows[i][ 0].ToString(), "Fallo la busqueda", MessageBoxButtons.OK);
            }
-            
-               /*
-              servicios.Add(Convert.ToString(dr.Cells[0].Value));
-               MessageBox.Show((Convert.ToString(dr.Cells[0].Value)), "Fallo la busqueda", MessageBoxButtons.OK);
-               */
+
             Ruta aModificar = new Ruta(Convert.ToInt32(codigo_ruta), ciudad_Origen, ciudad_Destino, precio_base_por_pasaje, precio_base_por_KG, tipo_servicio, porcentaje_arancel,servicios);
 
             crearRutaForm modify =new crearRutaForm(1);

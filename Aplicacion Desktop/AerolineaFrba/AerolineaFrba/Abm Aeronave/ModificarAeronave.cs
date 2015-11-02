@@ -13,9 +13,12 @@ namespace AerolineaFrba.Abm_Aeronave
 {
     public partial class ModificarAeronave : Form
     {
-        public ModificarAeronave()
+        public int variable;
+        public ModificarAeronave(int discriminador)
         {
             InitializeComponent();
+            variable = discriminador;
+        
             iniciar();
 
             DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct tipo_servicio FROM DBAS.servicios");
@@ -177,6 +180,32 @@ namespace AerolineaFrba.Abm_Aeronave
         public string getButacasVentanilla()
         {
             return textButacasVentanilla.Text;
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ModificarAeronave_Load(object sender, EventArgs e)
+        {
+            if (variable == 0)
+            {
+                butAceptar.Visible = true;
+                button3.Visible = false;
+
+            }
+            else
+            {
+                butAceptar.Visible = false;
+                button3.Visible = true;
+            }
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            this.iniciar();
+            this.Hide();
         }
 
     }

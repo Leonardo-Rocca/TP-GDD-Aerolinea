@@ -32,17 +32,18 @@
             this.cmbRoles = new System.Windows.Forms.ComboBox();
             this.lbseleccion = new System.Windows.Forms.Label();
             this.btIngresar = new System.Windows.Forms.Button();
+            this.btSalir = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lbAerolinea
             // 
             this.lbAerolinea.AutoSize = true;
             this.lbAerolinea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lbAerolinea.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbAerolinea.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbAerolinea.ForeColor = System.Drawing.Color.Red;
             this.lbAerolinea.Location = new System.Drawing.Point(124, 24);
             this.lbAerolinea.Name = "lbAerolinea";
-            this.lbAerolinea.Size = new System.Drawing.Size(252, 33);
+            this.lbAerolinea.Size = new System.Drawing.Size(266, 33);
             this.lbAerolinea.TabIndex = 1;
             this.lbAerolinea.Text = "AEROLINEA FRBA";
             // 
@@ -67,8 +68,8 @@
             // 
             // btIngresar
             // 
-            this.btIngresar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btIngresar.Location = new System.Drawing.Point(212, 213);
+            this.btIngresar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btIngresar.Location = new System.Drawing.Point(340, 213);
             this.btIngresar.Name = "btIngresar";
             this.btIngresar.Size = new System.Drawing.Size(103, 56);
             this.btIngresar.TabIndex = 6;
@@ -76,12 +77,24 @@
             this.btIngresar.UseVisualStyleBackColor = true;
             this.btIngresar.Click += new System.EventHandler(this.btIngresar_Click);
             // 
+            // btSalir
+            // 
+            this.btSalir.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btSalir.Location = new System.Drawing.Point(77, 213);
+            this.btSalir.Name = "btSalir";
+            this.btSalir.Size = new System.Drawing.Size(103, 56);
+            this.btSalir.TabIndex = 9;
+            this.btSalir.Text = "Salir";
+            this.btSalir.UseVisualStyleBackColor = true;
+            this.btSalir.Click += new System.EventHandler(this.btSalir_Click);
+            // 
             // PantallaBienvenidaForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Silver;
             this.ClientSize = new System.Drawing.Size(532, 290);
+            this.Controls.Add(this.btSalir);
             this.Controls.Add(this.cmbRoles);
             this.Controls.Add(this.lbseleccion);
             this.Controls.Add(this.btIngresar);
@@ -99,5 +112,6 @@
         private System.Windows.Forms.ComboBox cmbRoles;
         private System.Windows.Forms.Label lbseleccion;
         private System.Windows.Forms.Button btIngresar;
+        private System.Windows.Forms.Button btSalir;
     }
 }

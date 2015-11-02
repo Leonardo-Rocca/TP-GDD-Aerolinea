@@ -753,6 +753,26 @@ BEGIN
 END;	
 GO
 
+/*--CREATE FUNCTION DBAS.Top5ClientesConMasPuntosAcumulados(@semestreDelAnio tinyint, @anio integer)
+RETURNS @TOP5 TABLE (nombre_persona varchar(100), dni_persona bigint, puntos_acumulados bigint)
+AS
+BEGIN
+	DECLARE @anioDelSemestre datetime
+	SET @anioDelSemestre = convert(datetime, concat(@anio, '0701 00:00:00.000'))
+
+	IF (@semestreDelAnio = 1)
+	BEGIN
+		INSERT INTO @TOP5(nombre_persona,dni_persona,puntos_acumulados)
+		SELECT nombre_persona, dni_persona, SUM(cantidad_millas) FROM DBAS.personas tablaPersonas, DBAS.historialMillas(dni_persona)
+		WHERE fecha_obtencion_millas
+	END
+	ELSE
+	BEGIN
+		
+	END
+END;
+GO-- */
+
 
 /*-- ABM Rol -- */
 
@@ -1632,7 +1652,7 @@ BEGIN
 
 	SET @millas_vigentes = DBAS.millasVigentes(@dni_persona)
 
-	SET @valor_unitario_en_millas= SELECT valor_en_millas FROM DBAS.productos tablaProductos WHERE tablaProductos.id_producto = @id_producto
+	SET @valor_unitario_en_millas = (SELECT valor_en_milas FROM DBAS.productos WHERE id_producto = @id_producto)
 
 	SET @valor_total_en_millas = @valor_unitario_en_millas * @cantidadACanjear
 

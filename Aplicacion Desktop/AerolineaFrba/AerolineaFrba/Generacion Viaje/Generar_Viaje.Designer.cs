@@ -38,8 +38,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.butCancelar = new System.Windows.Forms.Button();
             this.butAceptar = new System.Windows.Forms.Button();
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
-            this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
+            this.dateFechaDesde = new System.Windows.Forms.DateTimePicker();
+            this.dateFechaHasta = new System.Windows.Forms.DateTimePicker();
             this.SuspendLayout();
             // 
             // seleccionarCodigo
@@ -56,6 +56,7 @@
             // 
             this.textCodRuta.Location = new System.Drawing.Point(131, 139);
             this.textCodRuta.Name = "textCodRuta";
+            this.textCodRuta.ReadOnly = true;
             this.textCodRuta.Size = new System.Drawing.Size(168, 20);
             this.textCodRuta.TabIndex = 54;
             // 
@@ -91,6 +92,7 @@
             // 
             this.textBoxMatricula.Location = new System.Drawing.Point(131, 23);
             this.textBoxMatricula.Name = "textBoxMatricula";
+            this.textBoxMatricula.ReadOnly = true;
             this.textBoxMatricula.Size = new System.Drawing.Size(168, 20);
             this.textBoxMatricula.TabIndex = 57;
             // 
@@ -120,6 +122,7 @@
             this.butCancelar.TabIndex = 61;
             this.butCancelar.Text = "Cancelar";
             this.butCancelar.UseVisualStyleBackColor = true;
+            this.butCancelar.Click += new System.EventHandler(this.butCancelar_Click);
             // 
             // butAceptar
             // 
@@ -129,28 +132,29 @@
             this.butAceptar.TabIndex = 62;
             this.butAceptar.Text = "Generar Viaje";
             this.butAceptar.UseVisualStyleBackColor = true;
+            this.butAceptar.Click += new System.EventHandler(this.butAceptar_Click);
             // 
-            // dateTimePicker1
+            // dateFechaDesde
             // 
-            this.dateTimePicker1.Location = new System.Drawing.Point(131, 58);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(250, 20);
-            this.dateTimePicker1.TabIndex = 63;
+            this.dateFechaDesde.Location = new System.Drawing.Point(131, 58);
+            this.dateFechaDesde.Name = "dateFechaDesde";
+            this.dateFechaDesde.Size = new System.Drawing.Size(250, 20);
+            this.dateFechaDesde.TabIndex = 63;
             // 
-            // dateTimePicker2
+            // dateFechaHasta
             // 
-            this.dateTimePicker2.Location = new System.Drawing.Point(131, 98);
-            this.dateTimePicker2.Name = "dateTimePicker2";
-            this.dateTimePicker2.Size = new System.Drawing.Size(250, 20);
-            this.dateTimePicker2.TabIndex = 64;
+            this.dateFechaHasta.Location = new System.Drawing.Point(131, 98);
+            this.dateFechaHasta.Name = "dateFechaHasta";
+            this.dateFechaHasta.Size = new System.Drawing.Size(250, 20);
+            this.dateFechaHasta.TabIndex = 64;
             // 
             // Generar_Viaje
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(398, 259);
-            this.Controls.Add(this.dateTimePicker2);
-            this.Controls.Add(this.dateTimePicker1);
+            this.Controls.Add(this.dateFechaHasta);
+            this.Controls.Add(this.dateFechaDesde);
             this.Controls.Add(this.butAceptar);
             this.Controls.Add(this.butCancelar);
             this.Controls.Add(this.label2);
@@ -181,7 +185,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button butCancelar;
         private System.Windows.Forms.Button butAceptar;
-        private System.Windows.Forms.DateTimePicker dateTimePicker1;
-        private System.Windows.Forms.DateTimePicker dateTimePicker2;
+        private System.Windows.Forms.DateTimePicker dateFechaDesde;
+        private System.Windows.Forms.DateTimePicker dateFechaHasta;
     }
 }

@@ -12,6 +12,7 @@ using AerolineaFrba.Abm_Ciudad;
 using AerolineaFrba.Abm_Ruta;
 using AerolineaFrba.Abm_Aeronave;
 using AerolineaFrba.Compra;
+using AerolineaFrba.Generacion_Viaje;
 
 namespace AerolineaFrba.Dominio
 {
@@ -53,6 +54,10 @@ namespace AerolineaFrba.Dominio
 
              funcionalidadesDisponibles.Add(new Funcionalidades(99, "ABM Aeronave",
                new ABMGenericoForm("ABM Aeronave", new AltaAeronave(), new ModificarAeronave(0), new ModificarAeronave(1))));
+
+             funcionalidadesDisponibles.Add(new Funcionalidades(99, "Generar Viaje",
+             new Generar_Viaje()));
+
 
             funcionalidadesDisponibles.Add(new Funcionalidades(99, "c1",new compraForm()));
             funcionalidadesDisponibles.Add(new Funcionalidades(99, "c2",new compraPasajeForm() ));

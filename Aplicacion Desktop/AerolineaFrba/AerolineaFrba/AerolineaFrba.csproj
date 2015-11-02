@@ -224,6 +224,12 @@
     <Compile Include="FormsPrincipales\_Aeronave.Designer.cs">
       <DependentUpon>_Aeronave.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormsPrincipales\_Viaje.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsPrincipales\_Viaje.Designer.cs">
+      <DependentUpon>_Viaje.cs</DependentUpon>
+    </Compile>
     <Compile Include="Generacion Viaje\Generar_Viaje.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -351,6 +357,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormsPrincipales\_Aeronave.resx">
       <DependentUpon>_Aeronave.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsPrincipales\_Viaje.resx">
+      <DependentUpon>_Viaje.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Generacion Viaje\Generar_Viaje.resx">
       <DependentUpon>Generar_Viaje.cs</DependentUpon>

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.Label lbclick;
             this.lbTitle = new System.Windows.Forms.Label();
             this.lbCodigo = new System.Windows.Forms.Label();
             this.txtCodigo = new System.Windows.Forms.TextBox();
@@ -45,6 +46,7 @@
             this.buttonGuardar = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.chkListaServicios = new System.Windows.Forms.CheckedListBox();
+            lbclick = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lbTitle
@@ -214,11 +216,21 @@
             this.chkListaServicios.Size = new System.Drawing.Size(319, 80);
             this.chkListaServicios.TabIndex = 20;
             // 
+            // lbclick
+            // 
+            lbclick.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            lbclick.Location = new System.Drawing.Point(46, 194);
+            lbclick.Name = "lbclick";
+            lbclick.Size = new System.Drawing.Size(121, 58);
+            lbclick.TabIndex = 69;
+            lbclick.Text = "Hacer doble click";
+            // 
             // crearRutaForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(751, 595);
+            this.Controls.Add(lbclick);
             this.Controls.Add(this.chkListaServicios);
             this.Controls.Add(this.buttonGuardar);
             this.Controls.Add(this.button2);

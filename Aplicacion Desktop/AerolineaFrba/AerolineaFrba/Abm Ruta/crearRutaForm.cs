@@ -174,7 +174,7 @@ namespace AerolineaFrba.Abm_Ruta
 
               for (int i = 0; i <= (chkListaServicios.Items.Count - 1); i++) {
       
-                  if (r.servicios.Contains(chkListaServicios.Items.ToString()))//.GetItemText(i).ToString()) )
+                  if (r.servicios.Contains(chkListaServicios.ToString()))//.GetItemText(i).ToString()) )
                {
                       chkListaServicios.SetItemCheckState(i, CheckState.Checked);
                }

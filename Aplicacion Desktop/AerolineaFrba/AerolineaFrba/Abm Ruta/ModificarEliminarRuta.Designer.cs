@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.Label label5;
+            System.Windows.Forms.Label lbclick;
             this.btBuscar = new System.Windows.Forms.Button();
             this.chkListaServicios = new System.Windows.Forms.CheckedListBox();
             this.lbService = new System.Windows.Forms.Label();
@@ -55,9 +55,18 @@
             this.butCancelar = new System.Windows.Forms.Button();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.button2 = new System.Windows.Forms.Button();
-            label5 = new System.Windows.Forms.Label();
+            lbclick = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.SuspendLayout();
+            // 
+            // lbclick
+            // 
+            lbclick.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            lbclick.Location = new System.Drawing.Point(44, 293);
+            lbclick.Name = "lbclick";
+            lbclick.Size = new System.Drawing.Size(121, 58);
+            lbclick.TabIndex = 68;
+            lbclick.Text = "Hacer doble click";
             // 
             // btBuscar
             // 
@@ -310,22 +319,13 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // label5
-            // 
-            label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            label5.Location = new System.Drawing.Point(44, 293);
-            label5.Name = "label5";
-            label5.Size = new System.Drawing.Size(121, 58);
-            label5.TabIndex = 68;
-            label5.Text = "Hacer doble click";
-            // 
             // ModificarEliminarRuta
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.ClientSize = new System.Drawing.Size(1109, 676);
-            this.Controls.Add(label5);
+            this.Controls.Add(lbclick);
             this.Controls.Add(this.btBuscar);
             this.Controls.Add(this.chkListaServicios);
             this.Controls.Add(this.lbService);

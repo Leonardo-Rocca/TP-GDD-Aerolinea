@@ -85,6 +85,11 @@ namespace AerolineaFrba.Abm_Ruta
             catch (Exception er)
             {
                 MessageBox.Show(er.Message, "Baja ", MessageBoxButtons.OKCancel);
+                if (MessageBox.Show("¿desea cancelar los pasajes de la ruta: " + codigo_ruta + "?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                {
+                    return;
+                }
+                //TO -DO
 
             }
 

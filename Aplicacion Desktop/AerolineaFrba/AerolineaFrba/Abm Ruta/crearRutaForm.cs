@@ -22,7 +22,6 @@ namespace AerolineaFrba.Abm_Ruta
         public crearRutaForm()
         {
             InitializeComponent();
-
          //   DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct tipo_servicio FROM DBAS.servicios");
 
             inicializar();
@@ -37,6 +36,7 @@ namespace AerolineaFrba.Abm_Ruta
             {
                 lbTitle.Text = "ModificarRuta";
                 buttonGuardar.Text = "Modificar";
+                lbseleccion.Visible = true;
             }
 
         }
@@ -191,6 +191,5 @@ namespace AerolineaFrba.Abm_Ruta
             }*/
 
         }
-
     }
 }

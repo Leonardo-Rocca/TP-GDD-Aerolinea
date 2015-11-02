@@ -44,5 +44,10 @@ namespace AerolineaFrba
                 this.Hide();
             }
         }
+
+        private void btSalir_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

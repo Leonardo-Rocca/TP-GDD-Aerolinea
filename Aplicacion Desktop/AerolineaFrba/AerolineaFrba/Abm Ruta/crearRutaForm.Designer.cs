@@ -46,8 +46,18 @@
             this.buttonGuardar = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.chkListaServicios = new System.Windows.Forms.CheckedListBox();
+            this.lbseleccion = new System.Windows.Forms.Label();
             lbclick = new System.Windows.Forms.Label();
             this.SuspendLayout();
+            // 
+            // lbclick
+            // 
+            lbclick.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            lbclick.Location = new System.Drawing.Point(46, 201);
+            lbclick.Name = "lbclick";
+            lbclick.Size = new System.Drawing.Size(121, 58);
+            lbclick.TabIndex = 69;
+            lbclick.Text = "Hacer doble click";
             // 
             // lbTitle
             // 
@@ -63,7 +73,7 @@
             // 
             this.lbCodigo.AutoSize = true;
             this.lbCodigo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbCodigo.Location = new System.Drawing.Point(35, 108);
+            this.lbCodigo.Location = new System.Drawing.Point(35, 115);
             this.lbCodigo.Name = "lbCodigo";
             this.lbCodigo.Size = new System.Drawing.Size(120, 20);
             this.lbCodigo.TabIndex = 4;
@@ -72,7 +82,7 @@
             // txtCodigo
             // 
             this.txtCodigo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCodigo.Location = new System.Drawing.Point(229, 108);
+            this.txtCodigo.Location = new System.Drawing.Point(229, 115);
             this.txtCodigo.Name = "txtCodigo";
             this.txtCodigo.ReadOnly = true;
             this.txtCodigo.Size = new System.Drawing.Size(319, 26);
@@ -82,7 +92,7 @@
             // 
             this.lbOrigen.AutoSize = true;
             this.lbOrigen.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbOrigen.Location = new System.Drawing.Point(35, 262);
+            this.lbOrigen.Location = new System.Drawing.Point(35, 269);
             this.lbOrigen.Name = "lbOrigen";
             this.lbOrigen.Size = new System.Drawing.Size(110, 20);
             this.lbOrigen.TabIndex = 6;
@@ -92,7 +102,7 @@
             // 
             this.lbService.AutoSize = true;
             this.lbService.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbService.Location = new System.Drawing.Point(35, 165);
+            this.lbService.Location = new System.Drawing.Point(35, 172);
             this.lbService.Name = "lbService";
             this.lbService.Size = new System.Drawing.Size(120, 20);
             this.lbService.TabIndex = 7;
@@ -101,7 +111,7 @@
             // txtCOrigen
             // 
             this.txtCOrigen.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCOrigen.Location = new System.Drawing.Point(229, 259);
+            this.txtCOrigen.Location = new System.Drawing.Point(229, 266);
             this.txtCOrigen.Name = "txtCOrigen";
             this.txtCOrigen.ReadOnly = true;
             this.txtCOrigen.Size = new System.Drawing.Size(319, 26);
@@ -111,7 +121,7 @@
             // btsOringen
             // 
             this.btsOringen.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btsOringen.Location = new System.Drawing.Point(574, 258);
+            this.btsOringen.Location = new System.Drawing.Point(574, 265);
             this.btsOringen.Name = "btsOringen";
             this.btsOringen.Size = new System.Drawing.Size(108, 29);
             this.btsOringen.TabIndex = 10;
@@ -122,7 +132,7 @@
             // btsDestino
             // 
             this.btsDestino.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btsDestino.Location = new System.Drawing.Point(574, 323);
+            this.btsDestino.Location = new System.Drawing.Point(574, 330);
             this.btsDestino.Name = "btsDestino";
             this.btsDestino.Size = new System.Drawing.Size(108, 29);
             this.btsDestino.TabIndex = 13;
@@ -133,7 +143,7 @@
             // txtCDestino
             // 
             this.txtCDestino.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCDestino.Location = new System.Drawing.Point(229, 324);
+            this.txtCDestino.Location = new System.Drawing.Point(229, 331);
             this.txtCDestino.Name = "txtCDestino";
             this.txtCDestino.ReadOnly = true;
             this.txtCDestino.Size = new System.Drawing.Size(319, 26);
@@ -143,7 +153,7 @@
             // 
             this.lbDestino.AutoSize = true;
             this.lbDestino.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbDestino.Location = new System.Drawing.Point(35, 327);
+            this.lbDestino.Location = new System.Drawing.Point(35, 334);
             this.lbDestino.Name = "lbDestino";
             this.lbDestino.Size = new System.Drawing.Size(118, 20);
             this.lbDestino.TabIndex = 11;
@@ -152,7 +162,7 @@
             // txtPregiokg
             // 
             this.txtPregiokg.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPregiokg.Location = new System.Drawing.Point(229, 388);
+            this.txtPregiokg.Location = new System.Drawing.Point(229, 395);
             this.txtPregiokg.Name = "txtPregiokg";
             this.txtPregiokg.Size = new System.Drawing.Size(319, 26);
             this.txtPregiokg.TabIndex = 15;
@@ -161,7 +171,7 @@
             // 
             this.lbPrecioKG.AutoSize = true;
             this.lbPrecioKG.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbPrecioKG.Location = new System.Drawing.Point(35, 391);
+            this.lbPrecioKG.Location = new System.Drawing.Point(35, 398);
             this.lbPrecioKG.Name = "lbPrecioKG";
             this.lbPrecioKG.Size = new System.Drawing.Size(148, 20);
             this.lbPrecioKG.TabIndex = 14;
@@ -170,7 +180,7 @@
             // txtPrecioPasaje
             // 
             this.txtPrecioPasaje.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPrecioPasaje.Location = new System.Drawing.Point(229, 449);
+            this.txtPrecioPasaje.Location = new System.Drawing.Point(229, 456);
             this.txtPrecioPasaje.Name = "txtPrecioPasaje";
             this.txtPrecioPasaje.Size = new System.Drawing.Size(319, 26);
             this.txtPrecioPasaje.TabIndex = 17;
@@ -179,7 +189,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(35, 452);
+            this.label1.Location = new System.Drawing.Point(35, 459);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(173, 20);
             this.label1.TabIndex = 16;
@@ -188,7 +198,7 @@
             // buttonGuardar
             // 
             this.buttonGuardar.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonGuardar.Location = new System.Drawing.Point(547, 518);
+            this.buttonGuardar.Location = new System.Drawing.Point(547, 525);
             this.buttonGuardar.Name = "buttonGuardar";
             this.buttonGuardar.Size = new System.Drawing.Size(117, 58);
             this.buttonGuardar.TabIndex = 19;
@@ -199,7 +209,7 @@
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(113, 520);
+            this.button2.Location = new System.Drawing.Point(113, 527);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(117, 58);
             this.button2.TabIndex = 18;
@@ -211,25 +221,28 @@
             // 
             this.chkListaServicios.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkListaServicios.FormattingEnabled = true;
-            this.chkListaServicios.Location = new System.Drawing.Point(229, 158);
+            this.chkListaServicios.Location = new System.Drawing.Point(229, 165);
             this.chkListaServicios.Name = "chkListaServicios";
             this.chkListaServicios.Size = new System.Drawing.Size(319, 80);
             this.chkListaServicios.TabIndex = 20;
             // 
-            // lbclick
+            // lbseleccion
             // 
-            lbclick.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            lbclick.Location = new System.Drawing.Point(46, 194);
-            lbclick.Name = "lbclick";
-            lbclick.Size = new System.Drawing.Size(121, 58);
-            lbclick.TabIndex = 69;
-            lbclick.Text = "Hacer doble click";
+            this.lbseleccion.AutoSize = true;
+            this.lbseleccion.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbseleccion.Location = new System.Drawing.Point(36, 85);
+            this.lbseleccion.Name = "lbseleccion";
+            this.lbseleccion.Size = new System.Drawing.Size(289, 18);
+            this.lbseleccion.TabIndex = 70;
+            this.lbseleccion.Text = "Seleccione los nuevos campos de la Ruta:";
+            this.lbseleccion.Visible = false;
             // 
             // crearRutaForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(751, 595);
+            this.ClientSize = new System.Drawing.Size(751, 616);
+            this.Controls.Add(this.lbseleccion);
             this.Controls.Add(lbclick);
             this.Controls.Add(this.chkListaServicios);
             this.Controls.Add(this.buttonGuardar);
@@ -274,5 +287,6 @@
         private System.Windows.Forms.Button buttonGuardar;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.CheckedListBox chkListaServicios;
+        private System.Windows.Forms.Label lbseleccion;
     }
 }

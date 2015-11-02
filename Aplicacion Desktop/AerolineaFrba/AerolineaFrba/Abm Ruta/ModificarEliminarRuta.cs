@@ -11,12 +11,14 @@ using System.Windows.Forms;
 using AerolineaFrba.Dominio;
 using AerolineaFrba.Abm_Ciudad;
 using AerolineaFrba.FormsPrincipales;
+using AerolineaFrba.Generacion_Viaje;
 
 namespace AerolineaFrba.Abm_Ruta
 {
     public partial class ModificarEliminarRuta : FormGenerico
     {
         int tipoDeForm; //1 modificar ,2 eliminar
+        Generar_Viaje formAuxiliar;
 
         public ModificarEliminarRuta(int tipo)
         {
@@ -45,6 +47,8 @@ namespace AerolineaFrba.Abm_Ruta
             chkListaServicios.Items.Insert(1, "Ejecutivo");
             chkListaServicios.Items.Insert(2, "Turista");
             vaciarTextos();
+     //       cargarTablacompleta();
+
         }
 
 
@@ -71,7 +75,8 @@ namespace AerolineaFrba.Abm_Ruta
         {
             string codigo_ruta = dataGridView2[0, dataGridView2.CurrentCell.RowIndex].Value.ToString();
             string query = "execute dbas.bajaRuta '" + codigo_ruta + "'";
-           
+        //    ConexionSQL conn = new ConexionSQL();
+
             if (MessageBox.Show("¿Realmente desea dar de baja la ruta " + codigo_ruta + "?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
             {
                 return;
@@ -84,15 +89,16 @@ namespace AerolineaFrba.Abm_Ruta
             }
             catch (Exception er)
             {
-                MessageBox.Show(er.Message, "Baja ", MessageBoxButtons.OKCancel);
-                if (MessageBox.Show("¿desea cancelar los pasajes de la ruta: " + codigo_ruta + "?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                MessageBox.Show(er.Message, "Baja ", MessageBoxButtons.OK);
+                if (MessageBox.Show("¿desea cancelar los pasajes de la ruta: " + codigo_ruta + "?(falta probar)", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 {
-                    return;
+                  return;
                 }
-                //TO -DO
-
+                string queryBajaPasajes = "execute DBAS.bajaRutaYCancelarPasajes '" + codigo_ruta + "'";
+                (new ConexionSQL()).cargarTablaSQL(queryBajaPasajes);
             }
-
+            inicializar();
+            this.Hide();
         }
 
         private void btsOringen_Click(object sender, EventArgs e)
@@ -253,12 +259,19 @@ namespace AerolineaFrba.Abm_Ruta
 
             Ruta aModificar = new Ruta(Convert.ToInt32(codigo_ruta), ciudad_Origen, ciudad_Destino, precio_base_por_pasaje, precio_base_por_KG, tipo_servicio, porcentaje_arancel,servicios);
 
-            crearRutaForm modify =new crearRutaForm(1);
-            modify.cargarRuta(aModificar);
 
             this.inicializar();
             this.Hide();
-            modify.Show();
+
+            if(tipoDeForm==1){
+              crearRutaForm modify =new crearRutaForm(1);
+                            modify.cargarRuta(aModificar);
+                            modify.Show();
+                }
+            if(tipoDeForm==3){
+            //    formAuxiliar.cargarRuta();
+            }
+
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -266,5 +279,15 @@ namespace AerolineaFrba.Abm_Ruta
             inicializar();
         }
 
+        private void cargarTablacompleta()
+        {
+            string query = "select distinct codigo_ruta, ciudad_Origen ,ciudad_Destino ,precio_base_por_pasaje ,precio_base_por_KG ,tipo_servicio, porcentaje_arancel FROM DBAS.caracteristicasRutas";
+            hacerQuery(query, dataGridView2); 
+        }
+
+        private void ModificarEliminarRuta_Load(object sender, EventArgs e)
+        {
+              cargarTablacompleta();
+        }
     }
 }

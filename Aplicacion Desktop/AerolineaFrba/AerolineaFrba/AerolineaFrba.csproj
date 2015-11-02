@@ -224,11 +224,11 @@
     <Compile Include="FormsPrincipales\_Aeronave.Designer.cs">
       <DependentUpon>_Aeronave.cs</DependentUpon>
     </Compile>
-    <Compile Include="Generacion Viaje\Form1.cs">
+    <Compile Include="Generacion Viaje\Generar_Viaje.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Generacion Viaje\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Generacion Viaje\Generar_Viaje.Designer.cs">
+      <DependentUpon>Generar_Viaje.cs</DependentUpon>
     </Compile>
     <Compile Include="Devolucion\Listado Estadistico\Form1.cs">
       <SubType>Form</SubType>
@@ -351,6 +351,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormsPrincipales\_Aeronave.resx">
       <DependentUpon>_Aeronave.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Generacion Viaje\Generar_Viaje.resx">
+      <DependentUpon>Generar_Viaje.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Listado Estadistico\ListadoMaestro.resx">
       <DependentUpon>ListadoMaestro.cs</DependentUpon>

@@ -5,8 +5,8 @@ GO
 
 /* -- Nuevo esquema -- */
 
-CREATE SCHEMA [DBAS] AUTHORIZATION [gd];
-GO
+--CREATE SCHEMA [DBAS] AUTHORIZATION [gd];
+--GO
 
 /* -- Tablas y Constraints -- */
 
@@ -744,10 +744,10 @@ RETURNS @TOP5 TABLE ( aeronave varchar(100), dias_fuera_de_servicio bigint)
 AS
 BEGIN
 	INSERT INTO @TOP5(aeronave, dias_fuera_de_servicio)
-	SELECT TOP 5 tablaDias.aeronave,SUM(tablaDias.dias_fuera_de_servicio)
+	SELECT TOP 5 tablaDias.aeronave,SUM(tablaDias.dias_fuera_de_servicio) AS tiempo_fuera_servicio
 	FROM DBAS.aeronaves_dias_fuera_de_servicio(@semestreDelAnio, @anio) tablaDias
 	GROUP BY tablaDias.aeronave
-	ORDER BY tablaDias.dias_fuera_de_servicio DESC
+	ORDER BY tiempo_fuera_servicio DESC
 				
 	RETURN
 END;	
@@ -1104,7 +1104,7 @@ BEGIN
 	DECLARE @id_Viaje bigint
 
 	DECLARE aeronaves CURSOR FOR
-	SELECT matricula_aeronave FROM DBAS.aeronaves WHERE fecha_reinsercion <= GETDATE() AND fecha_baja_servicio_definitiva IS NULL
+	SELECT matricula_aeronave FROM DBAS.aeronaves WHERE (fecha_reinsercion <= GETDATE() OR fecha_reinsercion IS NULL) AND fecha_baja_servicio_definitiva IS NULL
 
 	OPEN aeronaves
 
@@ -1500,7 +1500,7 @@ BEGIN
 
 	RETURN (SELECT TOP 1 tablaViajes.id_viaje FROM DBAS.viajes tablaViajes, DBAS.aeronaves tablaAeronaves 
 	WHERE tablaViajes.matricula_aeronave = @matricula_aeronave 
-	AND tablaAeronaves.matricula_aeronave = @matricula_aeronave AND tablaAeronaves.fecha_reinsercion <= GETDATE() AND tablaAeronaves.fecha_baja_servicio_definitiva IS NULL 
+	AND tablaAeronaves.matricula_aeronave = @matricula_aeronave AND (tablaAeronaves.fecha_reinsercion <= GETDATE() OR tablaAeronaves.fecha_reinsercion IS NULL) AND tablaAeronaves.fecha_baja_servicio_definitiva IS NULL 
 	ORDER BY tablaViajes.fecha_salida DESC)
 	
 END;
@@ -1618,5 +1618,36 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE DBAS.canjeProducto(@id_cliente bigint, @id_producto bigint, @cantidadACanjear bigint)
+AS
+BEGIN
+	DECLARE @dni_persona bigint
+	DECLARE @millas_vigentes bigint
+	DECLARE @valor_unitario_en_millas bigint
+	DECLARE @mensaje_error varchar(100)
+	DECLARE @valor_total_en_millas bigint
 
-				
+	SET @dni_persona = (SELECT dni_persona FROM DBAS.personas tablaPersonas, DBAS.clientes tablaClientes 
+	WHERE tablaClientes.id_cliente = @id_cliente AND tablaPersonas.id_persona = tablaClientes.id_persona)
+
+	SET @millas_vigentes = DBAS.millasVigentes(@dni_persona)
+
+	SET @valor_unitario_en_millas= SELECT valor_en_millas FROM DBAS.productos tablaProductos WHERE tablaProductos.id_producto = @id_producto
+
+	SET @valor_total_en_millas = @valor_unitario_en_millas * @cantidadACanjear
+
+	IF(@valor_total_en_millas > @millas_vigentes)
+	BEGIN
+		
+		SET @mensaje_error = 'No posee millas suficientes para canjear este producto'
+		RAISERROR(@mensaje_error, 12, 1)
+
+	END
+	ELSE
+	BEGIN
+		INSERT INTO DBAS.canjes(id_cliente,fecha_canje,cantidad_producto,millas_usadas,id_producto)
+		VALUES (@id_cliente,GETDATE(),@cantidadACanjear,@valor_total_en_millas,@id_producto)
+	END
+
+END;
+GO

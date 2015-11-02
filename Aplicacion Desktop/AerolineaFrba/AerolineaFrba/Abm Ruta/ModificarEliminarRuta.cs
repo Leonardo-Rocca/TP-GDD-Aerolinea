@@ -228,16 +228,16 @@ namespace AerolineaFrba.Abm_Ruta
             }
         }
 
-        private void completar(DataGridView dataGridView1)
+        private void completar(DataGridView dataGridView2)
         {
             string codigo_ruta = dataGridView2[0, dataGridView2.CurrentCell.RowIndex].Value.ToString();
 
             string ciudad_Origen = dataGridView2[1, dataGridView2.CurrentCell.RowIndex].Value.ToString();
-            string ciudad_Destino = dataGridView1[2, dataGridView1.CurrentCell.RowIndex].Value.ToString();
-            string tipo_servicio = dataGridView1[5, dataGridView1.CurrentCell.RowIndex].Value.ToString();
-            string precio_base_por_KG = dataGridView1[4, dataGridView1.CurrentCell.RowIndex].Value.ToString();
-            string precio_base_por_pasaje = dataGridView1[3, dataGridView1.CurrentCell.RowIndex].Value.ToString();
-            string porcentaje_arancel = dataGridView1[4, dataGridView1.CurrentCell.RowIndex].Value.ToString();
+            string ciudad_Destino = dataGridView2[2, dataGridView2.CurrentCell.RowIndex].Value.ToString();
+            string tipo_servicio = dataGridView2[5, dataGridView2.CurrentCell.RowIndex].Value.ToString();
+            string precio_base_por_KG = dataGridView2[4, dataGridView2.CurrentCell.RowIndex].Value.ToString();
+            string precio_base_por_pasaje = dataGridView2[3, dataGridView2.CurrentCell.RowIndex].Value.ToString();
+            string porcentaje_arancel = dataGridView2[4, dataGridView2.CurrentCell.RowIndex].Value.ToString();
 
             string query = "select tipo_servicio FROM DBAS.caracteristicasRutas WHERE codigo_ruta = "+codigo_ruta ;
             ConexionSQL conn = new ConexionSQL();
@@ -245,9 +245,10 @@ namespace AerolineaFrba.Abm_Ruta
 
            List<string> servicios = new List<string>();
 
-           foreach (DataRow dr in dt.Rows)
+           for (int i = 0; i <= (dt.Rows.Count- 1); i++)
            {
-               servicios.Add(dr.ToString());
+               servicios.Add(dt.Rows[i][ 0].ToString());
+               MessageBox.Show(dt.Rows[i][ 0].ToString(), "Fallo la busqueda", MessageBoxButtons.OK);
            }
 
             Ruta aModificar = new Ruta(Convert.ToInt32(codigo_ruta), ciudad_Origen, ciudad_Destino, precio_base_por_pasaje, precio_base_por_KG, tipo_servicio, porcentaje_arancel,servicios);

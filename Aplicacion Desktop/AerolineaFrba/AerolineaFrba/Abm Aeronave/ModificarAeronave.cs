@@ -107,7 +107,7 @@ namespace AerolineaFrba.Abm_Aeronave
             this.Hide();
         }
 
-        private void iniciar()
+        public void iniciar()
         {
             txtMatricula.Text = "";
             txtModelo.Text = "";

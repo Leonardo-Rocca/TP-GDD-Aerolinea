@@ -13,6 +13,7 @@ namespace AerolineaFrba.Abm_Aeronave
 {
     public partial class ListadoAeronave : Listado_Estadistico.ListadoMaestro
     {
+        public _Viaje viaje;
         public _Aeronave modifAnterior;
         public Form llamada;
 
@@ -20,7 +21,8 @@ namespace AerolineaFrba.Abm_Aeronave
         {
             InitializeComponent();
             DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct tipo_servicio FROM  DBAS.servicios");
-            comboBoxServicio.DataSource = dt.DefaultView; 
+            comboBoxServicio.DataSource = dt.DefaultView;
+            viaje = null;
             comboBoxServicio.ValueMember = "tipo_servicio"; 
             iniciar();
         }
@@ -31,7 +33,6 @@ namespace AerolineaFrba.Abm_Aeronave
             txtModelo.Text = "";
             textButacas.Text = ""; 
             textFabricante.Text = "";
-            textFechaDesde.Text = "";
             comboBoxServicio.Text = "";
             textBoxDesdekg.Text = "";
             textBoxHastakg.Text = "";
@@ -158,8 +159,23 @@ namespace AerolineaFrba.Abm_Aeronave
             }
 
             string query = "select matricula_aeronave,numero_aeronave,modelo_aeronave,kg_disponible_encomienda,id_fabricante,id_servicio FROM DBAS.aeronaves a";
-            Boolean yaTieneCondicion = true;
-            query = query + " WHERE (fecha_reinsercion <= GETDATE() or fecha_reinsercion IS NULL) AND fecha_baja_servicio_definitiva is NULL ";
+            Boolean yaTieneCondicion = false;
+            query = query + " WHERE ";
+
+            if (checkHabilitado.Checked || (!checkHabilitado.Checked && !checkInhabilitado.Checked))
+            {
+                string agregado = "(fecha_reinsercion <= GETDATE() or fecha_reinsercion IS NULL) AND fecha_baja_servicio_definitiva is NULL";
+                armarQueryCompleja(ref query, agregado, yaTieneCondicion);
+                yaTieneCondicion = true;
+            }
+
+            if (checkInhabilitado.Checked)
+            {
+                string agregado = "fecha_reinsercion IS NOT NULL AND fecha_baja_servicio_definitiva IS NOT NULL";
+                armarQueryCompleja(ref query, agregado, yaTieneCondicion);
+                yaTieneCondicion = true;
+            }
+
             if (txtMatricula.TextLength != 0)
             {
                 string agregado = "a.matricula_aeronave LIKE '" + txtMatricula.Text + "'";
@@ -203,20 +219,6 @@ namespace AerolineaFrba.Abm_Aeronave
                 yaTieneCondicion = true;
             }
 
-            if (checkHabilitado.Checked)
-            {
-                string agregado = "baja_fuera_de_servicio = 0 AND baja_vida_util = 0";
-                armarQueryCompleja(ref query, agregado, yaTieneCondicion);
-                yaTieneCondicion = true;
-            }
-
-            if (checkInhabilitado.Checked)
-            {
-                string agregado = "baja_fuera_de_servicio = 1 OR baja_vida_util = 1";
-                armarQueryCompleja(ref query, agregado, yaTieneCondicion);
-                yaTieneCondicion = true;
-            }
-
             if (comboBoxServicio.SelectedIndex != -1)
             {
                 string agregado = "a.id_servicio = (select id_servicio from DBAS.servicios WHERE tipo_servicio LIKE '" + comboBoxServicio.Text + "')";
@@ -243,20 +245,6 @@ namespace AerolineaFrba.Abm_Aeronave
                 }
             }
 
-            if ((textFechaHasta.TextLength == 0 && textFechaDesde.TextLength == 0))
-            {
-            }
-            else
-            {
-                if ((textFechaDesde.TextLength != 0 && textFechaHasta.TextLength != 0))
-                {
-                }
-                else
-                {
-                    MessageBox.Show("Falta especificar rango de fechas para la busqueda", "Fallo la busqueda", MessageBoxButtons.OK);
-                    return false;
-                }
-            }
 
             if (!hayFiltros())
             {
@@ -317,16 +305,22 @@ namespace AerolineaFrba.Abm_Aeronave
             string cantVentanila = dt.Rows[0][1].ToString();
             string cantPisos = dt.Rows[0][2].ToString();
 
-
-          
-            modifAnterior.textBox1.Text = matricula;
-            modifAnterior.textBox2.Text = modelo;
-            modifAnterior.textBox3.Text = cantPisos;
-            modifAnterior.textBox4.Text = cantPasillo;
-            modifAnterior.textBox5.Text = cantVentanila;
-            modifAnterior.textBox6.Text = kg;
-            modifAnterior.combo1.Text = tipoServicio;
-            modifAnterior.combo2.Text = fabricante;
+            if (viaje != null)
+            {
+                viaje.textBoxMatricula.Text = matricula;
+                viaje = null;
+            }
+            else
+            {
+                modifAnterior.textBox1.Text = matricula;
+                modifAnterior.textBox2.Text = modelo;
+                modifAnterior.textBox3.Text = cantPisos;
+                modifAnterior.textBox4.Text = cantPasillo;
+                modifAnterior.textBox5.Text = cantVentanila;
+                modifAnterior.textBox6.Text = kg;
+                modifAnterior.combo1.Text = tipoServicio;
+                modifAnterior.combo2.Text = fabricante;
+            }
 
             this.iniciar();
             this.Hide();
@@ -341,6 +335,10 @@ namespace AerolineaFrba.Abm_Aeronave
         private void button4_Click(object sender, EventArgs e)
         {
 
+        }
+        public void setViaje(_Viaje v)
+        {
+            viaje = v;
         }
     }
 }

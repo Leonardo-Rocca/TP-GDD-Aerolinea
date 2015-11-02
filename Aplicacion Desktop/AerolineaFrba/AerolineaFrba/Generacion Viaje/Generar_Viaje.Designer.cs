@@ -31,34 +31,33 @@
             this.seleccionarCodigo = new System.Windows.Forms.Button();
             this.textCodRuta = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.seleccionarHasta = new System.Windows.Forms.Button();
-            this.textFechaHasta = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.seleccionarMatricula = new System.Windows.Forms.Button();
             this.textBoxMatricula = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.seleccionarDesde = new System.Windows.Forms.Button();
-            this.textFechaDesde = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.butCancelar = new System.Windows.Forms.Button();
             this.butAceptar = new System.Windows.Forms.Button();
-            this.calendario = new System.Windows.Forms.MonthCalendar();
+            this.dateFechaDesde = new System.Windows.Forms.DateTimePicker();
+            this.dateFechaHasta = new System.Windows.Forms.DateTimePicker();
             this.SuspendLayout();
             // 
             // seleccionarCodigo
             // 
-            this.seleccionarCodigo.Location = new System.Drawing.Point(387, 138);
+            this.seleccionarCodigo.Location = new System.Drawing.Point(305, 139);
             this.seleccionarCodigo.Name = "seleccionarCodigo";
-            this.seleccionarCodigo.Size = new System.Drawing.Size(108, 21);
+            this.seleccionarCodigo.Size = new System.Drawing.Size(76, 21);
             this.seleccionarCodigo.TabIndex = 52;
             this.seleccionarCodigo.Text = "Seleccionar";
             this.seleccionarCodigo.UseVisualStyleBackColor = true;
+            this.seleccionarCodigo.Click += new System.EventHandler(this.seleccionarCodigo_Click);
             // 
             // textCodRuta
             // 
             this.textCodRuta.Location = new System.Drawing.Point(131, 139);
             this.textCodRuta.Name = "textCodRuta";
-            this.textCodRuta.Size = new System.Drawing.Size(250, 20);
+            this.textCodRuta.ReadOnly = true;
+            this.textCodRuta.Size = new System.Drawing.Size(168, 20);
             this.textCodRuta.TabIndex = 54;
             // 
             // label8
@@ -69,23 +68,6 @@
             this.label8.Size = new System.Drawing.Size(76, 13);
             this.label8.TabIndex = 53;
             this.label8.Text = "Codigo de ruta";
-            // 
-            // seleccionarHasta
-            // 
-            this.seleccionarHasta.Location = new System.Drawing.Point(387, 100);
-            this.seleccionarHasta.Name = "seleccionarHasta";
-            this.seleccionarHasta.Size = new System.Drawing.Size(108, 21);
-            this.seleccionarHasta.TabIndex = 49;
-            this.seleccionarHasta.Text = "Seleccionar";
-            this.seleccionarHasta.UseVisualStyleBackColor = true;
-            this.seleccionarHasta.Click += new System.EventHandler(this.seleccionarHasta_Click);
-            // 
-            // textFechaHasta
-            // 
-            this.textFechaHasta.Location = new System.Drawing.Point(131, 101);
-            this.textFechaHasta.Name = "textFechaHasta";
-            this.textFechaHasta.Size = new System.Drawing.Size(250, 20);
-            this.textFechaHasta.TabIndex = 51;
             // 
             // label6
             // 
@@ -98,9 +80,9 @@
             // 
             // seleccionarMatricula
             // 
-            this.seleccionarMatricula.Location = new System.Drawing.Point(387, 22);
+            this.seleccionarMatricula.Location = new System.Drawing.Point(305, 22);
             this.seleccionarMatricula.Name = "seleccionarMatricula";
-            this.seleccionarMatricula.Size = new System.Drawing.Size(108, 21);
+            this.seleccionarMatricula.Size = new System.Drawing.Size(76, 21);
             this.seleccionarMatricula.TabIndex = 55;
             this.seleccionarMatricula.Text = "Seleccionar";
             this.seleccionarMatricula.UseVisualStyleBackColor = true;
@@ -110,7 +92,8 @@
             // 
             this.textBoxMatricula.Location = new System.Drawing.Point(131, 23);
             this.textBoxMatricula.Name = "textBoxMatricula";
-            this.textBoxMatricula.Size = new System.Drawing.Size(250, 20);
+            this.textBoxMatricula.ReadOnly = true;
+            this.textBoxMatricula.Size = new System.Drawing.Size(168, 20);
             this.textBoxMatricula.TabIndex = 57;
             // 
             // label1
@@ -121,23 +104,6 @@
             this.label1.Size = new System.Drawing.Size(99, 13);
             this.label1.TabIndex = 56;
             this.label1.Text = "Matricula Aeronave";
-            // 
-            // seleccionarDesde
-            // 
-            this.seleccionarDesde.Location = new System.Drawing.Point(387, 61);
-            this.seleccionarDesde.Name = "seleccionarDesde";
-            this.seleccionarDesde.Size = new System.Drawing.Size(108, 21);
-            this.seleccionarDesde.TabIndex = 58;
-            this.seleccionarDesde.Text = "Seleccionar";
-            this.seleccionarDesde.UseVisualStyleBackColor = true;
-            this.seleccionarDesde.Click += new System.EventHandler(this.seleccionarDesde_Click);
-            // 
-            // textFechaDesde
-            // 
-            this.textFechaDesde.Location = new System.Drawing.Point(131, 62);
-            this.textFechaDesde.Name = "textFechaDesde";
-            this.textFechaDesde.Size = new System.Drawing.Size(250, 20);
-            this.textFechaDesde.TabIndex = 60;
             // 
             // label2
             // 
@@ -156,34 +122,41 @@
             this.butCancelar.TabIndex = 61;
             this.butCancelar.Text = "Cancelar";
             this.butCancelar.UseVisualStyleBackColor = true;
+            this.butCancelar.Click += new System.EventHandler(this.butCancelar_Click);
             // 
             // butAceptar
             // 
-            this.butAceptar.Location = new System.Drawing.Point(387, 214);
+            this.butAceptar.Location = new System.Drawing.Point(273, 214);
             this.butAceptar.Name = "butAceptar";
             this.butAceptar.Size = new System.Drawing.Size(108, 21);
             this.butAceptar.TabIndex = 62;
             this.butAceptar.Text = "Generar Viaje";
             this.butAceptar.UseVisualStyleBackColor = true;
+            this.butAceptar.Click += new System.EventHandler(this.butAceptar_Click);
             // 
-            // calendario
+            // dateFechaDesde
             // 
-            this.calendario.Location = new System.Drawing.Point(110, 26);
-            this.calendario.Name = "calendario";
-            this.calendario.TabIndex = 63;
-            this.calendario.Visible = false;
-            this.calendario.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.calendario_DateChanged);
+            this.dateFechaDesde.Location = new System.Drawing.Point(131, 58);
+            this.dateFechaDesde.Name = "dateFechaDesde";
+            this.dateFechaDesde.Size = new System.Drawing.Size(250, 20);
+            this.dateFechaDesde.TabIndex = 63;
+            // 
+            // dateFechaHasta
+            // 
+            this.dateFechaHasta.Location = new System.Drawing.Point(131, 98);
+            this.dateFechaHasta.Name = "dateFechaHasta";
+            this.dateFechaHasta.Size = new System.Drawing.Size(250, 20);
+            this.dateFechaHasta.TabIndex = 64;
             // 
             // Generar_Viaje
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(516, 259);
-            this.Controls.Add(this.calendario);
+            this.ClientSize = new System.Drawing.Size(398, 259);
+            this.Controls.Add(this.dateFechaHasta);
+            this.Controls.Add(this.dateFechaDesde);
             this.Controls.Add(this.butAceptar);
             this.Controls.Add(this.butCancelar);
-            this.Controls.Add(this.seleccionarDesde);
-            this.Controls.Add(this.textFechaDesde);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.seleccionarMatricula);
             this.Controls.Add(this.textBoxMatricula);
@@ -191,11 +164,10 @@
             this.Controls.Add(this.seleccionarCodigo);
             this.Controls.Add(this.textCodRuta);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.seleccionarHasta);
-            this.Controls.Add(this.textFechaHasta);
             this.Controls.Add(this.label6);
             this.Name = "Generar_Viaje";
             this.Text = "Generar Viaje";
+            this.Load += new System.EventHandler(this.Generar_Viaje_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -206,17 +178,14 @@
         private System.Windows.Forms.Button seleccionarCodigo;
         private System.Windows.Forms.TextBox textCodRuta;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Button seleccionarHasta;
-        private System.Windows.Forms.TextBox textFechaHasta;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button seleccionarMatricula;
         private System.Windows.Forms.TextBox textBoxMatricula;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button seleccionarDesde;
-        private System.Windows.Forms.TextBox textFechaDesde;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button butCancelar;
         private System.Windows.Forms.Button butAceptar;
-        private System.Windows.Forms.MonthCalendar calendario;
+        private System.Windows.Forms.DateTimePicker dateFechaDesde;
+        private System.Windows.Forms.DateTimePicker dateFechaHasta;
     }
 }

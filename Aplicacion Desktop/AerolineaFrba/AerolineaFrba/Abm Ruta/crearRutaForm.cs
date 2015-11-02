@@ -193,11 +193,10 @@ namespace AerolineaFrba.Abm_Ruta
                   }
               }
 
-         /*   foreach (Object service in chkListaServicios.Items)
-            {
-                if(r.servicios.Contains(service.ToString()) )
-                    service
-            }*/
+        }
+
+        private void crearRutaForm_Load(object sender, EventArgs e)
+        {
 
         }
     }

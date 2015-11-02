@@ -15,11 +15,27 @@ namespace AerolineaFrba.Abm_Rol
         public modificarRolEspecificado(string rol)
         {
             InitializeComponent();
-            txtNombreRol.Text = rol;
-            cargarChkFuncionalidades();
-            cargarFuncionalidades(rol);
+            inicializar(rol);
         }
 
+        public void inicializar(string rol)
+        {     txtNombreRol.Text = rol;
+            cargarChkFuncionalidades();
+            cargarFuncionalidades(rol);
+            cargarChkHabilitado(rol);
+        }
+
+        private void cargarChkHabilitado(string rol)
+        {
+            string qHabilitado = "select habilitado_rol from dbas.roles WHERE nombre_rol = '" + rol + "'";
+            DataTable dtHabilitado = (new ConexionSQL()).cargarTablaSQL(qHabilitado);
+
+            if(Convert.ToInt32(dtHabilitado.Rows[0][0])==1){
+            chkHabilitado.Checked= true;
+            return;
+            }
+            chkHabilitado.Checked = false;
+        }
         public void cargarFuncionalidades(string rol){
             string qfuncion = "select descripcion from  DBAS.obtenerFuncionalidadesAsociadas ('" + rol + "')";
             DataTable dtfunciones =  (new ConexionSQL()).cargarTablaSQL(qfuncion);
@@ -85,8 +101,8 @@ namespace AerolineaFrba.Abm_Rol
 
         private void button2_Click(object sender, EventArgs e)
         {
-            //cancelar   this.Close();
-            this.Hide();
+            //cancelar  
+            this.Close();
         }
 
         private void cargarChkFuncionalidades()

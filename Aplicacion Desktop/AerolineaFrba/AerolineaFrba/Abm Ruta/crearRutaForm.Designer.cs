@@ -263,6 +263,7 @@
             this.Controls.Add(this.lbTitle);
             this.Name = "crearRutaForm";
             this.Text = "crearRutaForm";
+            this.Load += new System.EventHandler(this.crearRutaForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

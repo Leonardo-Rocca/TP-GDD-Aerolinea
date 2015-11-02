@@ -49,15 +49,16 @@ namespace AerolineaFrba.Abm_Aeronave
             else
             {
                 //--------------COMO LO DEVUELVE ??? ----------------
-            //    SeleccionarCualReemplazar form = new SeleccionarCualReemplazar(dt,this);
-            //    form.Show();
+               SeleccionarCualReemplazar form = new SeleccionarCualReemplazar(dt,this);
+               form.Show();
             }
         }
 
         private void buttonCancelar_Click(object sender, EventArgs e)
         {
             anterior.Close();
-            llamado.Close();
+            llamado.iniciar();
+            llamado.Hide();
             this.Close();
         }
 
@@ -67,7 +68,7 @@ namespace AerolineaFrba.Abm_Aeronave
             (new ConexionSQL()).cargarTablaSQL(query);
             MessageBox.Show("Baja de aeronave exitosa", "Baja aeronave", MessageBoxButtons.OK);
             anterior.Close();
-            llamado.Close();
+            llamado.Hide();
             this.Close();
         }
 

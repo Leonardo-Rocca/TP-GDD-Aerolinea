@@ -86,6 +86,12 @@
     <Compile Include="Abm Aeronave\reemplazoCancelarPasajes.Designer.cs">
       <DependentUpon>reemplazoCancelarPasajes.cs</DependentUpon>
     </Compile>
+    <Compile Include="Abm Aeronave\SeleccionarCualReemplazar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Abm Aeronave\SeleccionarCualReemplazar.Designer.cs">
+      <DependentUpon>SeleccionarCualReemplazar.cs</DependentUpon>
+    </Compile>
     <Compile Include="Abm Ciudad\crearCiudadForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -224,6 +230,12 @@
     <Compile Include="FormsPrincipales\_Aeronave.Designer.cs">
       <DependentUpon>_Aeronave.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormsPrincipales\_Viaje.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsPrincipales\_Viaje.Designer.cs">
+      <DependentUpon>_Viaje.cs</DependentUpon>
+    </Compile>
     <Compile Include="Generacion Viaje\Generar_Viaje.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -294,6 +306,9 @@
     <EmbeddedResource Include="Abm Aeronave\reemplazoCancelarPasajes.resx">
       <DependentUpon>reemplazoCancelarPasajes.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Abm Aeronave\SeleccionarCualReemplazar.resx">
+      <DependentUpon>SeleccionarCualReemplazar.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Abm Ciudad\crearCiudadForm.resx">
       <DependentUpon>crearCiudadForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -351,6 +366,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormsPrincipales\_Aeronave.resx">
       <DependentUpon>_Aeronave.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsPrincipales\_Viaje.resx">
+      <DependentUpon>_Viaje.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Generacion Viaje\Generar_Viaje.resx">
       <DependentUpon>Generar_Viaje.cs</DependentUpon>

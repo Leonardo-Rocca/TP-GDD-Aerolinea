@@ -30,6 +30,12 @@ namespace AerolineaFrba.Abm_Ruta
             {
                 lbTitle.Text = "Modificar" + lbTitle.Text;
                 lbSeleccion.Text = lbSeleccion.Text+ "modificar:";
+                return;
+            }
+            if (tipo == 3)
+            {
+                lbTitle.Text = "Listado" + lbTitle.Text;
+                lbSeleccion.Text = lbSeleccion.Text + "viajar:";
             }
             else
             {
@@ -223,7 +229,7 @@ namespace AerolineaFrba.Abm_Ruta
         private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (dataGridView2.CurrentCell.ColumnIndex == dataGridView2.Columns.Count - 1) {
-                if (tipoDeForm == 1)
+                if (tipoDeForm == 1 || tipoDeForm == 3)
                 {
                     completar(dataGridView2);
                 }
@@ -254,7 +260,6 @@ namespace AerolineaFrba.Abm_Ruta
            for (int i = 0; i <= (dt.Rows.Count- 1); i++)
            {
                servicios.Add(dt.Rows[i][ 0].ToString());
-               MessageBox.Show(dt.Rows[i][ 0].ToString(), "Fallo la busqueda", MessageBoxButtons.OK);
            }
 
             Ruta aModificar = new Ruta(Convert.ToInt32(codigo_ruta), ciudad_Origen, ciudad_Destino, precio_base_por_pasaje, precio_base_por_KG, tipo_servicio, porcentaje_arancel,servicios);
@@ -269,7 +274,7 @@ namespace AerolineaFrba.Abm_Ruta
                             modify.Show();
                 }
             if(tipoDeForm==3){
-            //    formAuxiliar.cargarRuta();
+                formAuxiliar.cargarRuta(aModificar);
             }
 
         }
@@ -288,6 +293,11 @@ namespace AerolineaFrba.Abm_Ruta
         private void ModificarEliminarRuta_Load(object sender, EventArgs e)
         {
               cargarTablacompleta();
+        }
+
+        public void setFormAuxiliar(Generacion_Viaje.Generar_Viaje gv)
+        {
+            formAuxiliar = gv;
         }
     }
 }

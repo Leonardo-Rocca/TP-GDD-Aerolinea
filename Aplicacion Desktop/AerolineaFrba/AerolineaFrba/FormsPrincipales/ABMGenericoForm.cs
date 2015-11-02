@@ -36,7 +36,7 @@ namespace AerolineaFrba.FormsPrincipales
         private void btModificar_Click(object sender, EventArgs e)
         {
             modificar.Show();
-
+            
         }
 
         private void btEliminar_Click(object sender, EventArgs e)

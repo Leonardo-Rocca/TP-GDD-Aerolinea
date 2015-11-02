@@ -101,19 +101,19 @@ namespace AerolineaFrba.Generacion_Viaje
             {
                 if (sqlEx.Message.StartsWith("La fecha de salida ingresada no esta disponible"))
                 {
-                    MessageBox.Show("La fecha de salida ingresada no esta disponible. Intentelo en otro momento", "Generar Viaje", MessageBoxButtons.OKCancel);
+                    MessageBox.Show("La fecha de salida ingresada no esta disponible. Intentelo en otro momento", "Generar Viaje", MessageBoxButtons.OK);
                     return;
                 }
               
                 if (sqlEx.Message.StartsWith("La ruta seleccionada no comienza en la ciudad de la aeronave"))
                 {
-                    MessageBox.Show("La ruta seleccionada no comienza en la ciudad de la aeronave", "Generar Viaje", MessageBoxButtons.OKCancel);
+                    MessageBox.Show("La ruta seleccionada no comienza en la ciudad de la aeronave", "Generar Viaje", MessageBoxButtons.OK);
                     return;
                 }
                    
                  if (sqlEx.Message.StartsWith("El servicio de la aeronave no es posible para esta ruta"))
                 {
-                    MessageBox.Show("El servicio de la aeronave no es posible para esta ruta", "Generar Viaje", MessageBoxButtons.OKCancel);
+                    MessageBox.Show("El servicio de la aeronave no es posible para esta ruta", "Generar Viaje", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -122,7 +122,7 @@ namespace AerolineaFrba.Generacion_Viaje
 
             MessageBox.Show("Viaje generado", "Generar Viaje", MessageBoxButtons.OK);
             iniciar();
-            this.Close();
+            this.Hide();
         
         }
 

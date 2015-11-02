@@ -19,11 +19,7 @@ namespace AerolineaFrba.Abm_Rol
 
         public CrearRolForm()
         {  
-            InitializeComponent();/*
-            chkListaFuncionalidades.Items.Insert(0,"Dar de baja Usuarios");
-            chkListaFuncionalidades.Items.Insert(1, "Dar de alta Usuarios");
-            chkListaFuncionalidades.SetItemCheckState(3, CheckState.Checked);*/
-
+            InitializeComponent();
             chkHabilitado.Checked = true;
             cargarChkFuncionalidades();
 
@@ -31,11 +27,18 @@ namespace AerolineaFrba.Abm_Rol
    
         private void cargarChkFuncionalidades()
         {
-             chkListaFuncionalidades.Items.Insert(0, new Funcionalidades(0,"ABM de ROL",this));
-             chkListaFuncionalidades.Items.Insert(1, new Funcionalidades(3, "ABM de Ciudad", this));
-             chkListaFuncionalidades.Items.Insert(2, new Funcionalidades(8, "Generar viaje", this));
+             string comando = "select * from dbas.funcionalidades";
+             DataTable dt = (new ConexionSQL()).cargarTablaSQL(comando);
+
+             chkListaFuncionalidades.Items.Clear();
+            for (int i = 0; i <= (dt.Rows.Count - 1); i++)
+             {
+                 int idf = Convert.ToInt32(dt.Rows[i][0]);
+                 chkListaFuncionalidades.Items.Insert(i, new Funcionalidades(idf, dt.Rows[i][1].ToString(), this));
+              }
+
         }
-       
+
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 

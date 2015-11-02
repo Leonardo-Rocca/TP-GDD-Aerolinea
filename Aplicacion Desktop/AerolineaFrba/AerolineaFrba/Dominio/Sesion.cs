@@ -25,7 +25,7 @@ namespace AerolineaFrba.Dominio
            //("chequear_login", username, password);
        
           //  Sesion.Usuario = new Usuario(Convert.ToInt32(tablaUsuario.Rows[0]["id_usuario"]), tablaUsuario.Rows[0]["username"].ToString());
-            if (rol == "Administrador")
+            if (rol == "Administrador General")
             {
           
                  string comando = "execute dbas.loginUsuario '"+ username +"', '" +password+ "'"; 
@@ -39,6 +39,8 @@ namespace AerolineaFrba.Dominio
     
             }
             //OBTENER FUNCDISP SEGUN EL ROL
+            string qfuncion = "select * from  DBAS.obtenerFuncionalidadesAsociadas ('" + rol + "')";
+            DataTable dtfunciones =  (new ConexionSQL()).cargarTablaSQL(qfuncion);
 
                 funcionalidadesDisponibles = new List<Funcionalidades>();
             //--Creo y Agrego ABM ROL

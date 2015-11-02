@@ -16,14 +16,39 @@ namespace AerolineaFrba.Abm_Rol
         {
             InitializeComponent();
             txtNombreRol.Text = rol;
-            chkListaFuncionalidades.Items.Insert(0, "Preparar el cafe");
-            chkListaFuncionalidades.Items.Insert(1, "codear Marta");
-           chkListaFuncionalidades.Items.Insert(2, "Hacer lo logs");
-            chkListaFuncionalidades.Items.Insert(3, "Usuarios");
-            chkListaFuncionalidades.SetItemCheckState(3, CheckState.Checked);
-            //chkHabilitado.AutoCheck;//(CheckState.Checked);
+            cargarChkFuncionalidades();
+            cargarFuncionalidades(rol);
+        }
+
+        public void cargarFuncionalidades(string rol){
+            string qfuncion = "select descripcion from  DBAS.obtenerFuncionalidadesAsociadas ('" + rol + "')";
+            DataTable dtfunciones =  (new ConexionSQL()).cargarTablaSQL(qfuncion);
+
+            List<string> servicios = new List<string>();
+
+            //--cargo mi lista
+            for (int i = 0; i <= (dtfunciones.Rows.Count - 1); i++)
+            {
+                servicios.Add(dtfunciones.Rows[i][0].ToString());
+            }
+
+            //--Comparo con loscheckElements
+            for (int i = 0; i <= (chkListaFuncionalidades.Items.Count - 1); i++)
+            {
+                if (servicios.Contains(chkListaFuncionalidades.Items[i].ToString()))
+                {
+                    chkListaFuncionalidades.SetItemCheckState(i,CheckState.Checked);
+                 }
+                  else
+                  {
+                     chkListaFuncionalidades.SetItemCheckState(i, CheckState.Unchecked);
+                  }
+              
+            }
+
 
         }
+
 
         private void buttonAgregar_Click(object sender, EventArgs e)
         {
@@ -62,6 +87,20 @@ namespace AerolineaFrba.Abm_Rol
         {
             //cancelar   this.Close();
             this.Hide();
+        }
+
+        private void cargarChkFuncionalidades()
+        {
+            string comando = "select * from dbas.funcionalidades";
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL(comando);
+
+            chkListaFuncionalidades.Items.Clear();
+            for (int i = 0; i <= (dt.Rows.Count - 1); i++)
+            {
+                int idf = Convert.ToInt32(dt.Rows[i][0]);
+                chkListaFuncionalidades.Items.Insert(i, dt.Rows[i][1].ToString());
+            }
+
         }
     }
 }

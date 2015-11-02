@@ -125,6 +125,15 @@ namespace AerolineaFrba.Abm_Ruta
 
         private void modificarRuta()
         {
+            foreach (string service in chkListaServicios.CheckedItems)
+            {
+                string comando = "UPDATE DBAS.caracteristicasRutas  SET ciudad_Origen = '" + txtCOrigen.Text + "', ciudad_Destino = '"+txtCDestino.Text+"', precio_base_por_pasaje = "+Convert.ToDouble(txtPrecioPasaje.Text).ToString() +", precio_base_por_KG = "+txtPregiokg.Text+", tipo_servicio = '"+service+"'"+
+            " WHERE codigo_ruta = " + txtCodigo ;
+        //        (new ConexionSQL()).ejecutarComandoSQL(comando); --rompe
+
+            }
+
+           //     MessageBox.Show("Ruta Modificada (posta)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             
         }
 
@@ -174,7 +183,7 @@ namespace AerolineaFrba.Abm_Ruta
 
               for (int i = 0; i <= (chkListaServicios.Items.Count - 1); i++) {
       
-                  if (r.servicios.Contains(chkListaServicios.Items[i].ToString()))//.GetItemText(i).ToString()) )
+                  if (r.servicios.Contains(chkListaServicios.Items[i].ToString()))
                {
                       chkListaServicios.SetItemCheckState(i, CheckState.Checked);
                }

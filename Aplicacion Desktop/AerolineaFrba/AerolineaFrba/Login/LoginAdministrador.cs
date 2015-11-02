@@ -45,7 +45,7 @@ namespace AerolineaFrba.Login
                // Sesion s = new Sesion();
                       try{
                 //          MessageBox.Show("contraseña:" + getSha256(password));
-                Sesion.iniciar(username, getSha256(password),"Administrador");
+                Sesion.iniciar(username, getSha256(password),"Administrador General");
 
                 Redireccionador redirec = new Redireccionador();
                 redirec.setFunciones(Sesion.getFuncionalidadesDisponibles);

@@ -39,7 +39,7 @@ namespace AerolineaFrba.FormsPrincipales
         {
             PantallaBienvenidaForm p = new PantallaBienvenidaForm();
             p.Show();
-            this.Hide();
+            this.Close();// this.Hide();
         }
     }
 }

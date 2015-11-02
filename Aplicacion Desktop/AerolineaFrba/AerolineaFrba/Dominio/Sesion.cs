@@ -40,6 +40,7 @@ namespace AerolineaFrba.Dominio
             }
             //OBTENER FUNCDISP SEGUN EL ROL
 
+                funcionalidadesDisponibles = new List<Funcionalidades>();
             //--Creo y Agrego ABM ROL
              funcionalidadesDisponibles.Add(new Funcionalidades(99, "ABM ROL",
                  new ABMGenericoForm("ABM Rol", new CrearRolForm(), new ModificarForm("Modificar Rol", "Modificar", 1), new ModificarForm("Eliminar Rol", "Eliminar", 2))));

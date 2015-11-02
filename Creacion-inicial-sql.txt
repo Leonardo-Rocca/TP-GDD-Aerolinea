@@ -1632,7 +1632,7 @@ BEGIN
 
 	SET @millas_vigentes = DBAS.millasVigentes(@dni_persona)
 
-	SET @valor_unitario_en_millas= SELECT valor_en_millas FROM DBAS.productos tablaProductos WHERE tablaProductos.id_producto = @id_producto
+	SET @valor_unitario_en_millas = (SELECT valor_en_milas FROM DBAS.productos WHERE id_producto = @id_producto)
 
 	SET @valor_total_en_millas = @valor_unitario_en_millas * @cantidadACanjear
 

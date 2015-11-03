@@ -1375,6 +1375,28 @@ BEGIN
 END;
 GO
 
+
+CREATE PROCEDURE DBAS.modificarAeronave(@matricula_aeronave varchar(100), @ID_fabricante bigint, @ID_servicio bigint, @matricula_aeronave_nueva varchar(100), @modelo varchar(100), @KG_disponible float(24), @butacas_pasillo bigint, @butacas_ventana bigint, @piso tinyint)
+AS
+BEGIN
+	DECLARE @mensaje_error varchar(100)
+
+	IF EXISTS(SELECT * FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave)
+	BEGIN
+		SET @mensaje_error = 'La aeronave fue usada, no puede modificarla'
+		RAISERROR(@mensaje_error, 12, 1)
+	END
+	ELSE
+	BEGIN
+		DELETE DBAS.butacas WHERE matricula_aeronave = @matricula_aeronave
+		DELETE DBAS.aeronaves WHERE matricula_aeronave = @matricula_aeronave
+
+		EXECUTE DBAS.altaAeronave @ID_fabricante, @ID_servicio, @matricula_aeronave_nueva, @modelo, @KG_disponible, @butacas_pasillo, @butacas_ventana, @piso
+	END
+END;
+GO
+
+
 /* -- Rutas -- */
 
 CREATE VIEW DBAS.caracteristicasRutas AS
@@ -1487,7 +1509,7 @@ BEGIN
 	
 	IF EXISTS(SELECT * FROM DBAS.viajes WHERE codigo_ruta = @codigo_ruta AND fecha_salida > GETDATE())
 	BEGIN
-		SET @mensaje_error = 'Hay viajes viajes futuros por esta ruta'
+		SET @mensaje_error = 'Hay viajes futuros por esta ruta'
 		RAISERROR(@mensaje_error, 12, 1)
 	END
 	ELSE

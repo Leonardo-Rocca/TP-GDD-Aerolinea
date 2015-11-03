@@ -19,7 +19,7 @@ namespace AerolineaFrba.Dominio
     public static class Sesion
     {
         public static List<Funcionalidades> funcionalidadesDisponibles = new List<Funcionalidades>();
-        public static Usuario Usuario =new Usuario("a","p","r",9999);
+        public static Usuario Usuario;
 
         public static void iniciar(string username, string password,string rol)
         {
@@ -33,6 +33,8 @@ namespace AerolineaFrba.Dominio
                  DataTable dt =  (new ConexionSQL()).cargarTablaSQL(comando);
                
             }
+
+            Usuario= new Usuario("a","p",rol,9999);
 
             //OBTENER FUNCDISP SEGUN EL ROL
             string qfuncion = "select * from  DBAS.obtenerFuncionalidadesAsociadas ('" + rol + "')";

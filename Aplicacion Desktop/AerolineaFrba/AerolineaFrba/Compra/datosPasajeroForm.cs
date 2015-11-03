@@ -43,6 +43,8 @@ namespace AerolineaFrba.Compra
 
         private void btCancel_Click(object sender, EventArgs e)
         {
+            compraForm.Show();
+            Compra.inicializar();
             this.Close();
         }
 

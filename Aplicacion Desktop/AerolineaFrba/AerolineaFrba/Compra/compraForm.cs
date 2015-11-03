@@ -73,15 +73,16 @@ namespace AerolineaFrba.Compra
 
         private void buttonGuardar_Click(object sender, EventArgs e)
         {
-            if (txtEncomienda.Text == "" && cmbPasaje.Items.Count == 0) return;
+            if ((txtEncomienda.Text == "" || txtEncomienda.Text == "0") && cmbPasaje.Items.Count == 0) return;
 
             Compra.compra = this;
-            if(Sesion.Usuario.nombreRol=="Administrador General")
+            if(Sesion.Usuario.nombreRol=="Administrador General"){
                 if (MessageBox.Show("¿Desea abonar en efectivo ?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     Compra.pagaEnEfectivo = true;
 
-                };
+                }
+            }
             datosPasajeroForm compradorF = new datosPasajeroForm(this, 0);
             compradorF.Show();
             this.Hide();
@@ -90,6 +91,7 @@ namespace AerolineaFrba.Compra
 
         private void txtEncomienda_TextChanged(object sender, EventArgs e)
         {
+            if(txtEncomienda.Text!="")
             kgEncomiendas = Convert.ToInt32(txtEncomienda.Text);
         }
     }

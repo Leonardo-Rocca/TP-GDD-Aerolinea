@@ -19,7 +19,7 @@ namespace AerolineaFrba.Compra
         }
         internal static void realizarCompra()
         {
-            throw new NotImplementedException();
+            //TO-DO 
         }
 
 

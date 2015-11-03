@@ -49,6 +49,7 @@
             this.dgvbutaca.Name = "dgvbutaca";
             this.dgvbutaca.Size = new System.Drawing.Size(441, 163);
             this.dgvbutaca.TabIndex = 42;
+            this.dgvbutaca.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvbutaca_CellContentClick);
             // 
             // lbTitulo
             // 

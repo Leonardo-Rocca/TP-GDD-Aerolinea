@@ -16,6 +16,7 @@ namespace AerolineaFrba.Compra
     {
         private compraForm compraForm;
         private int tipo;//1 pasaje, 2encomienda
+        Butaca butacaPasaje;
 
         public datosPasajeroForm()
         {
@@ -107,8 +108,16 @@ namespace AerolineaFrba.Compra
         private void btButaca_Click(object sender, EventArgs e)
         {
             ListadoButacas list = new ListadoButacas(compraForm.viaje);
+            list.anterior = this;
             list.Show();
+            this.Hide();
         }
 
+
+        public void cargarButaca(Butaca seleccionada)
+        {
+            txtButaca.Text = seleccionada.numero_butaca;
+            butacaPasaje = seleccionada;
+        }
     }
 }

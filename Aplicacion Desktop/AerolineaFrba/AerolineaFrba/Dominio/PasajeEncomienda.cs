@@ -14,7 +14,7 @@ namespace AerolineaFrba.Dominio
         public string tel;
         public string mail;
         public string fecha;
-        public string butacaKg;
+        public string butacaKg="";
 
        public PasajeEncomienda(string p1, string p2, string dni, string tel, string p3, string p4, string butacaKg)
        {

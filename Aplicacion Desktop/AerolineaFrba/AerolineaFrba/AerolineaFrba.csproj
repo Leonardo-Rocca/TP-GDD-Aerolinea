@@ -165,6 +165,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="BDComun.cs" />
+    <Compile Include="Compra\Compra.cs" />
     <Compile Include="Compra\compraForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -177,11 +178,23 @@
     <Compile Include="Compra\compraPasajeForm.Designer.cs">
       <DependentUpon>compraPasajeForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Compra\datosCompradorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Compra\datosCompradorForm.Designer.cs">
+      <DependentUpon>datosCompradorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Compra\datosPasajeroForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Compra\datosPasajeroForm.Designer.cs">
       <DependentUpon>datosPasajeroForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Compra\FormaDePago.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Compra\FormaDePago.Designer.cs">
+      <DependentUpon>FormaDePago.cs</DependentUpon>
     </Compile>
     <Compile Include="Compra\ListadoButacas.cs">
       <SubType>Form</SubType>
@@ -367,8 +380,14 @@
     <EmbeddedResource Include="Compra\compraPasajeForm.resx">
       <DependentUpon>compraPasajeForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Compra\datosCompradorForm.resx">
+      <DependentUpon>datosCompradorForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Compra\datosPasajeroForm.resx">
       <DependentUpon>datosPasajeroForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Compra\FormaDePago.resx">
+      <DependentUpon>FormaDePago.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Compra\ListadoButacas.resx">
       <DependentUpon>ListadoButacas.cs</DependentUpon>

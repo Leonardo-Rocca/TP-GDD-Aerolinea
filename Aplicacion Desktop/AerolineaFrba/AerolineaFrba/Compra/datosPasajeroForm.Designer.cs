@@ -38,7 +38,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txtDni = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
+            this.lbIngrese = new System.Windows.Forms.Label();
             this.txtPhone = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.txtMail = new System.Windows.Forms.TextBox();
@@ -153,15 +153,15 @@
             this.label2.TabIndex = 60;
             this.label2.Text = "DNI:";
             // 
-            // label3
+            // lbIngrese
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(75, 24);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(140, 20);
-            this.label3.TabIndex = 62;
-            this.label3.Text = "Ingrese sus datos:";
+            this.lbIngrese.AutoSize = true;
+            this.lbIngrese.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbIngrese.Location = new System.Drawing.Point(75, 24);
+            this.lbIngrese.Name = "lbIngrese";
+            this.lbIngrese.Size = new System.Drawing.Size(140, 20);
+            this.lbIngrese.TabIndex = 62;
+            this.lbIngrese.Text = "Ingrese sus datos:";
             // 
             // txtPhone
             // 
@@ -395,7 +395,7 @@
             this.Controls.Add(this.label5);
             this.Controls.Add(this.txtPhone);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
+            this.Controls.Add(this.lbIngrese);
             this.Controls.Add(this.txtDni);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtApellido);
@@ -425,7 +425,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtDni;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lbIngrese;
         private System.Windows.Forms.TextBox txtPhone;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtMail;

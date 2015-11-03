@@ -100,3 +100,5 @@ C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\Aerolinea
 C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Compra.ListadoButacas.resources
 C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Top.DestinosConMasPasajesComprados.resources
 C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Top.DiscriminadorTop5.resources
+C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Compra.datosCompradorForm.resources
+C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Compra.FormaDePago.resources

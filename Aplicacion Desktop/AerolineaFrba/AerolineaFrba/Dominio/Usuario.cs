@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace AerolineaFrba.Dominio
 {
-    class Usuario
+   public class Usuario
     {
         int id;
         private string nombre;
         private string password;
-        private string nombreRol;
-        int rolId;
+        public string nombreRol;
+        public int rolId;
 
         public Usuario(string name,string pass ,string nRol,int rid)
         {

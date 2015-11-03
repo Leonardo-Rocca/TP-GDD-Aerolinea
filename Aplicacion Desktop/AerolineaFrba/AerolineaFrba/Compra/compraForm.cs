@@ -14,13 +14,15 @@ namespace AerolineaFrba.Compra
     public partial class compraForm : Form
     {
        public Viaje viaje;
-        List<PasajeEncomienda> pasajes = new List<PasajeEncomienda>();
-        PasajeEncomienda encomiendas;
+       public List<PasajeEncomienda> pasajes = new List<PasajeEncomienda>();
+       public PasajeEncomienda encomiendas;
+       public int kgEncomiendas;
 
         public compraForm()
         {
             InitializeComponent();
             inicializar();
+            btEncomienda.Visible = false;
             viaje = new Viaje();
             viaje.matriculaAeronave = "BZD-177";
         }
@@ -28,6 +30,7 @@ namespace AerolineaFrba.Compra
         {
             InitializeComponent();
             viaje = v;
+            btEncomienda.Visible = false;
             inicializar();
         }
 
@@ -70,7 +73,24 @@ namespace AerolineaFrba.Compra
 
         private void buttonGuardar_Click(object sender, EventArgs e)
         {
+            if (txtEncomienda.Text == "" && cmbPasaje.Items.Count == 0) return;
 
+            Compra.compra = this;
+            if(Sesion.Usuario.nombreRol=="Administrador General")
+                if (MessageBox.Show("¿Desea abonar en efectivo ?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    Compra.pagaEnEfectivo = true;
+
+                };
+            datosPasajeroForm compradorF = new datosPasajeroForm(this, 0);
+            compradorF.Show();
+            this.Hide();
+
+        }
+
+        private void txtEncomienda_TextChanged(object sender, EventArgs e)
+        {
+            kgEncomiendas = Convert.ToInt32(txtEncomienda.Text);
         }
     }
 }

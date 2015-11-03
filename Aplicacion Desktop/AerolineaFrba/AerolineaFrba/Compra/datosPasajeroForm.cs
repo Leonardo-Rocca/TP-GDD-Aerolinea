@@ -15,7 +15,7 @@ namespace AerolineaFrba.Compra
     public partial class datosPasajeroForm : Form
     {
         private compraForm compraForm;
-        private int tipo;//1 pasaje, 2encomienda
+        private int tipo;//1 pasaje, 2encomienda  //0persona
         Butaca butacaPasaje;
 
         public datosPasajeroForm()
@@ -28,11 +28,13 @@ namespace AerolineaFrba.Compra
             InitializeComponent();
             this.compraForm = compraForm;
             this.tipo = tipe;
-            if(tipe==1){
+            if(tipe==1||tipe==0){
                 txtKg.Visible=false;
                 lbkasterix.Visible=false;
                 lbKG.Visible=false;
-            } else{
+            }
+            if (tipe == 2 || tipe == 0)
+            {
                 lbButaca.Visible=false;
                 txtButaca.Visible=false;
                 btButaca.Visible=false;
@@ -53,9 +55,23 @@ namespace AerolineaFrba.Compra
             if (tipo == 2) butacaKg = txtKg.Text;
             PasajeEncomienda pasEn = new PasajeEncomienda(txtnombre.Text,txtApellido.Text,dni,tel,txtMail.Text,dateTimePickerFnac.Text,butacaKg);
 
+            if (tipo == 0)
+            {
+                if (Compra.pagaEnEfectivo) {
+                    Compra.comprador = pasEn;
+                    Compra.realizarCompra(); }
+                else{
+                    datosCompradorForm tarjeta = new datosCompradorForm();
+                    tarjeta.Show();
+                    compraForm.Hide();
+                    this.Close();
+                    }
+                return;
+            }
             if (tipo == 1){
                 compraForm.cargarPasaje(pasEn);
-            }else{
+            }
+            if (tipo == 2){
                 compraForm.cargarEncomienda(pasEn);
             }
             compraForm.Show();

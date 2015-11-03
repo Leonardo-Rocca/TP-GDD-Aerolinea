@@ -19,7 +19,7 @@ namespace AerolineaFrba.Dominio
     public static class Sesion
     {
         public static List<Funcionalidades> funcionalidadesDisponibles = new List<Funcionalidades>();
-        private static Usuario Usuario =new Usuario("a","p","r",9999);
+        public static Usuario Usuario =new Usuario("a","p","r",9999);
 
         public static void iniciar(string username, string password,string rol)
         {

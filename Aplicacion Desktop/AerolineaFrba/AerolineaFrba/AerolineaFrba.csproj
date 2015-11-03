@@ -195,12 +195,14 @@
     <Compile Include="Devolucion\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dominio\Butaca.cs" />
     <Compile Include="Dominio\Funcionalidades.cs" />
     <Compile Include="Dominio\navegacion.cs" />
     <Compile Include="Dominio\PasajeEncomienda.cs" />
     <Compile Include="Dominio\Ruta.cs" />
     <Compile Include="Dominio\Sesion.cs" />
     <Compile Include="Dominio\Usuario.cs" />
+    <Compile Include="Dominio\Viaje.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

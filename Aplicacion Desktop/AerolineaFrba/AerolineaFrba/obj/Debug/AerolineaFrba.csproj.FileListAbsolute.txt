@@ -95,3 +95,5 @@ C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\Aero
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Abm_Aeronave.SeleccionarCualReemplazar.resources
 C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Abm_Aeronave.SeleccionarCualReemplazar.resources
 C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.FormsPrincipales._Viaje.resources
+C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Top5.DestinosConMasPasajesComprados.resources
+C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Top5.DiscriminadorTop5.resources

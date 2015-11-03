@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using AerolineaFrba.FormsPrincipales;
+using AerolineaFrba.Dominio;
 namespace AerolineaFrba.Abm_Rol
 {
     public partial class ModificarForm : FormGenerico
@@ -32,10 +33,14 @@ namespace AerolineaFrba.Abm_Rol
             label1.Text = nombre;
             tipoDeForm = tipo;
             Inicializar();
-
+            if(tipo==1){
+                navegacion.modifRol=this;
+            }else {
+                navegacion.eliminarRol = this;
+            }
         }
 
-        private void Inicializar()
+        public void Inicializar()
         {
             DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct nombre_rol FROM DBAS.roles");
             comboBoxRol.DataSource = dt.DefaultView;
@@ -67,6 +72,7 @@ namespace AerolineaFrba.Abm_Rol
                 }
                 //dar baja logica
                 MessageBox.Show("Rol eliminado (dammy)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                actualizarFormsRoles();
             }
             this.Hide(); //this.Close();  
          }
@@ -87,5 +93,18 @@ namespace AerolineaFrba.Abm_Rol
         {
             comboBoxRol.Text = nombreRolDesdeListado;
         }
+
+        private void ModificarForm_Load(object sender, EventArgs e)
+        {
+            Inicializar();
+        }
+        private static void actualizarFormsRoles()
+        {
+            ModificarForm m = (ModificarForm)navegacion.modifRol;
+            m.Inicializar();
+            ModificarForm el = (ModificarForm)navegacion.eliminarRol;
+            el.Inicializar();
+        }
+
     }
 }

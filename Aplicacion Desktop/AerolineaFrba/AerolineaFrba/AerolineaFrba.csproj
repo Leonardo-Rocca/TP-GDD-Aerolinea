@@ -197,6 +197,7 @@
     </Compile>
     <Compile Include="Dominio\Funcionalidades.cs" />
     <Compile Include="Dominio\navegacion.cs" />
+    <Compile Include="Dominio\PasajeEncomienda.cs" />
     <Compile Include="Dominio\Ruta.cs" />
     <Compile Include="Dominio\Sesion.cs" />
     <Compile Include="Dominio\Usuario.cs" />

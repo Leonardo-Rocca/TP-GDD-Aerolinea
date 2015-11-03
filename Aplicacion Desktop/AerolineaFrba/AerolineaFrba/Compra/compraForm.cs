@@ -21,6 +21,8 @@ namespace AerolineaFrba.Compra
         {
             InitializeComponent();
             inicializar();
+            viaje = new Viaje();
+            viaje.matriculaAeronave = "BZD-177";
         }
         public compraForm(Viaje v)
         {

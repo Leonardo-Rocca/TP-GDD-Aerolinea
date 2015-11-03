@@ -81,7 +81,7 @@ namespace AerolineaFrba.Compra
         }
 
         private void txtDni_TextChanged(object sender, EventArgs e)
-        {//VERIFICAR SOLO NUMEROS
+        {     //VERIFICAR SOLO NUMEROS                              TO-DO
             
            dni = txtDni.Text;
            string query = "select* from dbas.personas WHERE dni_persona ="+dni;
@@ -91,7 +91,7 @@ namespace AerolineaFrba.Compra
             txtApellido.Text = dt.Rows[0][3].ToString();
             txtDireccion.Text = dt.Rows[0][4].ToString();
             txtPhone.Text = dt.Rows[0][5].ToString();
-    //        dateTimePickerFnac.Text = dt.Rows[0][6].ToString(); ---rompe
+    //        dateTimePickerFnac.Text = dt.Rows[0][6].ToString(); ---rompe    TO-DO
 
         }
 
@@ -103,5 +103,12 @@ namespace AerolineaFrba.Compra
         }
 
         public string tel { get; set; }
+
+        private void btButaca_Click(object sender, EventArgs e)
+        {
+            ListadoButacas list = new ListadoButacas(compraForm.viaje);
+            list.Show();
+        }
+
     }
 }

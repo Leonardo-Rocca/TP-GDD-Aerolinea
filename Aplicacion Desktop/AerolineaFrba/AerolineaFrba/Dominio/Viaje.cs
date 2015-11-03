@@ -8,5 +8,6 @@ namespace AerolineaFrba.Dominio
 {
     public class Viaje
     {
+        public string matriculaAeronave { get; set; }
     }
 }

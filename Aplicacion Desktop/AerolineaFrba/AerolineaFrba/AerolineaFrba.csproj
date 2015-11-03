@@ -183,18 +183,32 @@
     <Compile Include="Compra\datosPasajeroForm.Designer.cs">
       <DependentUpon>datosPasajeroForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Compra\ListadoButacas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Compra\ListadoButacas.Designer.cs">
+      <DependentUpon>ListadoButacas.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consulta Millas\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Consulta Millas\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Top\DestinosConMasPasajesComprados.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Top\DestinosConMasPasajesComprados.Designer.cs" />
     <Compile Include="Devolucion\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Devolucion\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Top\DiscriminadorTop5.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Top\DiscriminadorTop5.Designer.cs" />
     <Compile Include="Dominio\Butaca.cs" />
     <Compile Include="Dominio\Funcionalidades.cs" />
     <Compile Include="Dominio\navegacion.cs" />
@@ -289,6 +303,7 @@
     <Compile Include="Registro Llegada Destino\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utils\CompletadorDeTablas.cs" />
     <Compile Include="Utils\ConexionSQL.cs" />
     <EmbeddedResource Include="Abm Aeronave\AltaAeronave.resx">
       <DependentUpon>AltaAeronave.cs</DependentUpon>
@@ -355,6 +370,11 @@
     <EmbeddedResource Include="Compra\datosPasajeroForm.resx">
       <DependentUpon>datosPasajeroForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Compra\ListadoButacas.resx">
+      <DependentUpon>ListadoButacas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Top\DestinosConMasPasajesComprados.resx" />
+    <EmbeddedResource Include="Top\DiscriminadorTop5.resx" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

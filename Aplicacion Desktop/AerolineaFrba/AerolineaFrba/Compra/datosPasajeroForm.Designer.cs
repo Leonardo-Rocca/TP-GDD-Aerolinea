@@ -348,6 +348,7 @@
             this.btButaca.TabIndex = 82;
             this.btButaca.Text = "Seleccionar";
             this.btButaca.UseVisualStyleBackColor = true;
+            this.btButaca.Click += new System.EventHandler(this.btButaca_Click);
             // 
             // txtDireccion
             // 

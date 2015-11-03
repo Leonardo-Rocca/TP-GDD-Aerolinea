@@ -34,11 +34,6 @@ namespace AerolineaFrba.Dominio
                
             }
 
-            if (username == "" && password == "") //---> es usuario
-            {
-              //TO-DO
-    
-            }
             //OBTENER FUNCDISP SEGUN EL ROL
             string qfuncion = "select * from  DBAS.obtenerFuncionalidadesAsociadas ('" + rol + "')";
             DataTable dtfunciones =  (new ConexionSQL()).cargarTablaSQL(qfuncion);
@@ -60,8 +55,7 @@ namespace AerolineaFrba.Dominio
              funcionalidadesDisponibles.Add(new Funcionalidades(99, "Generar Viaje",
              new Generar_Viaje()));
 
-           //  funcionalidadesDisponibles.Add(new Funcionalidades(99, "Listado Estadistico",
-           //  new Top5.DiscriminadorTop5()));
+           //  funcionalidadesDisponibles.Add(new Funcionalidades(99, "Listado Estadistico",new Top5.DiscriminadorTop5()));
 
 
             funcionalidadesDisponibles.Add(new Funcionalidades(99, "c1",new compraForm()));

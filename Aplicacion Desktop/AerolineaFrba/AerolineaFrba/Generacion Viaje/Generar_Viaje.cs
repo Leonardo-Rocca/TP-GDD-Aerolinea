@@ -158,6 +158,11 @@ namespace AerolineaFrba.Generacion_Viaje
 
             return true;
         }
+
+        private void dateFechaDesde_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
        
     }
 }

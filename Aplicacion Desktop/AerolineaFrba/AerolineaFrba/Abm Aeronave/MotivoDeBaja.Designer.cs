@@ -31,12 +31,10 @@
             this.checkBoxFueraDeServicio = new System.Windows.Forms.CheckBox();
             this.checkBoxBajaDefinitiva = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.monthCalendarFecha = new System.Windows.Forms.MonthCalendar();
-            this.buttonSeleccionar = new System.Windows.Forms.Button();
             this.labelFechaDeReinsercion = new System.Windows.Forms.Label();
-            this.textBoxFecha = new System.Windows.Forms.TextBox();
             this.buttonAceptar = new System.Windows.Forms.Button();
             this.buttonCancelar = new System.Windows.Forms.Button();
+            this.dateFecha = new System.Windows.Forms.DateTimePicker();
             this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -64,10 +62,8 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.monthCalendarFecha);
-            this.groupBox3.Controls.Add(this.buttonSeleccionar);
+            this.groupBox3.Controls.Add(this.dateFecha);
             this.groupBox3.Controls.Add(this.labelFechaDeReinsercion);
-            this.groupBox3.Controls.Add(this.textBoxFecha);
             this.groupBox3.Controls.Add(this.checkBoxBajaDefinitiva);
             this.groupBox3.Controls.Add(this.checkBoxFueraDeServicio);
             this.groupBox3.Location = new System.Drawing.Point(12, 12);
@@ -78,25 +74,6 @@
             this.groupBox3.Text = "Motivo de Baja";
             this.groupBox3.Enter += new System.EventHandler(this.groupBox3_Enter);
             // 
-            // monthCalendarFecha
-            // 
-            this.monthCalendarFecha.Location = new System.Drawing.Point(245, 15);
-            this.monthCalendarFecha.Name = "monthCalendarFecha";
-            this.monthCalendarFecha.TabIndex = 46;
-            this.monthCalendarFecha.Visible = false;
-            this.monthCalendarFecha.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.monthCalendarFecha_DateChanged);
-            // 
-            // buttonSeleccionar
-            // 
-            this.buttonSeleccionar.Location = new System.Drawing.Point(363, 32);
-            this.buttonSeleccionar.Name = "buttonSeleccionar";
-            this.buttonSeleccionar.Size = new System.Drawing.Size(109, 21);
-            this.buttonSeleccionar.TabIndex = 39;
-            this.buttonSeleccionar.Text = "Seleccionar";
-            this.buttonSeleccionar.UseVisualStyleBackColor = true;
-            this.buttonSeleccionar.Visible = false;
-            this.buttonSeleccionar.Click += new System.EventHandler(this.buttonSeleccionar_Click);
-            // 
             // labelFechaDeReinsercion
             // 
             this.labelFechaDeReinsercion.AutoSize = true;
@@ -106,14 +83,6 @@
             this.labelFechaDeReinsercion.TabIndex = 36;
             this.labelFechaDeReinsercion.Text = "Fecha de reinsercion:";
             this.labelFechaDeReinsercion.Visible = false;
-            // 
-            // textBoxFecha
-            // 
-            this.textBoxFecha.Location = new System.Drawing.Point(266, 32);
-            this.textBoxFecha.Name = "textBoxFecha";
-            this.textBoxFecha.Size = new System.Drawing.Size(91, 20);
-            this.textBoxFecha.TabIndex = 35;
-            this.textBoxFecha.Visible = false;
             // 
             // buttonAceptar
             // 
@@ -135,6 +104,13 @@
             this.buttonCancelar.UseVisualStyleBackColor = true;
             this.buttonCancelar.Click += new System.EventHandler(this.buttonCancelar_Click);
             // 
+            // dateFecha
+            // 
+            this.dateFecha.Location = new System.Drawing.Point(266, 32);
+            this.dateFecha.Name = "dateFecha";
+            this.dateFecha.Size = new System.Drawing.Size(196, 20);
+            this.dateFecha.TabIndex = 64;
+            // 
             // MotivoDeBaja
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -145,6 +121,7 @@
             this.Controls.Add(this.groupBox3);
             this.Name = "MotivoDeBaja";
             this.Text = "MotivoDeBaja";
+            this.Load += new System.EventHandler(this.MotivoDeBaja_Load);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
@@ -157,10 +134,8 @@
         private System.Windows.Forms.CheckBox checkBoxBajaDefinitiva;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Label labelFechaDeReinsercion;
-        private System.Windows.Forms.TextBox textBoxFecha;
-        private System.Windows.Forms.Button buttonSeleccionar;
         private System.Windows.Forms.Button buttonAceptar;
         private System.Windows.Forms.Button buttonCancelar;
-        private System.Windows.Forms.MonthCalendar monthCalendarFecha;
+        private System.Windows.Forms.DateTimePicker dateFecha;
     }
 }

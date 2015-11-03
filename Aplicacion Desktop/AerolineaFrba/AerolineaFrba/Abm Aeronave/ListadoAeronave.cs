@@ -313,6 +313,7 @@ namespace AerolineaFrba.Abm_Aeronave
             else
             {
                 modifAnterior.textBox1.Text = matricula;
+                modifAnterior.textBox1.ReadOnly = true;
                 modifAnterior.textBox2.Text = modelo;
                 modifAnterior.textBox3.Text = cantPisos;
                 modifAnterior.textBox4.Text = cantPasillo;

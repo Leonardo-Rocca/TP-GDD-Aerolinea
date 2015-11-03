@@ -140,6 +140,7 @@
             this.dateFechaDesde.Name = "dateFechaDesde";
             this.dateFechaDesde.Size = new System.Drawing.Size(250, 20);
             this.dateFechaDesde.TabIndex = 63;
+            this.dateFechaDesde.ValueChanged += new System.EventHandler(this.dateFechaDesde_ValueChanged);
             // 
             // dateFechaHasta
             // 

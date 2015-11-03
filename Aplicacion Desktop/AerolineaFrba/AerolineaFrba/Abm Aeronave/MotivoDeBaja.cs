@@ -23,13 +23,11 @@ namespace AerolineaFrba.Abm_Aeronave
 
         private void iniciar()
         {
-            textBoxFecha.Text = "";
             checkBoxFueraDeServicio.Checked = false;
             checkBoxBajaDefinitiva.Checked = false;
             labelFechaDeReinsercion.Visible = false;
-            textBoxFecha.Visible = false;
-            buttonSeleccionar.Visible = false;
-            monthCalendarFecha.Visible = false;
+            dateFecha.Visible = false;
+            
         }
 
         private void groupBox3_Enter(object sender, EventArgs e)
@@ -40,18 +38,13 @@ namespace AerolineaFrba.Abm_Aeronave
         private void buttonSeleccionar_Click(object sender, EventArgs e)
         {
             labelFechaDeReinsercion.Visible = false;
-            textBoxFecha.Visible = false;
-            buttonSeleccionar.Visible = false;
-            monthCalendarFecha.Visible = true;
+            dateFecha.Visible = false;
+      
         }
 
         private void monthCalendarFecha_DateChanged(object sender, DateRangeEventArgs e)
         {
-           textBoxFecha.Text = monthCalendarFecha.SelectionStart.ToString();
-           labelFechaDeReinsercion.Visible = true;
-           textBoxFecha.Visible = true;
-           buttonSeleccionar.Visible = true;
-           monthCalendarFecha.Visible = false;
+         
         }
 
         private void checkBoxFueraDeServicio_CheckedChanged(object sender, EventArgs e)
@@ -60,8 +53,7 @@ namespace AerolineaFrba.Abm_Aeronave
             {
                 checkBoxBajaDefinitiva.Checked = false;
                 labelFechaDeReinsercion.Visible = true;
-                textBoxFecha.Visible = true;
-                buttonSeleccionar.Visible = true;
+                dateFecha.Visible = true;
                 return;
             }
             if (!checkBoxBajaDefinitiva.Checked)
@@ -76,9 +68,8 @@ namespace AerolineaFrba.Abm_Aeronave
             {
                 checkBoxFueraDeServicio.Checked = false;
                 labelFechaDeReinsercion.Visible = false;
-                textBoxFecha.Visible = false;
-                buttonSeleccionar.Visible = false;
-                monthCalendarFecha.Visible = false;
+                dateFecha.Visible = false;
+               
             }
            if(!checkBoxFueraDeServicio.Checked){
                 checkBoxBajaDefinitiva.Checked = true;
@@ -101,9 +92,9 @@ namespace AerolineaFrba.Abm_Aeronave
                 return;
             }
             this.Hide();
-            if (checkBoxBajaDefinitiva.Checked) textBoxFecha.Text = monthCalendarFecha.TodayDate.ToString();
+            if (checkBoxBajaDefinitiva.Checked) dateFecha.Text = DateTime.Today.Date.ToString();
            // this.iniciar();
-            string fecha = DateTime.Parse(textBoxFecha.Text).ToString();
+            string fecha = DateTime.Parse(dateFecha.Text).ToString();
             string query = "execute dbas.bajaAeronave '" + fecha +"', '" + anterior.getMatricula() + "', " + this.motivo();            
             
             try
@@ -142,12 +133,17 @@ namespace AerolineaFrba.Abm_Aeronave
 
         private bool validaciones()
         {
-          
+
             if (checkBoxFueraDeServicio.Checked)
             {
-                if (textBoxFecha.TextLength != 0) return true;
-                MessageBox.Show("Falta especificar fecha de reinsercion", "Error en los datos", MessageBoxButtons.OK);
-                return false;
+                int ant1 = DateTime.Compare(DateTime.Parse(dateFecha.Text), DateTime.Now);
+                if (ant1 < 0)
+                {
+                    MessageBox.Show("La fecha de reinsercion debe ser posterior al dia de hoy", "Motivo de baja", MessageBoxButtons.OK);
+                    return false;
+                }
+
+                return true;
             }
 
             if (checkBoxBajaDefinitiva.Checked) return true;
@@ -173,8 +169,13 @@ namespace AerolineaFrba.Abm_Aeronave
         }
 
        public string getFecha(){
-           return DateTime.Parse(textBoxFecha.Text).ToString();
+           return DateTime.Parse(dateFecha.Text).ToString();
         }
+
+       private void MotivoDeBaja_Load(object sender, EventArgs e)
+       {
+
+       }
 
     }
 }

@@ -67,17 +67,19 @@ namespace AerolineaFrba.Abm_Aeronave
                 return false;
             }
 
-            if (txtMatricula.Text != "")
-            {
+            /*  if (txtMatricula.Text != "" && (txtMatricula.Text != datosTraidos.textBox1.Text))
+              {
 
-                DataTable dta = (new ConexionSQL()).cargarTablaSQL("select distinct matricula_aeronave FROM DBAS.aeronaves where matricula_aeronave like '" + txtMatricula.Text + "'");
-                if (dta.Rows.Count != 0)
-                {
-                    MessageBox.Show("El numero de matricula ya existe", "Matricula invalida", MessageBoxButtons.OK);
-                    return false;
-                }
+                 DataTable dta = (new ConexionSQL()).cargarTablaSQL("select distinct matricula_aeronave FROM DBAS.aeronaves where matricula_aeronave like '" + txtMatricula.Text+"'");
+                  if (dta.Rows.Count != 0)
+                  {
+                      MessageBox.Show("El numero de matricula ya existe", "Matricula invalida", MessageBoxButtons.OK);
+                      return false;
+                  }
+           
 
-            }
+              }
+                */
 
             int a = Convert.ToInt32(textButacasPasillo.Text);
             int b = Convert.ToInt32(textButacasVentanilla.Text);
@@ -109,6 +111,7 @@ namespace AerolineaFrba.Abm_Aeronave
 
         public void iniciar()
         {
+            txtMatricula.ReadOnly = false;
             txtMatricula.Text = "";
             txtModelo.Text = "";
             textPisos.Text = "";
@@ -144,6 +147,8 @@ namespace AerolineaFrba.Abm_Aeronave
                 }
 
             }
+            
+            
 
             int a = Convert.ToInt32(textButacasPasillo.Text);
             int b = Convert.ToInt32(textButacasVentanilla.Text);
@@ -206,6 +211,11 @@ namespace AerolineaFrba.Abm_Aeronave
         {
             this.iniciar();
             this.Hide();
+        }
+
+        private void txtMatricula_TextChanged(object sender, EventArgs e)
+        {
+            
         }
 
     }

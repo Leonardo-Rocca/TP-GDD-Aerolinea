@@ -10,11 +10,12 @@ using System.Windows.Forms;
 
 using AerolineaFrba.FormsPrincipales;
 using AerolineaFrba.Abm_Ciudad;
+using AerolineaFrba.Dominio;
 namespace AerolineaFrba.Compra
 {
-    public partial class compraPasajeForm : FormGenerico
+    public partial class SeleccionViajeForm : FormGenerico
     {
-        public compraPasajeForm()
+        public SeleccionViajeForm()
         {
             InitializeComponent();
             txtCityOrigen.ReadOnly = true;
@@ -79,8 +80,11 @@ namespace AerolineaFrba.Compra
 
         private void seleccionar(DataGridView dgvViaje)
         {
-            // (new compraForm()).Show();//mandar viaje
-            //inicializar
+            Viaje vdammy = new Viaje();
+            vdammy.matriculaAeronave = "BZD-177";
+             (new compraForm(vdammy)).Show();//mandar viaje
+             txtCityOrigen.Text = "";
+             txtDestino.Text = "";
             this.Hide();
         }
 

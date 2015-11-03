@@ -76,7 +76,6 @@ C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\Aero
 C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Abm_Ruta.crearRutaForm.resources
 C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Abm_Ruta.ModificarEliminarRuta.resources
 C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Compra.compraForm.resources
-C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Compra.compraPasajeForm.resources
 C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Compra.datosPasajeroForm.resources
 C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Form1.resources
 C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.FormsPrincipales.ABMGenericoForm.resources
@@ -101,4 +100,5 @@ C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\Aero
 C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Top.DestinosConMasPasajesComprados.resources
 C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Top.DiscriminadorTop5.resources
 C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Compra.datosCompradorForm.resources
-C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Compra.FormaDePago.resources
+C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Compra.SeleccionViajeForm.resources
+C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Consulta_Millas.ConsultarMillasForm.resources

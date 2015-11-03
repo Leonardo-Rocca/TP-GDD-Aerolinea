@@ -60,6 +60,7 @@
             this.btButaca = new System.Windows.Forms.Button();
             this.txtDireccion = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // butAceptar
@@ -317,6 +318,7 @@
             this.txtButaca.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtButaca.Location = new System.Drawing.Point(649, 274);
             this.txtButaca.Name = "txtButaca";
+            this.txtButaca.ReadOnly = true;
             this.txtButaca.Size = new System.Drawing.Size(129, 26);
             this.txtButaca.TabIndex = 80;
             // 
@@ -368,12 +370,23 @@
             this.label14.TabIndex = 83;
             this.label14.Text = "Direccion:";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(544, 106);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(80, 15);
+            this.label3.TabIndex = 85;
+            this.label3.Text = "Ej. 42440544";
+            // 
             // datosPasajeroForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.AppWorkspace;
             this.ClientSize = new System.Drawing.Size(989, 446);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.txtDireccion);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.btButaca);
@@ -447,5 +460,6 @@
         private System.Windows.Forms.Button btButaca;
         private System.Windows.Forms.TextBox txtDireccion;
         private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label3;
     }
 }

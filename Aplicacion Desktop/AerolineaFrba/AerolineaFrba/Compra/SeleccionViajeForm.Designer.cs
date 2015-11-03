@@ -1,6 +1,6 @@
 ﻿namespace AerolineaFrba.Compra
 {
-    partial class compraPasajeForm
+    partial class SeleccionViajeForm
     {
         /// <summary>
         /// Required designer variable.

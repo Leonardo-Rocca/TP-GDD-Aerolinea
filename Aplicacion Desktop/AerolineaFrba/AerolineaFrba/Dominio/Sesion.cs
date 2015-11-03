@@ -13,6 +13,7 @@ using AerolineaFrba.Abm_Ruta;
 using AerolineaFrba.Abm_Aeronave;
 using AerolineaFrba.Compra;
 using AerolineaFrba.Generacion_Viaje;
+using AerolineaFrba.Consulta_Millas;
 
 namespace AerolineaFrba.Dominio
 {
@@ -59,12 +60,10 @@ namespace AerolineaFrba.Dominio
 
            //  funcionalidadesDisponibles.Add(new Funcionalidades(99, "Listado Estadistico",new Top5.DiscriminadorTop5()));
 
+            funcionalidadesDisponibles.Add(new Funcionalidades(99, "Comprar Pasaje/Encomienda", new SeleccionViajeForm()));
 
-            funcionalidadesDisponibles.Add(new Funcionalidades(99, "c1",new compraForm()));
-            funcionalidadesDisponibles.Add(new Funcionalidades(99, "c2",new compraPasajeForm() ));
-            funcionalidadesDisponibles.Add(new Funcionalidades(99, "c3",new datosPasajeroForm()));
-
-
+            funcionalidadesDisponibles.Add(new Funcionalidades(99, "Consultar millas", new ConsultarMillasForm()));
+        
         }
 
         public static List<Funcionalidades> getFuncionalidadesDisponibles{

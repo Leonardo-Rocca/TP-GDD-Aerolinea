@@ -92,10 +92,15 @@ namespace AerolineaFrba.Abm_Rol
                 comando = comando + " '" + elemento.Descripcion + "',";
             }
             comando = comando + "'lalala' )";
-            MessageBox.Show(comando, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Question);
+        
             (new ConexionSQL()).ejecutarComandoSQL(comando);
 
+            actualizarFormsRoles();
 
+            if (chkHabilitado.Checked == true)
+                return;
+            string qhabilitacion = "UPDATE DBAS.roles SET habilitado_rol = 0 Where nombre_rol = '" + nombreRol + "'";
+            (new ConexionSQL()).ejecutarComandoSQL(qhabilitacion);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -137,5 +142,13 @@ namespace AerolineaFrba.Abm_Rol
         {
 
         }
+        private static void actualizarFormsRoles()
+        {
+            ModificarForm m = (ModificarForm)navegacion.modifRol;
+            m.Inicializar();
+            ModificarForm el = (ModificarForm)navegacion.eliminarRol;
+            el.Inicializar();
+        }
+
     }
 }

@@ -111,6 +111,7 @@
             this.Controls.Add(this.label1);
             this.Name = "ModificarForm";
             this.Text = "ModificarForm";
+            this.Load += new System.EventHandler(this.ModificarForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

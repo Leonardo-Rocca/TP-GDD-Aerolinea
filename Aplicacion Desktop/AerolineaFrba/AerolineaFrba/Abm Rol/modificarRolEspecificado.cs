@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using AerolineaFrba.Dominio;
+
 namespace AerolineaFrba.Abm_Rol
 {
     public partial class modificarRolEspecificado : Form
@@ -89,9 +91,19 @@ namespace AerolineaFrba.Abm_Rol
                 }
             }
             MessageBox.Show("Rol Modificado(dammy)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            actualizarFormsRoles();
+
             //this.Close();
             this.Hide();
             return;
+        }
+
+        private static void actualizarFormsRoles()
+        {
+            ModificarForm m = (ModificarForm)navegacion.modifRol;
+            m.Inicializar();
+            ModificarForm el = (ModificarForm)navegacion.eliminarRol;
+            el.Inicializar();
         }
 
         private void chkListaFuncionalidades_SelectedIndexChanged(object sender, EventArgs e)

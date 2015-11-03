@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.buttonGuardar = new System.Windows.Forms.Button();
+            this.btBuscar = new System.Windows.Forms.Button();
             this.btCancelar = new System.Windows.Forms.Button();
             this.txtCityOrigen = new System.Windows.Forms.TextBox();
             this.lbNombreOrigen = new System.Windows.Forms.Label();
@@ -39,22 +39,25 @@
             this.lbTitulo = new System.Windows.Forms.Label();
             this.btsDestino = new System.Windows.Forms.Button();
             this.btsOringen = new System.Windows.Forms.Button();
+            this.dgvViaje = new System.Windows.Forms.DataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvViaje)).BeginInit();
             this.SuspendLayout();
             // 
-            // buttonGuardar
+            // btBuscar
             // 
-            this.buttonGuardar.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonGuardar.Location = new System.Drawing.Point(440, 369);
-            this.buttonGuardar.Name = "buttonGuardar";
-            this.buttonGuardar.Size = new System.Drawing.Size(130, 58);
-            this.buttonGuardar.TabIndex = 14;
-            this.buttonGuardar.Text = "seleccionar";
-            this.buttonGuardar.UseVisualStyleBackColor = true;
+            this.btBuscar.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btBuscar.Location = new System.Drawing.Point(440, 380);
+            this.btBuscar.Name = "btBuscar";
+            this.btBuscar.Size = new System.Drawing.Size(130, 58);
+            this.btBuscar.TabIndex = 14;
+            this.btBuscar.Text = "Buscar";
+            this.btBuscar.UseVisualStyleBackColor = true;
+            this.btBuscar.Click += new System.EventHandler(this.buttonGuardar_Click);
             // 
             // btCancelar
             // 
             this.btCancelar.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btCancelar.Location = new System.Drawing.Point(86, 369);
+            this.btCancelar.Location = new System.Drawing.Point(86, 380);
             this.btCancelar.Name = "btCancelar";
             this.btCancelar.Size = new System.Drawing.Size(130, 58);
             this.btCancelar.TabIndex = 13;
@@ -147,11 +150,21 @@
             this.btsOringen.UseVisualStyleBackColor = true;
             this.btsOringen.Click += new System.EventHandler(this.btsOringen_Click);
             // 
+            // dgvViaje
+            // 
+            this.dgvViaje.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvViaje.Location = new System.Drawing.Point(26, 241);
+            this.dgvViaje.Name = "dgvViaje";
+            this.dgvViaje.Size = new System.Drawing.Size(605, 122);
+            this.dgvViaje.TabIndex = 41;
+            this.dgvViaje.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvViaje_CellContentClick);
+            // 
             // compraPasajeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(665, 456);
+            this.Controls.Add(this.dgvViaje);
             this.Controls.Add(this.btsDestino);
             this.Controls.Add(this.btsOringen);
             this.Controls.Add(this.lbTitulo);
@@ -159,12 +172,13 @@
             this.Controls.Add(this.dateTimePicker1);
             this.Controls.Add(this.txtDestino);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.buttonGuardar);
+            this.Controls.Add(this.btBuscar);
             this.Controls.Add(this.btCancelar);
             this.Controls.Add(this.txtCityOrigen);
             this.Controls.Add(this.lbNombreOrigen);
             this.Name = "compraPasajeForm";
             this.Text = "Form1";
+            ((System.ComponentModel.ISupportInitialize)(this.dgvViaje)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -172,7 +186,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button buttonGuardar;
+        private System.Windows.Forms.Button btBuscar;
         private System.Windows.Forms.Button btCancelar;
         private System.Windows.Forms.TextBox txtCityOrigen;
         private System.Windows.Forms.Label lbNombreOrigen;
@@ -183,5 +197,6 @@
         private System.Windows.Forms.Label lbTitulo;
         private System.Windows.Forms.Button btsDestino;
         private System.Windows.Forms.Button btsOringen;
+        private System.Windows.Forms.DataGridView dgvViaje;
     }
 }

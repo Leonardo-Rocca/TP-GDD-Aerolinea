@@ -11,6 +11,8 @@ namespace AerolineaFrba.Dominio
     {
         private static Form owner;
         private static Form auxiliarForm;
+        public static Form modifRol;
+        public static Form eliminarRol;
 
         public static  Form Owner
         {

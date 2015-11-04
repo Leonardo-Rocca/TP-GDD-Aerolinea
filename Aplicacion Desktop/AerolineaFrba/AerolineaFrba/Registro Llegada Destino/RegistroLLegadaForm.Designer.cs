@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.label2 = new System.Windows.Forms.Label();
-            this.txtDni = new System.Windows.Forms.TextBox();
+            this.txtmatricula = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -39,7 +39,7 @@
             this.resultadoFiltro2 = new System.Windows.Forms.TextBox();
             this.btFiltroDestino = new System.Windows.Forms.Button();
             this.cmbDestino = new System.Windows.Forms.ComboBox();
-            this.buttonGuardar = new System.Windows.Forms.Button();
+            this.btAceptar = new System.Windows.Forms.Button();
             this.buttonCancelar = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -53,13 +53,13 @@
             this.label2.TabIndex = 51;
             this.label2.Text = "Matricula de Aeronave:";
             // 
-            // txtDni
+            // txtmatricula
             // 
-            this.txtDni.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtDni.Location = new System.Drawing.Point(261, 87);
-            this.txtDni.Name = "txtDni";
-            this.txtDni.Size = new System.Drawing.Size(232, 24);
-            this.txtDni.TabIndex = 52;
+            this.txtmatricula.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtmatricula.Location = new System.Drawing.Point(261, 87);
+            this.txtmatricula.Name = "txtmatricula";
+            this.txtmatricula.Size = new System.Drawing.Size(232, 24);
+            this.txtmatricula.TabIndex = 52;
             // 
             // label1
             // 
@@ -147,15 +147,16 @@
             this.cmbDestino.Size = new System.Drawing.Size(232, 28);
             this.cmbDestino.TabIndex = 59;
             // 
-            // buttonGuardar
+            // btAceptar
             // 
-            this.buttonGuardar.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonGuardar.Location = new System.Drawing.Point(492, 347);
-            this.buttonGuardar.Name = "buttonGuardar";
-            this.buttonGuardar.Size = new System.Drawing.Size(117, 58);
-            this.buttonGuardar.TabIndex = 63;
-            this.buttonGuardar.Text = "Siguiente>>";
-            this.buttonGuardar.UseVisualStyleBackColor = true;
+            this.btAceptar.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btAceptar.Location = new System.Drawing.Point(492, 347);
+            this.btAceptar.Name = "btAceptar";
+            this.btAceptar.Size = new System.Drawing.Size(117, 58);
+            this.btAceptar.TabIndex = 63;
+            this.btAceptar.Text = "Siguiente>>";
+            this.btAceptar.UseVisualStyleBackColor = true;
+            this.btAceptar.Click += new System.EventHandler(this.btAceptar_Click);
             // 
             // buttonCancelar
             // 
@@ -173,7 +174,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(728, 432);
-            this.Controls.Add(this.buttonGuardar);
+            this.Controls.Add(this.btAceptar);
             this.Controls.Add(this.buttonCancelar);
             this.Controls.Add(this.resultadoFiltro2);
             this.Controls.Add(this.btFiltroDestino);
@@ -184,7 +185,7 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.txtDni);
+            this.Controls.Add(this.txtmatricula);
             this.Controls.Add(this.label1);
             this.Name = "RegistroLLegadaForm";
             this.Text = "Form1";
@@ -196,7 +197,7 @@
         #endregion
 
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox txtDni;
+        private System.Windows.Forms.TextBox txtmatricula;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
@@ -206,7 +207,7 @@
         private System.Windows.Forms.TextBox resultadoFiltro2;
         private System.Windows.Forms.Button btFiltroDestino;
         private System.Windows.Forms.ComboBox cmbDestino;
-        private System.Windows.Forms.Button buttonGuardar;
+        private System.Windows.Forms.Button btAceptar;
         private System.Windows.Forms.Button buttonCancelar;
     }
 }

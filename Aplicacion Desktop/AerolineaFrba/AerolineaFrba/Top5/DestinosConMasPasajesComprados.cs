@@ -121,6 +121,7 @@ namespace AerolineaFrba.Top5
         private void button2_Click(object sender, EventArgs e)
         {
             iniciar();
+            anterior.Show();
             this.Close();
         }
     }

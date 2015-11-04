@@ -52,5 +52,10 @@ namespace AerolineaFrba.Registro_Llegada_Destino
         {
             cmbDestino.Text = resultadoFiltro2.Text;
         }
+
+        private void btAceptar_Click(object sender, EventArgs e)
+        {
+           llegadaAvionForm registro = new llegadaAvionForm(txtmatricula.Text);
+        }
     }
 }

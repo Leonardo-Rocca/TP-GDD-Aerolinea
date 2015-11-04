@@ -12,9 +12,17 @@ namespace AerolineaFrba.Registro_Llegada_Destino
 {
     public partial class llegadaAvionForm : Form
     {
+        private string p;
+
         public llegadaAvionForm()
         {
             InitializeComponent();
+        }
+
+        public llegadaAvionForm(string p)
+        {
+            // TODO: Complete member initialization
+            this.p = p;
         }
 
         private void btCancelar_Click(object sender, EventArgs e)

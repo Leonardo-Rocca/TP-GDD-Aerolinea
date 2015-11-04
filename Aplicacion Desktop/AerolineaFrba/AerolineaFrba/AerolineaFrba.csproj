@@ -202,20 +202,18 @@
     <Compile Include="Consulta Millas\ConsultarMillasForm.Designer.cs">
       <DependentUpon>ConsultarMillasForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Top\DestinosConMasPasajesComprados.cs">
+    <Compile Include="Devolucion\Devolucion.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Top\DestinosConMasPasajesComprados.Designer.cs" />
-    <Compile Include="Devolucion\Form1.cs">
+    <Compile Include="Devolucion\Devolucion.Designer.cs">
+      <DependentUpon>Devolucion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Registro Llegada Destino\llegadaAvionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Devolucion\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Registro Llegada Destino\llegadaAvionForm.Designer.cs">
+      <DependentUpon>llegadaAvionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Top\DiscriminadorTop5.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Top\DiscriminadorTop5.Designer.cs" />
     <Compile Include="Dominio\Butaca.cs" />
     <Compile Include="Dominio\Funcionalidades.cs" />
     <Compile Include="Dominio\navegacion.cs" />
@@ -304,11 +302,23 @@
     <Compile Include="Registro de Usuario\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Registro Llegada Destino\Form1.cs">
+    <Compile Include="Registro Llegada Destino\RegistroLLegadaForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Registro Llegada Destino\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Registro Llegada Destino\RegistroLLegadaForm.Designer.cs">
+      <DependentUpon>RegistroLLegadaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Top5\DestinosConMasPasajesComprados.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Top5\DestinosConMasPasajesComprados.Designer.cs">
+      <DependentUpon>DestinosConMasPasajesComprados.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Top5\DiscriminadorTop5.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Top5\DiscriminadorTop5.Designer.cs">
+      <DependentUpon>DiscriminadorTop5.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\CompletadorDeTablas.cs" />
     <Compile Include="Utils\ConexionSQL.cs" />
@@ -386,8 +396,15 @@
     <EmbeddedResource Include="Consulta Millas\ConsultarMillasForm.resx">
       <DependentUpon>ConsultarMillasForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Top\DestinosConMasPasajesComprados.resx" />
-    <EmbeddedResource Include="Top\DiscriminadorTop5.resx" />
+    <EmbeddedResource Include="Devolucion\Devolucion.resx">
+      <DependentUpon>Devolucion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Registro Llegada Destino\llegadaAvionForm.resx">
+      <DependentUpon>llegadaAvionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Registro Llegada Destino\RegistroLLegadaForm.resx">
+      <DependentUpon>RegistroLLegadaForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -432,6 +449,12 @@
     </Compile>
     <EmbeddedResource Include="Registro de Usuario\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Top5\DestinosConMasPasajesComprados.resx">
+      <DependentUpon>DestinosConMasPasajesComprados.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Top5\DiscriminadorTop5.resx">
+      <DependentUpon>DiscriminadorTop5.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

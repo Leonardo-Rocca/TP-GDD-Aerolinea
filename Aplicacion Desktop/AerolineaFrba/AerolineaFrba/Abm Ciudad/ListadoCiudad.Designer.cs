@@ -36,6 +36,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxFiltro1 = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.buttonCancelar = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.groupBox3.SuspendLayout();
             this.SuspendLayout();
@@ -51,9 +52,10 @@
             // 
             // button3
             // 
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button3.Location = new System.Drawing.Point(226, 124);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(108, 21);
+            this.button3.Size = new System.Drawing.Size(101, 36);
             this.button3.TabIndex = 32;
             this.button3.Text = "Buscar";
             this.button3.UseVisualStyleBackColor = true;
@@ -61,9 +63,10 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(12, 124);
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.Location = new System.Drawing.Point(25, 124);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(108, 21);
+            this.button2.Size = new System.Drawing.Size(101, 36);
             this.button2.TabIndex = 31;
             this.button2.Text = "Limpiar";
             this.button2.UseVisualStyleBackColor = true;
@@ -114,11 +117,23 @@
             this.label4.TabIndex = 22;
             this.label4.Text = "Por igualdad de palabra";
             // 
+            // buttonCancelar
+            // 
+            this.buttonCancelar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonCancelar.Location = new System.Drawing.Point(26, 222);
+            this.buttonCancelar.Name = "buttonCancelar";
+            this.buttonCancelar.Size = new System.Drawing.Size(100, 38);
+            this.buttonCancelar.TabIndex = 35;
+            this.buttonCancelar.Text = "Cancelar";
+            this.buttonCancelar.UseVisualStyleBackColor = true;
+            this.buttonCancelar.Click += new System.EventHandler(this.buttonCancelar_Click);
+            // 
             // ListadoCiudad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(623, 288);
+            this.Controls.Add(this.buttonCancelar);
             this.Controls.Add(this.dataGridView2);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
@@ -143,5 +158,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBoxFiltro1;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button buttonCancelar;
     }
 }

@@ -5,35 +5,37 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
+using AerolineaFrba.Abm_Ciudad;
 namespace AerolineaFrba.Dominio
 {
     public static class navegacion
     {
-        private static Form owner;
-        private static Form auxiliarForm;
+        public static modificarEliminarCityForm modificarCiudad;
+        private static modificarEliminarCityForm eliminarCiudad;
         public static Form modifRol;
         public static Form eliminarRol;
 
-        public static  Form Owner
+        public static  modificarEliminarCityForm ModificarCiudad
         {
             get
             {
-                return owner;
+                return modificarCiudad;
             }
             set
             {
-                owner = value;
+                modificarCiudad = value;
             }
         }
-        public static new Form AuxiliarForm
+        public static new modificarEliminarCityForm EliminarCiudad
         {
             get
             {
-                return auxiliarForm;
+                return eliminarCiudad;
             }
             set
             {
-                auxiliarForm = value;
+                eliminarCiudad = value;
             }
         }
 

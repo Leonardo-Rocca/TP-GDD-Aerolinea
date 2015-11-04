@@ -118,12 +118,13 @@
             this.btPuntos.TabIndex = 51;
             this.btPuntos.Text = "Consultar Puntos";
             this.btPuntos.UseVisualStyleBackColor = false;
+            this.btPuntos.Click += new System.EventHandler(this.btPuntos_Click);
             // 
             // ConsultarMillasForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(648, 398);
+            this.ClientSize = new System.Drawing.Size(647, 409);
             this.Controls.Add(this.btPuntos);
             this.Controls.Add(this.dataGridView2);
             this.Controls.Add(this.label3);

@@ -82,11 +82,13 @@ private void butAceptar_Click(object sender, EventArgs e)
 
 private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
 {
-  
-    {
-        if (dataGridView2.CurrentCell.ColumnIndex == dataGridView2.Columns.Count - 1) { obtenerRespuesta(dataGridView2); }
-    }
-    }
+        if (dataGridView2.CurrentCell.ColumnIndex == dataGridView2.Columns.Count - 1) { obtenerRespuesta(dataGridView2); this.Close(); }
+}
+
+private void buttonCancelar_Click(object sender, EventArgs e)
+{
+    this.Close();
+}
 
 
 

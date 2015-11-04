@@ -754,8 +754,8 @@ END;
 GO
 
 
-/*--CREATE FUNCTION DBAS.Top5ClientesConMasPuntosAcumulados(@semestreDelAnio tinyint, @anio integer)
-RETURNS @TOP5 TABLE (nombre_persona varchar(100), dni_persona bigint, puntos_acumulados bigint)
+CREATE FUNCTION DBAS.Top5ClientesConMasPuntosAcumulados(@semestreDelAnio tinyint, @anio integer)
+RETURNS @TOP5 TABLE (id_cliente bigint, puntos_acumulados bigint)
 AS
 BEGIN
 	DECLARE @anioDelSemestre datetime
@@ -769,21 +769,23 @@ BEGIN
 
 	IF (@semestreDelAnio = 1)
 	BEGIN
-		INSERT INTO @TOP5(nombre_persona,dni_persona,puntos_acumulados)
-		SELECT TOP 5 nombre_persona, apellido_persona, dni_persona, DBAS.millasAcumuladasEntre(dni_persona,@comienzoAnio,@anioDelSemestre) as puntos
-		FROM DBAS.personas personas, DBAS.clientes clientes WHERE clientes.id_persona = personas.id_persona
+		INSERT INTO @TOP5(id_cliente,puntos_acumulados)
+		SELECT TOP 5 id_cliente, SUM(millas) as puntos
+		FROM DBAS.millasAcumuladasEntre(@comienzoAnio,@anioDelSemestre)
+		GROUP BY id_cliente
 		ORDER BY puntos DESC
 	END
 	ELSE
 	BEGIN
-		INSERT INTO @TOP5(nombre_persona,dni_persona,puntos_acumulados)
-		SELECT TOP 5 nombre_persona, apellido_persona, dni_persona, DBAS.millasAcumuladasEntre(dni_persona,@anioDelSemestre,@finAnio) as puntos
-		FROM DBAS.personas, DBAS.clientes clientes WHERE clientes.id_persona = personas.id_persona
+		INSERT INTO @TOP5(id_cliente,puntos_acumulados)
+		SELECT TOP 5 id_cliente, SUM(millas) as puntos
+		FROM DBAS.millasAcumuladasEntre(@anioDelSemestre,@finAnio) 
+		GROUP BY id_cliente
 		ORDER BY puntos DESC
 	END
 	RETURN
 END;
-GO-- */
+GO
 
 
 /*-- ABM Rol -- */
@@ -1659,6 +1661,20 @@ BEGIN
 END;
 GO
 
+
+CREATE VIEW DBAS.millasPorPasajes AS
+SELECT id_cliente, fecha_llegada, CAST((precio_base_por_pasaje*porcentaje_arancel)/10 AS bigint) as millas FROM DBAS.pasajes pasajes, DBAS.viajes viajes, DBAS.rutas rutas, DBAS.serviciosPorRutas serviciosPorRutas, DBAS.servicios servicios
+WHERE pasajes.id_viaje = viajes.id_viaje AND viajes.codigo_ruta = rutas.codigo_ruta
+AND serviciosPorRutas.codigo_ruta = rutas.codigo_ruta AND serviciosPorRutas.id_servicio = servicios.id_servicio
+GO
+
+CREATE VIEW DBAS.millasPorEncomiendas AS
+SELECT id_cliente, fecha_llegada,CAST((precio_base_por_KG*encomienda_cliente_KG*porcentaje_arancel)/10 AS bigint) as millas FROM DBAS.encomiendas encomiendas, DBAS.viajes viajes, DBAS.rutas rutas, DBAS.serviciosPorRutas serviciosPorRutas, DBAS.servicios servicios
+WHERE encomiendas.id_viaje = viajes.id_viaje AND viajes.codigo_ruta = rutas.codigo_ruta
+AND serviciosPorRutas.codigo_ruta = rutas.codigo_ruta AND serviciosPorRutas.id_servicio = servicios.id_servicio
+GO
+
+
 CREATE FUNCTION DBAS.millasVigentes(@dni_persona bigint)
 RETURNS bigint
 AS
@@ -1672,14 +1688,29 @@ BEGIN
 END;
 GO
 
-CREATE FUNCTION DBAS.millasAcumuladasEntre(@dni_persona bigint,@fecha_desde datetime, @fecha_hasta datetime)
-RETURNS bigint
+
+
+CREATE FUNCTION DBAS.millasAcumuladasEntre(@fecha_desde datetime, @fecha_hasta datetime)
+RETURNS @millasAcumuladas TABLE (id_cliente bigint,millas bigint)
 AS
 BEGIN
-	RETURN ISNULL((SELECT SUM(cantidad_millas) FROM DBAS.historialMillas(@dni_persona) 
-	WHERE fecha_obtencion_millas >= @fecha_desde AND fecha_obtencion_millas < @fecha_hasta),0)
+	INSERT INTO @millasAcumuladas
+	SELECT tabla1.id_cliente,millas_p + millas_e as millas FROM (
+
+	(SELECT id_cliente,ISNULL(SUM(millas),0) as millas_p FROM DBAS.millasPorPasajes millasPasajes
+		WHERE millasPasajes.fecha_llegada >= @fecha_desde AND millasPasajes.fecha_llegada < @fecha_hasta
+		GROUP BY id_cliente) tabla1
+	JOIN
+	(SELECT id_cliente,ISNULL(SUM(millas),0) as millas_e FROM DBAS.millasPorEncomiendas millasEncomiendas
+		WHERE millasEncomiendas.fecha_llegada >= @fecha_desde AND millasEncomiendas.fecha_llegada < @fecha_hasta
+		GROUP BY id_cliente) tabla2
+	
+	ON (tabla1.id_cliente= tabla2.id_cliente)
+	)
+	RETURN
 END;
 GO
+
 
 CREATE PROCEDURE DBAS.canjeProducto(@id_cliente bigint, @id_producto bigint, @cantidadACanjear bigint)
 AS

@@ -549,7 +549,7 @@ BEGIN
 
 	--Inserto los valores de las las tablas temporales que solo tengan pasajes y no encomiendas
 	INSERT INTO DBAS.pasajes(codigo_pasaje, id_cliente, precio_pasaje, fecha_compra_pasaje, id_viaje, id_butaca)
-	SELECT DISTINCT tablaTemporalPasajes.Pasaje_Codigo, tablaTemporalPasajes.id_cliente, tablaTemporalPasajes.Pasaje_Precio, tablaTemporalPasajes.Pasaje_FechaCompra, tablaTemporalViajes.id_viaj, tablaButacas.id_butaca 
+	SELECT DISTINCT tablaTemporalPasajes.Pasaje_Codigo, tablaTemporalPasajes.id_cliente, tablaTemporalPasajes.Pasaje_Precio, tablaTemporalPasajes.Paquete_FechaCompra, tablaTemporalViajes.id_viaj, tablaButacas.id_butaca 
 	FROM ((SELECT id_cliente, fecha_llegada, fecha_salida, ciudad_origen, ciudad_destino, Pasaje_Codigo, Pasaje_Precio, Pasaje_FechaCompra, Paquete_Codigo, Paquete_Precio, Paquete_FechaCompra, Paquete_KG, Butaca_Nro, Butaca_Piso, Aeronave_Matricula FROM #temporalPasajesDeClientes WHERE Butaca_Piso != 0) tablaTemporalPasajes
 		JOIN DBAS.butacas tablaButacas ON (tablaTemporalPasajes.Aeronave_Matricula = tablaButacas.matricula_aeronave AND tablaTemporalPasajes.Butaca_Nro = tablaButacas.numero_butaca AND tablaTemporalPasajes.Butaca_Piso = tablaButacas.piso_butaca)
 		JOIN #temporalViajesConRutas tablaTemporalViajes ON (tablaTemporalViajes.nom_ruta_orig = tablaTemporalPasajes.ciudad_origen AND tablaTemporalViajes.nom_ruta_dest = tablaTemporalPasajes.ciudad_destino AND tablaTemporalViajes.fecha_salida = tablaTemporalPasajes.fecha_salida AND tablaTemporalViajes.fecha_llegada = tablaTemporalPasajes.fecha_llegada AND tablaTemporalPasajes.Aeronave_Matricula = tablaTemporalViajes.matricula_aeronave))
@@ -657,29 +657,6 @@ SELECT tablaUsuarios.id_usuario, tablaRoles.id_rol FROM DBAS.usuarios tablaUsuar
 WHERE tablaRoles.nombre_rol = 'Administrador General' and tablaUsuarios.username = 'admin'
 GO
 
---Inserto productos
-INSERT INTO DBAS.productos(valor_en_milas,nombre_producto,stock)
-VALUES (2500,'cafetera',50)
-GO
-
-INSERT INTO DBAS.productos(valor_en_milas,nombre_producto,stock)
-VALUES (300,'cuaderno',400)
-GO
-
-INSERT INTO DBAS.productos(valor_en_milas,nombre_producto,stock)
-VALUES (1200,'exprimidora',50)
-GO
-
-
-INSERT INTO DBAS.productos(valor_en_milas,nombre_producto,stock)
-VALUES (550,'taza',300)
-GO
-
-INSERT INTO DBAS.productos(valor_en_milas,nombre_producto,stock)
-VALUES (15000,'televisor',1)
-GO
-
-
 /*-- TOP 5 -- */
 
 CREATE FUNCTION DBAS.Top5DeLosDestinosConMasPasajesComprados(@semestreDelAnio tinyint, @anio integer)
@@ -694,8 +671,7 @@ BEGIN
 	BEGIN
 
 		INSERT INTO @TOP5(ciudad_origen, ciudad_destino, pasajes_comprados)
-		SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPasajes.codigo_pasaje) as pasajes_comprados 
-		FROM DBAS.pasajes tablaPasajes, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
+		SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPasajes.codigo_pasaje) as pasajes_comprados FROM DBAS.pasajes tablaPasajes, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
 		WHERE tablaPasajes.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id
 			AND tablaPasajes.fecha_compra_pasaje <  @anioDelSemestre AND DATEPART(year,tablaPasajes.fecha_compra_pasaje) = DATEPART(year,@anioDelSemestre)
 		GROUP BY tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad
@@ -763,7 +739,6 @@ BEGIN
 END;	
 GO
 
-
 CREATE FUNCTION DBAS.Top5AeronavesConMayorCantidadDeDiasFueraDeServicio(@semestreDelAnio tinyint, @anio integer)
 RETURNS @TOP5 TABLE ( aeronave varchar(100), dias_fuera_de_servicio bigint)
 AS
@@ -811,6 +786,7 @@ BEGIN
 	RETURN
 END;
 GO
+
 
 /*-- ABM Rol -- */
 
@@ -1038,6 +1014,8 @@ AS
 BEGIN
 	DECLARE @mensaje_error varchar(100)
 	DECLARE @nro_butaca bigint
+	DECLARE @butacas_pasillo_AUX bigint
+	DECLARE @butacas_ventana_AUX bigint
 	
 	SET @nro_butaca = 0
 	
@@ -1053,25 +1031,27 @@ BEGIN
 
 		WHILE(@piso != 0)
 		BEGIN
+			SET @butacas_pasillo_AUX = @butacas_pasillo
+			SET @butacas_ventana_AUX = @butacas_ventana
 
-			WHILE(@butacas_pasillo != 0)
+			WHILE(@butacas_pasillo_AUX != 0)
 			BEGIN
 				SET @nro_butaca += 1
 
 				INSERT INTO DBAS.butacas(matricula_aeronave, numero_butaca, piso_butaca, tipo_butaca)
 				VALUES(@matricula_aeronave, @nro_butaca, @piso, 'Pasillo')
 
-				SET @butacas_pasillo -= 1
+				SET @butacas_pasillo_AUX -= 1
 			END
 
-			WHILE(@butacas_ventana != 0)
+			WHILE(@butacas_ventana_AUX != 0)
 			BEGIN
 				SET @nro_butaca += 1
 
 				INSERT INTO DBAS.butacas(matricula_aeronave, numero_butaca, piso_butaca, tipo_butaca)
 				VALUES(@matricula_aeronave, @nro_butaca, @piso, 'Ventanilla')
 
-				SET @butacas_ventana -= 1
+				SET @butacas_ventana_AUX -= 1
 			END
 		
 			SET @piso -= 1
@@ -1081,6 +1061,7 @@ BEGIN
 	END
 END;
 GO
+
 
 
 CREATE PROCEDURE DBAS.cancelacionPasaje(@motivo_cancelacion varchar(100), @ID_cancelacion bigint OUT)

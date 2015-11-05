@@ -94,5 +94,10 @@ namespace AerolineaFrba.Compra
             if(txtEncomienda.Text!="")
             kgEncomiendas = Convert.ToInt32(txtEncomienda.Text);
         }
+
+        private void cmbPasaje_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

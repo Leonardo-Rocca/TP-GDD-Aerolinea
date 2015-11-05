@@ -58,6 +58,9 @@ namespace AerolineaFrba.Dominio
              funcionalidadesDisponibles.Add(new Funcionalidades(99, "Generar Viaje",
              new Generar_Viaje()));
 
+             funcionalidadesDisponibles.Add(new Funcionalidades(99, "Devolucion de pasajes y/o encomiendas",
+             new Devolucion.Devolucion()));
+
              funcionalidadesDisponibles.Add(new Funcionalidades(99, "Listado Estadistico",new Top5.DiscriminadorTop5()));
 
             funcionalidadesDisponibles.Add(new Funcionalidades(99, "Comprar Pasaje/Encomienda", new SeleccionViajeForm()));

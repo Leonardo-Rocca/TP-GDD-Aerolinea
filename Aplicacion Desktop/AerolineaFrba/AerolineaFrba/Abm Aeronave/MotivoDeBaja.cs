@@ -92,11 +92,17 @@ namespace AerolineaFrba.Abm_Aeronave
                 return;
             }
             this.Hide();
-            if (checkBoxBajaDefinitiva.Checked) dateFecha.Text = DateTime.Today.Date.ToString();
-           // this.iniciar();
-            string fecha = DateTime.Parse(dateFecha.Text).ToString();
-            string query = "execute dbas.bajaAeronave '" + fecha +"', '" + anterior.getMatricula() + "', " + this.motivo();            
+            string fecha;
+            if (checkBoxBajaDefinitiva.Checked)
+            {
+                fecha = (DateTime.Today.Date).ToString();
+            }
+            else
+            {
+                fecha = dateFecha.Value.ToString();
+            }
             
+            string query = "execute dbas.bajaAeronave '" + fecha +"', '" + anterior.getMatricula() + "', " + this.motivo();
             try
             {
                 (new ConexionSQL()).cargarTablaSQL(query);
@@ -126,8 +132,10 @@ namespace AerolineaFrba.Abm_Aeronave
             }
 
             MessageBox.Show("Baja de aeronave exitosa", "Baja aeronave", MessageBoxButtons.OK);
-            anterior.Close();
+            anterior.iniciar();
+            anterior.Hide();
             this.Close();
+         
 
         }
 

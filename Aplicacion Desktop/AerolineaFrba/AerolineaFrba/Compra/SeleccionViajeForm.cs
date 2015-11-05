@@ -71,15 +71,15 @@ namespace AerolineaFrba.Compra
             if (txtDestino.Text == ""){
                 MessageBox.Show("Faltan completar Campos", "", MessageBoxButtons.OK);
                 return false;
-            } 
-                 
+            }
+
+            //VALIDAR FECHA    
            int anterior= DateTime.Compare(DateTime.Parse(dateTimePicker1.Text), DateTime.Now);
            if (anterior < 0)
             {
                 MessageBox.Show("La fecha de salida debe ser posterior al dia de hoy", "Viaje", MessageBoxButtons.OK);
                 return false;
             }
-            //VALIDAR FECHA
             return true;
 
         }

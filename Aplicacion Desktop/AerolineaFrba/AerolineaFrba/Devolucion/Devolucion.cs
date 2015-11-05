@@ -33,6 +33,7 @@ namespace AerolineaFrba.Devolucion
             textBox1.Text = "";
             textBox2.Text = "";
             textBox3.Text = "";
+            textBox4.Text = "";
             dateFecha.Value = DateTime.Today;
 
         }
@@ -57,6 +58,11 @@ namespace AerolineaFrba.Devolucion
             pasajes.Remove(comboBox1.Text);
             comboBox1.Items.Remove(comboBox1.Text);
             comboBox1.Text = "";
+        }
+
+        private void butAceptar_Click(object sender, EventArgs e)
+        {
+
         }
 
     }

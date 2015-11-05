@@ -53,10 +53,12 @@ namespace AerolineaFrba.Compra
         {
             if(!validarCamposVacios())return;
 
+            string id = "99";
             string butacaKg="";
             if (tipo == 1) butacaKg = txtButaca.Text;
             if (tipo == 2) butacaKg = txtKg.Text;
-            PasajeEncomienda pasEn = new PasajeEncomienda(txtnombre.Text,txtApellido.Text,dni,tel,txtMail.Text,dateTimePickerFnac.Text,butacaKg);
+
+            PasajeEncomienda pasEn = new PasajeEncomienda(id,txtnombre.Text,txtApellido.Text,dni,tel,txtMail.Text,dateTimePickerFnac.Text,butacaKg);
 
             if (tipo == 0)
             {

@@ -96,6 +96,7 @@
             this.btFiltro.TabIndex = 10;
             this.btFiltro.Text = "Buscar por filtro";
             this.btFiltro.UseVisualStyleBackColor = true;
+            this.btFiltro.Visible = false;
             this.btFiltro.Click += new System.EventHandler(this.btFiltro_Click);
             // 
             // ModificarForm

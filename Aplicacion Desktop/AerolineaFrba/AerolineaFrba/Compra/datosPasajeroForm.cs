@@ -26,6 +26,7 @@ namespace AerolineaFrba.Compra
         public datosPasajeroForm(compraForm compraForm, int tipe)
         {
             InitializeComponent();
+            dateTimePickerFnac.Value = new DateTime(1994, 09, 17);
             this.compraForm = compraForm;
             this.tipo = tipe;
             if(tipe==1||tipe==0){
@@ -110,7 +111,10 @@ namespace AerolineaFrba.Compra
             txtApellido.Text = dt.Rows[0][3].ToString();
             txtDireccion.Text = dt.Rows[0][4].ToString();
             txtPhone.Text = dt.Rows[0][5].ToString();
-    //        dateTimePickerFnac.Text = dt.Rows[0][6].ToString(); ---rompe    TO-DO
+            txtMail.Text = dt.Rows[0][6].ToString();
+
+            DateTime fechaAux = Convert.ToDateTime(dt.Rows[0][7]);
+            dateTimePickerFnac.Value = new DateTime(fechaAux.Year,fechaAux.Month,fechaAux.Day);
 
         }
 

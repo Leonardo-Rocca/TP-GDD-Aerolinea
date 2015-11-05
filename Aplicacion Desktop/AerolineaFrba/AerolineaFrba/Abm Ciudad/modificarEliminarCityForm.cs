@@ -50,7 +50,7 @@ namespace AerolineaFrba.Abm_Ciudad
 
             if (tipoDeForm == 1)
             {
-                navegacion.Owner = this;
+                navegacion.modificarCiudad = this;
                 string cadena = comboBoxCity.Text;
                 ModificarCiudadForm modify = new ModificarCiudadForm(cadena,this);
                 modify.Show();
@@ -62,7 +62,7 @@ namespace AerolineaFrba.Abm_Ciudad
                     return;
                 }
                 //dar baja logica
-                navegacion.AuxiliarForm = this;
+                navegacion.EliminarCiudad.cargarComboSeleccion();
                 MessageBox.Show("Ciudad eliminada (dammy)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             this.Hide(); 
@@ -90,10 +90,10 @@ namespace AerolineaFrba.Abm_Ciudad
         private void cargarReferenciasAForms()
         {
             if (tipoDeForm == 1) { 
-                navegacion.Owner = this;
+                navegacion.modificarCiudad = this;
             }
             else
-            {   navegacion.AuxiliarForm = this;
+            {   navegacion.EliminarCiudad = this;
             }
         }
 

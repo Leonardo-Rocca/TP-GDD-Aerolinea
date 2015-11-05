@@ -35,5 +35,12 @@ namespace AerolineaFrba.Top5
             dest.Show();
             this.Hide();
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            DestinosConMasPasajesComprados dest = new DestinosConMasPasajesComprados(this, 3);
+            dest.Show();
+            this.Hide();
+        }
     }
 }

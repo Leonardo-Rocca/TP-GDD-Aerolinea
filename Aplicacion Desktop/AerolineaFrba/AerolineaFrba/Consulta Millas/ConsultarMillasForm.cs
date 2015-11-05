@@ -22,8 +22,13 @@ namespace AerolineaFrba.Consulta_Millas
             if(txtDni.Text==""){
                 MessageBox.Show("Complete su dni");
                 return;
-            } 
-            MessageBox.Show("Usted tiene dammy millas");
+            }
+            string query = "select  top 1 dbas.millasVigentes ("+txtDni.Text+") from dbas.servicios";
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
+
+            string millas = dt.Rows[0][0].ToString();
+            if(millas=="")millas="0";
+            MessageBox.Show("Usted tiene "+millas+" millas");
         }
 
         private void botonVolver_Click(object sender, EventArgs e)
@@ -35,6 +40,11 @@ namespace AerolineaFrba.Consulta_Millas
         private void inicializar()
         {
             txtDni.Text = "";
+        }
+
+        private void btPuntos_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

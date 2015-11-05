@@ -40,7 +40,7 @@
             this.botonVolver.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botonVolver.Location = new System.Drawing.Point(41, 297);
             this.botonVolver.Name = "botonVolver";
-            this.botonVolver.Size = new System.Drawing.Size(84, 56);
+            this.botonVolver.Size = new System.Drawing.Size(99, 56);
             this.botonVolver.TabIndex = 22;
             this.botonVolver.Text = "<< Volver";
             this.botonVolver.UseVisualStyleBackColor = true;

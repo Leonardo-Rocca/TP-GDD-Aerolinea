@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using AerolineaFrba.Dominio;
+
 namespace AerolineaFrba.Abm_Ciudad
 {
     public partial class crearCiudadForm : Form
@@ -39,6 +41,8 @@ namespace AerolineaFrba.Abm_Ciudad
                 MessageBox.Show("La ciudad ya existe", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+            navegacion.modificarCiudad.cargarComboSeleccion();
+            navegacion.EliminarCiudad.cargarComboSeleccion();
             MessageBox.Show("Ciudad agregada", this.Text, MessageBoxButtons.OK, MessageBoxIcon.None);
             this.Hide(); //.Close();
             txtNombreCity.Text = "";

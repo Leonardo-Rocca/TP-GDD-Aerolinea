@@ -48,8 +48,8 @@ namespace AerolineaFrba.Abm_Ciudad
                 return;
             }
 
-            ((modificarEliminarCityForm)navegacion.Owner).cargarComboSeleccion();
-            ((modificarEliminarCityForm)navegacion.AuxiliarForm).cargarComboSeleccion();
+            ((modificarEliminarCityForm)navegacion.modificarCiudad).cargarComboSeleccion();
+            ((modificarEliminarCityForm)navegacion.EliminarCiudad).cargarComboSeleccion();
 
             this.Close();
             txtNombreCiudad.Text = "";

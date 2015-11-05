@@ -829,8 +829,6 @@ BEGIN
 END;
 GO
 
-<<<<<<< HEAD
-=======
 CREATE VIEW DBAS.cantidadPasajerosPorViaje AS
 SELECT pasajes.id_viaje,COUNT(codigo_pasaje) as cantidad_pasajeros FROM DBAS.pasajes pasajes
 GROUP BY pasajes.id_viaje
@@ -868,7 +866,7 @@ BEGIN
 	RETURN
 END;
 GO
->>>>>>> b94ab035e4339a399120b775f2541963300cfec2
+
 
 /*-- ABM Rol -- */
 

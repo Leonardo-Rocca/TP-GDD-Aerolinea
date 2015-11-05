@@ -49,12 +49,35 @@ namespace AerolineaFrba.Top5
                 pasajesMasComprados();
                 return;
             }
+
             if (discriminador == 2)
             {
                 aeronavesConMasDiasFueraDeServicio();
                 return;
             }
+
+            if (discriminador == 3)
+            {
+                personasConMasPuntosAcumulados();
+                return;
+            }
             
+        }
+
+        private void personasConMasPuntosAcumulados()
+        {
+            int semestre = 1;
+            if (comboBoxSemestre.Text == "Segundo Semestre") semestre = 2;
+            string query = "select * from dbas.Top5ClientesConMasPuntosAcumulados(" + semestre.ToString() + ", " + textBox1.Text + ")";
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
+            if (dt.Rows.Count == 0)
+            {
+                MessageBox.Show("No se han encontrado resultados", "Mas puntos Acumulados", MessageBoxButtons.OK);
+                dataGridView1.DataSource = null;
+                return;
+            }
+
+            dataGridView1.DataSource = dt;
         }
 
         private void aeronavesConMasDiasFueraDeServicio()
@@ -109,7 +132,7 @@ namespace AerolineaFrba.Top5
             }
 
             anio = Convert.ToInt32(textBox1.Text);
-            if (anio < 1800 || anio > DateTime.Now.Year)
+            if (anio < 1800 || anio > DateTime.Now.Year) //no tocar el año, ya va a andar cuando cambien la fecha del sistema
             {
                 MessageBox.Show("El año especificado se encuentra fuera de los rangos validos", "Destinos con mas pasajes Comprados", MessageBoxButtons.OK);
                 dataGridView1.DataSource = null;

@@ -71,12 +71,11 @@ namespace AerolineaFrba.Dominio
                new ABMGenericoForm("ABM Rutas", new crearRutaForm(), new ModificarEliminarRuta(1), new ModificarEliminarRuta(2))));
 
             if (descripcionF == "ABM de Aeronaves")
-            return (new Funcionalidades(99, "ABM Aeronave",
-              new ABMGenericoForm("ABM Aeronave", new AltaAeronave(), new ModificarAeronave(0), new ModificarAeronave(1))));
+            return (new Funcionalidades(99, "ABM Aeronave", new ABMGenericoForm("ABM Aeronave", new AltaAeronave(), new ModificarAeronave(0), new ModificarAeronave(1))));
                       
             if(descripcionF=="Generar Viaje")
             return  (new Funcionalidades(99, "Generar Viaje", new Generar_Viaje()));
-
+            
             if (descripcionF == "Listado Estadístico")
             return (new Funcionalidades(99, "Listado Estadistico", new Top5.DiscriminadorTop5()));
 

@@ -48,11 +48,11 @@ namespace AerolineaFrba.Abm_Aeronave
 
             string idFabricante = ((new ConexionSQL()).cargarTablaSQL("select distinct id_fabricante FROM DBAS.fabricantes where nombre_fabricante like '" + comboBoxFabricante.Text + "'")).Rows[0][0].ToString();
             string idServicio = ((new ConexionSQL()).cargarTablaSQL("select distinct id_servicio FROM DBAS.servicios where tipo_servicio like '" + comboBoxServicio.Text + "'")).Rows[0][0].ToString();
-           // string query = "execute dbas. ";
+            string query = "execute DBAS.modificarAeronave '"+txtMatricula.Text+"',"+idFabricante.ToString()+","+idServicio.ToString()+",'"+txtMatricula.Text+"','"+txtModelo.Text+"',"+textKdDisponibles.Text+","+ textButacasPasillo.Text+","+textButacasVentanilla.Text+","+textPisos.Text;
+            MessageBox.Show(query, "Modificacion aeronave", MessageBoxButtons.OK);
 
-            //EJECUTAR PROCEDURE
 
-           // (new ConexionSQL()).cargarTablaSQL(query);
+            (new ConexionSQL()).cargarTablaSQL(query);
 
             MessageBox.Show("Modificacion de aeronave exitosa", "Modificacion aeronave", MessageBoxButtons.OK);
             iniciar();

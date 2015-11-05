@@ -102,6 +102,7 @@
             this.cmbPasaje.Name = "cmbPasaje";
             this.cmbPasaje.Size = new System.Drawing.Size(232, 28);
             this.cmbPasaje.TabIndex = 19;
+            this.cmbPasaje.SelectedIndexChanged += new System.EventHandler(this.cmbPasaje_SelectedIndexChanged);
             // 
             // lbNombreOrigen
             // 

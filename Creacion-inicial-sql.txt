@@ -549,7 +549,7 @@ BEGIN
 
 	--Inserto los valores de las las tablas temporales que solo tengan pasajes y no encomiendas
 	INSERT INTO DBAS.pasajes(codigo_pasaje, id_cliente, precio_pasaje, fecha_compra_pasaje, id_viaje, id_butaca)
-	SELECT DISTINCT tablaTemporalPasajes.Pasaje_Codigo, tablaTemporalPasajes.id_cliente, tablaTemporalPasajes.Pasaje_Precio, tablaTemporalPasajes.Paquete_FechaCompra, tablaTemporalViajes.id_viaj, tablaButacas.id_butaca 
+	SELECT DISTINCT tablaTemporalPasajes.Pasaje_Codigo, tablaTemporalPasajes.id_cliente, tablaTemporalPasajes.Pasaje_Precio, tablaTemporalPasajes.Pasaje_FechaCompra, tablaTemporalViajes.id_viaj, tablaButacas.id_butaca 
 	FROM ((SELECT id_cliente, fecha_llegada, fecha_salida, ciudad_origen, ciudad_destino, Pasaje_Codigo, Pasaje_Precio, Pasaje_FechaCompra, Paquete_Codigo, Paquete_Precio, Paquete_FechaCompra, Paquete_KG, Butaca_Nro, Butaca_Piso, Aeronave_Matricula FROM #temporalPasajesDeClientes WHERE Butaca_Piso != 0) tablaTemporalPasajes
 		JOIN DBAS.butacas tablaButacas ON (tablaTemporalPasajes.Aeronave_Matricula = tablaButacas.matricula_aeronave AND tablaTemporalPasajes.Butaca_Nro = tablaButacas.numero_butaca AND tablaTemporalPasajes.Butaca_Piso = tablaButacas.piso_butaca)
 		JOIN #temporalViajesConRutas tablaTemporalViajes ON (tablaTemporalViajes.nom_ruta_orig = tablaTemporalPasajes.ciudad_origen AND tablaTemporalViajes.nom_ruta_dest = tablaTemporalPasajes.ciudad_destino AND tablaTemporalViajes.fecha_salida = tablaTemporalPasajes.fecha_salida AND tablaTemporalViajes.fecha_llegada = tablaTemporalPasajes.fecha_llegada AND tablaTemporalPasajes.Aeronave_Matricula = tablaTemporalViajes.matricula_aeronave))
@@ -657,6 +657,27 @@ SELECT tablaUsuarios.id_usuario, tablaRoles.id_rol FROM DBAS.usuarios tablaUsuar
 WHERE tablaRoles.nombre_rol = 'Administrador General' and tablaUsuarios.username = 'admin'
 GO
 
+---Inserto productos
+INSERT INTO DBAS.productos(valor_en_milas,nombre_producto,stock)
+VALUES (2500,'cafetera',50)
+GO
+
+INSERT INTO DBAS.productos(valor_en_milas,nombre_producto,stock)
+VALUES (300,'cuaderno',400)
+GO
+
+INSERT INTO DBAS.productos(valor_en_milas,nombre_producto,stock)
+VALUES (1200,'exprimidora',50)
+GO
+
+INSERT INTO DBAS.productos(valor_en_milas,nombre_producto,stock)
+VALUES (550,'taza',300)
+GO
+
+INSERT INTO DBAS.productos(valor_en_milas,nombre_producto,stock)
+VALUES (15000,'televisor',1)
+GO
+
 /*-- TOP 5 -- */
 
 CREATE FUNCTION DBAS.Top5DeLosDestinosConMasPasajesComprados(@semestreDelAnio tinyint, @anio integer)
@@ -735,8 +756,6 @@ BEGIN
 	RETURN
 END;	
 GO
-
-
 
 CREATE FUNCTION DBAS.aeronaves_dias_fuera_de_servicio(@semestreDelAnio tinyint, @anio integer)
 RETURNS @aeronaves_dias_fuera_de_servicio TABLE ( aeronave varchar(100), dias_fuera_de_servicio bigint)
@@ -833,6 +852,12 @@ CREATE VIEW DBAS.cantidadPasajerosPorViaje AS
 SELECT pasajes.id_viaje,COUNT(codigo_pasaje) as cantidad_pasajeros FROM DBAS.pasajes pasajes
 GROUP BY pasajes.id_viaje
 GO
+
+CREATE VIEW DBAS.cantidadKgEncomiendasPorViaje AS
+SELECT encomiendas.id_viaje,SUM(encomienda_cliente_KG) as cantidad_kg FROM DBAS.encomiendas encomiendas
+GROUP BY encomiendas.id_viaje
+GO
+
 
 CREATE FUNCTION DBAS.Top5AeronavesMasVacias(@semestreDelAnio tinyint, @anio integer)
 RETURNS @TOP5 TABLE (id_viaje bigint,matricula_aeronave varchar(100),butacas_vacias bigint,fecha_salida datetime,fecha_llegada datetime,codigo_ruta bigint)
@@ -1831,12 +1856,9 @@ BEGIN
 END;
 GO
 
-
-/* -- Compra pasajes/encomiendas -- */
-
---Saber si una aeronave tiene butacas suficientes para un viaje
-CREATE FUNCTION DBAS.tieneButacasSuficientes(@matricula_aeronave varchar(100),@id_viaje bigint)
-RETURNS tinyint
+--Cantidad de butacas libres de una aeronave
+CREATE FUNCTION DBAS.cantidadButacasLibres(@matricula_aeronave varchar(100),@id_viaje bigint)
+RETURNS bigint
 AS
 BEGIN
 	DECLARE @cantidadPasajeros bigint
@@ -1848,17 +1870,29 @@ BEGIN
 	DECLARE @asientosLibres bigint
 	SET @asientosLibres = (@cantidadButacas - @cantidadPasajeros)
 
-	IF @asientosLibres <= 0
-	BEGIN
-		RETURN 0
-	END
-	ELSE
-	BEGIN
-		RETURN 1
-	END
-	RETURN 0
+	RETURN @asientosLibres
 END;
 GO
+
+--Cantidad de kg disponibles para encomiendas de una aeronave
+CREATE FUNCTION DBAS.cantidadKgDisponibles(@matricula_aeronave varchar(100),@id_viaje bigint)
+RETURNS real
+AS
+BEGIN
+	DECLARE @cantidadOcupados real
+	SET @cantidadOcupados = ISNULL((SELECT cantidad_kg FROM DBAS.cantidadKgEncomiendasPorViaje WHERE id_viaje = @id_viaje),0)
+
+	DECLARE @cantidadMaxima real
+	SET @cantidadMaxima = (SELECT kg_disponible_encomienda FROM DBAS.aeronaves WHERE matricula_aeronave = @matricula_aeronave)
+
+	DECLARE @cantidadKgLibres real
+	SET @cantidadKgLibres = (@cantidadMaxima - @cantidadOcupados)
+
+	RETURN @cantidadKgLibres
+END;
+GO
+
+/* -- Compra pasajes/encomiendas -- */
 
 CREATE PROCEDURE DBAS.generarCompra(@id_comprador bigint, @tarjeta_Numero bigint, @tarjeta_Codigo bigint, @tarjeta_Fecha_de_vencimiento datetime, @tipo_tarjeta_id bigint, @cuoatas_elegidas smallint, @tipo_compra tinyint)
 AS
@@ -1971,5 +2005,3 @@ BEGIN
 	END
 
 END;
-GO
-	

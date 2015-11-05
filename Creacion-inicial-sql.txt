@@ -854,6 +854,11 @@ BEGIN
 END;
 GO
 
+CREATE VIEW DBAS.cantidadPasajerosPorViaje AS
+SELECT pasajes.id_viaje,COUNT(codigo_pasaje) as cantidad_pasajeros FROM DBAS.pasajes pasajes
+GROUP BY pasajes.id_viaje
+GO
+
 CREATE FUNCTION DBAS.Top5AeronavesMasVacias(@semestreDelAnio tinyint, @anio integer)
 RETURNS @TOP5 TABLE (id_viaje bigint,matricula_aeronave varchar(100),butacas_vacias bigint,fecha_salida datetime,fecha_llegada datetime,codigo_ruta bigint)
 AS

@@ -68,7 +68,7 @@ CREATE TABLE DBAS.pasajes (
 	id_cliente  bigint NOT NULL,
 	id_viaje bigint NOT NULL,
 	id_butaca bigint,
-	fecha_compra_pasaje datetime NOT NULL,
+	fecha_compra_pasaje datetime DEFAULT(GETDATE()),
 	precio_pasaje float(24),
 	id_compra_PNR bigint,
 	id_cancelacion bigint
@@ -80,7 +80,7 @@ CREATE TABLE DBAS.encomiendas (
 	id_cliente bigint NOT NULL,
 	encomienda_cliente_KG float(24),
 	id_viaje bigint NOT NULL,
-	fecha_compra_encomienda datetime NOT NULL,
+	fecha_compra_encomienda datetime DEFAULT(GETDATE()),
 	precio_encomienda float(24),
 	id_compra_PNR bigint,
 	id_cancelacion bigint
@@ -1832,6 +1832,8 @@ END;
 GO
 
 
+/* -- Compra pasajes/encomiendas -- */
+
 --Saber si una aeronave tiene butacas suficientes para un viaje
 CREATE FUNCTION DBAS.tieneButacasSuficientes(@matricula_aeronave varchar(100),@id_viaje bigint)
 RETURNS tinyint
@@ -1858,3 +1860,116 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE DBAS.generarCompra(@id_comprador bigint, @tarjeta_Numero bigint, @tarjeta_Codigo bigint, @tarjeta_Fecha_de_vencimiento datetime, @tipo_tarjeta_id bigint, @cuoatas_elegidas smallint, @tipo_compra tinyint)
+AS
+BEGIN
+	DECLARE @ID_tarjeta bigint
+
+	IF(@tipo_compra = 1)
+	BEGIN
+	
+		INSERT INTO DBAS.tarjetas(tarjeta_Numero, tarjeta_Codigo, tarjeta_Fecha_de_vencimiento, cuoatas_elegidas, tipo_tarjeta_id)
+		VALUES (@tarjeta_Numero, @tarjeta_Codigo, @tarjeta_Fecha_de_vencimiento, @cuoatas_elegidas, @tipo_tarjeta_id)
+
+		SET @ID_tarjeta = SCOPE_IDENTITY()
+
+		INSERT INTO DBAS.compras(id_cliente, tarjeta_id)
+		VALUES(@id_comprador, @ID_tarjeta)
+
+	END
+	ELSE
+	BEGIN
+		INSERT INTO DBAS.compras(id_cliente)
+		VALUES(@id_comprador)
+	END
+
+END;
+GO
+
+
+/* -- cancelacion pasajes/encomiendas -- */
+
+CREATE VIEW DBAS.PasajesCancelados AS
+SELECT tablaCompras.id_compra_PNR, tablaCompras.id_cliente, 'motivo cancelacion' motivo_cancelacion, tablaPasajes.codigo_pasaje, tablaEncomiendas.codigo_encomienda
+FROM DBAS.pasajes tablaPasajes, DBAS.encomiendas tablaEncomiendas, DBAS.compras tablaCompras
+WHERE tablaPasajes.id_compra_PNR = tablaEncomiendas.id_compra_PNR AND tablaCompras.id_compra_PNR = tablaPasajes.id_compra_PNR 
+GO
+
+
+CREATE TRIGGER DBAS.cancelarPasajes ON DBAS.PasajesCancelados
+INSTEAD OF INSERT
+AS
+BEGIN
+	DECLARE @PNR bigint, @id_comprador bigint, @motivo_cancelacion varchar(100), @ID_cancelacion bigint, @codigo_pasaje bigint, @codigo_encomienda bigint , @mensaje_error varchar(100)
+
+	DECLARE cancelarCursor CURSOR FOR
+	SELECT @PNR, @id_comprador, @motivo_cancelacion, @codigo_pasaje, @codigo_encomienda FROM inserted
+
+	OPEN cancelarCursor
+
+	FETCH NEXT FROM cancelarCursor
+	INTO @PNR, @id_comprador, @motivo_cancelacion, @codigo_pasaje, @codigo_encomienda
+
+	IF EXISTS(SELECT * FROM DBAS.compras WHERE id_compra_PNR = @PNR AND id_cliente = @id_comprador)
+	BEGIN
+		
+		BEGIN TRANSACTION cancelacionPE
+		 
+		EXECUTE DBAS.cancelacionPasaje @motivo_cancelacion, @ID_cancelacion OUT
+
+		WHILE @@FETCH_STATUS = 0
+		BEGIN
+			IF EXISTS(SELECT * FROM DBAS.pasajes WHERE codigo_pasaje = @codigo_pasaje) AND @codigo_pasaje IS NOT NULL
+			BEGIN
+				UPDATE DBAS.pasajes SET id_cancelacion = @ID_cancelacion WHERE codigo_pasaje = @codigo_pasaje
+			END
+			ELSE
+			BEGIN
+				SET @mensaje_error = 'Hay un codigo de pasaje invalido'
+				RAISERROR(@mensaje_error, 12, 1)
+
+				CLOSE cancelarCursor
+				DEALLOCATE cancelarCursor
+
+				ROLLBACK TRANSACTION cancelacionPE
+				RETURN
+			END	
+			
+			IF EXISTS(SELECT * FROM DBAS.encomiendas WHERE codigo_encomienda = @codigo_encomienda) AND @codigo_encomienda IS NOT NULL
+			BEGIN
+				UPDATE DBAS.encomiendas SET id_cancelacion = @ID_cancelacion WHERE codigo_encomienda = @codigo_encomienda
+			END
+			ELSE
+			BEGIN
+				SET @mensaje_error = 'Hay un codigo de encomienda invalido'
+				RAISERROR(@mensaje_error, 12, 1)
+
+				CLOSE cancelarCursor
+				DEALLOCATE cancelarCursor
+				
+				ROLLBACK TRANSACTION cancelacionPE
+				RETURN
+			END
+			
+			FETCH NEXT FROM cancelarCursor
+			INTO @PNR, @id_comprador, @motivo_cancelacion, @codigo_pasaje, @codigo_encomienda
+
+		END
+
+		CLOSE cancelarCursor
+		DEALLOCATE cancelarCursor
+
+		COMMIT TRANSACTION cancelacionPE
+
+	END
+	ELSE
+	BEGIN
+		
+		SET @mensaje_error = 'El PNR ingresado es incorrecto'
+		RAISERROR(@mensaje_error, 12, 1)
+
+	END
+
+END;
+GO
+	

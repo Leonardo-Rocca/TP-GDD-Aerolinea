@@ -26,6 +26,7 @@ namespace AerolineaFrba.Compra
         {
             txtCityOrigen.Text = "";
             txtDestino.Text="";
+            dgvViaje.DataSource = null;
             this.Hide();
         }
 
@@ -99,9 +100,9 @@ namespace AerolineaFrba.Compra
             string precioKg = dataGridView1[4, dataGridView1.CurrentCell.RowIndex].Value.ToString();
             string matriculaAeronave = dataGridView1[6, dataGridView1.CurrentCell.RowIndex].Value.ToString();
 
-            Viaje vdammy = new Viaje(idViaje,fechaSalida,precioPasaje,precioKg,matriculaAeronave);
+            Viaje elViaje = new Viaje(idViaje,fechaSalida,precioPasaje,precioKg,matriculaAeronave);
            // vdammy.matriculaAeronave = "BZD-177";
-             (new compraForm(vdammy)).Show();
+             (new compraForm(elViaje)).Show();
              txtCityOrigen.Text = "";
              txtDestino.Text = "";
             this.Hide();

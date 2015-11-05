@@ -20,6 +20,15 @@ namespace AerolineaFrba.Compra
         internal static void realizarCompra()
         {
             //TO-DO 
+            string idCompra = "100";//dammy
+            PasajeEncomienda encomienda=  compra.encomiendas;
+            string queryEncomienda = "Insert into DBAS.encomiendas (id_cliente,encomienda_cliente_KG,id_viaje,precio_encomienda,id_compra_PNR) values (" +
+            encomienda.id + ", " + encomienda.butacaKg + ", " + compra.viaje.idViaje + " , " + compra.viaje.precioKg + " , " + idCompra;
+
+      /*      foreach(PasajeEncomienda pasajero in compra.pasajes){
+                string queryPasaje = "Insert into DBAS.encomiendas (id_cliente,encomienda_cliente_KG,id_viaje,precio_encomienda,id_compra_PNR) values (" +
+            encomienda.id + ", " + encomienda.butacaKg + ", " + compra.viaje.idViaje + " , " + compra.viaje.precioKg + " , " + idCompra;
+            }*/
         }
 
 

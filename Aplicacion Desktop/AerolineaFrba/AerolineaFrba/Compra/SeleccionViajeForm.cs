@@ -49,9 +49,16 @@ namespace AerolineaFrba.Compra
         {
             if(!validarCamposCompletos())return;
 
-            string query = "select id_viaje, matricula_aeronave from dbas.rutas r,dbas.viajes v WHERE r.codigo_ruta = v.codigo_ruta";
-
-            hacerQuery(query, dgvViaje);
+            string query = "select id_viaje,fecha_salida,fecha_llegada_estimada,(precio_base_por_pasaje*s.porcentaje_arancel) as precio_pasaje ,precio_base_por_KG as precio_por_KG," +
+            " s.tipo_servicio,v.matricula_aeronave" +
+            " FROM dbas.rutas r,dbas.viajes v,dbas.ciudades co,dbas.ciudades cd ,dbas.aeronaves a, dbas.servicios s" +
+            " WHERE habilitada_ruta = 1 AND r.codigo_ruta = v.codigo_ruta AND r.ciudad_origen_id=co.id_ciudad AND s.id_servicio = a.id_servicio AND " +
+            "r.ciudad_destino_id = cd.id_ciudad AND co.nombre_ciudad = '" + txtCityOrigen.Text + "' AND cd.nombre_ciudad = '" + txtDestino.Text + "' AND a.matricula_aeronave = v.matricula_aeronave" +
+            " AND datepart(year,fecha_salida) = '" + dateTimePicker1.Value.Year.ToString() +
+            "' AND datepart(MONTH,fecha_salida) = '" + dateTimePicker1.Value.Month.ToString() +
+            "' AND datepart(day,fecha_salida) = '" + dateTimePicker1.Value.Day.ToString() + "'";
+           
+               hacerQuery(query, dgvViaje);
 
         }
 
@@ -64,9 +71,15 @@ namespace AerolineaFrba.Compra
             if (txtDestino.Text == ""){
                 MessageBox.Show("Faltan completar Campos", "", MessageBoxButtons.OK);
                 return false;
-            } 
+            }
 
-            //VALIDAR FECHA
+            //VALIDAR FECHA    
+           int anterior= DateTime.Compare(DateTime.Parse(dateTimePicker1.Text), DateTime.Now);
+           if (anterior < 0)
+            {
+                MessageBox.Show("La fecha de salida debe ser posterior al dia de hoy", "Viaje", MessageBoxButtons.OK);
+                return false;
+            }
             return true;
 
         }
@@ -78,11 +91,17 @@ namespace AerolineaFrba.Compra
             
         }
 
-        private void seleccionar(DataGridView dgvViaje)
+        private void seleccionar(DataGridView dataGridView1)
         {
-            Viaje vdammy = new Viaje();
-            vdammy.matriculaAeronave = "BZD-177";
-             (new compraForm(vdammy)).Show();//mandar viaje
+            string idViaje = dataGridView1[0, dataGridView1.CurrentCell.RowIndex].Value.ToString();
+            string fechaSalida = dataGridView1[1, dataGridView1.CurrentCell.RowIndex].Value.ToString();
+            string precioPasaje = dataGridView1[3, dataGridView1.CurrentCell.RowIndex].Value.ToString();
+            string precioKg = dataGridView1[4, dataGridView1.CurrentCell.RowIndex].Value.ToString();
+            string matriculaAeronave = dataGridView1[6, dataGridView1.CurrentCell.RowIndex].Value.ToString();
+
+            Viaje vdammy = new Viaje(idViaje,fechaSalida,precioPasaje,precioKg,matriculaAeronave);
+           // vdammy.matriculaAeronave = "BZD-177";
+             (new compraForm(vdammy)).Show();
              txtCityOrigen.Text = "";
              txtDestino.Text = "";
             this.Hide();

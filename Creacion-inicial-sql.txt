@@ -696,6 +696,48 @@ END;
 GO
 
 
+CREATE FUNCTION DBAS.Top5DeLosDestinosConMasPasajesCancelados(@semestreDelAnio tinyint, @anio integer)
+RETURNS @TOP5 TABLE ( ciudad_origen varchar(100), ciudad_destino varchar(100), pasajes_cancelados bigint)
+AS
+BEGIN
+
+	DECLARE @anioDelSemestre datetime
+	SET @anioDelSemestre = convert(datetime, concat(@anio, '0701 00:00:00.000'))
+
+	IF (@semestreDelAnio = 1)
+	BEGIN
+
+		INSERT INTO @TOP5(ciudad_origen, ciudad_destino, pasajes_cancelados)
+		SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPasajes.codigo_pasaje) as pasajes_cancelados 
+		FROM DBAS.pasajes tablaPasajes, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
+		WHERE tablaPasajes.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaPasajes.id_cancelacion IS NOT NULL
+		AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id
+		AND tablaPasajes.fecha_compra_pasaje <  @anioDelSemestre AND DATEPART(year,tablaPasajes.fecha_compra_pasaje) = DATEPART(year,@anioDelSemestre)
+		GROUP BY tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad
+		ORDER BY pasajes_cancelados DESC
+
+		
+	END
+	ELSE
+		BEGIN
+
+			INSERT INTO @TOP5(ciudad_origen, ciudad_destino, pasajes_cancelados)
+			SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPasajes.codigo_pasaje) as pasajes_cancelados
+			FROM DBAS.pasajes tablaPasajes, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
+			WHERE tablaPasajes.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta  AND tablaPasajes.id_cancelacion IS NOT NULL
+			AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id
+			AND tablaPasajes.fecha_compra_pasaje >=  @anioDelSemestre AND DATEPART(year,tablaPasajes.fecha_compra_pasaje) = DATEPART(year,@anioDelSemestre)
+			GROUP BY tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad
+			ORDER BY pasajes_cancelados DESC
+
+		END
+
+	RETURN
+END;	
+GO
+
+
+
 CREATE FUNCTION DBAS.aeronaves_dias_fuera_de_servicio(@semestreDelAnio tinyint, @anio integer)
 RETURNS @aeronaves_dias_fuera_de_servicio TABLE ( aeronave varchar(100), dias_fuera_de_servicio bigint)
 AS
@@ -787,6 +829,46 @@ BEGIN
 END;
 GO
 
+<<<<<<< HEAD
+=======
+CREATE VIEW DBAS.cantidadPasajerosPorViaje AS
+SELECT pasajes.id_viaje,COUNT(codigo_pasaje) as cantidad_pasajeros FROM DBAS.pasajes pasajes
+GROUP BY pasajes.id_viaje
+GO
+
+CREATE FUNCTION DBAS.Top5AeronavesMasVacias(@semestreDelAnio tinyint, @anio integer)
+RETURNS @TOP5 TABLE (id_viaje bigint,matricula_aeronave varchar(100),butacas_vacias bigint,fecha_salida datetime,fecha_llegada datetime,codigo_ruta bigint)
+AS
+BEGIN
+	DECLARE @anioDelSemestre datetime
+	SET @anioDelSemestre = convert(datetime, concat(@anio,'0701 00:00:00.000'))
+
+	DECLARE @comienzoAnio datetime
+	SET @comienzoAnio = convert(datetime,concat(@anio,'0101 00:00:00.000'))
+
+	DECLARE @finAnio datetime
+	SET @finAnio = convert(datetime,concat(@anio,'1231 00:00:00.000'))
+
+	IF (@semestreDelAnio = 1)
+	BEGIN
+		INSERT INTO @TOP5(id_viaje,matricula_aeronave,butacas_vacias,fecha_salida,fecha_llegada,codigo_ruta)
+		SELECT TOP 5 tablaPasajeros.id_viaje,matricula_aeronave,(DBAS.cantidadButacas(matricula_aeronave)-cantidad_pasajeros) as butacas_vacias,fecha_salida,fecha_llegada,codigo_ruta
+		FROM DBAS.cantidadPasajerosPorViaje tablaPasajeros, DBAS.viajes viajes
+		WHERE tablaPasajeros.id_viaje = viajes.id_viaje AND fecha_salida >= @comienzoAnio AND fecha_salida < @anioDelSemestre
+		ORDER BY butacas_vacias DESC
+	END
+	ELSE
+	BEGIN
+		INSERT INTO @TOP5(id_viaje,matricula_aeronave,butacas_vacias,fecha_salida,fecha_llegada,codigo_ruta)
+		SELECT TOP 5 tablaPasajeros.id_viaje,matricula_aeronave,(DBAS.cantidadButacas(matricula_aeronave)-cantidad_pasajeros) as butacas_vacias,fecha_salida,fecha_llegada,codigo_ruta
+		FROM DBAS.cantidadPasajerosPorViaje tablaPasajeros, DBAS.viajes viajes
+		WHERE tablaPasajeros.id_viaje = viajes.id_viaje AND fecha_salida >= @anioDelSemestre AND fecha_salida < @finAnio
+		ORDER BY butacas_vacias DESC
+	END
+	RETURN
+END;
+GO
+>>>>>>> b94ab035e4339a399120b775f2541963300cfec2
 
 /*-- ABM Rol -- */
 
@@ -1750,3 +1832,31 @@ BEGIN
 
 END;
 GO
+
+
+--Saber si una aeronave tiene butacas suficientes para un viaje
+CREATE FUNCTION DBAS.tieneButacasSuficientes(@matricula_aeronave varchar(100),@id_viaje bigint)
+RETURNS tinyint
+AS
+BEGIN
+	DECLARE @cantidadPasajeros bigint
+	SET @cantidadPasajeros = ISNULL((SELECT cantidad_pasajeros FROM DBAS.cantidadPasajerosPorViaje WHERE id_viaje = @id_viaje),0)
+
+	DECLARE @cantidadButacas bigint
+	SET @cantidadButacas = DBAS.cantidadButacas(@matricula_aeronave)
+
+	DECLARE @asientosLibres bigint
+	SET @asientosLibres = (@cantidadButacas - @cantidadPasajeros)
+
+	IF @asientosLibres <= 0
+	BEGIN
+		RETURN 0
+	END
+	ELSE
+	BEGIN
+		RETURN 1
+	END
+	RETURN 0
+END;
+GO
+

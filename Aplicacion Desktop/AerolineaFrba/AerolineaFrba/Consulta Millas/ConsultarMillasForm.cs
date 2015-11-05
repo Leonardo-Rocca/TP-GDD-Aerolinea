@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using AerolineaFrba.Dominio;
+using AerolineaFrba.Utils;
 namespace AerolineaFrba.Consulta_Millas
 {
     public partial class ConsultarMillasForm : Form
@@ -27,7 +29,11 @@ namespace AerolineaFrba.Consulta_Millas
             DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
 
             string millas = dt.Rows[0][0].ToString();
-            if(millas=="")millas="0";
+            if(millas=="")//millas="0";
+            {MessageBox.Show("El dni: "+txtDni.Text+" no se encuentra en la base ");
+            return;
+            }
+
             MessageBox.Show("Usted tiene "+millas+" millas");
         }
 
@@ -40,11 +46,20 @@ namespace AerolineaFrba.Consulta_Millas
         private void inicializar()
         {
             txtDni.Text = "";
+            dgvmillas.DataSource = null;
         }
 
         private void btPuntos_Click(object sender, EventArgs e)
         {
+            if (txtDni.Text == "")
+            {
+                MessageBox.Show("Complete su dni");
+                return;
+            }
 
+            CompletadorDeTablas.hacerQuery("select * from dbas.historialMillas ("+txtDni.Text+")", ref dgvmillas);
+
+            dgvmillas.Columns.Remove("seleccionar");
         }
     }
 }

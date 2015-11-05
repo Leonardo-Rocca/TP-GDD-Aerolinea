@@ -104,11 +104,16 @@ namespace AerolineaFrba.Compra
 
         private void txtDni_TextChanged(object sender, EventArgs e)
         {     //VERIFICAR SOLO NUMEROS                              TO-DO
-            
+            if (txtDni.Text.Length < 5) return;
+
            dni = txtDni.Text;
            string query = "select* from dbas.personas WHERE dni_persona ="+dni;
             DataTable dt =(new ConexionSQL()).cargarTablaSQL(query);
             if(dt.Rows.Count==0)return;
+            if (dt.Rows.Count > 1) {
+                MessageBox.Show("Hay inconsistencia en la base de datos por DNI repetido. Dirigirse a hablar con el administrador");
+                return;
+            }
             txtnombre.Text = dt.Rows[0][2].ToString();
             txtApellido.Text = dt.Rows[0][3].ToString();
             txtDireccion.Text = dt.Rows[0][4].ToString();

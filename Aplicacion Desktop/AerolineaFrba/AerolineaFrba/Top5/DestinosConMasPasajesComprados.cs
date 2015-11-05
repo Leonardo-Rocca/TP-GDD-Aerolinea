@@ -109,7 +109,7 @@ namespace AerolineaFrba.Top5
             }
 
             anio = Convert.ToInt32(textBox1.Text);
-            if (anio < 1800 || anio > DateTime.Now.Year)
+            if (anio < 0 || anio > 2030)//DateTime.Now.Year)
             {
                 MessageBox.Show("El año especificado se encuentra fuera de los rangos validos", "Destinos con mas pasajes Comprados", MessageBoxButtons.OK);
                 dataGridView1.DataSource = null;

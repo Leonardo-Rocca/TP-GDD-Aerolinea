@@ -1849,3 +1849,31 @@ BEGIN
 
 END;
 GO
+
+
+--Saber si una aeronave tiene butacas suficientes para un viaje
+CREATE FUNCTION DBAS.tieneButacasSuficientes(@matricula_aeronave varchar(100),@id_viaje bigint)
+RETURNS tinyint
+AS
+BEGIN
+	DECLARE @cantidadPasajeros bigint
+	SET @cantidadPasajeros = ISNULL((SELECT cantidad_pasajeros FROM DBAS.cantidadPasajerosPorViaje WHERE id_viaje = @id_viaje),0)
+
+	DECLARE @cantidadButacas bigint
+	SET @cantidadButacas = DBAS.cantidadButacas(@matricula_aeronave)
+
+	DECLARE @asientosLibres bigint
+	SET @asientosLibres = (@cantidadButacas - @cantidadPasajeros)
+
+	IF @asientosLibres <= 0
+	BEGIN
+		RETURN 0
+	END
+	ELSE
+	BEGIN
+		RETURN 1
+	END
+	RETURN 0
+END;
+GO
+

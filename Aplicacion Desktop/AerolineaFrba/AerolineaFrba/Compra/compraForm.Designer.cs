@@ -73,24 +73,26 @@
             // 
             // btPasaje
             // 
+            this.btPasaje.BackColor = System.Drawing.Color.Turquoise;
             this.btPasaje.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btPasaje.Location = new System.Drawing.Point(385, 134);
             this.btPasaje.Name = "btPasaje";
             this.btPasaje.Size = new System.Drawing.Size(106, 49);
             this.btPasaje.TabIndex = 17;
             this.btPasaje.Text = "Agregar Pasaje";
-            this.btPasaje.UseVisualStyleBackColor = true;
+            this.btPasaje.UseVisualStyleBackColor = false;
             this.btPasaje.Click += new System.EventHandler(this.btPasaje_Click);
             // 
             // btEncomienda
             // 
+            this.btEncomienda.BackColor = System.Drawing.Color.Turquoise;
             this.btEncomienda.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btEncomienda.Location = new System.Drawing.Point(385, 228);
             this.btEncomienda.Name = "btEncomienda";
             this.btEncomienda.Size = new System.Drawing.Size(106, 49);
             this.btEncomienda.TabIndex = 18;
             this.btEncomienda.Text = "Agregar Encomienda";
-            this.btEncomienda.UseVisualStyleBackColor = true;
+            this.btEncomienda.UseVisualStyleBackColor = false;
             this.btEncomienda.Click += new System.EventHandler(this.btEncomienda_Click);
             // 
             // cmbPasaje

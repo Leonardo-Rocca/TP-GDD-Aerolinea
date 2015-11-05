@@ -45,8 +45,8 @@
             // 
             // btBuscar
             // 
-            this.btBuscar.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btBuscar.Location = new System.Drawing.Point(440, 380);
+            this.btBuscar.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btBuscar.Location = new System.Drawing.Point(519, 414);
             this.btBuscar.Name = "btBuscar";
             this.btBuscar.Size = new System.Drawing.Size(130, 58);
             this.btBuscar.TabIndex = 14;
@@ -57,7 +57,7 @@
             // btCancelar
             // 
             this.btCancelar.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btCancelar.Location = new System.Drawing.Point(86, 380);
+            this.btCancelar.Location = new System.Drawing.Point(165, 414);
             this.btCancelar.Name = "btCancelar";
             this.btCancelar.Size = new System.Drawing.Size(130, 58);
             this.btCancelar.TabIndex = 13;
@@ -68,7 +68,7 @@
             // txtCityOrigen
             // 
             this.txtCityOrigen.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCityOrigen.Location = new System.Drawing.Point(189, 94);
+            this.txtCityOrigen.Location = new System.Drawing.Point(267, 94);
             this.txtCityOrigen.Name = "txtCityOrigen";
             this.txtCityOrigen.Size = new System.Drawing.Size(306, 26);
             this.txtCityOrigen.TabIndex = 11;
@@ -77,7 +77,7 @@
             // 
             this.lbNombreOrigen.AutoSize = true;
             this.lbNombreOrigen.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbNombreOrigen.Location = new System.Drawing.Point(38, 97);
+            this.lbNombreOrigen.Location = new System.Drawing.Point(116, 97);
             this.lbNombreOrigen.Name = "lbNombreOrigen";
             this.lbNombreOrigen.Size = new System.Drawing.Size(114, 20);
             this.lbNombreOrigen.TabIndex = 10;
@@ -86,7 +86,7 @@
             // txtDestino
             // 
             this.txtDestino.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtDestino.Location = new System.Drawing.Point(189, 139);
+            this.txtDestino.Location = new System.Drawing.Point(267, 139);
             this.txtDestino.Name = "txtDestino";
             this.txtDestino.Size = new System.Drawing.Size(306, 26);
             this.txtDestino.TabIndex = 16;
@@ -95,7 +95,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(38, 142);
+            this.label1.Location = new System.Drawing.Point(116, 142);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(122, 20);
             this.label1.TabIndex = 15;
@@ -103,7 +103,7 @@
             // 
             // dateTimePicker1
             // 
-            this.dateTimePicker1.Location = new System.Drawing.Point(189, 191);
+            this.dateTimePicker1.Location = new System.Drawing.Point(267, 191);
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.Size = new System.Drawing.Size(306, 20);
             this.dateTimePicker1.TabIndex = 17;
@@ -112,7 +112,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(49, 191);
+            this.label2.Location = new System.Drawing.Point(127, 191);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(54, 20);
             this.label2.TabIndex = 18;
@@ -122,7 +122,7 @@
             // 
             this.lbTitulo.AutoSize = true;
             this.lbTitulo.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbTitulo.Location = new System.Drawing.Point(216, 24);
+            this.lbTitulo.Location = new System.Drawing.Point(319, 20);
             this.lbTitulo.Name = "lbTitulo";
             this.lbTitulo.Size = new System.Drawing.Size(187, 25);
             this.lbTitulo.TabIndex = 19;
@@ -131,7 +131,7 @@
             // btsDestino
             // 
             this.btsDestino.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btsDestino.Location = new System.Drawing.Point(516, 139);
+            this.btsDestino.Location = new System.Drawing.Point(594, 139);
             this.btsDestino.Name = "btsDestino";
             this.btsDestino.Size = new System.Drawing.Size(124, 29);
             this.btsDestino.TabIndex = 21;
@@ -142,7 +142,7 @@
             // btsOringen
             // 
             this.btsOringen.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btsOringen.Location = new System.Drawing.Point(516, 88);
+            this.btsOringen.Location = new System.Drawing.Point(594, 88);
             this.btsOringen.Name = "btsOringen";
             this.btsOringen.Size = new System.Drawing.Size(124, 29);
             this.btsOringen.TabIndex = 20;
@@ -153,17 +153,18 @@
             // dgvViaje
             // 
             this.dgvViaje.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvViaje.Location = new System.Drawing.Point(26, 241);
+            this.dgvViaje.Location = new System.Drawing.Point(23, 250);
             this.dgvViaje.Name = "dgvViaje";
-            this.dgvViaje.Size = new System.Drawing.Size(605, 122);
+            this.dgvViaje.Size = new System.Drawing.Size(812, 122);
             this.dgvViaje.TabIndex = 41;
             this.dgvViaje.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvViaje_CellContentClick);
             // 
-            // compraPasajeForm
+            // SeleccionViajeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(665, 456);
+            this.BackColor = System.Drawing.Color.LightBlue;
+            this.ClientSize = new System.Drawing.Size(850, 501);
             this.Controls.Add(this.dgvViaje);
             this.Controls.Add(this.btsDestino);
             this.Controls.Add(this.btsOringen);
@@ -176,7 +177,7 @@
             this.Controls.Add(this.btCancelar);
             this.Controls.Add(this.txtCityOrigen);
             this.Controls.Add(this.lbNombreOrigen);
-            this.Name = "compraPasajeForm";
+            this.Name = "SeleccionViajeForm";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.dgvViaje)).EndInit();
             this.ResumeLayout(false);

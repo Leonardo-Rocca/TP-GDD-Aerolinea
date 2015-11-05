@@ -23,14 +23,14 @@ namespace AerolineaFrba.Compra
             InitializeComponent();
             inicializar();
             btEncomienda.Visible = false;
-            viaje = new Viaje();
-            viaje.matriculaAeronave = "BZD-177";
+       //     viaje = new Viaje();
+       //     viaje.matriculaAeronave = "BZD-177";
         }
         public compraForm(Viaje v)
         {
             InitializeComponent();
             viaje = v;
-            btEncomienda.Visible = false;
+          //  btEncomienda.Visible = false;
             inicializar();
         }
 

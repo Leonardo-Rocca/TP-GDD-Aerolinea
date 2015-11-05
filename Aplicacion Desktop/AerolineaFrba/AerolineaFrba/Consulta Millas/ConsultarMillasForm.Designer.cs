@@ -34,9 +34,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.txtDni = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.dgvmillas = new System.Windows.Forms.DataGridView();
             this.btPuntos = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvmillas)).BeginInit();
             this.SuspendLayout();
             // 
             // botonVolver
@@ -100,13 +100,13 @@
             this.label3.TabIndex = 49;
             this.label3.Text = "Consulta de Puntos:";
             // 
-            // dataGridView2
+            // dgvmillas
             // 
-            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.Location = new System.Drawing.Point(22, 198);
-            this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.Size = new System.Drawing.Size(606, 116);
-            this.dataGridView2.TabIndex = 50;
+            this.dgvmillas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvmillas.Location = new System.Drawing.Point(22, 198);
+            this.dgvmillas.Name = "dgvmillas";
+            this.dgvmillas.Size = new System.Drawing.Size(606, 116);
+            this.dgvmillas.TabIndex = 50;
             // 
             // btPuntos
             // 
@@ -126,7 +126,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(647, 409);
             this.Controls.Add(this.btPuntos);
-            this.Controls.Add(this.dataGridView2);
+            this.Controls.Add(this.dgvmillas);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtDni);
@@ -135,7 +135,7 @@
             this.Controls.Add(this.label1);
             this.Name = "ConsultarMillasForm";
             this.Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvmillas)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -149,7 +149,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtDni;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.DataGridView dataGridView2;
+        private System.Windows.Forms.DataGridView dgvmillas;
         private System.Windows.Forms.Button btPuntos;
     }
 }

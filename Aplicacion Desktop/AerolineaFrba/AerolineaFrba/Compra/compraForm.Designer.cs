@@ -86,7 +86,7 @@
             // btEncomienda
             // 
             this.btEncomienda.BackColor = System.Drawing.Color.Turquoise;
-            this.btEncomienda.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btEncomienda.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btEncomienda.Location = new System.Drawing.Point(385, 228);
             this.btEncomienda.Name = "btEncomienda";
             this.btEncomienda.Size = new System.Drawing.Size(106, 49);

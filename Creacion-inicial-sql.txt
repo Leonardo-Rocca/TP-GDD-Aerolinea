@@ -720,6 +720,48 @@ END;
 GO
 
 
+CREATE FUNCTION DBAS.Top5DeLosDestinosConMasPasajesCancelados(@semestreDelAnio tinyint, @anio integer)
+RETURNS @TOP5 TABLE ( ciudad_origen varchar(100), ciudad_destino varchar(100), pasajes_cancelados bigint)
+AS
+BEGIN
+
+	DECLARE @anioDelSemestre datetime
+	SET @anioDelSemestre = convert(datetime, concat(@anio, '0701 00:00:00.000'))
+
+	IF (@semestreDelAnio = 1)
+	BEGIN
+
+		INSERT INTO @TOP5(ciudad_origen, ciudad_destino, pasajes_cancelados)
+		SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPasajes.codigo_pasaje) as pasajes_cancelados 
+		FROM DBAS.pasajes tablaPasajes, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
+		WHERE tablaPasajes.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaPasajes.id_cancelacion IS NOT NULL
+		AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id
+		AND tablaPasajes.fecha_compra_pasaje <  @anioDelSemestre AND DATEPART(year,tablaPasajes.fecha_compra_pasaje) = DATEPART(year,@anioDelSemestre)
+		GROUP BY tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad
+		ORDER BY pasajes_cancelados DESC
+
+		
+	END
+	ELSE
+		BEGIN
+
+			INSERT INTO @TOP5(ciudad_origen, ciudad_destino, pasajes_cancelados)
+			SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPasajes.codigo_pasaje) as pasajes_cancelados
+			FROM DBAS.pasajes tablaPasajes, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
+			WHERE tablaPasajes.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta  AND tablaPasajes.id_cancelacion IS NOT NULL
+			AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id
+			AND tablaPasajes.fecha_compra_pasaje >=  @anioDelSemestre AND DATEPART(year,tablaPasajes.fecha_compra_pasaje) = DATEPART(year,@anioDelSemestre)
+			GROUP BY tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad
+			ORDER BY pasajes_cancelados DESC
+
+		END
+
+	RETURN
+END;	
+GO
+
+
+
 CREATE FUNCTION DBAS.aeronaves_dias_fuera_de_servicio(@semestreDelAnio tinyint, @anio integer)
 RETURNS @aeronaves_dias_fuera_de_servicio TABLE ( aeronave varchar(100), dias_fuera_de_servicio bigint)
 AS

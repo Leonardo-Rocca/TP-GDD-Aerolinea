@@ -413,7 +413,7 @@ CREATE PROCEDURE DBAS.migracionCiudades
 AS
 BEGIN
 	
-	--Se migran las ciudades destino y origen quedando solo las que no se repiten
+	--Se migran las ciudades destino y origen quedando solo las que no se repiten, además se elimina el espacio que hay al principio de cada ciudad
 	INSERT INTO DBAS.ciudades(nombre_ciudad)
 	SELECT DISTINCT SUBSTRING(Ruta_Ciudad_Origen,2,LEN(Ruta_Ciudad_Origen)-1) FROM gd_esquema.Maestra UNION SELECT DISTINCT SUBSTRING(Ruta_Ciudad_Destino,2,LEN(Ruta_Ciudad_Origen)-1) FROM gd_esquema.Maestra
 
@@ -423,7 +423,7 @@ GO
 CREATE PROCEDURE DBAS.migracionServicios
 AS
 BEGIN
-	--Se migran los servivios de la tabla maestra
+	--Se migran los servivios de la tabla maestra y el porcentaje de arancel de cada uno
 	INSERT INTO DBAS.servicios(tipo_servicio, porcentaje_arancel)
 	SELECT Tipo_Servicio, ROUND(SUM(Pasaje_Precio/Ruta_Precio_BasePasaje)/COUNT(Pasaje_Codigo),2) FROM gd_esquema.Maestra 
 	WHERE Pasaje_Codigo != 0
@@ -440,7 +440,8 @@ BEGIN
 	DECLARE @precio_pasaje float(24)
 	DECLARE @id_servicio bigint
 	DECLARE @id_ruta bigint
-	
+
+	--Obtengo todas las rutas de la base maestra y obtengo las id de las ciudades y servicios ya migrados
 	DECLARE migrarRutasConServicios CURSOR FOR
 	SELECT DISTINCT tablaCiudades_orig.id_ciudad, tablaCiudades_dest.id_ciudad, tablaAux2.Ruta_Precio_BaseKG, tablaAux1.Ruta_Precio_BasePasaje, tablaServicios.id_servicio
 			FROM ((SELECT DISTINCT Ruta_Codigo, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BasePasaje, Tipo_Servicio FROM gd_esquema.Maestra WHERE Ruta_Precio_BasePasaje > 0.00) tablaAux1
@@ -657,7 +658,7 @@ SELECT tablaUsuarios.id_usuario, tablaRoles.id_rol FROM DBAS.usuarios tablaUsuar
 WHERE tablaRoles.nombre_rol = 'Administrador General' and tablaUsuarios.username = 'admin'
 GO
 
----Inserto productos
+-- Inserto productos
 INSERT INTO DBAS.productos(valor_en_milas,nombre_producto,stock)
 VALUES (2500,'cafetera',50)
 GO
@@ -677,1055 +678,6 @@ GO
 INSERT INTO DBAS.productos(valor_en_milas,nombre_producto,stock)
 VALUES (15000,'televisor',1)
 GO
-
-/*-- TOP 5 -- */
-
-CREATE FUNCTION DBAS.Top5DeLosDestinosConMasPasajesComprados(@semestreDelAnio tinyint, @anio integer)
-RETURNS @TOP5 TABLE ( ciudad_origen varchar(100), ciudad_destino varchar(100), pasajes_comprados bigint)
-AS
-BEGIN
-
-	DECLARE @anioDelSemestre datetime
-	SET @anioDelSemestre = convert(datetime, concat(@anio, '0701 00:00:00.000'))
-
-	IF (@semestreDelAnio = 1)
-	BEGIN
-
-		INSERT INTO @TOP5(ciudad_origen, ciudad_destino, pasajes_comprados)
-		SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPasajes.codigo_pasaje) as pasajes_comprados FROM DBAS.pasajes tablaPasajes, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
-		WHERE tablaPasajes.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id
-			AND tablaPasajes.fecha_compra_pasaje <  @anioDelSemestre AND DATEPART(year,tablaPasajes.fecha_compra_pasaje) = DATEPART(year,@anioDelSemestre)
-		GROUP BY tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad
-		ORDER BY pasajes_comprados DESC
-
-		
-	END
-	ELSE
-		BEGIN
-
-			INSERT INTO @TOP5(ciudad_origen, ciudad_destino, pasajes_comprados)
-			SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPasajes.codigo_pasaje) as pasajes_comprados FROM DBAS.pasajes tablaPasajes, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
-			WHERE tablaPasajes.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id
-			AND tablaPasajes.fecha_compra_pasaje >=  @anioDelSemestre AND DATEPART(year,tablaPasajes.fecha_compra_pasaje) = DATEPART(year,@anioDelSemestre)
-			GROUP BY tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad
-			ORDER BY pasajes_comprados DESC
-
-		END
-
-	RETURN
-END;	
-GO
-
-
-CREATE FUNCTION DBAS.Top5DeLosDestinosConMasPasajesCancelados(@semestreDelAnio tinyint, @anio integer)
-RETURNS @TOP5 TABLE ( ciudad_origen varchar(100), ciudad_destino varchar(100), pasajes_cancelados bigint)
-AS
-BEGIN
-
-	DECLARE @anioDelSemestre datetime
-	SET @anioDelSemestre = convert(datetime, concat(@anio, '0701 00:00:00.000'))
-
-	IF (@semestreDelAnio = 1)
-	BEGIN
-
-		INSERT INTO @TOP5(ciudad_origen, ciudad_destino, pasajes_cancelados)
-		SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPasajes.codigo_pasaje) as pasajes_cancelados 
-		FROM DBAS.pasajes tablaPasajes, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
-		WHERE tablaPasajes.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaPasajes.id_cancelacion IS NOT NULL
-		AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id
-		AND tablaPasajes.fecha_compra_pasaje <  @anioDelSemestre AND DATEPART(year,tablaPasajes.fecha_compra_pasaje) = DATEPART(year,@anioDelSemestre)
-		GROUP BY tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad
-		ORDER BY pasajes_cancelados DESC
-
-		
-	END
-	ELSE
-		BEGIN
-
-			INSERT INTO @TOP5(ciudad_origen, ciudad_destino, pasajes_cancelados)
-			SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPasajes.codigo_pasaje) as pasajes_cancelados
-			FROM DBAS.pasajes tablaPasajes, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
-			WHERE tablaPasajes.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta  AND tablaPasajes.id_cancelacion IS NOT NULL
-			AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id
-			AND tablaPasajes.fecha_compra_pasaje >=  @anioDelSemestre AND DATEPART(year,tablaPasajes.fecha_compra_pasaje) = DATEPART(year,@anioDelSemestre)
-			GROUP BY tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad
-			ORDER BY pasajes_cancelados DESC
-
-		END
-
-	RETURN
-END;	
-GO
-
-CREATE FUNCTION DBAS.aeronaves_dias_fuera_de_servicio(@semestreDelAnio tinyint, @anio integer)
-RETURNS @aeronaves_dias_fuera_de_servicio TABLE ( aeronave varchar(100), dias_fuera_de_servicio bigint)
-AS
-BEGIN
-
-	DECLARE @anioDelSemestre datetime
-	SET @anioDelSemestre = convert(datetime, concat(@anio, '0701 00:00:00.000'))
-
-	IF (@semestreDelAnio = 1)
-	BEGIN
-		
-		INSERT INTO @aeronaves_dias_fuera_de_servicio(aeronave, dias_fuera_de_servicio)
-		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,tablaPeriodos.fecha_reinicio_servicio)) as cantidad_dias_fuera_de_servicio 
-		FROM DBAS.periodosFueraDeServicio tablaPeriodos, DBAS.aeronaves tablaAeronaves
-		WHERE tablaPeriodos.fecha_reinicio_servicio IS NOT null AND tablaPeriodos.fecha_reinicio_servicio < @anioDelSemestre AND DATEPART(year,tablaPeriodos.fecha_reinicio_servicio) = DATEPART(year,@anioDelSemestre)
-		GROUP BY tablaAeronaves.matricula_aeronave) 
-		UNION ALL
-		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,GETDATE())) as cantidad_dias_fuera_de_servicio 
-		FROM DBAS.periodosFueraDeServicio tablaPeriodos, DBAS.aeronaves tablaAeronaves
-		WHERE tablaPeriodos.fecha_reinicio_servicio IS null AND GETDATE() < @anioDelSemestre AND DATEPART(year,GETDATE()) = DATEPART(year,@anioDelSemestre)
-		GROUP BY tablaAeronaves.matricula_aeronave)
-				
-	END
-	ELSE
-	BEGIN
-
-		INSERT INTO @aeronaves_dias_fuera_de_servicio(aeronave, dias_fuera_de_servicio)
-		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,tablaPeriodos.fecha_reinicio_servicio)) as cantidad_dias_fuera_de_servicio 
-		FROM DBAS.periodosFueraDeServicio tablaPeriodos, DBAS.aeronaves tablaAeronaves
-		WHERE tablaPeriodos.fecha_reinicio_servicio IS NOT null AND tablaPeriodos.fecha_reinicio_servicio >= @anioDelSemestre AND DATEPART(year,tablaPeriodos.fecha_reinicio_servicio) = DATEPART(year,@anioDelSemestre)
-		GROUP BY tablaAeronaves.matricula_aeronave) 
-		UNION ALL
-		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,GETDATE())) as cantidad_dias_fuera_de_servicio 
-		FROM DBAS.periodosFueraDeServicio tablaPeriodos, DBAS.aeronaves tablaAeronaves
-		WHERE tablaPeriodos.fecha_reinicio_servicio IS null AND GETDATE() >= @anioDelSemestre AND DATEPART(year,GETDATE()) = DATEPART(year,@anioDelSemestre)
-		GROUP BY tablaAeronaves.matricula_aeronave)
-
-	END
-
-	RETURN
-END;	
-GO
-
-CREATE FUNCTION DBAS.Top5AeronavesConMayorCantidadDeDiasFueraDeServicio(@semestreDelAnio tinyint, @anio integer)
-RETURNS @TOP5 TABLE ( aeronave varchar(100), dias_fuera_de_servicio bigint)
-AS
-BEGIN
-	INSERT INTO @TOP5(aeronave, dias_fuera_de_servicio)
-	SELECT TOP 5 tablaDias.aeronave,SUM(tablaDias.dias_fuera_de_servicio) AS tiempo_fuera_servicio
-	FROM DBAS.aeronaves_dias_fuera_de_servicio(@semestreDelAnio, @anio) tablaDias
-	GROUP BY tablaDias.aeronave
-	ORDER BY tiempo_fuera_servicio DESC
-				
-	RETURN
-END;	
-GO
-
-
-CREATE FUNCTION DBAS.Top5ClientesConMasPuntosAcumulados(@semestreDelAnio tinyint, @anio integer)
-RETURNS @TOP5 TABLE (id_cliente bigint, puntos_acumulados bigint)
-AS
-BEGIN
-	DECLARE @anioDelSemestre datetime
-	SET @anioDelSemestre = convert(datetime, concat(@anio,'0701 00:00:00.000'))
-
-	DECLARE @comienzoAnio datetime
-	SET @comienzoAnio = convert(datetime,concat(@anio,'0101 00:00:00.000'))
-
-	DECLARE @finAnio datetime
-	SET @finAnio = convert(datetime,concat(@anio,'1231 00:00:00.000'))
-
-	IF (@semestreDelAnio = 1)
-	BEGIN
-		INSERT INTO @TOP5(id_cliente,puntos_acumulados)
-		SELECT TOP 5 id_cliente, SUM(millas) as puntos
-		FROM DBAS.millasAcumuladasEntre(@comienzoAnio,@anioDelSemestre)
-		GROUP BY id_cliente
-		ORDER BY puntos DESC
-	END
-	ELSE
-	BEGIN
-		INSERT INTO @TOP5(id_cliente,puntos_acumulados)
-		SELECT TOP 5 id_cliente, SUM(millas) as puntos
-		FROM DBAS.millasAcumuladasEntre(@anioDelSemestre,@finAnio) 
-		GROUP BY id_cliente
-		ORDER BY puntos DESC
-	END
-	RETURN
-END;
-GO
-
-CREATE VIEW DBAS.cantidadPasajerosPorViaje AS
-SELECT pasajes.id_viaje,COUNT(codigo_pasaje) as cantidad_pasajeros FROM DBAS.pasajes pasajes
-GROUP BY pasajes.id_viaje
-GO
-
-CREATE VIEW DBAS.cantidadKgEncomiendasPorViaje AS
-SELECT encomiendas.id_viaje,SUM(encomienda_cliente_KG) as cantidad_kg FROM DBAS.encomiendas encomiendas
-GROUP BY encomiendas.id_viaje
-GO
-
-
-CREATE FUNCTION DBAS.Top5AeronavesMasVacias(@semestreDelAnio tinyint, @anio integer)
-RETURNS @TOP5 TABLE (id_viaje bigint,matricula_aeronave varchar(100),butacas_vacias bigint,fecha_salida datetime,fecha_llegada datetime,codigo_ruta bigint)
-AS
-BEGIN
-	DECLARE @anioDelSemestre datetime
-	SET @anioDelSemestre = convert(datetime, concat(@anio,'0701 00:00:00.000'))
-
-	DECLARE @comienzoAnio datetime
-	SET @comienzoAnio = convert(datetime,concat(@anio,'0101 00:00:00.000'))
-
-	DECLARE @finAnio datetime
-	SET @finAnio = convert(datetime,concat(@anio,'1231 00:00:00.000'))
-
-	IF (@semestreDelAnio = 1)
-	BEGIN
-		INSERT INTO @TOP5(id_viaje,matricula_aeronave,butacas_vacias,fecha_salida,fecha_llegada,codigo_ruta)
-		SELECT TOP 5 tablaPasajeros.id_viaje,matricula_aeronave,(DBAS.cantidadButacas(matricula_aeronave)-cantidad_pasajeros) as butacas_vacias,fecha_salida,fecha_llegada,codigo_ruta
-		FROM DBAS.cantidadPasajerosPorViaje tablaPasajeros, DBAS.viajes viajes
-		WHERE tablaPasajeros.id_viaje = viajes.id_viaje AND fecha_salida >= @comienzoAnio AND fecha_salida < @anioDelSemestre
-		ORDER BY butacas_vacias DESC
-	END
-	ELSE
-	BEGIN
-		INSERT INTO @TOP5(id_viaje,matricula_aeronave,butacas_vacias,fecha_salida,fecha_llegada,codigo_ruta)
-		SELECT TOP 5 tablaPasajeros.id_viaje,matricula_aeronave,(DBAS.cantidadButacas(matricula_aeronave)-cantidad_pasajeros) as butacas_vacias,fecha_salida,fecha_llegada,codigo_ruta
-		FROM DBAS.cantidadPasajerosPorViaje tablaPasajeros, DBAS.viajes viajes
-		WHERE tablaPasajeros.id_viaje = viajes.id_viaje AND fecha_salida >= @anioDelSemestre AND fecha_salida < @finAnio
-		ORDER BY butacas_vacias DESC
-	END
-	RETURN
-END;
-GO
-
-
-/*-- ABM Rol -- */
-
-CREATE FUNCTION DBAS.obtenerFuncionalidadesAsociadas(@nombreRol varchar(100))
-RETURNS TABLE
-AS
-RETURN
-(
-	SELECT tablaFuncionalidades.descripcion FROM ((SELECT * FROM DBAS.roles WHERE nombre_rol = @nombreRol) unRol 
-		JOIN DBAS.rolesPorFuncionalidad tablaRpF ON (unRol.id_rol = tablaRpF.id_rol)
-		JOIN DBAS.funcionalidades tablaFuncionalidades ON (tablaFuncionalidades.id_funcionalidad = tablaRpF.id_funcionalidad))
-);
-GO
-
-/*
-SELECT * FROM DBAS.obtenerFuncionalidadesAsociadas('Administrador General')
-GO
-*/
-
-CREATE PROCEDURE DBAS.loginUsuario(@usuario varchar(100), @pass varchar(100))
-AS
-BEGIN
-	DECLARE @U_id bigint
-	DECLARE @U_password varchar(100)
-	DECLARE @U_habilitado tinyint
-	DECLARE @U_rol_id bigint
-	DECLARE @cantidad_intentos tinyint
-	DECLARE @mensaje_error varchar(100)
-	DECLARE @nombre_rol varchar(100)
-
-	SELECT @U_id = tablaUsuarios.id_usuario, @U_password = password, @U_habilitado = habilitado, @cantidad_intentos = intentos_fallidos, @U_rol_id = tablaUporR.id_rol FROM DBAS.usuarios tablaUsuarios, DBAS.usuariosPorRol tablaUporR WHERE tablaUsuarios.username = @usuario AND tablaUporR.id_usuario = tablaUsuarios.id_usuario
-	IF (@U_id IS NOT NULL)
-	BEGIN
-		IF(@U_habilitado != 1)
-		BEGIN
-			SET @mensaje_error = 'El usuario ingresado se encuentra deshabilitado'
-			RAISERROR(@mensaje_error, 12, 1)
-		END
-		ELSE
-		BEGIN
-			IF(@U_password != @pass)
-			BEGIN
-				IF(@cantidad_intentos < 2)
-				BEGIN
-					UPDATE DBAS.usuarios SET intentos_fallidos = @cantidad_intentos + 1  WHERE username = @usuario
-					SET @mensaje_error = 'Password invalida'
-					RAISERROR(@mensaje_error, 12, 1)
-				END
-				ELSE
-				BEGIN
-					UPDATE DBAS.usuarios SET intentos_fallidos = @cantidad_intentos + 1, habilitado = 0   WHERE username = @usuario
-					SET @mensaje_error = 'Password invalida, alcanzo la cantidad de intentos maximos. Se desactivara la cuenta por seguridad'
-					RAISERROR(@mensaje_error, 12, 1)
-				END
-			END
-			ELSE
-			BEGIN
-				UPDATE DBAS.usuarios SET intentos_fallidos = 0  WHERE username = @usuario
-
-				SELECT @nombre_rol = nombre_rol FROM DBAS.roles WHERE id_rol = @U_rol_id
-				SELECT * FROM DBAS.obtenerFuncionalidadesAsociadas(@nombre_rol)
-			END
-		END
-	END
-	ELSE
-	BEGIN
-		SET @mensaje_error = 'El usuario ingresado no existe'
-		RAISERROR(@mensaje_error, 12, 1)
-	END
-END;
-GO
-
-
-CREATE VIEW DBAS.modificarRoles AS
-SELECT tablaRoles.id_rol, tablaRoles.nombre_rol, tablaRoles.habilitado_rol, tablaRporF.id_funcionalidad FROM DBAS.rolesPorFuncionalidad tablaRporF, DBAS.roles tablaRoles 
-WHERE tablaRporF.id_rol = tablaRoles.id_rol
-GO
-
-CREATE TRIGGER DBAS.modificarRol ON DBAS.modificarRoles
-INSTEAD OF INSERT
-AS
-BEGIN
-	DECLARE @habilitado_rol tinyint
-	DECLARE @nombre_rol varchar(100)
-	DECLARE @id_funcionalidad bigint
-	DECLARE @id_rol bigint
-	DECLARE @valor_insertado tinyint
-	DECLARE @habilitado_estado tinyint
-
-	DECLARE obtenerRolYFuncionalidades CURSOR FOR
-	SELECT id_rol, nombre_rol, habilitado_rol, id_funcionalidad FROM inserted
-
-	OPEN obtenerRolYFuncionalidades
-
-	-- Inserto lo que obtiene el cursor en las variables
-	FETCH NEXT FROM obtenerRolYFuncionalidades
-	INTO @id_rol, @nombre_rol, @habilitado_rol, @id_funcionalidad
-
-	SELECT @habilitado_estado = habilitado_rol FROM DBAS.roles WHERE id_rol = @id_rol
-
-	IF(@habilitado_estado = 1 AND @habilitado_rol = 0)
-	BEGIN
-		DELETE FROM DBAS.usuariosPorRol WHERE id_rol = @id_rol
-	END
-
-	UPDATE DBAS.roles SET nombre_rol = @nombre_rol, habilitado_rol = @habilitado_rol WHERE id_rol = @id_rol
-
-	DELETE FROM DBAS.rolesPorFuncionalidad
-	WHERE id_rol = @id_rol
-
-	WHILE @@FETCH_STATUS = 0
-	BEGIN
-
-		INSERT INTO DBAS.rolesPorFuncionalidad(id_rol, id_funcionalidad)
-		VALUES(@id_rol, @id_funcionalidad)
-
-		-- Inserto lo que obtiene el cursor en las variables
-		FETCH NEXT FROM obtenerRolYFuncionalidades
-		INTO @nombre_rol, @id_funcionalidad
-
-	END
-
-	CLOSE obtenerRolYFuncionalidades
-	DEALLOCATE obtenerRolYFuncionalidades
-
-END;
-GO
-
-
-CREATE VIEW DBAS.rolesConFuncionalidades AS
-SELECT tablaRoles.nombre_rol, tablaRporF.id_funcionalidad FROM DBAS.rolesPorFuncionalidad tablaRporF, DBAS.roles tablaRoles 
-WHERE tablaRporF.id_rol = tablaRoles.id_rol
-GO
-
-CREATE TRIGGER DBAS.crearRolConFuncionalidades ON DBAS.rolesConFuncionalidades
-INSTEAD OF INSERT
-AS
-BEGIN
-
-	DECLARE @nombre_rol varchar(100)
-	DECLARE @id_funcionalidad bigint
-	DECLARE @id_rol bigint
-	DECLARE @valor_insertado tinyint
-
-	SET @valor_insertado = 0
-	
-	DECLARE obtenerRolYFuncionalidades CURSOR FOR
-	SELECT nombre_rol, id_funcionalidad FROM inserted
-
-	OPEN obtenerRolYFuncionalidades
-
-	-- Inserto lo que obtiene el cursor en las variables
-	FETCH NEXT FROM obtenerRolYFuncionalidades
-	INTO @nombre_rol, @id_funcionalidad
-
-	WHILE @@FETCH_STATUS = 0
-	BEGIN
-		IF(@valor_insertado = 0)
-		BEGIN
-			INSERT INTO DBAS.roles(nombre_rol)
-			VALUES(@nombre_rol)
-
-			SET @id_rol = SCOPE_IDENTITY()
-			SET @valor_insertado =1
-		END
-
-		INSERT INTO rolesPorFuncionalidad(id_rol, id_funcionalidad)
-		VALUES(@id_rol, @id_funcionalidad)
-
-		-- Inserto lo que obtiene el cursor en las variables
-		FETCH NEXT FROM obtenerRolYFuncionalidades
-		INTO @nombre_rol, @id_funcionalidad
-
-	END
-
-	CLOSE obtenerRolYFuncionalidades
-	DEALLOCATE obtenerRolYFuncionalidades
-
-END;
-GO
-
-CREATE PROCEDURE DBAS.altaPersona(
-	@dni_persona bigint ,
-	@nombre_persona varchar(100),
-	@apellido_persona varchar(100),
-	@direccion_persona varchar(100),
-	@telefono_persona varchar(50),
-	@mail_persona varchar(100),
-	@fecha_nacimiento datetime,
-	@ID_persona bigint OUT)
-AS
-BEGIN
-	
-	INSERT INTO DBAS.personas(dni_persona,nombre_persona,apellido_persona,direccion_persona,telefono_persona,mail_persona,fecha_nacimiento)
-	VALUES( @dni_persona,@nombre_persona,@apellido_persona,@direccion_persona,@telefono_persona,@mail_persona,@fecha_nacimiento)
-
-	SET @ID_persona = SCOPE_IDENTITY()
-
-END;
-GO
-
-CREATE PROCEDURE DBAS.altaCliente(@dni_persona bigint ,
-	@nombre_persona varchar(100),
-	@apellido_persona varchar(100),
-	@direccion_persona varchar(100),
-	@telefono_persona varchar(50),
-	@mail_persona varchar(100),
-	@fecha_nacimiento datetime)
-AS
-BEGIN
-	DECLARE @ID_persona bigint
-
-	EXECUTE DBAS.altaPersona @dni_persona,@nombre_persona,@apellido_persona,@direccion_persona,	@telefono_persona,@mail_persona,@fecha_nacimiento, @ID_persona OUT
-
-	INSERT INTO DBAS.clientes(id_persona)
-	VALUES (@ID_persona)
-
-END;
-GO
-
-/* -- ABM Aeronave -- */
-
-CREATE PROCEDURE DBAS.altaAeronave(@ID_fabricante bigint, @ID_servicio bigint, @matricula_aeronave varchar(100), @modelo varchar(100), @KG_disponible float(24), @butacas_pasillo bigint, @butacas_ventana bigint, @piso tinyint)
-AS
-BEGIN
-	DECLARE @mensaje_error varchar(100)
-	DECLARE @nro_butaca bigint
-	DECLARE @butacas_pasillo_AUX bigint
-	DECLARE @butacas_ventana_AUX bigint
-	
-	SET @nro_butaca = 0
-	
-	IF EXISTS(SELECT * FROM DBAS.aeronaves WHERE matricula_aeronave = @matricula_aeronave)
-	BEGIN
-		SET @mensaje_error = 'La matricula ingresada ya existe'
-		RAISERROR(@mensaje_error, 12, 1)
-	END
-	ELSE
-	BEGIN
-		INSERT INTO DBAS.aeronaves(matricula_aeronave, modelo_aeronave, kg_disponible_encomienda, id_fabricante, id_servicio)
-		VALUES(@matricula_aeronave, @modelo, @KG_disponible, @ID_fabricante, @ID_servicio)
-
-		WHILE(@piso != 0)
-		BEGIN
-			SET @butacas_pasillo_AUX = @butacas_pasillo
-			SET @butacas_ventana_AUX = @butacas_ventana
-
-			WHILE(@butacas_pasillo_AUX != 0)
-			BEGIN
-				SET @nro_butaca += 1
-
-				INSERT INTO DBAS.butacas(matricula_aeronave, numero_butaca, piso_butaca, tipo_butaca)
-				VALUES(@matricula_aeronave, @nro_butaca, @piso, 'Pasillo')
-
-				SET @butacas_pasillo_AUX -= 1
-			END
-
-			WHILE(@butacas_ventana_AUX != 0)
-			BEGIN
-				SET @nro_butaca += 1
-
-				INSERT INTO DBAS.butacas(matricula_aeronave, numero_butaca, piso_butaca, tipo_butaca)
-				VALUES(@matricula_aeronave, @nro_butaca, @piso, 'Ventanilla')
-
-				SET @butacas_ventana_AUX -= 1
-			END
-		
-			SET @piso -= 1
-		
-		END
-
-	END
-END;
-GO
-
-
-
-CREATE PROCEDURE DBAS.cancelacionPasaje(@motivo_cancelacion varchar(100), @ID_cancelacion bigint OUT)
-AS
-BEGIN
-	INSERT INTO DBAS.cancelaciones(fecha_devolucion, motivo_cancelacion)
-	VALUES(GETDATE(), @motivo_cancelacion)
-
-	SET @ID_cancelacion = SCOPE_IDENTITY()
-
-END;
-GO
-
-CREATE PROCEDURE DBAS.actualizarBajaAeronave(@fecha datetime, @matricula_aeronave varchar(100), @tipo_cancelacion tinyint)
-AS
-BEGIN
-	IF(@tipo_cancelacion = 1)
-	BEGIN
-		UPDATE DBAS.aeronaves SET fecha_reinsercion = @fecha WHERE matricula_aeronave = @matricula_aeronave
-	END
-	ELSE
-	BEGIN
-		UPDATE DBAS.aeronaves SET fecha_baja_servicio_definitiva = @fecha WHERE matricula_aeronave = @matricula_aeronave
-	END
-END;
-GO
-
-CREATE FUNCTION DBAS.estaEnViajeAeronave(@matricula_aeronave varchar(100)) 
-RETURNS tinyint
-AS
-BEGIN
-	IF EXISTS(SELECT * FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave AND fecha_salida < GETDATE() AND fecha_llegada IS NULL)
-	BEGIN
-		RETURN 0
-	END
-	
-	RETURN 1
-END;
-GO
-
-CREATE FUNCTION DBAS.ciudadAeronave(@matricula_aeronave varchar(100)) 
-RETURNS bigint
-AS
-BEGIN
-
-	RETURN (SELECT TOP 1 tablaCiudades.id_ciudad FROM DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades 
-	WHERE tablaViajes.matricula_aeronave = @matricula_aeronave AND tablaViajes.fecha_llegada <= GETDATE() 
-	AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaRutas.ciudad_destino_id = tablaCiudades.id_ciudad
-	ORDER BY tablaViajes.fecha_llegada DESC)
-	
-END;
-GO
-
-CREATE FUNCTION DBAS.ultimaLlegadaConfirmadaAeronave(@matricula_aeronave varchar(100)) 
-RETURNS bigint
-AS
-BEGIN
-	DECLARE @id_viaje bigint
-
-	IF NOT EXISTS(SELECT TOP 1 id_viaje FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave AND fecha_llegada IS NULL)
-	BEGIN
-		SELECT TOP 1 @id_viaje = id_viaje FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave ORDER BY fecha_salida DESC
-	END
-	ELSE
-	BEGIN
-		SET @id_viaje = NULL
-	END
-	
-	RETURN @id_viaje
-END;
-GO
-
-CREATE FUNCTION DBAS.aeronavesDisponiblesParaReemplazo()
-RETURNS @aeronavesDisponiblesParaReemplazo TABLE (matricula_aeronave varchar(100),id_viaje bigint)
-AS
-BEGIN
-
-	DECLARE @matriculaAer varchar (100)
-	DECLARE @id_Viaje bigint
-
-	DECLARE aeronaves CURSOR FOR
-	SELECT matricula_aeronave FROM DBAS.aeronaves WHERE (fecha_reinsercion <= GETDATE() OR fecha_reinsercion IS NULL) AND fecha_baja_servicio_definitiva IS NULL
-
-	OPEN aeronaves
-
-	FETCH NEXT FROM aeronaves
-	INTO @matriculaAer
-
-	WHILE @@FETCH_STATUS = 0
-	BEGIN
-		IF EXISTS(SELECT * FROM DBAS.viajes WHERE matricula_aeronave = @matriculaAer)
-		BEGIN
-			SET @id_Viaje = DBAS.ultimaLlegadaConfirmadaAeronave(@matriculaAer)
-			IF(@id_Viaje IS NOT NULL)
-			BEGIN
-				INSERT INTO @aeronavesDisponiblesParaReemplazo VALUES (@matriculaAer,@id_Viaje)
-			END
-		END
-		ELSE
-		BEGIN
-			INSERT INTO @aeronavesDisponiblesParaReemplazo VALUES (@matriculaAer,NULL)
-		END
-		
-		FETCH NEXT FROM aeronaves
-		INTO @matriculaAer
-	END
-
-	CLOSE aeronaves
-	DEALLOCATE aeronaves
-
-	RETURN
-
-END;
-GO
-
-CREATE FUNCTION DBAS.aeronavesDisponiblesSinVuelo(@matricula_aeronave varchar(100))
-RETURNS @avionesSinVuelo TABLE (matricula_aeronave varchar(100))
-AS 
-BEGIN
-	DECLARE @ciudad_actual_id bigint
-	
-	SET @ciudad_actual_id = DBAS.ciudadAeronave(@matricula_aeronave)
-	
-	INSERT INTO  @avionesSinVuelo
-	SELECT DISTINCT tablaViajes.matricula_aeronave FROM DBAS.viajes tablaViajes, DBAS.aeronavesDisponiblesParaReemplazo() tablaAeronavesTemp, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades
-	WHERE (tablaAeronavesTemp.id_viaje = tablaViajes.id_viaje OR tablaAeronavesTemp.id_viaje IS NULL) AND tablaViajes.fecha_llegada <= GETDATE() 
-	AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaRutas.ciudad_destino_id = @ciudad_actual_id
-
-	RETURN	
-		
-END;
-GO
-
-CREATE FUNCTION DBAS.cantidadButacas(@matricula_aeronave varchar(100))
-RETURNS INTEGER
-AS
-BEGIN
-
-	RETURN (SELECT COUNT(id_butaca) FROM DBAS.butacas WHERE matricula_aeronave = @matricula_aeronave AND piso_butaca != 0)
-
-END;
-GO
-
-CREATE TRIGGER DBAS.reemplazarButacasEnViajes ON DBAS.viajes
-AFTER UPDATE
-AS
-BEGIN
-		DECLARE @id_viaje bigint
-		DECLARE @matricula_aeronave_nueva varchar(100)
-		DECLARE @id_pasaje bigint
-		DECLARE @id_butaca bigint
-	
-		DECLARE viajesCursor CURSOR FOR
-		SELECT id_viaje, matricula_aeronave FROM inserted
-
-		OPEN viajesCursor
-
-		FETCH NEXT FROM viajesCursor
-		INTO @id_viaje, @matricula_aeronave_nueva
-
-		WHILE @@FETCH_STATUS = 0
-		BEGIN
-			UPDATE DBAS.viajes SET matricula_aeronave = @matricula_aeronave_nueva WHERE id_viaje = @id_viaje
-
-			DECLARE pasajesCursor CURSOR FOR
-			SELECT @id_pasaje FROM  DBAS.pasajes
-			WHERE  DBAS.pasajes.id_viaje = @id_viaje
-
-			DECLARE butacaCursor CURSOR FOR
-			SELECT @id_butaca FROM  DBAS.butacas
-			WHERE  matricula_aeronave = @matricula_aeronave_nueva
-			
-			OPEN pasajesCursor
-			OPEN butacaCursor
-
-			FETCH NEXT FROM pasajesCursor
-			INTO @id_pasaje
-
-			FETCH NEXT FROM butacaCursor
-			INTO @id_butaca
-
-			WHILE @@FETCH_STATUS = 0
-			BEGIN
-
-				UPDATE DBAS.pasajes SET id_butaca = @id_butaca WHERE id_viaje = @id_viaje
-
-				FETCH NEXT FROM butacaCursor
-				INTO @id_butaca
-
-				FETCH NEXT FROM pasajesCursor
-				INTO @id_pasaje
-			END
-
-			CLOSE pasajesCursor
-			DEALLOCATE pasajesCursor
-
-			CLOSE butacaCursor
-			DEALLOCATE butacaCursor
-			
-			FETCH NEXT FROM viajesCursor
-			INTO @id_viaje, @matricula_aeronave_nueva
-		
-		END
-
-		CLOSE viajesCursor
-		DEALLOCATE viajesCursor
-END;
-GO
-
-
-CREATE PROCEDURE DBAS.cancelacionPasajesBajaAeronave(@fecha datetime, @matricula_aeronave varchar(100), @tipo_cancelacion tinyint)
-AS
-BEGIN
-	DECLARE @ID_cancelacion bigint
-	DECLARE @motivo_cancelacion varchar(100)
-
-	SET @motivo_cancelacion = 'La aeronave fue dada de baja'
-
-	EXECUTE DBAS.cancelacionPasaje @motivo_cancelacion, @ID_cancelacion OUT
-
-	IF(@tipo_cancelacion = 1)
-	BEGIN
-		UPDATE tablaPasajes SET tablaPasajes.id_cancelacion = @ID_cancelacion 
-		FROM  DBAS.viajes tablaViajes, DBAS.pasajes tablaPasajes
-		WHERE tablaViajes.fecha_salida > GETDATE() AND tablaViajes.fecha_salida < @fecha 
-		AND tablaPasajes.id_viaje = tablaViajes.id_viaje
-		AND tablaViajes.matricula_aeronave = @matricula_aeronave
-	
-		UPDATE tablaEncomiendas SET tablaEncomiendas.id_cancelacion = @ID_cancelacion 
-		FROM  DBAS.viajes tablaViajes, DBAS.encomiendas tablaEncomiendas
-		WHERE  tablaViajes.fecha_salida > GETDATE() AND tablaViajes.fecha_salida < @fecha 
-		AND tablaEncomiendas.id_viaje = tablaViajes.id_viaje
-		AND tablaViajes.matricula_aeronave = @matricula_aeronave
-
-		EXECUTE DBAS.actualizarBajaAeronave @fecha, @matricula_aeronave, @tipo_cancelacion
-	
-	END
-	ELSE
-	BEGIN
-
-		UPDATE tablaPasajes SET tablaPasajes.id_cancelacion = @ID_cancelacion 
-		FROM  DBAS.viajes tablaViajes, DBAS.pasajes tablaPasajes
-		WHERE  tablaViajes.fecha_salida > GETDATE()
-		AND tablaPasajes.id_viaje = tablaViajes.id_viaje
-		AND tablaViajes.matricula_aeronave = @matricula_aeronave
-		
-		UPDATE tablaEncomiendas SET tablaEncomiendas.id_cancelacion = @ID_cancelacion 
-		FROM  DBAS.viajes tablaViajes, DBAS.encomiendas tablaEncomiendas
-		WHERE tablaViajes.fecha_salida > GETDATE()
-		AND tablaEncomiendas.id_viaje = tablaViajes.id_viaje
-		AND tablaViajes.matricula_aeronave = @matricula_aeronave
-
-		EXECUTE DBAS.actualizarBajaAeronave @fecha, @matricula_aeronave, @tipo_cancelacion
-		
-	END
-END;
-GO
-
-CREATE PROCEDURE DBAS.reemplazarAeronave(@matricula_aeronave_original varchar(100),@matricula_aeronave_nueva varchar(100),@baja_temporal tinyint, @fecha datetime)
-AS 
-BEGIN
-	IF (@baja_temporal = 1)
-	BEGIN
-
-		UPDATE DBAS.viajes SET matricula_aeronave = @matricula_aeronave_nueva 
-		WHERE fecha_salida > GETDATE() AND fecha_salida < @fecha AND matricula_aeronave = @matricula_aeronave_original
-
-	END
-	ELSE
-	BEGIN
-	
-		UPDATE DBAS.viajes SET matricula_aeronave = @matricula_aeronave_nueva 
-		WHERE fecha_salida > GETDATE() AND matricula_aeronave = @matricula_aeronave_original
-
-	END
-END;
-GO
-
-
-CREATE FUNCTION DBAS.aeronavesDeReemplazo(@matricula_aeronave varchar(100))
-RETURNS @avionesSinVuelo TABLE (matricula_aeronave varchar(100), cantidad_butacas bigint)
-AS 
-BEGIN
-
-	INSERT INTO @avionesSinVuelo
-	SELECT tablaAeronaves1.matricula_aeronave, DBAS.cantidadButacas(tablaAeronaves1.matricula_aeronave) FROM  DBAS.aeronavesDisponiblesSinVuelo(@matricula_aeronave) avionesDisponibles, DBAS.aeronaves tablaAeronaves1, DBAS.aeronaves tablaAeronaves2
-	WHERE DBAS.cantidadButacas(avionesDisponibles.matricula_aeronave) >= DBAS.cantidadButacas(@matricula_aeronave) AND tablaAeronaves1.matricula_aeronave = avionesDisponibles.matricula_aeronave AND tablaAeronaves2.matricula_aeronave = @matricula_aeronave
-	AND tablaAeronaves1.id_servicio = tablaAeronaves2.id_servicio AND tablaAeronaves1.id_fabricante = tablaAeronaves2.id_fabricante
-	
-	RETURN
-END;
-GO
-
-CREATE PROCEDURE DBAS.bajaAeronave(@fecha datetime, @matricula_aeronave varchar(100), @tipo_cancelacion tinyint)
-AS
-BEGIN
-	DECLARE @mensaje_error varchar(100)
-	DECLARE @ciudad_actual_id bigint
-	IF EXISTS(SELECT * FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave)
-	BEGIN
-
-		IF (DBAS.estaEnViajeAeronave(@matricula_aeronave) = 0)
-		BEGIN
-			SET @mensaje_error = 'No puede dar de baja la aeronave, esta en vuelo'
-			RAISERROR(@mensaje_error, 12, 1)
-		
-		END
-		ELSE
-		BEGIN
-			SET @mensaje_error = 'La aeronave esta en uso'
-			RAISERROR(@mensaje_error, 12, 1)
-		END
-	END
-	ELSE
-	BEGIN
-		EXECUTE DBAS.actualizarBajaAeronave @fecha, @matricula_aeronave, @tipo_cancelacion
-	END
-END;
-GO
-
-
-CREATE PROCEDURE DBAS.modificarAeronave(@matricula_aeronave varchar(100), @ID_fabricante bigint, @ID_servicio bigint, @matricula_aeronave_nueva varchar(100), @modelo varchar(100), @KG_disponible float(24), @butacas_pasillo bigint, @butacas_ventana bigint, @piso tinyint)
-AS
-BEGIN
-	DECLARE @mensaje_error varchar(100)
-
-	IF EXISTS(SELECT * FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave)
-	BEGIN
-		SET @mensaje_error = 'La aeronave fue usada, no puede modificarla'
-		RAISERROR(@mensaje_error, 12, 1)
-	END
-	ELSE
-	BEGIN
-		DELETE DBAS.butacas WHERE matricula_aeronave = @matricula_aeronave
-		DELETE DBAS.aeronaves WHERE matricula_aeronave = @matricula_aeronave
-
-		EXECUTE DBAS.altaAeronave @ID_fabricante, @ID_servicio, @matricula_aeronave_nueva, @modelo, @KG_disponible, @butacas_pasillo, @butacas_ventana, @piso
-	END
-END;
-GO
-
-
-/* -- Rutas -- */
-
-CREATE VIEW DBAS.caracteristicasRutas AS
-SELECT tablaRutas.codigo_ruta, tablaRutas.precio_base_por_KG, tablaRutas.precio_base_por_pasaje, tablaCiudad_origen.nombre_ciudad as ciudad_Origen, tablaCiudad_destino.nombre_ciudad as ciudad_Destino, tablaServicios.tipo_servicio, tablaServicios.porcentaje_arancel
-FROM DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudad_origen, DBAS.ciudades tablaCiudad_destino, DBAS.servicios tablaServicios, DBAS.serviciosPorRutas tablaSporR
-WHERE tablaRutas.habilitada_ruta = 1 AND tablaRutas.ciudad_origen_id = tablaCiudad_origen.id_ciudad AND tablaRutas.ciudad_destino_id = tablaCiudad_destino.id_ciudad
-AND tablaSporR.codigo_ruta = tablaRutas.codigo_ruta AND tablaServicios.id_servicio = tablaSporR.id_servicio
-GO
-
-CREATE TRIGGER DBAS.altaRutas ON DBAS.caracteristicasRutas
-INSTEAD OF INSERT
-AS
-BEGIN
-	DECLARE @codigo_ruta bigint
-	DECLARE @ciudad_Origen varchar(100)
-	DECLARE @ciudad_Destino varchar(100)
-	DECLARE @ID_ciudad_Origen bigint
-	DECLARE @ID_ciudad_Destino bigint
-	DECLARE @tipo_servicio varchar(100)
-	DECLARE @precio_KG float(24)
-	DECLARE @precio_pasaje float(24)
-	DECLARE @id_servicio bigint
-
-	DECLARE rutasCursor CURSOR FOR
-	SELECT CAST(precio_base_por_KG AS float(24)), CAST(precio_base_por_pasaje AS float(24)), ciudad_Origen, ciudad_Destino, tipo_servicio FROM inserted
-
-	OPEN rutasCursor
-
-	FETCH NEXT FROM rutasCursor
-	INTO @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
-
-	SELECT @ID_ciudad_Origen = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Origen
-	SELECT @ID_ciudad_Destino = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Destino
-
-	INSERT INTO DBAS.rutas(precio_base_por_KG, precio_base_por_pasaje, ciudad_origen_id, ciudad_destino_id)
-	VALUES (@precio_KG, @precio_pasaje, @ID_ciudad_Origen, @ID_ciudad_Destino)
-
-	SET @codigo_ruta = SCOPE_IDENTITY()
-	
-	WHILE @@FETCH_STATUS = 0
-	BEGIN
-		SELECT @id_servicio = id_servicio FROM DBAS.servicios WHERE tipo_servicio = @tipo_servicio
-
-		INSERT INTO DBAS.serviciosPorRutas(codigo_ruta, id_servicio)
-		VALUES (@codigo_ruta, @id_servicio)
-
-		FETCH NEXT FROM rutasCursor
-		INTO @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
-	END
-
-	CLOSE rutasCursor
-	DEALLOCATE rutasCursor
-
-END;
-GO
-
-
-CREATE TRIGGER DBAS.modificacionRutas ON DBAS.caracteristicasRutas
-INSTEAD OF UPDATE
-AS
-BEGIN
-	DECLARE @codigo_ruta bigint
-	DECLARE @ciudad_Origen varchar(100)
-	DECLARE @ciudad_Destino varchar(100)
-	DECLARE @ID_ciudad_Origen bigint
-	DECLARE @ID_ciudad_Destino bigint
-	DECLARE @tipo_servicio varchar(100)
-	DECLARE @precio_KG float(24)
-	DECLARE @precio_pasaje float(24)
-	DECLARE @id_servicio bigint
-
-	DECLARE rutasCursor CURSOR FOR
-	SELECT codigo_ruta, CAST(precio_base_por_KG AS float(24)), CAST(precio_base_por_pasaje AS float(24)), ciudad_Origen, ciudad_Destino, tipo_servicio FROM inserted
-
-	OPEN rutasCursor
-
-	FETCH NEXT FROM rutasCursor
-	INTO @codigo_ruta, @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
-
-	SELECT @ID_ciudad_Origen = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Origen
-	SELECT @ID_ciudad_Destino = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Destino
-
-	UPDATE DBAS.rutas SET precio_base_por_KG = @precio_KG, precio_base_por_pasaje = @precio_pasaje, ciudad_origen_id = @ID_ciudad_Origen, ciudad_destino_id = @ID_ciudad_Destino WHERE codigo_ruta = @codigo_ruta
-
-	DELETE FROM DBAS.serviciosPorRutas
-	WHERE codigo_ruta = @codigo_ruta
-	
-	WHILE @@FETCH_STATUS = 0
-	BEGIN
-		SELECT @id_servicio = id_servicio FROM DBAS.servicios WHERE tipo_servicio = @tipo_servicio
-
-		INSERT INTO DBAS.serviciosPorRutas(codigo_ruta, id_servicio)
-		VALUES (@codigo_ruta, @id_servicio)
-
-		FETCH NEXT FROM rutasCursor
-		INTO @codigo_ruta, @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
-
-	END
-
-	CLOSE rutasCursor
-	DEALLOCATE rutasCursor
-
-END;
-GO
-
-CREATE PROCEDURE DBAS.bajaRuta(@codigo_ruta bigint)
-AS
-BEGIN
-	DECLARE @mensaje_error varchar(100)
-	
-	IF EXISTS(SELECT * FROM DBAS.viajes WHERE codigo_ruta = @codigo_ruta AND fecha_salida > GETDATE())
-	BEGIN
-		SET @mensaje_error = 'Hay viajes futuros por esta ruta'
-		RAISERROR(@mensaje_error, 12, 1)
-	END
-	ELSE
-	BEGIN
-		UPDATE DBAS.rutas SET habilitada_ruta = 0 WHERE codigo_ruta = @codigo_ruta
-	END
-END;
-GO
-
-CREATE PROCEDURE DBAS.bajaRutaYCancelarPasajes(@codigo_ruta bigint)
-AS
-BEGIN
-	DECLARE @motivo_cancelacion varchar(100)
-	DECLARE @ID_cancelacion bigint
-	
-	SET @motivo_cancelacion = 'Baja ruta de vuelo' 
-
-	EXECUTE DBAS.cancelacionPasaje @motivo_cancelacion, @ID_cancelacion OUT
-		
-	UPDATE tablaPasajes SET tablaPasajes.id_cancelacion = @ID_cancelacion 
-	FROM  DBAS.viajes tablaViajes, DBAS.pasajes tablaPasajes
-	WHERE tablaViajes.fecha_salida > GETDATE()
-	AND tablaPasajes.id_viaje = tablaViajes.id_viaje
-	AND tablaViajes.codigo_ruta= @codigo_ruta
-	
-	UPDATE tablaEncomiendas SET tablaEncomiendas.id_cancelacion = @ID_cancelacion 
-	FROM  DBAS.viajes tablaViajes, DBAS.encomiendas tablaEncomiendas
-	WHERE  tablaViajes.fecha_salida > GETDATE()
-	AND tablaEncomiendas.id_viaje = tablaViajes.id_viaje
-	AND tablaViajes.codigo_ruta= @codigo_ruta
-
-END;
-GO
-
-/* -- ABM Viajes -- */
-
-
-CREATE FUNCTION DBAS.ultimaCiudadAeronave(@matricula_aeronave varchar(100)) 
-RETURNS bigint
-AS
-BEGIN
-
-	RETURN (SELECT TOP 1 tablaViajes.id_viaje FROM DBAS.viajes tablaViajes, DBAS.aeronaves tablaAeronaves 
-	WHERE tablaViajes.matricula_aeronave = @matricula_aeronave 
-	AND tablaAeronaves.matricula_aeronave = @matricula_aeronave AND (tablaAeronaves.fecha_reinsercion <= GETDATE() OR tablaAeronaves.fecha_reinsercion IS NULL) AND tablaAeronaves.fecha_baja_servicio_definitiva IS NULL 
-	ORDER BY tablaViajes.fecha_salida DESC)
-	
-END;
-GO
-
-CREATE PROCEDURE DBAS.altaViaje(@matricula_aeronave varchar(100), @fecha_salida datetime, @fecha_llegada_estimada datetime, @codigo_ruta bigint)
-AS
-BEGIN
-	DECLARE @ID_viaje bigint
-	DECLARE @ID_ultima_ciudad bigint
-	DECLARE @ID_ciudad_origen_nueva bigint
-	DECLARE @fecha_disponible datetime
-
-	DECLARE @mensaje_error varchar(100)
-	
-
-	SET @ID_viaje = DBAS.ultimaCiudadAeronave(@matricula_aeronave)
-
-	SELECT @ID_ultima_ciudad = tablaRutas.ciudad_destino_id, @fecha_disponible = tablaViajes.fecha_llegada_estimada FROM DBAS.viajes tablaViajes, DBAS.rutas tablaRutas
-	WHERE tablaViajes.id_viaje = @ID_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta
-	
-	IF(@fecha_disponible >= @fecha_salida)
-	BEGIN
-		
-		SET @mensaje_error = 'La fecha de salida ingresada no esta disponible'
-		RAISERROR(@mensaje_error, 12, 1)
-
-	END
-	ELSE
-	BEGIN
-		SELECT @ID_ciudad_origen_nueva = ciudad_origen_id FROM DBAS.rutas WHERE codigo_ruta = @codigo_ruta
-
-		IF(@ID_ultima_ciudad != @ID_ciudad_origen_nueva)
-		BEGIN
-
-			SET @mensaje_error = 'La ruta seleccionada no comienza en la ciudad de la aeronave'
-			RAISERROR(@mensaje_error, 12, 1)
-
-		END
-		ELSE
-		BEGIN
-			IF NOT EXISTS(SELECT * FROM DBAS.aeronaves tablaAeronaves, DBAS.serviciosPorRutas tablaSporR 
-				WHERE tablaAeronaves.matricula_aeronave = @matricula_aeronave AND tablaSporR.codigo_ruta = @codigo_ruta AND tablaAeronaves.id_servicio = tablaSporR.codigo_ruta)
-			BEGIN
-
-				SET @mensaje_error = 'El servicio de la aeronave no es posible para esta ruta'
-				RAISERROR(@mensaje_error, 12, 1)
-
-			END
-			ELSE
-			BEGIN
-				INSERT INTO DBAS.viajes(fecha_salida, fecha_llegada_estimada, codigo_ruta, matricula_aeronave)
-				VALUES(@fecha_salida, @fecha_llegada_estimada, @codigo_ruta, @matricula_aeronave)
-			END
-		END
-	END
-END;
-GO
-
 
 /* -- Calculo de millas -- */
 
@@ -1856,6 +808,1211 @@ BEGIN
 END;
 GO
 
+
+/*-- TOP 5 -- */
+
+CREATE FUNCTION DBAS.Top5DeLosDestinosConMasPasajesComprados(@semestreDelAnio tinyint, @anio integer)
+RETURNS @TOP5 TABLE ( ciudad_origen varchar(100), ciudad_destino varchar(100), pasajes_comprados bigint)
+AS
+BEGIN
+	
+	-- Me pasan por parametro el año y lo concateno con una fecha generica que sirve para indicar luego a que semestre pertenece
+	DECLARE @anioDelSemestre datetime
+	SET @anioDelSemestre = convert(datetime, concat(@anio, '0701 00:00:00.000'))
+
+	IF (@semestreDelAnio = 1)
+	BEGIN
+		
+		-- Devuelvo una tabla con los pasajes más comprados en base a las ciudades de origen y destino en el primer semestre
+		INSERT INTO @TOP5(ciudad_origen, ciudad_destino, pasajes_comprados)
+		SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPasajes.codigo_pasaje) as pasajes_comprados FROM DBAS.pasajes tablaPasajes, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
+		WHERE tablaPasajes.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id
+			AND tablaPasajes.fecha_compra_pasaje <  @anioDelSemestre AND DATEPART(year,tablaPasajes.fecha_compra_pasaje) = DATEPART(year,@anioDelSemestre)
+		GROUP BY tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad
+		ORDER BY pasajes_comprados DESC
+
+		
+	END
+	ELSE
+		BEGIN
+
+			-- Devuelvo una tabla con los pasajes más comprados en base a las ciudades de origen y destino en el segundo semestre
+			INSERT INTO @TOP5(ciudad_origen, ciudad_destino, pasajes_comprados)
+			SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPasajes.codigo_pasaje) as pasajes_comprados FROM DBAS.pasajes tablaPasajes, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
+			WHERE tablaPasajes.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id
+			AND tablaPasajes.fecha_compra_pasaje >=  @anioDelSemestre AND DATEPART(year,tablaPasajes.fecha_compra_pasaje) = DATEPART(year,@anioDelSemestre)
+			GROUP BY tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad
+			ORDER BY pasajes_comprados DESC
+
+		END
+
+	RETURN
+END;	
+GO
+
+
+CREATE FUNCTION DBAS.Top5DeLosDestinosConMasPasajesCancelados(@semestreDelAnio tinyint, @anio integer)
+RETURNS @TOP5 TABLE ( ciudad_origen varchar(100), ciudad_destino varchar(100), pasajes_cancelados bigint)
+AS
+BEGIN
+	
+	-- Me pasan por parametro el año y lo concateno con una fecha generica que sirve para indicar luego a que semestre pertenece
+	DECLARE @anioDelSemestre datetime
+	SET @anioDelSemestre = convert(datetime, concat(@anio, '0701 00:00:00.000'))
+
+	IF (@semestreDelAnio = 1)
+	BEGIN
+		
+		-- Devuelvo una tabla con los pasajes más cancelados en base a las ciudades de origen y destino en el primer semestre
+		INSERT INTO @TOP5(ciudad_origen, ciudad_destino, pasajes_cancelados)
+		SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPasajes.codigo_pasaje) as pasajes_cancelados 
+		FROM DBAS.pasajes tablaPasajes, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
+		WHERE tablaPasajes.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaPasajes.id_cancelacion IS NOT NULL
+		AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id
+		AND tablaPasajes.fecha_compra_pasaje <  @anioDelSemestre AND DATEPART(year,tablaPasajes.fecha_compra_pasaje) = DATEPART(year,@anioDelSemestre)
+		GROUP BY tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad
+		ORDER BY pasajes_cancelados DESC
+
+		
+	END
+	ELSE
+		BEGIN
+			
+			-- Devuelvo una tabla con los pasajes más cancelados en base a las ciudades de origen y destino en el primer semestre
+			INSERT INTO @TOP5(ciudad_origen, ciudad_destino, pasajes_cancelados)
+			SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPasajes.codigo_pasaje) as pasajes_cancelados
+			FROM DBAS.pasajes tablaPasajes, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
+			WHERE tablaPasajes.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta  AND tablaPasajes.id_cancelacion IS NOT NULL
+			AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id
+			AND tablaPasajes.fecha_compra_pasaje >=  @anioDelSemestre AND DATEPART(year,tablaPasajes.fecha_compra_pasaje) = DATEPART(year,@anioDelSemestre)
+			GROUP BY tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad
+			ORDER BY pasajes_cancelados DESC
+
+		END
+
+	RETURN
+END;	
+GO
+
+CREATE FUNCTION DBAS.aeronaves_dias_fuera_de_servicio(@semestreDelAnio tinyint, @anio integer)
+RETURNS @aeronaves_dias_fuera_de_servicio TABLE ( aeronave varchar(100), dias_fuera_de_servicio bigint)
+AS
+BEGIN
+
+	-- Me pasan por parametro el año y lo concateno con una fecha generica que sirve para indicar luego a que semestre pertenece
+	DECLARE @anioDelSemestre datetime
+	SET @anioDelSemestre = convert(datetime, concat(@anio, '0701 00:00:00.000'))
+
+	IF (@semestreDelAnio = 1)
+	BEGIN
+		
+		INSERT INTO @aeronaves_dias_fuera_de_servicio(aeronave, dias_fuera_de_servicio)
+		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,tablaPeriodos.fecha_reinicio_servicio)) as cantidad_dias_fuera_de_servicio 
+		FROM DBAS.periodosFueraDeServicio tablaPeriodos, DBAS.aeronaves tablaAeronaves
+		WHERE tablaPeriodos.fecha_reinicio_servicio IS NOT null AND tablaPeriodos.fecha_reinicio_servicio < @anioDelSemestre AND DATEPART(year,tablaPeriodos.fecha_reinicio_servicio) = DATEPART(year,@anioDelSemestre)
+		GROUP BY tablaAeronaves.matricula_aeronave) 
+		UNION ALL
+		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,GETDATE())) as cantidad_dias_fuera_de_servicio 
+		FROM DBAS.periodosFueraDeServicio tablaPeriodos, DBAS.aeronaves tablaAeronaves
+		WHERE tablaPeriodos.fecha_reinicio_servicio IS null AND GETDATE() < @anioDelSemestre AND DATEPART(year,GETDATE()) = DATEPART(year,@anioDelSemestre)
+		GROUP BY tablaAeronaves.matricula_aeronave)
+				
+	END
+	ELSE
+	BEGIN
+
+		INSERT INTO @aeronaves_dias_fuera_de_servicio(aeronave, dias_fuera_de_servicio)
+		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,tablaPeriodos.fecha_reinicio_servicio)) as cantidad_dias_fuera_de_servicio 
+		FROM DBAS.periodosFueraDeServicio tablaPeriodos, DBAS.aeronaves tablaAeronaves
+		WHERE tablaPeriodos.fecha_reinicio_servicio IS NOT null AND tablaPeriodos.fecha_reinicio_servicio >= @anioDelSemestre AND DATEPART(year,tablaPeriodos.fecha_reinicio_servicio) = DATEPART(year,@anioDelSemestre)
+		GROUP BY tablaAeronaves.matricula_aeronave) 
+		UNION ALL
+		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,GETDATE())) as cantidad_dias_fuera_de_servicio 
+		FROM DBAS.periodosFueraDeServicio tablaPeriodos, DBAS.aeronaves tablaAeronaves
+		WHERE tablaPeriodos.fecha_reinicio_servicio IS null AND GETDATE() >= @anioDelSemestre AND DATEPART(year,GETDATE()) = DATEPART(year,@anioDelSemestre)
+		GROUP BY tablaAeronaves.matricula_aeronave)
+
+	END
+
+	RETURN
+END;	
+GO
+
+CREATE FUNCTION DBAS.Top5AeronavesConMayorCantidadDeDiasFueraDeServicio(@semestreDelAnio tinyint, @anio integer)
+RETURNS @TOP5 TABLE ( aeronave varchar(100), dias_fuera_de_servicio bigint)
+AS
+BEGIN
+	
+	-- Devuelvo una tabla con las 5 aeronaves con más dias fuera de servicio
+	INSERT INTO @TOP5(aeronave, dias_fuera_de_servicio)
+	SELECT TOP 5 tablaDias.aeronave,SUM(tablaDias.dias_fuera_de_servicio) AS tiempo_fuera_servicio
+	FROM DBAS.aeronaves_dias_fuera_de_servicio(@semestreDelAnio, @anio) tablaDias
+	GROUP BY tablaDias.aeronave
+	ORDER BY tiempo_fuera_servicio DESC
+				
+	RETURN
+END;	
+GO
+
+
+CREATE FUNCTION DBAS.Top5ClientesConMasPuntosAcumulados(@semestreDelAnio tinyint, @anio integer)
+RETURNS @TOP5 TABLE (id_cliente bigint, puntos_acumulados bigint)
+AS
+BEGIN
+	
+	-- Me pasan por parametro el año y lo concateno con una fecha generica que sirve para indicar luego a que semestre pertenece
+	DECLARE @anioDelSemestre datetime
+	SET @anioDelSemestre = convert(datetime, concat(@anio,'0701 00:00:00.000'))
+
+	DECLARE @comienzoAnio datetime
+	SET @comienzoAnio = convert(datetime,concat(@anio,'0101 00:00:00.000'))
+
+	DECLARE @finAnio datetime
+	SET @finAnio = convert(datetime,concat(@anio,'1231 00:00:00.000'))
+
+	IF (@semestreDelAnio = 1)
+	BEGIN
+		-- Devuelvo los 5 clientes con más puntos acumulados en el primer semestre
+		INSERT INTO @TOP5(id_cliente,puntos_acumulados)
+		SELECT TOP 5 id_cliente, SUM(millas) as puntos
+		FROM DBAS.millasAcumuladasEntre(@comienzoAnio,@anioDelSemestre)
+		GROUP BY id_cliente
+		ORDER BY puntos DESC
+	END
+	ELSE
+	BEGIN
+		-- Devuelvo los 5 clientes con más puntos acumulados en el segundo semestre
+		INSERT INTO @TOP5(id_cliente,puntos_acumulados)
+		SELECT TOP 5 id_cliente, SUM(millas) as puntos
+		FROM DBAS.millasAcumuladasEntre(@anioDelSemestre,@finAnio) 
+		GROUP BY id_cliente
+		ORDER BY puntos DESC
+	END
+	RETURN
+END;
+GO
+
+-- Creo la vista para obtener la cantidad de pasajeros por viaje para el TOP 5 aeronaves más vacias
+CREATE VIEW DBAS.cantidadPasajerosPorViaje AS
+SELECT pasajes.id_viaje,COUNT(codigo_pasaje) as cantidad_pasajeros FROM DBAS.pasajes pasajes
+GROUP BY pasajes.id_viaje
+GO
+
+CREATE FUNCTION DBAS.Top5AeronavesMasVacias(@semestreDelAnio tinyint, @anio integer)
+RETURNS @TOP5 TABLE (id_viaje bigint,matricula_aeronave varchar(100),butacas_vacias bigint,fecha_salida datetime,fecha_llegada datetime,codigo_ruta bigint)
+AS
+BEGIN
+	
+	-- Me pasan por parametro el año y lo concateno con una fecha generica que sirve para indicar luego a que semestre pertenece
+	DECLARE @anioDelSemestre datetime
+	SET @anioDelSemestre = convert(datetime, concat(@anio,'0701 00:00:00.000'))
+
+	DECLARE @comienzoAnio datetime
+	SET @comienzoAnio = convert(datetime,concat(@anio,'0101 00:00:00.000'))
+
+	DECLARE @finAnio datetime
+	SET @finAnio = convert(datetime,concat(@anio,'1231 00:00:00.000'))
+
+	IF (@semestreDelAnio = 1)
+	BEGIN
+		-- Devuelvo las 5 aeronaves más vacias con su fecha de salida y llegada y codigo de ruta de primer semestre
+		INSERT INTO @TOP5(id_viaje,matricula_aeronave,butacas_vacias,fecha_salida,fecha_llegada,codigo_ruta)
+		SELECT TOP 5 tablaPasajeros.id_viaje,matricula_aeronave,(DBAS.cantidadButacas(matricula_aeronave)-cantidad_pasajeros) as butacas_vacias,fecha_salida,fecha_llegada,codigo_ruta
+		FROM DBAS.cantidadPasajerosPorViaje tablaPasajeros, DBAS.viajes viajes
+		WHERE tablaPasajeros.id_viaje = viajes.id_viaje AND fecha_salida >= @comienzoAnio AND fecha_salida < @anioDelSemestre
+		ORDER BY butacas_vacias DESC
+	END
+	ELSE
+	BEGIN
+		-- Devuelvo las 5 aeronaves más vacias con su fecha de salida y llegada y codigo de ruta de segundo semestre
+		INSERT INTO @TOP5(id_viaje,matricula_aeronave,butacas_vacias,fecha_salida,fecha_llegada,codigo_ruta)
+		SELECT TOP 5 tablaPasajeros.id_viaje,matricula_aeronave,(DBAS.cantidadButacas(matricula_aeronave)-cantidad_pasajeros) as butacas_vacias,fecha_salida,fecha_llegada,codigo_ruta
+		FROM DBAS.cantidadPasajerosPorViaje tablaPasajeros, DBAS.viajes viajes
+		WHERE tablaPasajeros.id_viaje = viajes.id_viaje AND fecha_salida >= @anioDelSemestre AND fecha_salida < @finAnio
+		ORDER BY butacas_vacias DESC
+	END
+	RETURN
+END;
+GO
+
+
+/*-- ABM Rol -- */
+
+CREATE FUNCTION DBAS.obtenerFuncionalidadesAsociadas(@nombreRol varchar(100))
+RETURNS TABLE
+AS
+RETURN
+(	
+	-- Obtengo las funcionalidades de el rol que llega por parametro
+	SELECT tablaFuncionalidades.descripcion FROM ((SELECT * FROM DBAS.roles WHERE nombre_rol = @nombreRol) unRol 
+		JOIN DBAS.rolesPorFuncionalidad tablaRpF ON (unRol.id_rol = tablaRpF.id_rol)
+		JOIN DBAS.funcionalidades tablaFuncionalidades ON (tablaFuncionalidades.id_funcionalidad = tablaRpF.id_funcionalidad))
+);
+GO
+
+
+CREATE PROCEDURE DBAS.loginUsuario(@usuario varchar(100), @pass varchar(100))
+AS
+BEGIN
+	DECLARE @U_id bigint
+	DECLARE @U_password varchar(100)
+	DECLARE @U_habilitado tinyint
+	DECLARE @U_rol_id bigint
+	DECLARE @cantidad_intentos tinyint
+	DECLARE @mensaje_error varchar(100)
+	DECLARE @nombre_rol varchar(100)
+
+	-- Obtengo todos los atributos del usuario que me llega por parametro
+	SELECT @U_id = tablaUsuarios.id_usuario, @U_password = password, @U_habilitado = habilitado, @cantidad_intentos = intentos_fallidos, @U_rol_id = tablaUporR.id_rol FROM DBAS.usuarios tablaUsuarios, DBAS.usuariosPorRol tablaUporR WHERE tablaUsuarios.username = @usuario AND tablaUporR.id_usuario = tablaUsuarios.id_usuario
+	-- Verifico si el usuario existe
+	IF (@U_id IS NOT NULL)
+	BEGIN
+		-- Pregunto si el usuario esta deshabilitado
+		IF(@U_habilitado != 1)
+		BEGIN
+			-- Devuelvo un mensaje de error
+			SET @mensaje_error = 'El usuario ingresado se encuentra deshabilitado'
+			RAISERROR(@mensaje_error, 12, 1)
+		END
+		ELSE
+		BEGIN
+			-- Si el usuario esta habilitado, verifico que la password sea correcta
+			IF(@U_password != @pass)
+			BEGIN
+				-- Compruebo la cantidad de intentos fallidos que se hicieron hasta el momento
+				IF(@cantidad_intentos < 2)
+				BEGIN
+					-- Actualizo la cantidad de intentos fallidos en la base de datos
+					UPDATE DBAS.usuarios SET intentos_fallidos = @cantidad_intentos + 1  WHERE username = @usuario
+					-- Devuelvo un mensaje de error
+					SET @mensaje_error = 'Password invalida'
+					RAISERROR(@mensaje_error, 12, 1)
+				END
+				ELSE
+				BEGIN
+					-- Actualizo la cantidad de intentos fallidos en la base de datos y deshabilitando al usuario por alcanzar el maximo de intentos
+					UPDATE DBAS.usuarios SET intentos_fallidos = @cantidad_intentos + 1, habilitado = 0   WHERE username = @usuario
+					-- Devuelvo un mensaje de error
+					SET @mensaje_error = 'Password invalida, alcanzo la cantidad de intentos maximos. Se desactivara la cuenta por seguridad'
+					RAISERROR(@mensaje_error, 12, 1)
+				END
+			END
+			ELSE
+			BEGIN
+				-- Si ingreso bien la password receteo los intentos fallidos
+				UPDATE DBAS.usuarios SET intentos_fallidos = 0  WHERE username = @usuario
+
+				-- Devuelvo las funcionalidades que le pertenecen al usuario
+				SELECT @nombre_rol = nombre_rol FROM DBAS.roles WHERE id_rol = @U_rol_id
+				SELECT * FROM DBAS.obtenerFuncionalidadesAsociadas(@nombre_rol)
+			END
+		END
+	END
+	ELSE
+	BEGIN
+		-- Devuelvo un mensaje de error
+		SET @mensaje_error = 'El usuario ingresado no existe'
+		RAISERROR(@mensaje_error, 12, 1)
+	END
+END;
+GO
+
+-- La vista es creada para que la aplicacion me pueda mandar un INSERT simultaneo como si fuera el de un select, con los parametros de la vista
+CREATE VIEW DBAS.modificarRoles AS
+SELECT tablaRoles.id_rol, tablaRoles.nombre_rol, tablaRoles.habilitado_rol, tablaRporF.id_funcionalidad FROM DBAS.rolesPorFuncionalidad tablaRporF, DBAS.roles tablaRoles 
+WHERE tablaRporF.id_rol = tablaRoles.id_rol
+GO
+
+--Trigger creado para el manejo de las inserciones en la vista
+CREATE TRIGGER DBAS.modificarRol ON DBAS.modificarRoles
+INSTEAD OF INSERT
+AS
+BEGIN
+	DECLARE @habilitado_rol tinyint
+	DECLARE @nombre_rol varchar(100)
+	DECLARE @id_funcionalidad bigint
+	DECLARE @id_rol bigint
+	DECLARE @valor_insertado tinyint
+	DECLARE @habilitado_estado tinyint
+
+	-- Declaro un cursor sobre los valores insertados
+	DECLARE obtenerRolYFuncionalidades CURSOR FOR
+	SELECT id_rol, nombre_rol, habilitado_rol, id_funcionalidad FROM inserted
+
+	OPEN obtenerRolYFuncionalidades
+
+	-- Inserto lo que obtiene el cursor en las variables
+	FETCH NEXT FROM obtenerRolYFuncionalidades
+	INTO @id_rol, @nombre_rol, @habilitado_rol, @id_funcionalidad
+
+	-- Obtengo el atributo de habilitado del rol que se quiere modificar
+	SELECT @habilitado_estado = habilitado_rol FROM DBAS.roles WHERE id_rol = @id_rol
+
+	-- Pregunto si el rol esta habilitado y ahora pasa a no estarlo
+	IF(@habilitado_estado = 1 AND @habilitado_rol = 0)
+	BEGIN
+		-- Elimino todas las relaciones que tiene el rol modificado con los usuarios
+		DELETE FROM DBAS.usuariosPorRol WHERE id_rol = @id_rol
+	END
+
+	-- Actualizo el nombre del rol a modificar
+	UPDATE DBAS.roles SET nombre_rol = @nombre_rol, habilitado_rol = @habilitado_rol WHERE id_rol = @id_rol
+
+	-- Elimino todas las funcionlidades asociadas a el rol modificado
+	DELETE FROM DBAS.rolesPorFuncionalidad
+	WHERE id_rol = @id_rol
+ 
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		
+		-- Inserto todas las funcionlidades nuevas que tiene el rol modificado
+		INSERT INTO DBAS.rolesPorFuncionalidad(id_rol, id_funcionalidad)
+		VALUES(@id_rol, @id_funcionalidad)
+
+		-- Inserto lo que obtiene el cursor en las variables
+		FETCH NEXT FROM obtenerRolYFuncionalidades
+		INTO @nombre_rol, @id_funcionalidad
+
+	END
+
+	CLOSE obtenerRolYFuncionalidades
+	DEALLOCATE obtenerRolYFuncionalidades
+
+END;
+GO
+
+-- La vista es creada para que la aplicacion me pueda mandar un INSERT simultaneo como si fuera el de un select, con los parametros de la vista
+CREATE VIEW DBAS.rolesConFuncionalidades AS
+SELECT tablaRoles.nombre_rol, tablaRporF.id_funcionalidad FROM DBAS.rolesPorFuncionalidad tablaRporF, DBAS.roles tablaRoles 
+WHERE tablaRporF.id_rol = tablaRoles.id_rol
+GO
+
+--Trigger creado para el manejo de las inserciones en la vista
+CREATE TRIGGER DBAS.crearRolConFuncionalidades ON DBAS.rolesConFuncionalidades
+INSTEAD OF INSERT
+AS
+BEGIN
+
+	DECLARE @nombre_rol varchar(100)
+	DECLARE @id_funcionalidad bigint
+	DECLARE @id_rol bigint
+	DECLARE @valor_insertado tinyint
+
+	SET @valor_insertado = 0
+	
+	-- Creo un cursor para manejar cada valor insertado
+	DECLARE obtenerRolYFuncionalidades CURSOR FOR
+	SELECT nombre_rol, id_funcionalidad FROM inserted
+
+	OPEN obtenerRolYFuncionalidades
+
+	-- Inserto lo que obtiene el cursor en las variables
+	FETCH NEXT FROM obtenerRolYFuncionalidades
+	INTO @nombre_rol, @id_funcionalidad
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		-- Sirve para no volver a insertar de nuevo el rol que llega del trigger, ya que llega repetido por cada fila insertada
+		IF(@valor_insertado = 0)
+		BEGIN
+			INSERT INTO DBAS.roles(nombre_rol)
+			VALUES(@nombre_rol)
+
+			-- Obtengo la id del rol insertado
+			SET @id_rol = SCOPE_IDENTITY()
+			SET @valor_insertado =1
+		END
+
+		-- Inserto las relaciones del rol nuevo con sus funcionalidades elegidas
+		INSERT INTO rolesPorFuncionalidad(id_rol, id_funcionalidad)
+		VALUES(@id_rol, @id_funcionalidad)
+
+		-- Inserto lo que obtiene el cursor en las variables
+		FETCH NEXT FROM obtenerRolYFuncionalidades
+		INTO @nombre_rol, @id_funcionalidad
+
+	END
+
+	CLOSE obtenerRolYFuncionalidades
+	DEALLOCATE obtenerRolYFuncionalidades
+
+END;
+GO
+
+CREATE PROCEDURE DBAS.altaPersona(
+	@dni_persona bigint ,
+	@nombre_persona varchar(100),
+	@apellido_persona varchar(100),
+	@direccion_persona varchar(100),
+	@telefono_persona varchar(50),
+	@mail_persona varchar(100),
+	@fecha_nacimiento datetime,
+	@ID_persona bigint OUT)
+AS
+BEGIN
+	
+	-- Creo a la persona con los parametros ingresados
+	INSERT INTO DBAS.personas(dni_persona,nombre_persona,apellido_persona,direccion_persona,telefono_persona,mail_persona,fecha_nacimiento)
+	VALUES( @dni_persona,@nombre_persona,@apellido_persona,@direccion_persona,@telefono_persona,@mail_persona,@fecha_nacimiento)
+
+	-- Inserto el id de la persona creada y lo devuelvo para su manejo
+	SET @ID_persona = SCOPE_IDENTITY()
+
+END;
+GO
+
+CREATE PROCEDURE DBAS.altaCliente(@dni_persona bigint ,
+	@nombre_persona varchar(100),
+	@apellido_persona varchar(100),
+	@direccion_persona varchar(100),
+	@telefono_persona varchar(50),
+	@mail_persona varchar(100),
+	@fecha_nacimiento datetime)
+AS
+BEGIN
+	DECLARE @ID_persona bigint
+
+	-- Doy de alta a la persona y obtengo su id
+	EXECUTE DBAS.altaPersona @dni_persona,@nombre_persona,@apellido_persona,@direccion_persona,	@telefono_persona,@mail_persona,@fecha_nacimiento, @ID_persona OUT
+
+	-- Con la id de la persona creo un cliente
+	INSERT INTO DBAS.clientes(id_persona)
+	VALUES (@ID_persona)
+
+END;
+GO
+
+/* -- ABM Aeronave -- */
+
+CREATE PROCEDURE DBAS.altaAeronave(@ID_fabricante bigint, @ID_servicio bigint, @matricula_aeronave varchar(100), @modelo varchar(100), @KG_disponible float(24), @butacas_pasillo bigint, @butacas_ventana bigint, @piso tinyint)
+AS
+BEGIN
+	DECLARE @mensaje_error varchar(100)
+	DECLARE @nro_butaca bigint
+	DECLARE @butacas_pasillo_AUX bigint
+	DECLARE @butacas_ventana_AUX bigint
+	
+	SET @nro_butaca = 0
+	
+	-- Pregunto si la matricula nueva ingresada ya existe
+	IF EXISTS(SELECT * FROM DBAS.aeronaves WHERE matricula_aeronave = @matricula_aeronave)
+	BEGIN
+		-- Devuelvo un mensaje de error
+		SET @mensaje_error = 'La matricula ingresada ya existe'
+		RAISERROR(@mensaje_error, 12, 1)
+	END
+	ELSE
+	BEGIN
+		-- Inserto la aeronave nueva con todas sus caracteristicas
+		INSERT INTO DBAS.aeronaves(matricula_aeronave, modelo_aeronave, kg_disponible_encomienda, id_fabricante, id_servicio)
+		VALUES(@matricula_aeronave, @modelo, @KG_disponible, @ID_fabricante, @ID_servicio)
+
+		-- Inserto la cantidad de butacas pasillo y ventanillas por piso de la nueva aeronave
+		WHILE(@piso != 0)
+		BEGIN
+			-- Auxiliares para la cantidad de butacas por piso
+			SET @butacas_pasillo_AUX = @butacas_pasillo
+			SET @butacas_ventana_AUX = @butacas_ventana
+
+			WHILE(@butacas_pasillo_AUX != 0)
+			BEGIN
+				SET @nro_butaca += 1
+
+				INSERT INTO DBAS.butacas(matricula_aeronave, numero_butaca, piso_butaca, tipo_butaca)
+				VALUES(@matricula_aeronave, @nro_butaca, @piso, 'Pasillo')
+
+				SET @butacas_pasillo_AUX -= 1
+			END
+
+			WHILE(@butacas_ventana_AUX != 0)
+			BEGIN
+				SET @nro_butaca += 1
+
+				INSERT INTO DBAS.butacas(matricula_aeronave, numero_butaca, piso_butaca, tipo_butaca)
+				VALUES(@matricula_aeronave, @nro_butaca, @piso, 'Ventanilla')
+
+				SET @butacas_ventana_AUX -= 1
+			END
+		
+			SET @piso -= 1
+		
+		END
+
+	END
+END;
+GO
+
+
+
+CREATE PROCEDURE DBAS.cancelacionPasaje(@motivo_cancelacion varchar(100), @ID_cancelacion bigint OUT)
+AS
+BEGIN
+	-- Inserto un nueva cancelacion con su motivo y la fecha actual
+	INSERT INTO DBAS.cancelaciones(fecha_devolucion, motivo_cancelacion)
+	VALUES(GETDATE(), @motivo_cancelacion)
+
+	-- Seteo la variable con la id de la cancelacion y la devuelvo para su manejo
+	SET @ID_cancelacion = SCOPE_IDENTITY()
+
+END;
+GO
+
+CREATE PROCEDURE DBAS.actualizarBajaAeronave(@fecha datetime, @matricula_aeronave varchar(100), @tipo_cancelacion tinyint)
+AS
+BEGIN
+	-- Pregunto si el tipo de baja es temporal o definitiva
+	IF(@tipo_cancelacion = 1)
+	BEGIN
+		-- Doy de baja temporal a la aeronave y le indico una fecha de reinsercion
+		UPDATE DBAS.aeronaves SET fecha_reinsercion = @fecha WHERE matricula_aeronave = @matricula_aeronave
+	END
+	ELSE
+	BEGIN
+		-- Doy de baja definitiva a la aeronave
+		UPDATE DBAS.aeronaves SET fecha_baja_servicio_definitiva = @fecha WHERE matricula_aeronave = @matricula_aeronave
+	END
+END;
+GO
+
+CREATE FUNCTION DBAS.estaEnViajeAeronave(@matricula_aeronave varchar(100)) 
+RETURNS tinyint
+AS
+BEGIN
+	-- Pregunto si la aeronave que llega por parametro esta en viaje actualmente y devuelve 0 si lo esta y 1 si esta disponible
+	IF EXISTS(SELECT * FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave AND fecha_salida < GETDATE() AND fecha_llegada IS NULL)
+	BEGIN
+		RETURN 0
+	END
+	ELSE
+	BEGIN
+		RETURN 1
+	END
+END;
+GO
+
+CREATE FUNCTION DBAS.ciudadAeronave(@matricula_aeronave varchar(100)) 
+RETURNS bigint
+AS
+BEGIN
+	-- Devuelvo la id de la ciudad actual de la aeronave ingresada por parametro 
+	RETURN (SELECT TOP 1 tablaCiudades.id_ciudad FROM DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades 
+	WHERE tablaViajes.matricula_aeronave = @matricula_aeronave AND tablaViajes.fecha_llegada <= GETDATE() 
+	AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaRutas.ciudad_destino_id = tablaCiudades.id_ciudad
+	ORDER BY tablaViajes.fecha_llegada DESC)
+	
+END;
+GO
+
+CREATE FUNCTION DBAS.ultimaLlegadaConfirmadaAeronave(@matricula_aeronave varchar(100)) 
+RETURNS bigint
+AS
+BEGIN
+	DECLARE @id_viaje bigint
+
+	-- Pregunto si no existe la aeronave actual en pleno vuelo, retornando null si esta en vuelo y sino devuelvo el ultimo viaje que realizo
+	IF NOT EXISTS(SELECT TOP 1 id_viaje FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave AND fecha_llegada IS NULL)
+	BEGIN
+		SELECT TOP 1 @id_viaje = id_viaje FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave ORDER BY fecha_salida DESC
+	END
+	ELSE
+	BEGIN
+		SET @id_viaje = NULL
+	END
+	
+	RETURN @id_viaje
+END;
+GO
+
+CREATE FUNCTION DBAS.aeronavesDisponiblesParaReemplazo()
+RETURNS @aeronavesDisponiblesParaReemplazo TABLE (matricula_aeronave varchar(100),id_viaje bigint)
+AS
+BEGIN
+
+	DECLARE @matriculaAer varchar (100)
+	DECLARE @id_Viaje bigint
+
+	-- Creo un cursor de la aeronaves que estan en servicio
+	DECLARE aeronaves CURSOR FOR
+	SELECT matricula_aeronave FROM DBAS.aeronaves WHERE (fecha_reinsercion <= GETDATE() OR fecha_reinsercion IS NULL) AND fecha_baja_servicio_definitiva IS NULL
+
+	OPEN aeronaves
+
+	FETCH NEXT FROM aeronaves
+	INTO @matriculaAer
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		-- Pregunto si la aeronave existe en algun viaje
+		IF EXISTS(SELECT * FROM DBAS.viajes WHERE matricula_aeronave = @matriculaAer)
+		BEGIN
+			-- Obtengo el id viaje del ultimo viaje, si es que no esta en vuelo, llamando a la funcion
+			SET @id_Viaje = DBAS.ultimaLlegadaConfirmadaAeronave(@matriculaAer)
+			IF(@id_Viaje IS NOT NULL)
+			BEGIN
+				-- Devuelvo una tabla que contiene la matricula y la id de su ultimo viaje
+				INSERT INTO @aeronavesDisponiblesParaReemplazo VALUES (@matriculaAer,@id_Viaje)
+			END
+		END
+		ELSE
+		BEGIN
+			-- Devuelvo una tabla que contiene la matricula y la id de su ultimo viaje en null porque no tiene viajes
+			INSERT INTO @aeronavesDisponiblesParaReemplazo VALUES (@matriculaAer,NULL)
+		END
+		
+		FETCH NEXT FROM aeronaves
+		INTO @matriculaAer
+	END
+
+	CLOSE aeronaves
+	DEALLOCATE aeronaves
+
+	RETURN
+
+END;
+GO
+
+CREATE FUNCTION DBAS.aeronavesDisponiblesSinVuelo(@matricula_aeronave varchar(100))
+RETURNS @avionesSinVuelo TABLE (matricula_aeronave varchar(100))
+AS 
+BEGIN
+	DECLARE @ciudad_actual_id bigint
+	
+	-- Obtengo la ciudad actual de la aeronave a reemplazar
+	SET @ciudad_actual_id = DBAS.ciudadAeronave(@matricula_aeronave)
+	
+	-- Devuelvo todas la aeronaves disponibles para reemplazar a la actual que no tengan ningun vuelo programado
+	INSERT INTO  @avionesSinVuelo
+	SELECT DISTINCT tablaViajes.matricula_aeronave FROM DBAS.viajes tablaViajes, DBAS.aeronavesDisponiblesParaReemplazo() tablaAeronavesTemp, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades
+	WHERE (tablaAeronavesTemp.id_viaje = tablaViajes.id_viaje OR tablaAeronavesTemp.id_viaje IS NULL) AND tablaViajes.fecha_llegada <= GETDATE() 
+	AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaRutas.ciudad_destino_id = @ciudad_actual_id
+
+	RETURN	
+		
+END;
+GO
+
+CREATE FUNCTION DBAS.cantidadButacas(@matricula_aeronave varchar(100))
+RETURNS INTEGER
+AS
+BEGIN
+	-- Devuelvo la cantidad de butacas que tiene una aeronave en total
+	RETURN (SELECT COUNT(id_butaca) FROM DBAS.butacas WHERE matricula_aeronave = @matricula_aeronave AND piso_butaca != 0)
+
+END;
+GO
+
+-- Trigger para reemplazar las butacas de un viaje de los pasajes cuando se reemplaza la aeronave
+CREATE TRIGGER DBAS.reemplazarButacasEnViajes ON DBAS.viajes
+AFTER UPDATE
+AS
+BEGIN
+		DECLARE @id_viaje bigint
+		DECLARE @matricula_aeronave_nueva varchar(100)
+		DECLARE @id_pasaje bigint
+		DECLARE @id_butaca bigint
+	
+		-- Obtengo todos los viajes que fueron reemplazados por una aeronave
+		DECLARE viajesCursor CURSOR FOR
+		SELECT id_viaje, matricula_aeronave FROM inserted
+
+		OPEN viajesCursor
+
+		-- Inserto lo que obtiene el cursor en las variables
+		FETCH NEXT FROM viajesCursor
+		INTO @id_viaje, @matricula_aeronave_nueva
+
+		WHILE @@FETCH_STATUS = 0
+		BEGIN
+			UPDATE DBAS.viajes SET matricula_aeronave = @matricula_aeronave_nueva WHERE id_viaje = @id_viaje
+
+			-- Obtengo cada pasaje que tenga este viaje
+			DECLARE pasajesCursor CURSOR FOR
+			SELECT @id_pasaje FROM  DBAS.pasajes
+			WHERE  DBAS.pasajes.id_viaje = @id_viaje
+
+			-- Obtengo las butacas de la aeronave nueva
+			DECLARE butacaCursor CURSOR FOR
+			SELECT @id_butaca FROM  DBAS.butacas
+			WHERE  matricula_aeronave = @matricula_aeronave_nueva
+			
+			OPEN pasajesCursor
+			OPEN butacaCursor
+
+			-- Inserto lo que obtiene el cursor en las variables
+			FETCH NEXT FROM pasajesCursor
+			INTO @id_pasaje
+
+			-- Inserto lo que obtiene el cursor en las variables
+			FETCH NEXT FROM butacaCursor
+			INTO @id_butaca
+
+			WHILE @@FETCH_STATUS = 0
+			BEGIN
+				
+				-- Reemplazo todas las butacas de cada pasaje del viaje
+				UPDATE DBAS.pasajes SET id_butaca = @id_butaca WHERE id_viaje = @id_viaje
+
+				-- Inserto lo que obtiene el cursor en las variables
+				FETCH NEXT FROM butacaCursor
+				INTO @id_butaca
+
+				-- Inserto lo que obtiene el cursor en las variables
+				FETCH NEXT FROM pasajesCursor
+				INTO @id_pasaje
+			END
+
+			CLOSE pasajesCursor
+			DEALLOCATE pasajesCursor
+
+			CLOSE butacaCursor
+			DEALLOCATE butacaCursor
+			
+			-- Inserto lo que obtiene el cursor en las variables
+			FETCH NEXT FROM viajesCursor
+			INTO @id_viaje, @matricula_aeronave_nueva
+		
+		END
+
+		CLOSE viajesCursor
+		DEALLOCATE viajesCursor
+END;
+GO
+
+
+CREATE PROCEDURE DBAS.cancelacionPasajesBajaAeronave(@fecha datetime, @matricula_aeronave varchar(100), @tipo_cancelacion tinyint)
+AS
+BEGIN
+	DECLARE @ID_cancelacion bigint
+	DECLARE @motivo_cancelacion varchar(100)
+
+	-- Seteo el motivo de la cancelacion
+	SET @motivo_cancelacion = 'La aeronave fue dada de baja'
+
+	-- Inserto la cancelacion con su motivo y obtengo su id para la asignacion de los pasajes y encomiendas que seran cancelados
+	EXECUTE DBAS.cancelacionPasaje @motivo_cancelacion, @ID_cancelacion OUT
+	
+	-- Pregunto que tipo de cancelacion es, si es uno solo cancelo los pasajes hasta la fecha de reinsercion de la aeronave, sino todos los pasajes posteriores	
+	IF(@tipo_cancelacion = 1)
+	BEGIN
+		
+		-- Actualizo los pasajes que tienen a la aeronave que se da de baja con el di cancelacion obtenido
+		UPDATE tablaPasajes SET tablaPasajes.id_cancelacion = @ID_cancelacion 
+		FROM  DBAS.viajes tablaViajes, DBAS.pasajes tablaPasajes
+		WHERE tablaViajes.fecha_salida > GETDATE() AND tablaViajes.fecha_salida < @fecha 
+		AND tablaPasajes.id_viaje = tablaViajes.id_viaje
+		AND tablaViajes.matricula_aeronave = @matricula_aeronave
+	
+		-- Actualizo las encomiendas que tienen a la aeronave que se da de baja con el di cancelacion obtenido
+		UPDATE tablaEncomiendas SET tablaEncomiendas.id_cancelacion = @ID_cancelacion 
+		FROM  DBAS.viajes tablaViajes, DBAS.encomiendas tablaEncomiendas
+		WHERE  tablaViajes.fecha_salida > GETDATE() AND tablaViajes.fecha_salida < @fecha 
+		AND tablaEncomiendas.id_viaje = tablaViajes.id_viaje
+		AND tablaViajes.matricula_aeronave = @matricula_aeronave
+	
+	END
+	ELSE
+	BEGIN
+		
+		-- Actualizo los pasajes que tienen a la aeronave que se da de baja con el di cancelacion obtenido
+		UPDATE tablaPasajes SET tablaPasajes.id_cancelacion = @ID_cancelacion 
+		FROM  DBAS.viajes tablaViajes, DBAS.pasajes tablaPasajes
+		WHERE  tablaViajes.fecha_salida > GETDATE()
+		AND tablaPasajes.id_viaje = tablaViajes.id_viaje
+		AND tablaViajes.matricula_aeronave = @matricula_aeronave
+		
+		UPDATE tablaEncomiendas SET tablaEncomiendas.id_cancelacion = @ID_cancelacion 
+		FROM  DBAS.viajes tablaViajes, DBAS.encomiendas tablaEncomiendas
+		WHERE tablaViajes.fecha_salida > GETDATE()
+		AND tablaEncomiendas.id_viaje = tablaViajes.id_viaje
+		AND tablaViajes.matricula_aeronave = @matricula_aeronave
+		
+	END
+
+	-- Doy de baja la aeronave una vez actualizados los datos
+	EXECUTE DBAS.actualizarBajaAeronave @fecha, @matricula_aeronave, @tipo_cancelacion
+
+END;
+GO
+
+CREATE PROCEDURE DBAS.reemplazarAeronave(@matricula_aeronave_original varchar(100),@matricula_aeronave_nueva varchar(100),@baja_temporal tinyint, @fecha datetime)
+AS 
+BEGIN
+	-- Pregunto que tipo de reemplazo es, si es uno solo cancelo los pasajes hasta la fecha de reinsercion de la aeronave, sino todos los pasajes posteriores	
+	IF (@baja_temporal = 1)
+	BEGIN
+		
+		-- Actualizo los viajes que tengan la matricula aeronave viejo por la nueva
+		UPDATE DBAS.viajes SET matricula_aeronave = @matricula_aeronave_nueva 
+		WHERE fecha_salida > GETDATE() AND fecha_salida < @fecha AND matricula_aeronave = @matricula_aeronave_original
+
+	END
+	ELSE
+	BEGIN
+		
+		-- Actualizo los viajes que tengan la matricula aeronave viejo por la nueva
+		UPDATE DBAS.viajes SET matricula_aeronave = @matricula_aeronave_nueva 
+		WHERE fecha_salida > GETDATE() AND matricula_aeronave = @matricula_aeronave_original
+
+	END
+END;
+GO
+
+
+CREATE FUNCTION DBAS.aeronavesDeReemplazo(@matricula_aeronave varchar(100))
+RETURNS @avionesSinVuelo TABLE (matricula_aeronave varchar(100), cantidad_butacas bigint)
+AS 
+BEGIN
+	
+	-- Devuelvo todas las aeronaves que pueden reemplazar a la aeronave psada por parametro
+	INSERT INTO @avionesSinVuelo
+	SELECT tablaAeronaves1.matricula_aeronave, DBAS.cantidadButacas(tablaAeronaves1.matricula_aeronave) FROM  DBAS.aeronavesDisponiblesSinVuelo(@matricula_aeronave) avionesDisponibles, DBAS.aeronaves tablaAeronaves1, DBAS.aeronaves tablaAeronaves2
+	WHERE DBAS.cantidadButacas(avionesDisponibles.matricula_aeronave) >= DBAS.cantidadButacas(@matricula_aeronave) AND tablaAeronaves1.matricula_aeronave = avionesDisponibles.matricula_aeronave AND tablaAeronaves2.matricula_aeronave = @matricula_aeronave
+	AND tablaAeronaves1.id_servicio = tablaAeronaves2.id_servicio AND tablaAeronaves1.id_fabricante = tablaAeronaves2.id_fabricante
+	
+	RETURN
+END;
+GO
+
+CREATE PROCEDURE DBAS.bajaAeronave(@fecha datetime, @matricula_aeronave varchar(100), @tipo_cancelacion tinyint)
+AS
+BEGIN
+	DECLARE @mensaje_error varchar(100)
+	DECLARE @ciudad_actual_id bigint
+	
+	-- Pregunto si la aeronave esta en algun viaje antes de reemplazar
+	IF EXISTS(SELECT * FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave)
+	BEGIN
+		
+		--Pregunto si la aeronave esta en vuelo
+		IF (DBAS.estaEnViajeAeronave(@matricula_aeronave) = 0)
+		BEGIN
+			-- Devuelvo un mensaje de error
+			SET @mensaje_error = 'No puede dar de baja la aeronave, esta en vuelo'
+			RAISERROR(@mensaje_error, 12, 1)
+		
+		END
+		ELSE
+		BEGIN
+			-- Devuelvo un mensaje de error
+			SET @mensaje_error = 'La aeronave esta en uso'
+			RAISERROR(@mensaje_error, 12, 1)
+		END
+	END
+	ELSE
+	BEGIN
+		-- Se da de baja la aeronave llamando al procedure
+		EXECUTE DBAS.actualizarBajaAeronave @fecha, @matricula_aeronave, @tipo_cancelacion
+	END
+END;
+GO
+
+
+CREATE PROCEDURE DBAS.modificarAeronave(@matricula_aeronave varchar(100), @ID_fabricante bigint, @ID_servicio bigint, @matricula_aeronave_nueva varchar(100), @modelo varchar(100), @KG_disponible float(24), @butacas_pasillo bigint, @butacas_ventana bigint, @piso tinyint)
+AS
+BEGIN
+	DECLARE @mensaje_error varchar(100)
+
+	-- Pregunto si la aeronave esta en algun viaje
+	IF EXISTS(SELECT * FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave)
+	BEGIN
+		-- Devuelvo un mensaje de error
+		SET @mensaje_error = 'La aeronave fue usada, no puede modificarla'
+		RAISERROR(@mensaje_error, 12, 1)
+	END
+	ELSE
+	BEGIN
+		-- Elimino todas las referencias de la aeronave a modificar
+		DELETE DBAS.butacas WHERE matricula_aeronave = @matricula_aeronave
+		DELETE DBAS.aeronaves WHERE matricula_aeronave = @matricula_aeronave
+
+		-- Se da de alta una aeronave para las nuevas modificaciones de la vieja
+		EXECUTE DBAS.altaAeronave @ID_fabricante, @ID_servicio, @matricula_aeronave_nueva, @modelo, @KG_disponible, @butacas_pasillo, @butacas_ventana, @piso
+	END
+END;
+GO
+
+
+/* -- Rutas -- */
+
+-- La vista es creada para que la aplicacion me pueda mandar un INSERT simultaneo como si fuera el de un select, con los parametros de la vista
+CREATE VIEW DBAS.caracteristicasRutas AS
+SELECT tablaRutas.codigo_ruta, tablaRutas.precio_base_por_KG, tablaRutas.precio_base_por_pasaje, tablaCiudad_origen.nombre_ciudad as ciudad_Origen, tablaCiudad_destino.nombre_ciudad as ciudad_Destino, tablaServicios.tipo_servicio, tablaServicios.porcentaje_arancel
+FROM DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudad_origen, DBAS.ciudades tablaCiudad_destino, DBAS.servicios tablaServicios, DBAS.serviciosPorRutas tablaSporR
+WHERE tablaRutas.habilitada_ruta = 1 AND tablaRutas.ciudad_origen_id = tablaCiudad_origen.id_ciudad AND tablaRutas.ciudad_destino_id = tablaCiudad_destino.id_ciudad
+AND tablaSporR.codigo_ruta = tablaRutas.codigo_ruta AND tablaServicios.id_servicio = tablaSporR.id_servicio
+GO
+
+-- Creo un trigger para manejar las nuevas rutas ingresadas en la vista
+CREATE TRIGGER DBAS.altaRutas ON DBAS.caracteristicasRutas
+INSTEAD OF INSERT
+AS
+BEGIN
+	DECLARE @codigo_ruta bigint
+	DECLARE @ciudad_Origen varchar(100)
+	DECLARE @ciudad_Destino varchar(100)
+	DECLARE @ID_ciudad_Origen bigint
+	DECLARE @ID_ciudad_Destino bigint
+	DECLARE @tipo_servicio varchar(100)
+	DECLARE @precio_KG float(24)
+	DECLARE @precio_pasaje float(24)
+	DECLARE @id_servicio bigint
+
+	-- Creo un cursor para las el manejo de las nuevas rutas insertadas
+	DECLARE rutasCursor CURSOR FOR
+	SELECT CAST(precio_base_por_KG AS float(24)), CAST(precio_base_por_pasaje AS float(24)), ciudad_Origen, ciudad_Destino, tipo_servicio FROM inserted
+
+	OPEN rutasCursor
+
+	FETCH NEXT FROM rutasCursor
+	INTO @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
+
+	-- Obtengo las id de las ciudades con los nombres de la nueva ruta
+	SELECT @ID_ciudad_Origen = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Origen
+	SELECT @ID_ciudad_Destino = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Destino
+
+	-- Inserto la nueva ruta con sus caracteristicas
+	INSERT INTO DBAS.rutas(precio_base_por_KG, precio_base_por_pasaje, ciudad_origen_id, ciudad_destino_id)
+	VALUES (@precio_KG, @precio_pasaje, @ID_ciudad_Origen, @ID_ciudad_Destino)
+
+	-- Obtengo el codigo de la ruta para su utilizacion
+	SET @codigo_ruta = SCOPE_IDENTITY()
+	
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		--Obtengo el id del servicio que fueron seleccionados de la ruta
+		SELECT @id_servicio = id_servicio FROM DBAS.servicios WHERE tipo_servicio = @tipo_servicio
+
+		-- Establezco la relacion entre la nueva ruta y los servicios seleccionados
+		INSERT INTO DBAS.serviciosPorRutas(codigo_ruta, id_servicio)
+		VALUES (@codigo_ruta, @id_servicio)
+
+		FETCH NEXT FROM rutasCursor
+		INTO @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
+	END
+
+	CLOSE rutasCursor
+	DEALLOCATE rutasCursor
+
+END;
+GO
+
+
+CREATE TRIGGER DBAS.modificacionRutas ON DBAS.caracteristicasRutas
+INSTEAD OF UPDATE
+AS
+BEGIN
+	DECLARE @codigo_ruta bigint
+	DECLARE @ciudad_Origen varchar(100)
+	DECLARE @ciudad_Destino varchar(100)
+	DECLARE @ID_ciudad_Origen bigint
+	DECLARE @ID_ciudad_Destino bigint
+	DECLARE @tipo_servicio varchar(100)
+	DECLARE @precio_KG float(24)
+	DECLARE @precio_pasaje float(24)
+	DECLARE @id_servicio bigint
+
+	-- Creo un cursor para las el manejo de la ruta a modificar
+	DECLARE rutasCursor CURSOR FOR
+	SELECT codigo_ruta, CAST(precio_base_por_KG AS float(24)), CAST(precio_base_por_pasaje AS float(24)), ciudad_Origen, ciudad_Destino, tipo_servicio FROM inserted
+
+	OPEN rutasCursor
+
+	FETCH NEXT FROM rutasCursor
+	INTO @codigo_ruta, @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
+
+	-- Obtengo las id de las nuevas ciudades que va a tener la ruta
+	SELECT @ID_ciudad_Origen = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Origen
+	SELECT @ID_ciudad_Destino = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Destino
+
+	-- Actualizo los valores de la ruta a modificar
+	UPDATE DBAS.rutas SET precio_base_por_KG = @precio_KG, precio_base_por_pasaje = @precio_pasaje, ciudad_origen_id = @ID_ciudad_Origen, ciudad_destino_id = @ID_ciudad_Destino WHERE codigo_ruta = @codigo_ruta
+
+	-- Elimino las relaciones de la ruta con los viejos servicios
+	DELETE FROM DBAS.serviciosPorRutas
+	WHERE codigo_ruta = @codigo_ruta
+	
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		--Obtengo el id del servicio que fueron seleccionados de la ruta
+		SELECT @id_servicio = id_servicio FROM DBAS.servicios WHERE tipo_servicio = @tipo_servicio
+
+		-- Establezco la relacion entre la nueva ruta y los servicios seleccionados
+		INSERT INTO DBAS.serviciosPorRutas(codigo_ruta, id_servicio)
+		VALUES (@codigo_ruta, @id_servicio)
+
+		FETCH NEXT FROM rutasCursor
+		INTO @codigo_ruta, @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
+
+	END
+
+	CLOSE rutasCursor
+	DEALLOCATE rutasCursor
+
+END;
+GO
+
+CREATE PROCEDURE DBAS.bajaRuta(@codigo_ruta bigint)
+AS
+BEGIN
+	DECLARE @mensaje_error varchar(100)
+	
+	-- Pregunto si existe un viaje que utiliza a la ruta para saber si se puede modificar
+	IF EXISTS(SELECT * FROM DBAS.viajes WHERE codigo_ruta = @codigo_ruta AND fecha_salida > GETDATE())
+	BEGIN
+		-- Devuelvo un mensaje de error
+		SET @mensaje_error = 'Hay viajes futuros por esta ruta'
+		RAISERROR(@mensaje_error, 12, 1)
+	END
+	ELSE
+	BEGIN
+		-- Deshabilito la ruta
+		UPDATE DBAS.rutas SET habilitada_ruta = 0 WHERE codigo_ruta = @codigo_ruta
+	END
+END;
+GO
+
+CREATE PROCEDURE DBAS.bajaRutaYCancelarPasajes(@codigo_ruta bigint)
+AS
+BEGIN
+	DECLARE @motivo_cancelacion varchar(100)
+	DECLARE @ID_cancelacion bigint
+	
+	-- Seteo el motivo de cancelacion
+	SET @motivo_cancelacion = 'Baja ruta de vuelo' 
+
+	-- Inserto la cancelacion y obtengo su id
+	EXECUTE DBAS.cancelacionPasaje @motivo_cancelacion, @ID_cancelacion OUT
+	
+	-- Actualizo todos los pasajes que contengan la ruta que se da de baja e inserto el id de cancelacion	
+	UPDATE tablaPasajes SET tablaPasajes.id_cancelacion = @ID_cancelacion 
+	FROM  DBAS.viajes tablaViajes, DBAS.pasajes tablaPasajes
+	WHERE tablaViajes.fecha_salida > GETDATE()
+	AND tablaPasajes.id_viaje = tablaViajes.id_viaje
+	AND tablaViajes.codigo_ruta= @codigo_ruta
+	
+	-- Actualizo todos los pasajes que contengan la ruta que se da de baja e inserto el id de cancelacion
+	UPDATE tablaEncomiendas SET tablaEncomiendas.id_cancelacion = @ID_cancelacion 
+	FROM  DBAS.viajes tablaViajes, DBAS.encomiendas tablaEncomiendas
+	WHERE  tablaViajes.fecha_salida > GETDATE()
+	AND tablaEncomiendas.id_viaje = tablaViajes.id_viaje
+	AND tablaViajes.codigo_ruta= @codigo_ruta
+
+END;
+GO
+
+/* -- ABM Viajes -- */
+
+
+CREATE FUNCTION DBAS.ultimaCiudadAeronave(@matricula_aeronave varchar(100)) 
+RETURNS bigint
+AS
+BEGIN
+	
+	-- Devuelvo la ciudad en donde esta la aeronave actualmente
+	RETURN (SELECT TOP 1 tablaViajes.id_viaje FROM DBAS.viajes tablaViajes, DBAS.aeronaves tablaAeronaves 
+	WHERE tablaViajes.matricula_aeronave = @matricula_aeronave 
+	AND tablaAeronaves.matricula_aeronave = @matricula_aeronave AND (tablaAeronaves.fecha_reinsercion <= GETDATE() OR tablaAeronaves.fecha_reinsercion IS NULL) AND tablaAeronaves.fecha_baja_servicio_definitiva IS NULL 
+	ORDER BY tablaViajes.fecha_salida DESC)
+	
+END;
+GO
+
+CREATE PROCEDURE DBAS.altaViaje(@matricula_aeronave varchar(100), @fecha_salida datetime, @fecha_llegada_estimada datetime, @codigo_ruta bigint)
+AS
+BEGIN
+	DECLARE @ID_viaje bigint
+	DECLARE @ID_ultima_ciudad bigint
+	DECLARE @ID_ciudad_origen_nueva bigint
+	DECLARE @fecha_disponible datetime
+
+	DECLARE @mensaje_error varchar(100)
+	
+	-- Obtengo el ultimo viaje de la aeronave
+	SET @ID_viaje = DBAS.ultimaCiudadAeronave(@matricula_aeronave)
+
+	--Obtengo las caracteristicas de la ruta en el que tien el id viaje obtenido
+	SELECT @ID_ultima_ciudad = tablaRutas.ciudad_destino_id, @fecha_disponible = tablaViajes.fecha_llegada_estimada FROM DBAS.viajes tablaViajes, DBAS.rutas tablaRutas
+	WHERE tablaViajes.id_viaje = @ID_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta
+	
+	-- Compruebo que la fecha de salida sea mayor a la fecha de la llegada de la aeronave de su ultimo viaje
+	IF(@fecha_disponible >= @fecha_salida)
+	BEGIN
+
+		-- Devuelvo un mensaje de error
+		SET @mensaje_error = 'La fecha de salida ingresada no esta disponible'
+		RAISERROR(@mensaje_error, 12, 1)
+
+	END
+	ELSE
+	BEGIN
+		--Obtengo la id de la ciudad origen de la ruta seleccionada para el nuevo viaje
+		SELECT @ID_ciudad_origen_nueva = ciudad_origen_id FROM DBAS.rutas WHERE codigo_ruta = @codigo_ruta
+
+		-- Compruebp que la ultima ciudad en el que esta la aeronave coincida con la ciudad origen de la ruta ingresada
+		IF(@ID_ultima_ciudad != @ID_ciudad_origen_nueva)
+		BEGIN
+			
+			-- Devuelvo un mensaje de error
+			SET @mensaje_error = 'La ruta seleccionada no comienza en la ciudad de la aeronave'
+			RAISERROR(@mensaje_error, 12, 1)
+
+		END
+		ELSE
+		BEGIN
+			-- Compruebo que el servicio de la aeronave este tambien en la ruta seleccionada
+			IF NOT EXISTS(SELECT * FROM DBAS.aeronaves tablaAeronaves, DBAS.serviciosPorRutas tablaSporR 
+				WHERE tablaAeronaves.matricula_aeronave = @matricula_aeronave AND tablaSporR.codigo_ruta = @codigo_ruta AND tablaAeronaves.id_servicio = tablaSporR.codigo_ruta)
+			BEGIN
+				
+				-- Devuelvo un mensaje de error
+				SET @mensaje_error = 'El servicio de la aeronave no es posible para esta ruta'
+				RAISERROR(@mensaje_error, 12, 1)
+
+			END
+			ELSE
+			BEGIN
+				-- Inserto el nuevo viaje con las caracteristicas seleccionadas
+				INSERT INTO DBAS.viajes(fecha_salida, fecha_llegada_estimada, codigo_ruta, matricula_aeronave)
+				VALUES(@fecha_salida, @fecha_llegada_estimada, @codigo_ruta, @matricula_aeronave)
+			END
+		END
+	END
+END;
+GO
+
+/* -- Compra pasajes/encomiendas -- */
+
+CREATE PROCEDURE DBAS.generarCompra(@id_comprador bigint, @tarjeta_Numero bigint, @tarjeta_Codigo bigint, @tarjeta_Fecha_de_vencimiento datetime, @tipo_tarjeta_id bigint, @cuoatas_elegidas smallint, @tipo_compra tinyint)
+AS
+BEGIN
+	DECLARE @ID_tarjeta bigint
+
+	--  Pregunto que tipo de compra es, si es 1 es por tarjeta sino en efectivo
+	IF(@tipo_compra = 1)
+	BEGIN
+		
+		-- Inserto la tarjeta con los datos que ingreso el cliente
+		INSERT INTO DBAS.tarjetas(tarjeta_Numero, tarjeta_Codigo, tarjeta_Fecha_de_vencimiento, cuoatas_elegidas, tipo_tarjeta_id)
+		VALUES (@tarjeta_Numero, @tarjeta_Codigo, @tarjeta_Fecha_de_vencimiento, @cuoatas_elegidas, @tipo_tarjeta_id)
+		
+		-- Obtengo la id de la tarjeta
+		SET @ID_tarjeta = SCOPE_IDENTITY()
+
+		-- Creo la compra insertando la id de la tarjeta y su comprador
+		INSERT INTO DBAS.compras(id_cliente, tarjeta_id)
+		VALUES(@id_comprador, @ID_tarjeta)
+
+	END
+	ELSE
+	BEGIN
+		-- Creo la compra con su comprador
+		INSERT INTO DBAS.compras(id_cliente)
+		VALUES(@id_comprador)
+	END
+
+END;
+GO
+
 --Cantidad de butacas libres de una aeronave
 CREATE FUNCTION DBAS.cantidadButacasLibres(@matricula_aeronave varchar(100),@id_viaje bigint)
 RETURNS bigint
@@ -1872,6 +2029,12 @@ BEGIN
 
 	RETURN @asientosLibres
 END;
+GO
+
+-- Creo la vista para obtener los kg disponibles de encomienda de cada viaje
+CREATE VIEW DBAS.cantidadKgEncomiendasPorViaje AS
+SELECT encomiendas.id_viaje,SUM(encomienda_cliente_KG) as cantidad_kg FROM DBAS.encomiendas encomiendas
+GROUP BY encomiendas.id_viaje
 GO
 
 --Cantidad de kg disponibles para encomiendas de una aeronave
@@ -1892,99 +2055,86 @@ BEGIN
 END;
 GO
 
-/* -- Compra pasajes/encomiendas -- */
-
-CREATE PROCEDURE DBAS.generarCompra(@id_comprador bigint, @tarjeta_Numero bigint, @tarjeta_Codigo bigint, @tarjeta_Fecha_de_vencimiento datetime, @tipo_tarjeta_id bigint, @cuoatas_elegidas smallint, @tipo_compra tinyint)
-AS
-BEGIN
-	DECLARE @ID_tarjeta bigint
-
-	IF(@tipo_compra = 1)
-	BEGIN
-	
-		INSERT INTO DBAS.tarjetas(tarjeta_Numero, tarjeta_Codigo, tarjeta_Fecha_de_vencimiento, cuoatas_elegidas, tipo_tarjeta_id)
-		VALUES (@tarjeta_Numero, @tarjeta_Codigo, @tarjeta_Fecha_de_vencimiento, @cuoatas_elegidas, @tipo_tarjeta_id)
-
-		SET @ID_tarjeta = SCOPE_IDENTITY()
-
-		INSERT INTO DBAS.compras(id_cliente, tarjeta_id)
-		VALUES(@id_comprador, @ID_tarjeta)
-
-	END
-	ELSE
-	BEGIN
-		INSERT INTO DBAS.compras(id_cliente)
-		VALUES(@id_comprador)
-	END
-
-END;
-GO
-
 
 /* -- cancelacion pasajes/encomiendas -- */
 
+-- La vista es creada para que la aplicacion me pueda mandar un INSERT simultaneo como si fuera el de un select, con los parametros de la vista
 CREATE VIEW DBAS.PasajesCancelados AS
 SELECT tablaCompras.id_compra_PNR, tablaCompras.id_cliente, 'motivo cancelacion' motivo_cancelacion, tablaPasajes.codigo_pasaje, tablaEncomiendas.codigo_encomienda
 FROM DBAS.pasajes tablaPasajes, DBAS.encomiendas tablaEncomiendas, DBAS.compras tablaCompras
 WHERE tablaPasajes.id_compra_PNR = tablaEncomiendas.id_compra_PNR AND tablaCompras.id_compra_PNR = tablaPasajes.id_compra_PNR 
 GO
 
-
+-- Creo un trigger para manejar los pasajes/Encomiendas cancelados en la vista
 CREATE TRIGGER DBAS.cancelarPasajes ON DBAS.PasajesCancelados
 INSTEAD OF INSERT
 AS
 BEGIN
 	DECLARE @PNR bigint, @id_comprador bigint, @motivo_cancelacion varchar(100), @ID_cancelacion bigint, @codigo_pasaje bigint, @codigo_encomienda bigint , @mensaje_error varchar(100)
 
+	-- Declaro un cursor para el manejo de los datos ingresados
 	DECLARE cancelarCursor CURSOR FOR
 	SELECT @PNR, @id_comprador, @motivo_cancelacion, @codigo_pasaje, @codigo_encomienda FROM inserted
 
 	OPEN cancelarCursor
 
+	-- Inserto lo que obtiene el cursor en las variables
 	FETCH NEXT FROM cancelarCursor
 	INTO @PNR, @id_comprador, @motivo_cancelacion, @codigo_pasaje, @codigo_encomienda
 
+	-- Compruebo si la id de la compra y/o el cliente existen
 	IF EXISTS(SELECT * FROM DBAS.compras WHERE id_compra_PNR = @PNR AND id_cliente = @id_comprador)
 	BEGIN
 		
+		-- comienzo una transaccion por si hay datos que no corresponden
 		BEGIN TRANSACTION cancelacionPE
-		 
+		
+		-- Inserto una cancelacion con los motivos del cliente y obtengo la id de la cancelacion 
 		EXECUTE DBAS.cancelacionPasaje @motivo_cancelacion, @ID_cancelacion OUT
 
 		WHILE @@FETCH_STATUS = 0
 		BEGIN
-			IF EXISTS(SELECT * FROM DBAS.pasajes WHERE codigo_pasaje = @codigo_pasaje) AND @codigo_pasaje IS NOT NULL
+			-- pregunto si existe el pasaje con el codigo ingresado y con el mismo PNR
+			IF EXISTS(SELECT * FROM DBAS.pasajes WHERE codigo_pasaje = @codigo_pasaje AND id_compra_PNR = @PNR) AND @codigo_pasaje IS NOT NULL
 			BEGIN
+				-- Actualizo el pasaje con el codigo de cancelacion
 				UPDATE DBAS.pasajes SET id_cancelacion = @ID_cancelacion WHERE codigo_pasaje = @codigo_pasaje
 			END
 			ELSE
 			BEGIN
+				-- Devuelvo un mensaje de error
 				SET @mensaje_error = 'Hay un codigo de pasaje invalido'
 				RAISERROR(@mensaje_error, 12, 1)
 
 				CLOSE cancelarCursor
 				DEALLOCATE cancelarCursor
 
+				-- Vuelvo atras todos los cambios realizados
 				ROLLBACK TRANSACTION cancelacionPE
 				RETURN
 			END	
 			
-			IF EXISTS(SELECT * FROM DBAS.encomiendas WHERE codigo_encomienda = @codigo_encomienda) AND @codigo_encomienda IS NOT NULL
+			-- pregunto si existe la encomienda con el codigo ingresado y con el mismo PNR
+			IF EXISTS(SELECT * FROM DBAS.encomiendas WHERE codigo_encomienda = @codigo_encomienda AND id_compra_PNR = @PNR) AND @codigo_encomienda IS NOT NULL
 			BEGIN
+				-- Actualizo la encomienda con el codigo de cancelacion
 				UPDATE DBAS.encomiendas SET id_cancelacion = @ID_cancelacion WHERE codigo_encomienda = @codigo_encomienda
 			END
 			ELSE
 			BEGIN
+				-- Devuelvo un mensaje de error
 				SET @mensaje_error = 'Hay un codigo de encomienda invalido'
 				RAISERROR(@mensaje_error, 12, 1)
 
 				CLOSE cancelarCursor
 				DEALLOCATE cancelarCursor
 				
+				-- Vuelvo atras todos los cambios realizados
 				ROLLBACK TRANSACTION cancelacionPE
 				RETURN
 			END
 			
+			-- Inserto lo que obtiene el cursor en las variables
 			FETCH NEXT FROM cancelarCursor
 			INTO @PNR, @id_comprador, @motivo_cancelacion, @codigo_pasaje, @codigo_encomienda
 
@@ -1999,9 +2149,11 @@ BEGIN
 	ELSE
 	BEGIN
 		
+		-- Devuelvo un mensaje de error
 		SET @mensaje_error = 'El PNR ingresado es incorrecto'
 		RAISERROR(@mensaje_error, 12, 1)
 
 	END
 
 END;
+

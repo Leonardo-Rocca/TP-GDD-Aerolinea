@@ -38,7 +38,6 @@ CREATE TABLE DBAS.aeronaves (
 	matricula_aeronave varchar(100) PRIMARY KEY,
 	numero_aeronave bigint IDENTITY(1,1) UNIQUE,
 	modelo_aeronave varchar(100),
-	fecha_reinsercion datetime,
 	fecha_baja_servicio_definitiva datetime,
 	kg_disponible_encomienda float(24),
 	id_fabricante bigint,
@@ -210,7 +209,7 @@ GO
 CREATE TABLE DBAS.periodosFueraDeServicio (
 	id_periodo bigint IDENTITY(1,1) PRIMARY KEY,
 	matricula_aeronave varchar(100),
-	fecha_fuera_servicio datetime,
+	fecha_fuera_servicio datetime default GETDATE(),
 	fecha_reinicio_servicio datetime
 );
 GO
@@ -907,14 +906,14 @@ BEGIN
 	BEGIN
 		
 		INSERT INTO @aeronaves_dias_fuera_de_servicio(aeronave, dias_fuera_de_servicio)
-		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,tablaPeriodos.fecha_reinicio_servicio)) as cantidad_dias_fuera_de_servicio 
-		FROM DBAS.periodosFueraDeServicio tablaPeriodos, DBAS.aeronaves tablaAeronaves
-		WHERE tablaPeriodos.fecha_reinicio_servicio IS NOT null AND tablaPeriodos.fecha_reinicio_servicio < @anioDelSemestre AND DATEPART(year,tablaPeriodos.fecha_reinicio_servicio) = DATEPART(year,@anioDelSemestre)
-		GROUP BY tablaAeronaves.matricula_aeronave) 
+		(SELECT tablaPeriodos.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,tablaPeriodos.fecha_reinicio_servicio)) as cantidad_dias_fuera_de_servicio 
+		FROM DBAS.periodosFueraDeServicio tablaPeriodos
+		WHERE tablaPeriodos.fecha_reinicio_servicio < @anioDelSemestre AND DATEPART(year,tablaPeriodos.fecha_reinicio_servicio) = DATEPART(year,@anioDelSemestre)
+		GROUP BY tablaPeriodos.matricula_aeronave) 
 		UNION ALL
-		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,GETDATE())) as cantidad_dias_fuera_de_servicio 
-		FROM DBAS.periodosFueraDeServicio tablaPeriodos, DBAS.aeronaves tablaAeronaves
-		WHERE tablaPeriodos.fecha_reinicio_servicio IS null AND GETDATE() < @anioDelSemestre AND DATEPART(year,GETDATE()) = DATEPART(year,@anioDelSemestre)
+		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaAeronaves.fecha_baja_servicio_definitiva,GETDATE())) as cantidad_dias_fuera_de_servicio 
+		FROM DBAS.aeronaves tablaAeronaves
+		WHERE tablaAeronaves.fecha_baja_servicio_definitiva IS NOT NULL AND GETDATE() < @anioDelSemestre AND DATEPART(year,GETDATE()) = DATEPART(year,@anioDelSemestre)
 		GROUP BY tablaAeronaves.matricula_aeronave)
 				
 	END
@@ -922,14 +921,14 @@ BEGIN
 	BEGIN
 
 		INSERT INTO @aeronaves_dias_fuera_de_servicio(aeronave, dias_fuera_de_servicio)
-		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,tablaPeriodos.fecha_reinicio_servicio)) as cantidad_dias_fuera_de_servicio 
-		FROM DBAS.periodosFueraDeServicio tablaPeriodos, DBAS.aeronaves tablaAeronaves
-		WHERE tablaPeriodos.fecha_reinicio_servicio IS NOT null AND tablaPeriodos.fecha_reinicio_servicio >= @anioDelSemestre AND DATEPART(year,tablaPeriodos.fecha_reinicio_servicio) = DATEPART(year,@anioDelSemestre)
-		GROUP BY tablaAeronaves.matricula_aeronave) 
+		(SELECT tablaPeriodos.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,tablaPeriodos.fecha_reinicio_servicio)) as cantidad_dias_fuera_de_servicio 
+		FROM DBAS.periodosFueraDeServicio tablaPeriodos
+		WHERE tablaPeriodos.fecha_reinicio_servicio >= @anioDelSemestre AND DATEPART(year,tablaPeriodos.fecha_reinicio_servicio) = DATEPART(year,@anioDelSemestre)
+		GROUP BY tablaPeriodos.matricula_aeronave) 
 		UNION ALL
-		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaPeriodos.fecha_fuera_servicio,GETDATE())) as cantidad_dias_fuera_de_servicio 
-		FROM DBAS.periodosFueraDeServicio tablaPeriodos, DBAS.aeronaves tablaAeronaves
-		WHERE tablaPeriodos.fecha_reinicio_servicio IS null AND GETDATE() >= @anioDelSemestre AND DATEPART(year,GETDATE()) = DATEPART(year,@anioDelSemestre)
+		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaAeronaves.fecha_baja_servicio_definitiva,GETDATE())) as cantidad_dias_fuera_de_servicio 
+		FROM DBAS.aeronaves tablaAeronaves
+		WHERE tablaAeronaves.fecha_baja_servicio_definitiva IS NOT null AND GETDATE() >= @anioDelSemestre AND DATEPART(year,GETDATE()) = DATEPART(year,@anioDelSemestre)
 		GROUP BY tablaAeronaves.matricula_aeronave)
 
 	END
@@ -1364,7 +1363,8 @@ BEGIN
 	IF(@tipo_cancelacion = 1)
 	BEGIN
 		-- Doy de baja temporal a la aeronave y le indico una fecha de reinsercion
-		UPDATE DBAS.aeronaves SET fecha_reinsercion = @fecha WHERE matricula_aeronave = @matricula_aeronave
+		INSERT INTO DBAS.periodosFueraDeServicio(matricula_aeronave, fecha_reinicio_servicio)
+		VALUES(@matricula_aeronave, @fecha)
 	END
 	ELSE
 	BEGIN
@@ -1423,6 +1423,60 @@ BEGIN
 END;
 GO
 
+CREATE FUNCTION DBAS.aeronavesEnServicio()
+RETURNS @aeronavesEnServicio TABLE (matricula_aeronave varchar(100))
+AS
+BEGIN
+	DECLARE @matriculaAeronave varchar(100)
+	DECLARE @fecha_reincercion datetime
+
+	-- Creo un cursor para las aeronaves que no esten dados de baja
+	DECLARE aeronaves CURSOR FOR
+	SELECT matricula_aeronave FROM DBAS.aeronaves WHERE fecha_baja_servicio_definitiva IS NULL
+
+	OPEN aeronaves
+
+	-- Inserto lo que obtiene el cursor en las variables
+	FETCH NEXT FROM aeronaves
+	INTO @matriculaAeronave
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		-- Pregunto si alguna vez la aeronave estaba fuera de servicio
+		IF EXISTS(SELECT * FROM DBAS.periodosFueraDeServicio WHERE matricula_aeronave = @matriculaAeronave)
+		BEGIN
+			--Obtengo la fecha más reciente de reincercion
+			SELECT TOP 1 @fecha_reincercion = fecha_reinicio_servicio FROM DBAS.periodosFueraDeServicio WHERE matricula_aeronave = @matriculaAeronave
+			ORDER BY fecha_reinicio_servicio DESC
+
+			--Pregunto si la fecha de reincercion es menor a la de hoy
+			IF(@fecha_reincercion <= GETDATE())
+			BEGIN
+				--Retorno la aeronave
+				INSERT INTO @aeronavesEnServicio(matricula_aeronave)
+				VALUES(@matriculaAeronave)
+			END
+		END
+		ELSE
+		BEGIN
+			--Retorno la aeronave
+			INSERT INTO @aeronavesEnServicio(matricula_aeronave)
+			VALUES(@matriculaAeronave)
+		END
+
+		-- Inserto lo que obtiene el cursor en las variables
+		FETCH NEXT FROM aeronaves
+		INTO @matriculaAeronave
+	END
+
+	CLOSE aeronaves
+	DEALLOCATE aeronaves
+
+	RETURN
+END;
+GO
+
+
 CREATE FUNCTION DBAS.aeronavesDisponiblesParaReemplazo()
 RETURNS @aeronavesDisponiblesParaReemplazo TABLE (matricula_aeronave varchar(100),id_viaje bigint)
 AS
@@ -1433,10 +1487,11 @@ BEGIN
 
 	-- Creo un cursor de la aeronaves que estan en servicio
 	DECLARE aeronaves CURSOR FOR
-	SELECT matricula_aeronave FROM DBAS.aeronaves WHERE (fecha_reinsercion <= GETDATE() OR fecha_reinsercion IS NULL) AND fecha_baja_servicio_definitiva IS NULL
+	SELECT matricula_aeronave FROM DBAS.aeronavesEnServicio()
 
 	OPEN aeronaves
 
+	-- Inserto lo que obtiene el cursor en las variables
 	FETCH NEXT FROM aeronaves
 	INTO @matriculaAer
 
@@ -1459,6 +1514,7 @@ BEGIN
 			INSERT INTO @aeronavesDisponiblesParaReemplazo VALUES (@matriculaAer,NULL)
 		END
 		
+		-- Inserto lo que obtiene el cursor en las variables
 		FETCH NEXT FROM aeronaves
 		INTO @matriculaAer
 	END
@@ -1909,9 +1965,8 @@ AS
 BEGIN
 	
 	-- Devuelvo la ciudad en donde esta la aeronave actualmente
-	RETURN (SELECT TOP 1 tablaViajes.id_viaje FROM DBAS.viajes tablaViajes, DBAS.aeronaves tablaAeronaves 
+	RETURN (SELECT TOP 1 tablaViajes.id_viaje FROM DBAS.viajes tablaViajes
 	WHERE tablaViajes.matricula_aeronave = @matricula_aeronave 
-	AND tablaAeronaves.matricula_aeronave = @matricula_aeronave AND (tablaAeronaves.fecha_reinsercion <= GETDATE() OR tablaAeronaves.fecha_reinsercion IS NULL) AND tablaAeronaves.fecha_baja_servicio_definitiva IS NULL 
 	ORDER BY tablaViajes.fecha_salida DESC)
 	
 END;
@@ -2156,4 +2211,3 @@ BEGIN
 	END
 
 END;
-

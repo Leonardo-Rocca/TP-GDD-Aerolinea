@@ -1,3 +1,4 @@
+
 /*
 USE[GD2C2015];
 GO
@@ -38,6 +39,7 @@ CREATE TABLE DBAS.aeronaves (
 	matricula_aeronave varchar(100) PRIMARY KEY,
 	numero_aeronave bigint IDENTITY(1,1) UNIQUE,
 	modelo_aeronave varchar(100),
+	fecha_reinsercion datetime,
 	fecha_baja_servicio_definitiva datetime,
 	kg_disponible_encomienda float(24),
 	id_fabricante bigint,
@@ -67,7 +69,7 @@ CREATE TABLE DBAS.pasajes (
 	id_cliente  bigint NOT NULL,
 	id_viaje bigint NOT NULL,
 	id_butaca bigint,
-	fecha_compra_pasaje datetime DEFAULT(GETDATE()),
+	fecha_compra_pasaje datetime,
 	precio_pasaje float(24),
 	id_compra_PNR bigint,
 	id_cancelacion bigint
@@ -79,7 +81,7 @@ CREATE TABLE DBAS.encomiendas (
 	id_cliente bigint NOT NULL,
 	encomienda_cliente_KG float(24),
 	id_viaje bigint NOT NULL,
-	fecha_compra_encomienda datetime DEFAULT(GETDATE()),
+	fecha_compra_encomienda datetime,
 	precio_encomienda float(24),
 	id_compra_PNR bigint,
 	id_cancelacion bigint
@@ -209,8 +211,14 @@ GO
 CREATE TABLE DBAS.periodosFueraDeServicio (
 	id_periodo bigint IDENTITY(1,1) PRIMARY KEY,
 	matricula_aeronave varchar(100),
-	fecha_fuera_servicio datetime default GETDATE(),
+	fecha_fuera_servicio datetime,
 	fecha_reinicio_servicio datetime
+);
+GO
+
+CREATE TABLE DBAS.date_time (
+	id_periodo tinyint PRIMARY KEY default 1,
+	GET_DATE datetime default GETDATE(),
 );
 GO
 
@@ -336,6 +344,11 @@ GO
 
 alter table DBAS.usuariosPorRol add constraint fk_usuariosPorRol_rol
 	foreign key (id_rol) references DBAS.roles (id_rol);
+GO
+
+/* -- Fecha del sistema -- */
+INSERT INTO DBAS.date_time(GET_DATE)
+VALUES(GETDATE())
 GO
 
 /* -- Migracion -- */
@@ -740,11 +753,15 @@ CREATE FUNCTION DBAS.millasVigentes(@dni_persona bigint)
 RETURNS bigint
 AS
 BEGIN
-	RETURN ((SELECT SUM(cantidad_millas) FROM DBAS.historialMillas(@dni_persona) 
-	WHERE DATEDIFF(day,fecha_obtencion_millas,GETDATE()) <= 365) -
+	DECLARE @GET_DATE datetime
+
+	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
+	
+	RETURN ((SELECT SUM(cantidad_millas) FROM DBAS.historialMillas(@dni_persona)
+	WHERE DATEDIFF(day,fecha_obtencion_millas,@GET_DATE) <= 365) -
 	 ( ISNULL((SELECT SUM(millas_usadas) FROM DBAS.canjes tablaCanjes, DBAS.clientes tablaClientes, DBAS.personas tablaPersonas
 	WHERE tablaCanjes.id_cliente = tablaClientes.id_cliente AND tablaClientes.id_persona = tablaPersonas.id_persona
-	AND tablaPersonas.dni_persona = @dni_persona AND DATEDIFF(day,fecha_canje,GETDATE()) <= 365
+	AND tablaPersonas.dni_persona = @dni_persona AND DATEDIFF(day,fecha_canje,@GET_DATE) <= 365
 	GROUP BY id_canje),0)))
 END;
 GO
@@ -781,6 +798,9 @@ BEGIN
 	DECLARE @valor_unitario_en_millas bigint
 	DECLARE @mensaje_error varchar(100)
 	DECLARE @valor_total_en_millas bigint
+	DECLARE @GET_DATE datetime
+
+	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
 
 	SET @dni_persona = (SELECT dni_persona FROM DBAS.personas tablaPersonas, DBAS.clientes tablaClientes 
 	WHERE tablaClientes.id_cliente = @id_cliente AND tablaPersonas.id_persona = tablaClientes.id_persona)
@@ -801,7 +821,7 @@ BEGIN
 	ELSE
 	BEGIN
 		INSERT INTO DBAS.canjes(id_cliente,fecha_canje,cantidad_producto,millas_usadas,id_producto)
-		VALUES (@id_cliente,GETDATE(),@cantidadACanjear,@valor_total_en_millas,@id_producto)
+		VALUES (@id_cliente,@GET_DATE,@cantidadACanjear,@valor_total_en_millas,@id_producto)
 	END
 
 END;
@@ -897,6 +917,9 @@ CREATE FUNCTION DBAS.aeronaves_dias_fuera_de_servicio(@semestreDelAnio tinyint, 
 RETURNS @aeronaves_dias_fuera_de_servicio TABLE ( aeronave varchar(100), dias_fuera_de_servicio bigint)
 AS
 BEGIN
+	DECLARE @GET_DATE datetime
+
+	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
 
 	-- Me pasan por parametro el año y lo concateno con una fecha generica que sirve para indicar luego a que semestre pertenece
 	DECLARE @anioDelSemestre datetime
@@ -911,9 +934,9 @@ BEGIN
 		WHERE tablaPeriodos.fecha_reinicio_servicio < @anioDelSemestre AND DATEPART(year,tablaPeriodos.fecha_reinicio_servicio) = DATEPART(year,@anioDelSemestre)
 		GROUP BY tablaPeriodos.matricula_aeronave) 
 		UNION ALL
-		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaAeronaves.fecha_baja_servicio_definitiva,GETDATE())) as cantidad_dias_fuera_de_servicio 
+		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaAeronaves.fecha_baja_servicio_definitiva,@GET_DATE)) as cantidad_dias_fuera_de_servicio 
 		FROM DBAS.aeronaves tablaAeronaves
-		WHERE tablaAeronaves.fecha_baja_servicio_definitiva IS NOT NULL AND GETDATE() < @anioDelSemestre AND DATEPART(year,GETDATE()) = DATEPART(year,@anioDelSemestre)
+		WHERE tablaAeronaves.fecha_baja_servicio_definitiva IS NOT NULL AND @GET_DATE < @anioDelSemestre AND DATEPART(year,@GET_DATE) = DATEPART(year,@anioDelSemestre)
 		GROUP BY tablaAeronaves.matricula_aeronave)
 				
 	END
@@ -926,9 +949,9 @@ BEGIN
 		WHERE tablaPeriodos.fecha_reinicio_servicio >= @anioDelSemestre AND DATEPART(year,tablaPeriodos.fecha_reinicio_servicio) = DATEPART(year,@anioDelSemestre)
 		GROUP BY tablaPeriodos.matricula_aeronave) 
 		UNION ALL
-		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaAeronaves.fecha_baja_servicio_definitiva,GETDATE())) as cantidad_dias_fuera_de_servicio 
+		(SELECT tablaAeronaves.matricula_aeronave, SUM(DATEDIFF(day,tablaAeronaves.fecha_baja_servicio_definitiva,@GET_DATE)) as cantidad_dias_fuera_de_servicio 
 		FROM DBAS.aeronaves tablaAeronaves
-		WHERE tablaAeronaves.fecha_baja_servicio_definitiva IS NOT null AND GETDATE() >= @anioDelSemestre AND DATEPART(year,GETDATE()) = DATEPART(year,@anioDelSemestre)
+		WHERE tablaAeronaves.fecha_baja_servicio_definitiva IS NOT null AND @GET_DATE >= @anioDelSemestre AND DATEPART(year,@GET_DATE) = DATEPART(year,@anioDelSemestre)
 		GROUP BY tablaAeronaves.matricula_aeronave)
 
 	END
@@ -1346,9 +1369,13 @@ GO
 CREATE PROCEDURE DBAS.cancelacionPasaje(@motivo_cancelacion varchar(100), @ID_cancelacion bigint OUT)
 AS
 BEGIN
+	DECLARE @GET_DATE datetime
+
+	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
+	
 	-- Inserto un nueva cancelacion con su motivo y la fecha actual
 	INSERT INTO DBAS.cancelaciones(fecha_devolucion, motivo_cancelacion)
-	VALUES(GETDATE(), @motivo_cancelacion)
+	VALUES(@GET_DATE, @motivo_cancelacion)
 
 	-- Seteo la variable con la id de la cancelacion y la devuelvo para su manejo
 	SET @ID_cancelacion = SCOPE_IDENTITY()
@@ -1378,8 +1405,12 @@ CREATE FUNCTION DBAS.estaEnViajeAeronave(@matricula_aeronave varchar(100))
 RETURNS tinyint
 AS
 BEGIN
+	DECLARE @GET_DATE datetime
+
+	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
+	
 	-- Pregunto si la aeronave que llega por parametro esta en viaje actualmente y devuelve 0 si lo esta y 1 si esta disponible
-	IF EXISTS(SELECT * FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave AND fecha_salida < GETDATE() AND fecha_llegada IS NULL)
+	IF EXISTS(SELECT * FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave AND fecha_salida < @GET_DATE AND fecha_llegada IS NULL)
 	BEGIN
 		RETURN 0
 	END
@@ -1394,9 +1425,13 @@ CREATE FUNCTION DBAS.ciudadAeronave(@matricula_aeronave varchar(100))
 RETURNS bigint
 AS
 BEGIN
+	DECLARE @GET_DATE datetime
+
+	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
+
 	-- Devuelvo la id de la ciudad actual de la aeronave ingresada por parametro 
 	RETURN (SELECT TOP 1 tablaCiudades.id_ciudad FROM DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades 
-	WHERE tablaViajes.matricula_aeronave = @matricula_aeronave AND tablaViajes.fecha_llegada <= GETDATE() 
+	WHERE tablaViajes.matricula_aeronave = @matricula_aeronave AND tablaViajes.fecha_llegada <= @GET_DATE 
 	AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaRutas.ciudad_destino_id = tablaCiudades.id_ciudad
 	ORDER BY tablaViajes.fecha_llegada DESC)
 	
@@ -1429,6 +1464,9 @@ AS
 BEGIN
 	DECLARE @matriculaAeronave varchar(100)
 	DECLARE @fecha_reincercion datetime
+	DECLARE @GET_DATE datetime
+
+	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
 
 	-- Creo un cursor para las aeronaves que no esten dados de baja
 	DECLARE aeronaves CURSOR FOR
@@ -1450,7 +1488,7 @@ BEGIN
 			ORDER BY fecha_reinicio_servicio DESC
 
 			--Pregunto si la fecha de reincercion es menor a la de hoy
-			IF(@fecha_reincercion <= GETDATE())
+			IF(@fecha_reincercion <= @GET_DATE)
 			BEGIN
 				--Retorno la aeronave
 				INSERT INTO @aeronavesEnServicio(matricula_aeronave)
@@ -1532,6 +1570,9 @@ RETURNS @avionesSinVuelo TABLE (matricula_aeronave varchar(100))
 AS 
 BEGIN
 	DECLARE @ciudad_actual_id bigint
+	DECLARE @GET_DATE datetime
+
+	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time 
 	
 	-- Obtengo la ciudad actual de la aeronave a reemplazar
 	SET @ciudad_actual_id = DBAS.ciudadAeronave(@matricula_aeronave)
@@ -1539,7 +1580,7 @@ BEGIN
 	-- Devuelvo todas la aeronaves disponibles para reemplazar a la actual que no tengan ningun vuelo programado
 	INSERT INTO  @avionesSinVuelo
 	SELECT DISTINCT tablaViajes.matricula_aeronave FROM DBAS.viajes tablaViajes, DBAS.aeronavesDisponiblesParaReemplazo() tablaAeronavesTemp, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades
-	WHERE (tablaAeronavesTemp.id_viaje = tablaViajes.id_viaje OR tablaAeronavesTemp.id_viaje IS NULL) AND tablaViajes.fecha_llegada <= GETDATE() 
+	WHERE (tablaAeronavesTemp.id_viaje = tablaViajes.id_viaje OR tablaAeronavesTemp.id_viaje IS NULL) AND tablaViajes.fecha_llegada <= @GET_DATE 
 	AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaRutas.ciudad_destino_id = @ciudad_actual_id
 
 	RETURN	
@@ -1640,6 +1681,9 @@ AS
 BEGIN
 	DECLARE @ID_cancelacion bigint
 	DECLARE @motivo_cancelacion varchar(100)
+	DECLARE @GET_DATE datetime
+
+	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
 
 	-- Seteo el motivo de la cancelacion
 	SET @motivo_cancelacion = 'La aeronave fue dada de baja'
@@ -1654,14 +1698,14 @@ BEGIN
 		-- Actualizo los pasajes que tienen a la aeronave que se da de baja con el di cancelacion obtenido
 		UPDATE tablaPasajes SET tablaPasajes.id_cancelacion = @ID_cancelacion 
 		FROM  DBAS.viajes tablaViajes, DBAS.pasajes tablaPasajes
-		WHERE tablaViajes.fecha_salida > GETDATE() AND tablaViajes.fecha_salida < @fecha 
+		WHERE tablaViajes.fecha_salida > @GET_DATE AND tablaViajes.fecha_salida < @fecha 
 		AND tablaPasajes.id_viaje = tablaViajes.id_viaje
 		AND tablaViajes.matricula_aeronave = @matricula_aeronave
 	
 		-- Actualizo las encomiendas que tienen a la aeronave que se da de baja con el di cancelacion obtenido
 		UPDATE tablaEncomiendas SET tablaEncomiendas.id_cancelacion = @ID_cancelacion 
 		FROM  DBAS.viajes tablaViajes, DBAS.encomiendas tablaEncomiendas
-		WHERE  tablaViajes.fecha_salida > GETDATE() AND tablaViajes.fecha_salida < @fecha 
+		WHERE  tablaViajes.fecha_salida > @GET_DATE AND tablaViajes.fecha_salida < @fecha 
 		AND tablaEncomiendas.id_viaje = tablaViajes.id_viaje
 		AND tablaViajes.matricula_aeronave = @matricula_aeronave
 	
@@ -1672,13 +1716,13 @@ BEGIN
 		-- Actualizo los pasajes que tienen a la aeronave que se da de baja con el di cancelacion obtenido
 		UPDATE tablaPasajes SET tablaPasajes.id_cancelacion = @ID_cancelacion 
 		FROM  DBAS.viajes tablaViajes, DBAS.pasajes tablaPasajes
-		WHERE  tablaViajes.fecha_salida > GETDATE()
+		WHERE  tablaViajes.fecha_salida > @GET_DATE
 		AND tablaPasajes.id_viaje = tablaViajes.id_viaje
 		AND tablaViajes.matricula_aeronave = @matricula_aeronave
 		
 		UPDATE tablaEncomiendas SET tablaEncomiendas.id_cancelacion = @ID_cancelacion 
 		FROM  DBAS.viajes tablaViajes, DBAS.encomiendas tablaEncomiendas
-		WHERE tablaViajes.fecha_salida > GETDATE()
+		WHERE tablaViajes.fecha_salida > @GET_DATE
 		AND tablaEncomiendas.id_viaje = tablaViajes.id_viaje
 		AND tablaViajes.matricula_aeronave = @matricula_aeronave
 		
@@ -1693,13 +1737,17 @@ GO
 CREATE PROCEDURE DBAS.reemplazarAeronave(@matricula_aeronave_original varchar(100),@matricula_aeronave_nueva varchar(100),@baja_temporal tinyint, @fecha datetime)
 AS 
 BEGIN
+	DECLARE @GET_DATE datetime
+
+	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
+	
 	-- Pregunto que tipo de reemplazo es, si es uno solo cancelo los pasajes hasta la fecha de reinsercion de la aeronave, sino todos los pasajes posteriores	
 	IF (@baja_temporal = 1)
 	BEGIN
 		
 		-- Actualizo los viajes que tengan la matricula aeronave viejo por la nueva
 		UPDATE DBAS.viajes SET matricula_aeronave = @matricula_aeronave_nueva 
-		WHERE fecha_salida > GETDATE() AND fecha_salida < @fecha AND matricula_aeronave = @matricula_aeronave_original
+		WHERE fecha_salida > @GET_DATE AND fecha_salida < @fecha AND matricula_aeronave = @matricula_aeronave_original
 
 	END
 	ELSE
@@ -1707,7 +1755,7 @@ BEGIN
 		
 		-- Actualizo los viajes que tengan la matricula aeronave viejo por la nueva
 		UPDATE DBAS.viajes SET matricula_aeronave = @matricula_aeronave_nueva 
-		WHERE fecha_salida > GETDATE() AND matricula_aeronave = @matricula_aeronave_original
+		WHERE fecha_salida > @GET_DATE AND matricula_aeronave = @matricula_aeronave_original
 
 	END
 END;
@@ -1911,9 +1959,12 @@ CREATE PROCEDURE DBAS.bajaRuta(@codigo_ruta bigint)
 AS
 BEGIN
 	DECLARE @mensaje_error varchar(100)
+	DECLARE @GET_DATE datetime
+
+	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
 	
 	-- Pregunto si existe un viaje que utiliza a la ruta para saber si se puede modificar
-	IF EXISTS(SELECT * FROM DBAS.viajes WHERE codigo_ruta = @codigo_ruta AND fecha_salida > GETDATE())
+	IF EXISTS(SELECT * FROM DBAS.viajes WHERE codigo_ruta = @codigo_ruta AND fecha_salida > @GET_DATE)
 	BEGIN
 		-- Devuelvo un mensaje de error
 		SET @mensaje_error = 'Hay viajes futuros por esta ruta'
@@ -1932,7 +1983,10 @@ AS
 BEGIN
 	DECLARE @motivo_cancelacion varchar(100)
 	DECLARE @ID_cancelacion bigint
-	
+	DECLARE @GET_DATE datetime
+
+	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
+
 	-- Seteo el motivo de cancelacion
 	SET @motivo_cancelacion = 'Baja ruta de vuelo' 
 
@@ -1942,14 +1996,14 @@ BEGIN
 	-- Actualizo todos los pasajes que contengan la ruta que se da de baja e inserto el id de cancelacion	
 	UPDATE tablaPasajes SET tablaPasajes.id_cancelacion = @ID_cancelacion 
 	FROM  DBAS.viajes tablaViajes, DBAS.pasajes tablaPasajes
-	WHERE tablaViajes.fecha_salida > GETDATE()
+	WHERE tablaViajes.fecha_salida > @GET_DATE
 	AND tablaPasajes.id_viaje = tablaViajes.id_viaje
 	AND tablaViajes.codigo_ruta= @codigo_ruta
 	
 	-- Actualizo todos los pasajes que contengan la ruta que se da de baja e inserto el id de cancelacion
 	UPDATE tablaEncomiendas SET tablaEncomiendas.id_cancelacion = @ID_cancelacion 
 	FROM  DBAS.viajes tablaViajes, DBAS.encomiendas tablaEncomiendas
-	WHERE  tablaViajes.fecha_salida > GETDATE()
+	WHERE  tablaViajes.fecha_salida > @GET_DATE
 	AND tablaEncomiendas.id_viaje = tablaViajes.id_viaje
 	AND tablaViajes.codigo_ruta= @codigo_ruta
 
@@ -2211,3 +2265,4 @@ BEGIN
 	END
 
 END;
+GO

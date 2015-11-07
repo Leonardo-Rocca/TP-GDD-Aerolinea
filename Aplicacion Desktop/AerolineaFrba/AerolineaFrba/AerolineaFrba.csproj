@@ -196,6 +196,7 @@
     <Compile Include="Compra\ListadoButacas.Designer.cs">
       <DependentUpon>ListadoButacas.cs</DependentUpon>
     </Compile>
+    <Compile Include="Compra\Tarjeta.cs" />
     <Compile Include="Consulta Millas\ConsultarMillasForm.cs">
       <SubType>Form</SubType>
     </Compile>

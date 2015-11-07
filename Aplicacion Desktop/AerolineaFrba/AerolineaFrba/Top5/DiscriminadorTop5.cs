@@ -26,12 +26,28 @@ namespace AerolineaFrba.Top5
 
         private void button2_Click(object sender, EventArgs e)
         {
-           
+            DestinosConMasPasajesComprados dest = new DestinosConMasPasajesComprados(this, 5);
+            dest.Show();
+            this.Hide();
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
             DestinosConMasPasajesComprados dest = new DestinosConMasPasajesComprados(this, 2);
+            dest.Show();
+            this.Hide();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            DestinosConMasPasajesComprados dest = new DestinosConMasPasajesComprados(this, 3);
+            dest.Show();
+            this.Hide();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            DestinosConMasPasajesComprados dest = new DestinosConMasPasajesComprados(this, 4);
             dest.Show();
             this.Hide();
         }

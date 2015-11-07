@@ -53,10 +53,12 @@ namespace AerolineaFrba.Compra
         {
             if(!validarCamposVacios())return;
 
+            string id = "99";
             string butacaKg="";
             if (tipo == 1) butacaKg = txtButaca.Text;
             if (tipo == 2) butacaKg = txtKg.Text;
-            PasajeEncomienda pasEn = new PasajeEncomienda(txtnombre.Text,txtApellido.Text,dni,tel,txtMail.Text,dateTimePickerFnac.Text,butacaKg);
+
+            PasajeEncomienda pasEn = new PasajeEncomienda(id,txtnombre.Text,txtApellido.Text,dni,tel,txtMail.Text,dateTimePickerFnac.Text,butacaKg);
 
             if (tipo == 0)
             {
@@ -102,11 +104,16 @@ namespace AerolineaFrba.Compra
 
         private void txtDni_TextChanged(object sender, EventArgs e)
         {     //VERIFICAR SOLO NUMEROS                              TO-DO
-            
+            if (txtDni.Text.Length < 5) return;
+
            dni = txtDni.Text;
            string query = "select* from dbas.personas WHERE dni_persona ="+dni;
             DataTable dt =(new ConexionSQL()).cargarTablaSQL(query);
             if(dt.Rows.Count==0)return;
+            if (dt.Rows.Count > 1) {
+                MessageBox.Show("Hay inconsistencia en la base de datos por DNI repetido. Dirigirse a hablar con el administrador");
+                return;
+            }
             txtnombre.Text = dt.Rows[0][2].ToString();
             txtApellido.Text = dt.Rows[0][3].ToString();
             txtDireccion.Text = dt.Rows[0][4].ToString();

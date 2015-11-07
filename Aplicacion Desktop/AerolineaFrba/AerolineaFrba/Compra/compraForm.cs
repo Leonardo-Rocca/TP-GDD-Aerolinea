@@ -23,14 +23,14 @@ namespace AerolineaFrba.Compra
             InitializeComponent();
             inicializar();
             btEncomienda.Visible = false;
-            viaje = new Viaje();
-            viaje.matriculaAeronave = "BZD-177";
+       //     viaje = new Viaje();
+       //     viaje.matriculaAeronave = "BZD-177";
         }
         public compraForm(Viaje v)
         {
             InitializeComponent();
             viaje = v;
-            btEncomienda.Visible = false;
+          //  btEncomienda.Visible = false;
             inicializar();
         }
 
@@ -43,6 +43,7 @@ namespace AerolineaFrba.Compra
         private void inicializar()
         {
             pasajes = new List<PasajeEncomienda>();
+            encomiendas = null;
             txtEncomienda.Text = "0";
             cmbPasaje.Items.Clear();
             cmbPasaje.Text = "";
@@ -73,7 +74,10 @@ namespace AerolineaFrba.Compra
 
         private void buttonGuardar_Click(object sender, EventArgs e)
         {
-            if ((txtEncomienda.Text == "" || txtEncomienda.Text == "0") && cmbPasaje.Items.Count == 0) return;
+            if ((txtEncomienda.Text == "" || txtEncomienda.Text == "0") && cmbPasaje.Items.Count == 0) {
+                MessageBox.Show("Debe agregar pasajes o encomiendas");
+                return;
+            }
 
             Compra.compra = this;
             if(Sesion.Usuario.nombreRol=="Administrador General"){
@@ -93,6 +97,11 @@ namespace AerolineaFrba.Compra
         {
             if(txtEncomienda.Text!="")
             kgEncomiendas = Convert.ToInt32(txtEncomienda.Text);
+        }
+
+        private void cmbPasaje_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

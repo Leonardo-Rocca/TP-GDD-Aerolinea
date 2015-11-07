@@ -8,6 +8,8 @@ namespace AerolineaFrba.Dominio
 {
    public class PasajeEncomienda
     {
+       public string id;
+
         public string nombre;
         public string apellido;
         public string dni;
@@ -15,9 +17,11 @@ namespace AerolineaFrba.Dominio
         public string mail;
         public string fecha;
         public string butacaKg="";
+      
 
-       public PasajeEncomienda(string p1, string p2, string dni, string tel, string p3, string p4, string butacaKg)
+       public PasajeEncomienda(string id,string p1, string p2, string dni, string tel, string p3, string p4, string butacaKg)
        {
+           this.id = id;
            this.nombre = p1;
            this.apellido = p2;
            this.dni = dni;
@@ -25,6 +29,7 @@ namespace AerolineaFrba.Dominio
            this.mail = p3;
            this.fecha = p4;
            this.butacaKg = butacaKg;
+
        }
     }
 }

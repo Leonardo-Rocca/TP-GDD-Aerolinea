@@ -68,7 +68,7 @@ CREATE TABLE DBAS.pasajes (
 	id_cliente  bigint NOT NULL,
 	id_viaje bigint NOT NULL,
 	id_butaca bigint,
-	fecha_compra_pasaje datetime NOT NULL,
+	fecha_compra_pasaje datetime DEFAULT(GETDATE()),
 	precio_pasaje float(24),
 	id_compra_PNR bigint,
 	id_cancelacion bigint
@@ -80,7 +80,7 @@ CREATE TABLE DBAS.encomiendas (
 	id_cliente bigint NOT NULL,
 	encomienda_cliente_KG float(24),
 	id_viaje bigint NOT NULL,
-	fecha_compra_encomienda datetime NOT NULL,
+	fecha_compra_encomienda datetime DEFAULT(GETDATE()),
 	precio_encomienda float(24),
 	id_compra_PNR bigint,
 	id_cancelacion bigint
@@ -549,7 +549,7 @@ BEGIN
 
 	--Inserto los valores de las las tablas temporales que solo tengan pasajes y no encomiendas
 	INSERT INTO DBAS.pasajes(codigo_pasaje, id_cliente, precio_pasaje, fecha_compra_pasaje, id_viaje, id_butaca)
-	SELECT DISTINCT tablaTemporalPasajes.Pasaje_Codigo, tablaTemporalPasajes.id_cliente, tablaTemporalPasajes.Pasaje_Precio, tablaTemporalPasajes.Paquete_FechaCompra, tablaTemporalViajes.id_viaj, tablaButacas.id_butaca 
+	SELECT DISTINCT tablaTemporalPasajes.Pasaje_Codigo, tablaTemporalPasajes.id_cliente, tablaTemporalPasajes.Pasaje_Precio, tablaTemporalPasajes.Pasaje_FechaCompra, tablaTemporalViajes.id_viaj, tablaButacas.id_butaca 
 	FROM ((SELECT id_cliente, fecha_llegada, fecha_salida, ciudad_origen, ciudad_destino, Pasaje_Codigo, Pasaje_Precio, Pasaje_FechaCompra, Paquete_Codigo, Paquete_Precio, Paquete_FechaCompra, Paquete_KG, Butaca_Nro, Butaca_Piso, Aeronave_Matricula FROM #temporalPasajesDeClientes WHERE Butaca_Piso != 0) tablaTemporalPasajes
 		JOIN DBAS.butacas tablaButacas ON (tablaTemporalPasajes.Aeronave_Matricula = tablaButacas.matricula_aeronave AND tablaTemporalPasajes.Butaca_Nro = tablaButacas.numero_butaca AND tablaTemporalPasajes.Butaca_Piso = tablaButacas.piso_butaca)
 		JOIN #temporalViajesConRutas tablaTemporalViajes ON (tablaTemporalViajes.nom_ruta_orig = tablaTemporalPasajes.ciudad_origen AND tablaTemporalViajes.nom_ruta_dest = tablaTemporalPasajes.ciudad_destino AND tablaTemporalViajes.fecha_salida = tablaTemporalPasajes.fecha_salida AND tablaTemporalViajes.fecha_llegada = tablaTemporalPasajes.fecha_llegada AND tablaTemporalPasajes.Aeronave_Matricula = tablaTemporalViajes.matricula_aeronave))
@@ -657,6 +657,27 @@ SELECT tablaUsuarios.id_usuario, tablaRoles.id_rol FROM DBAS.usuarios tablaUsuar
 WHERE tablaRoles.nombre_rol = 'Administrador General' and tablaUsuarios.username = 'admin'
 GO
 
+---Inserto productos
+INSERT INTO DBAS.productos(valor_en_milas,nombre_producto,stock)
+VALUES (2500,'cafetera',50)
+GO
+
+INSERT INTO DBAS.productos(valor_en_milas,nombre_producto,stock)
+VALUES (300,'cuaderno',400)
+GO
+
+INSERT INTO DBAS.productos(valor_en_milas,nombre_producto,stock)
+VALUES (1200,'exprimidora',50)
+GO
+
+INSERT INTO DBAS.productos(valor_en_milas,nombre_producto,stock)
+VALUES (550,'taza',300)
+GO
+
+INSERT INTO DBAS.productos(valor_en_milas,nombre_producto,stock)
+VALUES (15000,'televisor',1)
+GO
+
 /*-- TOP 5 -- */
 
 CREATE FUNCTION DBAS.Top5DeLosDestinosConMasPasajesComprados(@semestreDelAnio tinyint, @anio integer)
@@ -695,6 +716,46 @@ BEGIN
 END;	
 GO
 
+
+CREATE FUNCTION DBAS.Top5DeLosDestinosConMasPasajesCancelados(@semestreDelAnio tinyint, @anio integer)
+RETURNS @TOP5 TABLE ( ciudad_origen varchar(100), ciudad_destino varchar(100), pasajes_cancelados bigint)
+AS
+BEGIN
+
+	DECLARE @anioDelSemestre datetime
+	SET @anioDelSemestre = convert(datetime, concat(@anio, '0701 00:00:00.000'))
+
+	IF (@semestreDelAnio = 1)
+	BEGIN
+
+		INSERT INTO @TOP5(ciudad_origen, ciudad_destino, pasajes_cancelados)
+		SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPasajes.codigo_pasaje) as pasajes_cancelados 
+		FROM DBAS.pasajes tablaPasajes, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
+		WHERE tablaPasajes.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaPasajes.id_cancelacion IS NOT NULL
+		AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id
+		AND tablaPasajes.fecha_compra_pasaje <  @anioDelSemestre AND DATEPART(year,tablaPasajes.fecha_compra_pasaje) = DATEPART(year,@anioDelSemestre)
+		GROUP BY tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad
+		ORDER BY pasajes_cancelados DESC
+
+		
+	END
+	ELSE
+		BEGIN
+
+			INSERT INTO @TOP5(ciudad_origen, ciudad_destino, pasajes_cancelados)
+			SELECT TOP 5 tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad, COUNT(tablaPasajes.codigo_pasaje) as pasajes_cancelados
+			FROM DBAS.pasajes tablaPasajes, DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades1, DBAS.ciudades tablaCiudades2
+			WHERE tablaPasajes.id_viaje = tablaViajes.id_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta  AND tablaPasajes.id_cancelacion IS NOT NULL
+			AND tablaCiudades1.id_ciudad = tablaRutas.ciudad_origen_id AND tablaCiudades2.id_ciudad = tablaRutas.ciudad_destino_id
+			AND tablaPasajes.fecha_compra_pasaje >=  @anioDelSemestre AND DATEPART(year,tablaPasajes.fecha_compra_pasaje) = DATEPART(year,@anioDelSemestre)
+			GROUP BY tablaCiudades1.nombre_ciudad, tablaCiudades2.nombre_ciudad
+			ORDER BY pasajes_cancelados DESC
+
+		END
+
+	RETURN
+END;	
+GO
 
 CREATE FUNCTION DBAS.aeronaves_dias_fuera_de_servicio(@semestreDelAnio tinyint, @anio integer)
 RETURNS @aeronaves_dias_fuera_de_servicio TABLE ( aeronave varchar(100), dias_fuera_de_servicio bigint)
@@ -782,6 +843,50 @@ BEGIN
 		FROM DBAS.millasAcumuladasEntre(@anioDelSemestre,@finAnio) 
 		GROUP BY id_cliente
 		ORDER BY puntos DESC
+	END
+	RETURN
+END;
+GO
+
+CREATE VIEW DBAS.cantidadPasajerosPorViaje AS
+SELECT pasajes.id_viaje,COUNT(codigo_pasaje) as cantidad_pasajeros FROM DBAS.pasajes pasajes
+GROUP BY pasajes.id_viaje
+GO
+
+CREATE VIEW DBAS.cantidadKgEncomiendasPorViaje AS
+SELECT encomiendas.id_viaje,SUM(encomienda_cliente_KG) as cantidad_kg FROM DBAS.encomiendas encomiendas
+GROUP BY encomiendas.id_viaje
+GO
+
+
+CREATE FUNCTION DBAS.Top5AeronavesMasVacias(@semestreDelAnio tinyint, @anio integer)
+RETURNS @TOP5 TABLE (id_viaje bigint,matricula_aeronave varchar(100),butacas_vacias bigint,fecha_salida datetime,fecha_llegada datetime,codigo_ruta bigint)
+AS
+BEGIN
+	DECLARE @anioDelSemestre datetime
+	SET @anioDelSemestre = convert(datetime, concat(@anio,'0701 00:00:00.000'))
+
+	DECLARE @comienzoAnio datetime
+	SET @comienzoAnio = convert(datetime,concat(@anio,'0101 00:00:00.000'))
+
+	DECLARE @finAnio datetime
+	SET @finAnio = convert(datetime,concat(@anio,'1231 00:00:00.000'))
+
+	IF (@semestreDelAnio = 1)
+	BEGIN
+		INSERT INTO @TOP5(id_viaje,matricula_aeronave,butacas_vacias,fecha_salida,fecha_llegada,codigo_ruta)
+		SELECT TOP 5 tablaPasajeros.id_viaje,matricula_aeronave,(DBAS.cantidadButacas(matricula_aeronave)-cantidad_pasajeros) as butacas_vacias,fecha_salida,fecha_llegada,codigo_ruta
+		FROM DBAS.cantidadPasajerosPorViaje tablaPasajeros, DBAS.viajes viajes
+		WHERE tablaPasajeros.id_viaje = viajes.id_viaje AND fecha_salida >= @comienzoAnio AND fecha_salida < @anioDelSemestre
+		ORDER BY butacas_vacias DESC
+	END
+	ELSE
+	BEGIN
+		INSERT INTO @TOP5(id_viaje,matricula_aeronave,butacas_vacias,fecha_salida,fecha_llegada,codigo_ruta)
+		SELECT TOP 5 tablaPasajeros.id_viaje,matricula_aeronave,(DBAS.cantidadButacas(matricula_aeronave)-cantidad_pasajeros) as butacas_vacias,fecha_salida,fecha_llegada,codigo_ruta
+		FROM DBAS.cantidadPasajerosPorViaje tablaPasajeros, DBAS.viajes viajes
+		WHERE tablaPasajeros.id_viaje = viajes.id_viaje AND fecha_salida >= @anioDelSemestre AND fecha_salida < @finAnio
+		ORDER BY butacas_vacias DESC
 	END
 	RETURN
 END;
@@ -1014,6 +1119,8 @@ AS
 BEGIN
 	DECLARE @mensaje_error varchar(100)
 	DECLARE @nro_butaca bigint
+	DECLARE @butacas_pasillo_AUX bigint
+	DECLARE @butacas_ventana_AUX bigint
 	
 	SET @nro_butaca = 0
 	
@@ -1029,25 +1136,27 @@ BEGIN
 
 		WHILE(@piso != 0)
 		BEGIN
+			SET @butacas_pasillo_AUX = @butacas_pasillo
+			SET @butacas_ventana_AUX = @butacas_ventana
 
-			WHILE(@butacas_pasillo != 0)
+			WHILE(@butacas_pasillo_AUX != 0)
 			BEGIN
 				SET @nro_butaca += 1
 
 				INSERT INTO DBAS.butacas(matricula_aeronave, numero_butaca, piso_butaca, tipo_butaca)
 				VALUES(@matricula_aeronave, @nro_butaca, @piso, 'Pasillo')
 
-				SET @butacas_pasillo -= 1
+				SET @butacas_pasillo_AUX -= 1
 			END
 
-			WHILE(@butacas_ventana != 0)
+			WHILE(@butacas_ventana_AUX != 0)
 			BEGIN
 				SET @nro_butaca += 1
 
 				INSERT INTO DBAS.butacas(matricula_aeronave, numero_butaca, piso_butaca, tipo_butaca)
 				VALUES(@matricula_aeronave, @nro_butaca, @piso, 'Ventanilla')
 
-				SET @butacas_ventana -= 1
+				SET @butacas_ventana_AUX -= 1
 			END
 		
 			SET @piso -= 1
@@ -1057,6 +1166,7 @@ BEGIN
 	END
 END;
 GO
+
 
 
 CREATE PROCEDURE DBAS.cancelacionPasaje(@motivo_cancelacion varchar(100), @ID_cancelacion bigint OUT)
@@ -1745,3 +1855,153 @@ BEGIN
 
 END;
 GO
+
+--Cantidad de butacas libres de una aeronave
+CREATE FUNCTION DBAS.cantidadButacasLibres(@matricula_aeronave varchar(100),@id_viaje bigint)
+RETURNS bigint
+AS
+BEGIN
+	DECLARE @cantidadPasajeros bigint
+	SET @cantidadPasajeros = ISNULL((SELECT cantidad_pasajeros FROM DBAS.cantidadPasajerosPorViaje WHERE id_viaje = @id_viaje),0)
+
+	DECLARE @cantidadButacas bigint
+	SET @cantidadButacas = DBAS.cantidadButacas(@matricula_aeronave)
+
+	DECLARE @asientosLibres bigint
+	SET @asientosLibres = (@cantidadButacas - @cantidadPasajeros)
+
+	RETURN @asientosLibres
+END;
+GO
+
+--Cantidad de kg disponibles para encomiendas de una aeronave
+CREATE FUNCTION DBAS.cantidadKgDisponibles(@matricula_aeronave varchar(100),@id_viaje bigint)
+RETURNS real
+AS
+BEGIN
+	DECLARE @cantidadOcupados real
+	SET @cantidadOcupados = ISNULL((SELECT cantidad_kg FROM DBAS.cantidadKgEncomiendasPorViaje WHERE id_viaje = @id_viaje),0)
+
+	DECLARE @cantidadMaxima real
+	SET @cantidadMaxima = (SELECT kg_disponible_encomienda FROM DBAS.aeronaves WHERE matricula_aeronave = @matricula_aeronave)
+
+	DECLARE @cantidadKgLibres real
+	SET @cantidadKgLibres = (@cantidadMaxima - @cantidadOcupados)
+
+	RETURN @cantidadKgLibres
+END;
+GO
+
+/* -- Compra pasajes/encomiendas -- */
+
+CREATE PROCEDURE DBAS.generarCompra(@id_comprador bigint, @tarjeta_Numero bigint, @tarjeta_Codigo bigint, @tarjeta_Fecha_de_vencimiento datetime, @tipo_tarjeta_id bigint, @cuoatas_elegidas smallint, @tipo_compra tinyint)
+AS
+BEGIN
+	DECLARE @ID_tarjeta bigint
+
+	IF(@tipo_compra = 1)
+	BEGIN
+	
+		INSERT INTO DBAS.tarjetas(tarjeta_Numero, tarjeta_Codigo, tarjeta_Fecha_de_vencimiento, cuoatas_elegidas, tipo_tarjeta_id)
+		VALUES (@tarjeta_Numero, @tarjeta_Codigo, @tarjeta_Fecha_de_vencimiento, @cuoatas_elegidas, @tipo_tarjeta_id)
+
+		SET @ID_tarjeta = SCOPE_IDENTITY()
+
+		INSERT INTO DBAS.compras(id_cliente, tarjeta_id)
+		VALUES(@id_comprador, @ID_tarjeta)
+
+	END
+	ELSE
+	BEGIN
+		INSERT INTO DBAS.compras(id_cliente)
+		VALUES(@id_comprador)
+	END
+
+END;
+GO
+
+
+/* -- cancelacion pasajes/encomiendas -- */
+
+CREATE VIEW DBAS.PasajesCancelados AS
+SELECT tablaCompras.id_compra_PNR, tablaCompras.id_cliente, 'motivo cancelacion' motivo_cancelacion, tablaPasajes.codigo_pasaje, tablaEncomiendas.codigo_encomienda
+FROM DBAS.pasajes tablaPasajes, DBAS.encomiendas tablaEncomiendas, DBAS.compras tablaCompras
+WHERE tablaPasajes.id_compra_PNR = tablaEncomiendas.id_compra_PNR AND tablaCompras.id_compra_PNR = tablaPasajes.id_compra_PNR 
+GO
+
+
+CREATE TRIGGER DBAS.cancelarPasajes ON DBAS.PasajesCancelados
+INSTEAD OF INSERT
+AS
+BEGIN
+	DECLARE @PNR bigint, @id_comprador bigint, @motivo_cancelacion varchar(100), @ID_cancelacion bigint, @codigo_pasaje bigint, @codigo_encomienda bigint , @mensaje_error varchar(100)
+
+	DECLARE cancelarCursor CURSOR FOR
+	SELECT @PNR, @id_comprador, @motivo_cancelacion, @codigo_pasaje, @codigo_encomienda FROM inserted
+
+	OPEN cancelarCursor
+
+	FETCH NEXT FROM cancelarCursor
+	INTO @PNR, @id_comprador, @motivo_cancelacion, @codigo_pasaje, @codigo_encomienda
+
+	IF EXISTS(SELECT * FROM DBAS.compras WHERE id_compra_PNR = @PNR AND id_cliente = @id_comprador)
+	BEGIN
+		
+		BEGIN TRANSACTION cancelacionPE
+		 
+		EXECUTE DBAS.cancelacionPasaje @motivo_cancelacion, @ID_cancelacion OUT
+
+		WHILE @@FETCH_STATUS = 0
+		BEGIN
+			IF EXISTS(SELECT * FROM DBAS.pasajes WHERE codigo_pasaje = @codigo_pasaje) AND @codigo_pasaje IS NOT NULL
+			BEGIN
+				UPDATE DBAS.pasajes SET id_cancelacion = @ID_cancelacion WHERE codigo_pasaje = @codigo_pasaje
+			END
+			ELSE
+			BEGIN
+				SET @mensaje_error = 'Hay un codigo de pasaje invalido'
+				RAISERROR(@mensaje_error, 12, 1)
+
+				CLOSE cancelarCursor
+				DEALLOCATE cancelarCursor
+
+				ROLLBACK TRANSACTION cancelacionPE
+				RETURN
+			END	
+			
+			IF EXISTS(SELECT * FROM DBAS.encomiendas WHERE codigo_encomienda = @codigo_encomienda) AND @codigo_encomienda IS NOT NULL
+			BEGIN
+				UPDATE DBAS.encomiendas SET id_cancelacion = @ID_cancelacion WHERE codigo_encomienda = @codigo_encomienda
+			END
+			ELSE
+			BEGIN
+				SET @mensaje_error = 'Hay un codigo de encomienda invalido'
+				RAISERROR(@mensaje_error, 12, 1)
+
+				CLOSE cancelarCursor
+				DEALLOCATE cancelarCursor
+				
+				ROLLBACK TRANSACTION cancelacionPE
+				RETURN
+			END
+			
+			FETCH NEXT FROM cancelarCursor
+			INTO @PNR, @id_comprador, @motivo_cancelacion, @codigo_pasaje, @codigo_encomienda
+
+		END
+
+		CLOSE cancelarCursor
+		DEALLOCATE cancelarCursor
+
+		COMMIT TRANSACTION cancelacionPE
+
+	END
+	ELSE
+	BEGIN
+		
+		SET @mensaje_error = 'El PNR ingresado es incorrecto'
+		RAISERROR(@mensaje_error, 12, 1)
+
+	END
+
+END;

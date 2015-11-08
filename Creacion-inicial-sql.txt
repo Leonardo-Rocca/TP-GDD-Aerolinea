@@ -426,7 +426,7 @@ BEGIN
 	
 	--Se migran las ciudades destino y origen quedando solo las que no se repiten, además se elimina el espacio que hay al principio de cada ciudad
 	INSERT INTO DBAS.ciudades(nombre_ciudad)
-	SELECT DISTINCT SUBSTRING(Ruta_Ciudad_Origen,2,LEN(Ruta_Ciudad_Origen)-1) FROM gd_esquema.Maestra UNION SELECT DISTINCT SUBSTRING(Ruta_Ciudad_Destino,2,LEN(Ruta_Ciudad_Origen)-1) FROM gd_esquema.Maestra
+	SELECT DISTINCT SUBSTRING(Ruta_Ciudad_Origen,2,LEN(Ruta_Ciudad_Origen)+7) FROM gd_esquema.Maestra UNION SELECT DISTINCT SUBSTRING(Ruta_Ciudad_Destino,2,LEN(Ruta_Ciudad_Origen)+7) FROM gd_esquema.Maestra
 
 END;
 GO

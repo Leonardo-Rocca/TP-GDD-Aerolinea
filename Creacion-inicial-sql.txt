@@ -1,3 +1,4 @@
+
 /*
 USE[GD2C2015];
 GO
@@ -166,7 +167,8 @@ GO
 
 CREATE TABLE DBAS.ciudades (
 	id_ciudad bigint IDENTITY(1,1) PRIMARY KEY,
-	nombre_ciudad varchar(100)
+	nombre_ciudad varchar(100),
+	habilitada_ciudad tinyint default 1
 );
 GO
 
@@ -352,6 +354,7 @@ GO
 alter table DBAS.serviciosPorRutas add constraint fk_serviciosPorRutas_servicio
 	foreign key(id_servicio) references DBAS.servicios (id_servicio);
 GO
+
 
 /* -- Fecha del sistema -- */
 INSERT INTO DBAS.date_time(GET_DATE)
@@ -696,6 +699,18 @@ GO
 
 INSERT INTO DBAS.productos(valor_en_milas,nombre_producto,stock)
 VALUES (15000,'televisor',1)
+GO
+
+INSERT INTO DBAS.tiposTarjeta(descripcion_tipo, cuotas)
+VALUES ('MasterCard', 6)
+GO
+
+INSERT INTO DBAS.tiposTarjeta(descripcion_tipo, cuotas)
+VALUES ('Visa', 24)
+GO
+
+INSERT INTO DBAS.tiposTarjeta(descripcion_tipo, cuotas)
+VALUES ('American Express', 12)
 GO
 
 /* -- Calculo de millas -- */
@@ -2018,6 +2033,9 @@ BEGIN
 	AND tablaEncomiendas.id_viaje = tablaViajes.id_viaje
 	AND tablaViajes.codigo_ruta= @codigo_ruta
 
+	-- Deshabilito la ruta
+	UPDATE DBAS.rutas SET habilitada_ruta = 0 WHERE codigo_ruta = @codigo_ruta
+
 END;
 GO
 
@@ -2099,6 +2117,95 @@ BEGIN
 	END
 END;
 GO
+
+/* -- ABM Ciudades -- */
+
+CREATE FUNCTION DBAS.rutasConCiudad(@nombre_ciudad varchar(100))
+RETURNS @rutasConCiudad TABLE (codigo_ruta varchar(100))
+AS
+BEGIN
+	INSERT INTO @rutasConCiudad(codigo_ruta)
+	SELECT tablaRutas.codigo_ruta FROM DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades
+	WHERE tablaCiudades.nombre_ciudad = @nombre_ciudad AND (tablaRutas.ciudad_origen_id = tablaCiudades.id_ciudad OR tablaRutas.ciudad_destino_id =tablaCiudades.id_ciudad)
+
+	RETURN
+END;
+GO
+
+CREATE PROCEDURE DBAS.bajaCiudad(@nombre_ciudad varchar(100))
+AS
+BEGIN
+	DECLARE @GET_DATE datetime
+
+	DECLARE @mensaje_error varchar(100)
+
+	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
+
+
+	IF EXISTS(SELECT * FROM DBAS.viajes tablaViajes, DBAS.rutasConCiudad(@nombre_ciudad) tablaRutasConCiudad
+				WHERE tablaViajes.codigo_ruta = tablaRutasConCiudad.codigo_ruta AND tablaViajes.fecha_salida > @GET_DATE)
+	BEGIN
+		SET @mensaje_error = 'La ciudad seleccionada tiene viajes futuros'
+		RAISERROR(@mensaje_error, 12, 1)
+	END
+	ELSE
+	BEGIN
+		UPDATE DBAS.ciudades SET habilitada_ciudad = 0 WHERE nombre_ciudad = @nombre_ciudad
+		
+		-- Deshabilito la ruta
+		UPDATE tablaRutas SET tablaRutas.habilitada_ruta = 0
+		FROM DBAS.rutas tablaRutas, DBAS.rutasConCiudad(@nombre_ciudad) tablaRutasConCiudad
+		WHERE tablaRutas.codigo_ruta = tablaRutasConCiudad.codigo_ruta 
+	END
+END;
+GO
+
+CREATE PROCEDURE DBAS.cancelarPasajesBajaCiudad(@nombre_ciudad varchar(100))
+AS
+BEGIN
+	DECLARE @GET_DATE datetime
+	DECLARE @id_viaje bigint
+	DECLARE @codigo_ruta bigint
+	DECLARE @motivo_cancelacion varchar(100)
+	DECLARE @ID_cancelacion bigint
+
+	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
+
+	-- Seteo el motivo de la cancelacion
+	SET @motivo_cancelacion = 'Una ciudad fue dada de baja'
+
+	-- Inserto la cancelacion con su motivo y obtengo su id para la asignacion de los pasajes y encomiendas que seran cancelados
+	EXECUTE DBAS.cancelacionPasaje @motivo_cancelacion, @ID_cancelacion OUT
+
+	DECLARE viajesCursor CURSOR FOR
+	SELECT tablaViajes.id_viaje, tablaRutasConCiudad.codigo_ruta FROM DBAS.viajes tablaViajes, DBAS.rutasConCiudad(@nombre_ciudad) tablaRutasConCiudad
+	WHERE tablaViajes.codigo_ruta = tablaRutasConCiudad.codigo_ruta AND tablaViajes.fecha_salida > @GET_DATE
+	
+	OPEN viajesCursor
+
+	FETCH NEXT FROM viajesCursor
+	INTO @id_viaje, @codigo_ruta
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		
+		UPDATE DBAS.pasajes SET id_cancelacion = @ID_cancelacion WHERE id_viaje = @id_viaje
+		UPDATE DBAS.encomiendas SET id_cancelacion = @ID_cancelacion WHERE id_viaje = @id_viaje
+
+		-- Deshabilito la ruta
+		UPDATE DBAS.rutas SET habilitada_ruta = 0 WHERE codigo_ruta = @codigo_ruta
+
+		FETCH NEXT FROM viajesCursor
+		INTO @id_viaje, @codigo_ruta
+
+	END
+
+	CLOSE viajesCursor
+	DEALLOCATE viajesCursor
+
+END;
+GO
+
 
 /* -- Compra pasajes/encomiendas -- */
 

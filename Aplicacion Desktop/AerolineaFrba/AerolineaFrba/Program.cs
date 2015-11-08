@@ -21,17 +21,17 @@ namespace AerolineaFrba
            // MessageBox.Show(Program.nuevaFechaSistema().ToString(),"Fecha",MessageBoxButtons.OK);
         
             
-            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
              Application.Run(new PantallaBienvenidaForm());
+             
           
         }
 
 
-        public static  DateTime nuevaFechaSistema(){
-            return DateTime.ParseExact(ConfigurationManager.AppSettings["fechaGlobal"], "yyyy-MM-dd",System.Globalization.CultureInfo.InvariantCulture);
+        public static  String nuevaFechaSistema(){
+            return ConfigurationManager.AppSettings["FechaGlobal"];
         }
     }
 }

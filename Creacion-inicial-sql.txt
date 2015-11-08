@@ -1,4 +1,3 @@
-
 /*
 USE[GD2C2015];
 GO
@@ -1193,7 +1192,7 @@ BEGIN
 
 		-- Inserto lo que obtiene el cursor en las variables
 		FETCH NEXT FROM obtenerRolYFuncionalidades
-		INTO @nombre_rol, @id_funcionalidad
+		INTO @id_rol, @nombre_rol, @habilitado_rol, @id_funcionalidad
 
 	END
 
@@ -1386,12 +1385,16 @@ GO
 CREATE PROCEDURE DBAS.actualizarBajaAeronave(@fecha datetime, @matricula_aeronave varchar(100), @tipo_cancelacion tinyint)
 AS
 BEGIN
+	DECLARE @GET_DATE datetime
+
+	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
+	
 	-- Pregunto si el tipo de baja es temporal o definitiva
 	IF(@tipo_cancelacion = 1)
 	BEGIN
 		-- Doy de baja temporal a la aeronave y le indico una fecha de reinsercion
-		INSERT INTO DBAS.periodosFueraDeServicio(matricula_aeronave, fecha_reinicio_servicio)
-		VALUES(@matricula_aeronave, @fecha)
+		INSERT INTO DBAS.periodosFueraDeServicio(matricula_aeronave, fecha_reinicio_servicio, fecha_fuera_servicio)
+		VALUES(@matricula_aeronave, @fecha, @GET_DATE)
 	END
 	ELSE
 	BEGIN

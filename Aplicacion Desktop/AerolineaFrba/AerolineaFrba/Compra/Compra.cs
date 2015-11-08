@@ -18,22 +18,24 @@ namespace AerolineaFrba.Compra
 
         public static void inicializar(){
             pagaEnEfectivo = false;
-            tarjeta = new Tarjeta("0", "", new DateTime(), "id_tipo", "cuotas_elegidas", "0");
+            tarjeta = new Tarjeta("0", "0", new DateTime(), "0", "0", "0");
         }
+
         internal static void realizarCompra()
         {
             //TO-DO 
 
-            string qGenerarCompra =  "execute  DBAS.generarCompra "+comprador.id+","+ tarjeta.numeroTarjeta+" , "+tarjeta.codigo+","+tarjeta.dateTime+","+ tarjeta.tipoTarjetaId+","+tarjeta.cuotasElegidas+" ,"+ tarjeta.tipo;
+            string qGenerarCompra = "execute  DBAS.generarCompra " + comprador.id + "," + tarjeta.numeroTarjeta + " , " + tarjeta.codigo + ", '2016-11-11' ," + tarjeta.tipoTarjetaId + "," + tarjeta.cuotasElegidas + " ," + tarjeta.tipo;
+            (new ConexionSQL()).ejecutarComandoSQL(qGenerarCompra);
 
             //obtengo el ultimo
-            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select top 1 (id_compra +1)AS codigo FROM DBAS.compras ORDER BY 1 DESC");
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select top 1 (id_compra_PNR) AS codigo FROM DBAS.compras ORDER BY 1 DESC");
             DataRow row = dt.Rows[0];
             string idCompra = row[0].ToString();
          
             PasajeEncomienda encomienda=  compra.encomiendas;
             string queryEncomienda = "Insert into DBAS.encomiendas (id_cliente,encomienda_cliente_KG,id_viaje,precio_encomienda,id_compra_PNR) values (" +
-            encomienda.id + ", " + encomienda.butacaKg + ", " + compra.viaje.idViaje + " , " + compra.viaje.precioKg + " , " + idCompra;
+            encomienda.id + ", " + encomienda.butacaKg + ", " + compra.viaje.idViaje + " , " + compra.viaje.precioKg + " , " + idCompra+ ")";
 
       /*      foreach(PasajeEncomienda pasajero in compra.pasajes){
                 string queryPasaje = "Insert into DBAS.encomiendas (id_cliente,encomienda_cliente_KG,id_viaje,precio_encomienda,id_compra_PNR) values (" +

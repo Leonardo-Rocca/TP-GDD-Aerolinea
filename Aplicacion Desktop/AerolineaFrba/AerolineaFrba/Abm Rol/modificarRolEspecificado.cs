@@ -14,6 +14,8 @@ namespace AerolineaFrba.Abm_Rol
 {
     public partial class modificarRolEspecificado : Form
     {
+        private string nombreRolPasado;
+
         public modificarRolEspecificado(string rol)
         {
             InitializeComponent();
@@ -22,6 +24,7 @@ namespace AerolineaFrba.Abm_Rol
 
         public void inicializar(string rol)
         {     txtNombreRol.Text = rol;
+            nombreRolPasado = rol;
             cargarChkFuncionalidades();
             cargarFuncionalidades(rol);
             cargarChkHabilitado(rol);
@@ -81,7 +84,7 @@ namespace AerolineaFrba.Abm_Rol
                 return;
             };
 
-            DataTable tblfunc = new DataTable("func");
+          /*  DataTable tblfunc = new DataTable("func");
             tblfunc.Columns.Add("Id", typeof(int));
             for (int i = 0; i <= chkListaFuncionalidades.Items.Count - 1; i++)
             {
@@ -89,13 +92,49 @@ namespace AerolineaFrba.Abm_Rol
                 {
                     tblfunc.Rows.Add(i + 1);
                 }
-            }
+            }*/
+            modificar();
+
             MessageBox.Show("Rol Modificado(dammy)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             actualizarFormsRoles();
 
             //this.Close();
             this.Hide();
             return;
+        }
+
+        private void modificar()
+        {
+            string id = obtenerId();
+            string habilitacion="1";
+            if (chkHabilitado.Checked == false)
+                habilitacion="0";
+            
+            string query = "INSERT INTO DBAS.modificarRoles (id_rol,nombre_rol,habilitado_rol,id_funcionalidad) SELECT distinct '"+id+"' , '"+txtNombreRol.Text+"','"+habilitacion+"',id_funcionalidad FROM DBAS.funcionalidades WHERE descripcion IN ( ";
+
+            foreach (string elemento in chkListaFuncionalidades.CheckedItems)
+            {
+                query = query + " '" + elemento + "',";
+            }
+            query = query + "'lalala' )";
+          
+            (new ConexionSQL()).ejecutarComandoSQL(query);
+       
+            /*   string qlahabilitacion = "UPDATE DBAS.roles SET habilitado_rol = 1 Where nombre_rol = '" + txtNombreRol.Text + "'";
+            (new ConexionSQL()).ejecutarComandoSQL(qlahabilitacion);
+
+            if (chkHabilitado.Checked == false)
+            {
+                string qhabilitacion = "UPDATE DBAS.roles SET habilitado_rol = 0 Where nombre_rol = '" + txtNombreRol.Text + "'";
+                (new ConexionSQL()).ejecutarComandoSQL(qhabilitacion);
+            }*/
+        }
+
+        private string obtenerId()
+        {
+            string quey = "Select id_rol From DBAS.roles  WHERE nombre_rol = '" + nombreRolPasado + "'";
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL(quey);
+            return dt.Rows[0][0].ToString();
         }
 
         private static void actualizarFormsRoles()

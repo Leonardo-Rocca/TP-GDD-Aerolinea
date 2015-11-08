@@ -82,7 +82,7 @@ namespace AerolineaFrba.Dominio
              if (descripcionF == "Registro de llegada Destino")
             return (new Funcionalidades(99, "Registro de llegada Destino", new Registro_Llegada_Destino.RegistroLLegadaForm()));
 
-               if (descripcionF == "Compra de Pasaje/Encomienda")
+            if (descripcionF == "Compra de Pasaje/Encomienda")
             return (new Funcionalidades(99, "Comprar Pasaje/Encomienda", new SeleccionViajeForm()));
             
             if (descripcionF == "Consulta de millas de pasajero frecuente")

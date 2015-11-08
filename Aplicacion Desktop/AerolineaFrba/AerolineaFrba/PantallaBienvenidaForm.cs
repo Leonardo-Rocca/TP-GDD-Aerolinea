@@ -20,7 +20,7 @@ namespace AerolineaFrba
         {
             InitializeComponent();
 
-            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct nombre_rol FROM  DBAS.roles "); //gd_esquema.Maestra
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct nombre_rol FROM  DBAS.roles Where habilitado_rol > 0 "); //gd_esquema.Maestra
             cmbRoles.DataSource = dt.DefaultView;
             cmbRoles.ValueMember = "nombre_rol"; 
         }

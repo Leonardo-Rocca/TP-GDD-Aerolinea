@@ -42,7 +42,9 @@ namespace AerolineaFrba.Abm_Rol
 
         public void Inicializar()
         {
-            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct nombre_rol FROM DBAS.roles");
+            string query = "select distinct nombre_rol FROM DBAS.roles";
+            if (tipoDeForm == 2) query = query + " Where habilitado_rol > 0 ";
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
             comboBoxRol.DataSource = dt.DefaultView;
             comboBoxRol.ValueMember = "nombre_rol";
         }
@@ -71,7 +73,9 @@ namespace AerolineaFrba.Abm_Rol
                     return;
                 }
                 //dar baja logica
-                MessageBox.Show("Rol eliminado (dammy)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                string qhabilitacion = "UPDATE DBAS.roles SET habilitado_rol = 0 Where nombre_rol = '" + comboBoxRol.Text + "'";
+                (new ConexionSQL()).ejecutarComandoSQL(qhabilitacion);
+                MessageBox.Show(" Se ha dado de baja el Rol "+comboBoxRol.Text, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 actualizarFormsRoles();
             }
             this.Hide(); //this.Close();  

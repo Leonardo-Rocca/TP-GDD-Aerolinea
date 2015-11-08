@@ -20,6 +20,11 @@ namespace AerolineaFrba.Registro_Llegada_Destino
             InitializeComponent();
         }
 
+        private void inicializar()
+        {
+            txtmatricula.Text = "";
+        }
+
         private void buttonCancelar_Click(object sender, EventArgs e)
         {
             this.Hide();
@@ -55,7 +60,35 @@ namespace AerolineaFrba.Registro_Llegada_Destino
 
         private void btAceptar_Click(object sender, EventArgs e)
         {
-           llegadaAvionForm registro = new llegadaAvionForm(txtmatricula.Text);
+           if(!validaciones())return;
+
+            llegadaAvionForm registro = new llegadaAvionForm(txtmatricula.Text);
+            registro.Show();
+            this.Hide();
+            inicializar();
+        }
+
+        private bool validaciones()
+        {
+            if(!camposCompletos())return false;
+
+            DataTable dta = (new ConexionSQL()).cargarTablaSQL("select distinct matricula_aeronave FROM DBAS.aeronaves where matricula_aeronave like '" + txtmatricula.Text + "'");
+            if (dta.Rows.Count == 0)
+            {
+                MessageBox.Show("El numero de matricula no existe", "Matricula invalida", MessageBoxButtons.OK);
+                return false;
+            }
+            return true;
+        }
+
+        private bool camposCompletos()
+        {
+            if (txtmatricula.Text == "" || cmbOrigen.Text == "" || cmbDestino.Text == "")
+            {
+                MessageBox.Show("Faltan completar campos", "Formulario Incompleto", MessageBoxButtons.OK);
+                return false;
+            }
+            return true;
         }
     }
 }

@@ -64,7 +64,10 @@ namespace AerolineaFrba.Compra
             {
                 if (Compra.pagaEnEfectivo) {
                     Compra.comprador = pasEn;
-                    Compra.realizarCompra(); }
+                    Compra.realizarCompra();
+                    Compra.inicializar();
+                    this.Close();
+                }
                 else{
                     datosCompradorForm tarjeta = new datosCompradorForm();
                     tarjeta.Show();

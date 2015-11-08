@@ -22,6 +22,7 @@ DROP TABLE DBAS.servicios
 DROP TABLE DBAS.personas
 DROP TABLE DBAS.tarjetas
 DROP TABLE DBAS.tiposTarjeta  
+DROP TABLE DBAS.date_time 
 
 
 DROP PROCEDURE DBAS.migracionFabricantes
@@ -34,3 +35,4 @@ DROP PROCEDURE DBAS.migracionButacas
 DROP PROCEDURE DBAS.migracionClientes
 DROP PROCEDURE DBAS.migracionPasajes
 DROP PROCEDURE DBAS.migracionEncomiendas
+

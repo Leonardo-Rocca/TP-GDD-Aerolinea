@@ -1,0 +1,98 @@
+DROP TRIGGER DBAS.modificarRol
+DROP TRIGGER DBAS.crearRolConFuncionalidades
+DROP TRIGGER DBAS.reemplazarButacasEnViajes
+DROP TRIGGER DBAS.altaRutas
+DROP TRIGGER DBAS.modificacionRutas
+DROP TRIGGER DBAS.cancelarPasajes
+
+
+DROP FUNCTION DBAS.preciosPasajes
+DROP FUNCTION DBAS.preciosEncomiendas
+DROP FUNCTION DBAS.historialMillas
+DROP FUNCTION DBAS.millasVigentes
+DROP FUNCTION DBAS.millasAcumuladasEntre
+DROP FUNCTION DBAS.Top5DeLosDestinosConMasPasajesComprados
+DROP FUNCTION DBAS.Top5DeLosDestinosConMasPasajesCancelados
+DROP FUNCTION DBAS.aeronaves_dias_fuera_de_servicio
+DROP FUNCTION DBAS.Top5AeronavesConMayorCantidadDeDiasFueraDeServicio
+DROP FUNCTION DBAS.Top5ClientesConMasPuntosAcumulados
+DROP FUNCTION DBAS.Top5AeronavesMasVacias
+DROP FUNCTION DBAS.obtenerFuncionalidadesAsociadas
+DROP FUNCTION DBAS.estaEnViajeAeronave
+DROP FUNCTION DBAS.ciudadAeronave
+DROP FUNCTION DBAS.ultimaLlegadaConfirmadaAeronave
+DROP FUNCTION DBAS.aeronavesEnServicio
+DROP FUNCTION DBAS.aeronavesDisponiblesParaReemplazo
+DROP FUNCTION DBAS.aeronavesDisponiblesSinVuelo
+DROP FUNCTION DBAS.cantidadButacas
+DROP FUNCTION DBAS.aeronavesDeReemplazo
+DROP FUNCTION DBAS.ultimaCiudadAeronave
+DROP FUNCTION DBAS.cantidadButacasLibres
+DROP FUNCTION DBAS.cantidadKgDisponibles
+
+
+DROP PROCEDURE DBAS.migracionFabricantes
+DROP PROCEDURE DBAS.migracionCiudades
+DROP PROCEDURE DBAS.migracionServicios
+DROP PROCEDURE DBAS.migracionRutas
+DROP PROCEDURE DBAS.migracionAeronaves
+DROP PROCEDURE DBAS.migracionViajes
+DROP PROCEDURE DBAS.migracionButacas
+DROP PROCEDURE DBAS.migracionClientes
+DROP PROCEDURE DBAS.migracionPasajes
+DROP PROCEDURE DBAS.migracionEncomiendas
+DROP PROCEDURE DBAS.canjeProducto
+DROP PROCEDURE DBAS.loginUsuario
+DROP PROCEDURE DBAS.altaPersona
+DROP PROCEDURE DBAS.altaCliente
+DROP PROCEDURE DBAS.altaAeronave
+DROP PROCEDURE DBAS.cancelacionPasaje
+DROP PROCEDURE DBAS.actualizarBajaAeronave
+DROP PROCEDURE DBAS.cancelacionPasajesBajaAeronave
+DROP PROCEDURE DBAS.reemplazarAeronave
+DROP PROCEDURE DBAS.bajaAeronave
+DROP PROCEDURE DBAS.modificarAeronave
+DROP PROCEDURE DBAS.bajaRuta
+DROP PROCEDURE DBAS.bajaRutaYCancelarPasajes
+DROP PROCEDURE DBAS.altaViaje
+DROP PROCEDURE DBAS.generarCompra
+DROP PROCEDURE DBAS.modificarRol
+DROP PROCEDURE DBAS.altaRol
+
+DROP VIEW DBAS.cantidadKgEncomiendasPorViaje
+DROP VIEW DBAS.cantidadPasajerosPorViaje
+DROP VIEW DBAS.caracteristicasRutas
+DROP VIEW DBAS.millasPorEncomiendas
+DROP VIEW DBAS.millasPorPasajes
+DROP VIEW DBAS.modificarRoles
+DROP VIEW DBAS.PasajesCancelados
+DROP VIEW DBAS.rolesConFuncionalidades
+
+
+
+DROP TABLE DBAS.rutas
+DROP TABLE DBAS.viajes
+DROP TABLE DBAS.aeronaves
+DROP TABLE DBAS.fabricantes
+DROP TABLE DBAS.butacas
+DROP TABLE DBAS.pasajes
+DROP TABLE DBAS.encomiendas
+DROP TABLE DBAS.servicios
+DROP TABLE DBAS.serviciosPorRutas
+DROP TABLE DBAS.compras
+DROP TABLE DBAS.tarjetas
+DROP TABLE DBAS.tiposTarjeta
+DROP TABLE DBAS.roles
+DROP TABLE DBAS.rolesPorFuncionalidad
+DROP TABLE DBAS.funcionalidades
+DROP TABLE DBAS.cancelaciones
+DROP TABLE DBAS.usuarios
+DROP TABLE DBAS.usuariosPorRol
+DROP TABLE DBAS.ciudades
+DROP TABLE DBAS.clientes
+DROP TABLE DBAS.personas
+DROP TABLE DBAS.canjes
+DROP TABLE DBAS.productos
+DROP TABLE DBAS.periodosFueraDeServicio
+DROP TABLE DBAS.date_time
+

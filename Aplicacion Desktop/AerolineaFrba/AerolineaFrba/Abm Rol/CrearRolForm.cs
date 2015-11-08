@@ -85,7 +85,7 @@ namespace AerolineaFrba.Abm_Rol
                 }
             }*/
 
-            string comando = "insert into DBAS.rolesConFuncionalidades (nombre_rol,id_funcionalidad)select distinct '" + nombreRol + "', id_funcionalidad FROM DBAS.funcionalidades WHERE descripcion IN ( ";
+            string comando = "insert into DBAS.rolesConFuncionalidades (nombre_rol,id_funcionalidad)SELECT distinct '" + nombreRol + "', id_funcionalidad FROM DBAS.funcionalidades WHERE descripcion IN ( ";
 
             foreach (Funcionalidades elemento in chkListaFuncionalidades.CheckedItems)
             {
@@ -148,6 +148,14 @@ namespace AerolineaFrba.Abm_Rol
             m.Inicializar();
             ModificarForm el = (ModificarForm)navegacion.eliminarRol;
             el.Inicializar();
+        }
+
+        private void btSeleccionarTodo_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i <= chkListaFuncionalidades.Items.Count - 1; i++)
+            {
+                chkListaFuncionalidades.SetItemCheckState(i, CheckState.Checked);
+            }
         }
 
     }

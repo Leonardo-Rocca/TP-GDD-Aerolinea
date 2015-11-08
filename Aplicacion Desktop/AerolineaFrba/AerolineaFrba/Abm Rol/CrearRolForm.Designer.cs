@@ -38,6 +38,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.chkHabilitado = new System.Windows.Forms.CheckBox();
+            this.btSeleccionarTodo = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -144,12 +145,24 @@
             this.chkHabilitado.TabIndex = 11;
             this.chkHabilitado.UseVisualStyleBackColor = true;
             // 
+            // btSeleccionarTodo
+            // 
+            this.btSeleccionarTodo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btSeleccionarTodo.Location = new System.Drawing.Point(511, 128);
+            this.btSeleccionarTodo.Name = "btSeleccionarTodo";
+            this.btSeleccionarTodo.Size = new System.Drawing.Size(114, 31);
+            this.btSeleccionarTodo.TabIndex = 12;
+            this.btSeleccionarTodo.Text = "Seleccionar todo";
+            this.btSeleccionarTodo.UseVisualStyleBackColor = true;
+            this.btSeleccionarTodo.Click += new System.EventHandler(this.btSeleccionarTodo_Click);
+            // 
             // CrearRolForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.ClientSize = new System.Drawing.Size(637, 403);
+            this.Controls.Add(this.btSeleccionarTodo);
             this.Controls.Add(this.chkHabilitado);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -179,6 +192,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckBox chkHabilitado;
+        private System.Windows.Forms.Button btSeleccionarTodo;
 
     }
 }

@@ -32,6 +32,7 @@ namespace AerolineaFrba.Compra
         {
             //TO-DO
             Compra.inicializar();
+        //    Compra.tarjeta = new Tarjeta(tx 
             this.Close();
         }
     }

@@ -109,8 +109,5 @@ C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\Aero
 C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Top5.DestinosConMasPasajesComprados.resources
 C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Top5.DiscriminadorTop5.resources
 C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Devolucion.Devolucion.resources
-<<<<<<< HEAD
-=======
->>>>>>> bcbbd9a518acb6a25b8813899f50c95fcb0ce42f
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Registro_Llegada_Destino.llegadaAvionForm.resources
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Registro_Llegada_Destino.RegistroLLegadaForm.resources

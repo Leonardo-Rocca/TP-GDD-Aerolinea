@@ -94,6 +94,7 @@ namespace AerolineaFrba.Compra
 
         private void seleccionar(DataGridView dataGridView1)
         {
+            Compra.inicializar();
             string idViaje = dataGridView1[0, dataGridView1.CurrentCell.RowIndex].Value.ToString();
             string fechaSalida = dataGridView1[1, dataGridView1.CurrentCell.RowIndex].Value.ToString();
             string precioPasaje = dataGridView1[3, dataGridView1.CurrentCell.RowIndex].Value.ToString();

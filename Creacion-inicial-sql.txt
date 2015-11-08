@@ -345,6 +345,14 @@ alter table DBAS.usuariosPorRol add constraint fk_usuariosPorRol_rol
 	foreign key (id_rol) references DBAS.roles (id_rol);
 GO
 
+alter table DBAS.serviciosPorRutas add constraint fk_serviciosPorRutas_ruta
+	foreign key(codigo_ruta) references DBAS.rutas (codigo_ruta);
+GO
+
+alter table DBAS.serviciosPorRutas add constraint fk_serviciosPorRutas_servicio
+	foreign key(id_servicio) references DBAS.servicios (id_servicio);
+GO
+
 /* -- Fecha del sistema -- */
 INSERT INTO DBAS.date_time(GET_DATE)
 VALUES(GETDATE())

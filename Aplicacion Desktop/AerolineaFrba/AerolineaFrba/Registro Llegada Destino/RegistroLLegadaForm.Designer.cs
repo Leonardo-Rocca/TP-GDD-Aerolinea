@@ -64,10 +64,10 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Font = new System.Drawing.Font("Times New Roman", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(256, 22);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(243, 25);
+            this.label1.Size = new System.Drawing.Size(236, 26);
             this.label1.TabIndex = 49;
             this.label1.Text = "Registro de LLegadas";
             // 
@@ -113,6 +113,7 @@
             // 
             // cmbOrigen
             // 
+            this.cmbOrigen.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbOrigen.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbOrigen.Location = new System.Drawing.Point(261, 155);
             this.cmbOrigen.Name = "cmbOrigen";
@@ -141,6 +142,7 @@
             // 
             // cmbDestino
             // 
+            this.cmbDestino.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbDestino.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbDestino.Location = new System.Drawing.Point(261, 244);
             this.cmbDestino.Name = "cmbDestino";

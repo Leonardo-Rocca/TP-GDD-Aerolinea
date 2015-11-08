@@ -54,9 +54,8 @@ namespace AerolineaFrba.Compra
 
         private void btPasaje_Click(object sender, EventArgs e)
         {
-                string query = "select top 1 DBAS.cantidadButacasLibres ( '"+viaje.matriculaAeronave+"',"+ viaje.idViaje+") from dbas.servicios";
-                DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
-                if (dt.Rows[0][0].ToString() == "0")
+             int espacioDisponible = Convert.ToInt32(viaje.butacas_disponibles)- pasajes.Count(); 
+            if (espacioDisponible < 0)
                 {
                     MessageBox.Show("No quedan mas pasajes para este vuelo");
                     return;
@@ -67,15 +66,27 @@ namespace AerolineaFrba.Compra
 
         private void btEncomienda_Click(object sender, EventArgs e)
         {
-            string query = "select top 1 DBAS.cantidadKgDisponibles ( '" + viaje.matriculaAeronave + "'," + viaje.idViaje + ") from dbas.servicios";
-            DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
-            if (dt.Rows[0][0].ToString() == "0")
+            int espacioDisponible = kgsEncomiendasDisponible(); 
+            if (espacioDisponible < 0)
             {
                 MessageBox.Show("No queda mas espacio para encomiendas en este viaje");
                 return;
             }
             datosPasajeroForm encomiendaF = new datosPasajeroForm(this, 2);
             encomiendaF.Show();
+        }
+
+        public int kgsEncomiendasDisponible()
+        {
+            return Convert.ToInt32(viaje.kgs_disponibles);
+            int encomiendaEnKillo;
+ 
+            if (encomiendas == null) { 
+                encomiendaEnKillo = 0; 
+            }  else { 
+                encomiendaEnKillo = Convert.ToInt32(encomiendas.butacaKg);
+            }
+            return Convert.ToInt32(viaje.kgs_disponibles) - encomiendaEnKillo ;
         }
 
         public void cargarPasaje(PasajeEncomienda pasaje){

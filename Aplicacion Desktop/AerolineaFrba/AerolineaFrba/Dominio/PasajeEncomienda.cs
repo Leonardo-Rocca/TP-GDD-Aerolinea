@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data;
 
 namespace AerolineaFrba.Dominio
 {
@@ -17,6 +18,7 @@ namespace AerolineaFrba.Dominio
         public string mail;
         public string fecha;
         public string butacaKg="";
+        public string direccion;
       
 
        public PasajeEncomienda(string id,string p1, string p2, string dni, string tel, string p3, string p4, string butacaKg)
@@ -31,5 +33,16 @@ namespace AerolineaFrba.Dominio
            this.butacaKg = butacaKg;
 
        }
+       
+        public void darDeAltaClienteSiNoExiste()
+       {
+           if (id == "")
+           {
+               string comando = "execute dbas.altaPersona " + dni + " , '" + nombre + "', '" + apellido + "', '" + direccion + "', '"+tel+"','"+mail+"','"+fecha+"',999";
+               DataTable dt = (new ConexionSQL()).cargarTablaSQL(comando);
+           }
+            //to do... actualizar datos
+       }
+
     }
 }

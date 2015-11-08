@@ -42,6 +42,7 @@ namespace AerolineaFrba.Compra
                 {
                     string queryPasaje = "Insert into DBAS.pasajes (id_cliente,id_viaje, id_butaca, precio_pasaje ,id_compra_PNR) values (" +
                      pasajero.id + ", " + compra.viaje.idViaje + " , " + pasajero.butacaKg + " , " + compra.viaje.precioPasaje + " , " + idCompra + ")";
+                     pasajero.darDeAltaClienteSiNoExiste();
                 }
             }
             catch (Exception er)
@@ -50,6 +51,7 @@ namespace AerolineaFrba.Compra
             }
         }
 
+      
 
     }
 }

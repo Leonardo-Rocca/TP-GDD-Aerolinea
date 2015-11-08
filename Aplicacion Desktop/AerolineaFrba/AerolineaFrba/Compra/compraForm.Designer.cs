@@ -97,6 +97,7 @@
             // 
             // cmbPasaje
             // 
+            this.cmbPasaje.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbPasaje.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbPasaje.Location = new System.Drawing.Point(120, 145);
             this.cmbPasaje.Name = "cmbPasaje";
@@ -138,7 +139,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.LightSkyBlue;
+            this.BackColor = System.Drawing.Color.LightBlue;
             this.ClientSize = new System.Drawing.Size(589, 442);
             this.Controls.Add(this.txtEncomienda);
             this.Controls.Add(this.label1);

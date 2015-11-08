@@ -56,12 +56,13 @@ namespace AerolineaFrba.Compra
         {
             if(!validarCamposVacios())return;
 
-            if (idPersona == "") generarIdPersona();
+   //         if (idPersona == "") generarIdPersona();
             string butacaKg="";
             if (tipo == 1) butacaKg = txtButaca.Text;
             if (tipo == 2) butacaKg = txtKg.Text;
 
             PasajeEncomienda pasEn = new PasajeEncomienda(idPersona,txtnombre.Text,txtApellido.Text,dni,tel,txtMail.Text,dateTimePickerFnac.Text,butacaKg);
+            pasEn.direccion = txtDireccion.Text;
 
             if (tipo == 0)
             {
@@ -85,15 +86,16 @@ namespace AerolineaFrba.Compra
                 compraForm.cargarPasaje(pasEn);
             }
             if (tipo == 2){
+               
+                   if (compraForm.kgsEncomiendasDisponible() < Convert.ToInt32(txtKg.Text))
+                {
+                    MessageBox.Show("Solo queda espacio para "+compraForm.kgsEncomiendasDisponible().ToString()+" kgs para encomiendas en este viaje");
+                    return;
+                }
                 compraForm.cargarEncomienda(pasEn);
             }
             compraForm.Show();
             this.Close();
-        }
-
-        private void generarIdPersona()
-        {
-            throw new NotImplementedException();
         }
 
         private bool validarCamposVacios()
@@ -161,6 +163,12 @@ namespace AerolineaFrba.Compra
         {
             txtButaca.Text = seleccionada.numero_butaca;
             butacaPasaje = seleccionada;
+        }
+
+        private void txtKg_TextChanged(object sender, EventArgs e)
+        {
+            //validar numero
+            if (txtKg.Text == "") txtKg.Text = "0";
         }
     }
 }

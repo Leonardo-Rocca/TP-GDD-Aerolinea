@@ -2167,6 +2167,25 @@ BEGIN
 END;
 GO
 
+--Butacas sin utilizar de una aeronave en un viaje
+CREATE FUNCTION DBAS.butacasLibresEnViaje(@id_viaje bigint)
+RETURNS @butacas TABLE (id_butaca bigint,numero_butaca smallint,tipo_butaca varchar(15),piso_butaca tinyint)
+AS
+BEGIN
+	INSERT INTO @butacas
+	SELECT id_butaca,numero_butaca,tipo_butaca,piso_butaca FROM DBAS.viajes viajes, DBAS.aeronaves aeronaves, DBAS.butacas butacas
+	WHERE viajes.id_viaje = @id_viaje AND viajes.matricula_aeronave = aeronaves.matricula_aeronave
+	AND butacas.matricula_aeronave = aeronaves.matricula_aeronave 
+	EXCEPT
+	(SELECT butacas.id_butaca,numero_butaca,tipo_butaca,piso_butaca 
+	FROM DBAS.pasajes, DBAS.viajes viajes, DBAS.butacas butacas, DBAS.aeronaves aeronaves
+	WHERE viajes.id_viaje = @id_viaje AND viajes.matricula_aeronave = aeronaves.matricula_aeronave 
+	AND butacas.matricula_aeronave = aeronaves.matricula_aeronave AND pasajes.id_viaje = @id_viaje
+	AND pasajes.id_butaca = butacas.id_butaca)
+	RETURN
+END;
+GO
+
 
 /* -- cancelacion pasajes/encomiendas -- */
 

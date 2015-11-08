@@ -109,6 +109,9 @@ namespace AerolineaFrba.Compra
 
             Viaje elViaje = new Viaje(idViaje,fechaSalida,precioPasaje,precioKg,matriculaAeronave);
            // vdammy.matriculaAeronave = "BZD-177";
+            elViaje.kgs_disponibles = dataGridView1[8, dataGridView1.CurrentCell.RowIndex].Value.ToString();
+            elViaje.butacas_disponibles = dataGridView1[7, dataGridView1.CurrentCell.RowIndex].Value.ToString();
+
              (new compraForm(elViaje)).Show();
              txtCityOrigen.Text = "";
              txtDestino.Text = "";

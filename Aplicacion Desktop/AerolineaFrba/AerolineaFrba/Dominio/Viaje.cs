@@ -8,13 +8,16 @@ namespace AerolineaFrba.Dominio
 {
     public class Viaje
     {
-        public int kgsDisponibles;
-     
+        public string kgsDisponibles;
+        public string butacas_disponibles;
+
         public string idViaje;
         public string fechaSalida;
         public string precioPasaje;
         public string precioKg;
         public string matriculaAeronave1;
+        public string kgs_disponibles;
+
 
         public Viaje(string idViaje, string fechaSalida, string precioPasaje, string precioKg, string matriculaAeronave1)
         {

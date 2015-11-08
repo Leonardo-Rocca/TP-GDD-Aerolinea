@@ -79,14 +79,14 @@ namespace AerolineaFrba.Compra
         public int kgsEncomiendasDisponible()
         {
             return Convert.ToInt32(viaje.kgs_disponibles);
-            int encomiendaEnKillo;
+          /*  int encomiendaEnKillo;
  
             if (encomiendas == null) { 
                 encomiendaEnKillo = 0; 
             }  else { 
                 encomiendaEnKillo = Convert.ToInt32(encomiendas.butacaKg);
             }
-            return Convert.ToInt32(viaje.kgs_disponibles) - encomiendaEnKillo ;
+            return Convert.ToInt32(viaje.kgs_disponibles) - encomiendaEnKillo ;*/
         }
 
         public void cargarPasaje(PasajeEncomienda pasaje){

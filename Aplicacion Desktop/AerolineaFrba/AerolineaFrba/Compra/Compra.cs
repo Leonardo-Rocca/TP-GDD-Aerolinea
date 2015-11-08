@@ -5,7 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using System.Windows.Forms;
+using System.Globalization;
+
 using AerolineaFrba.Dominio;
+
 namespace AerolineaFrba.Compra
 {
     public static class Compra
@@ -29,20 +32,28 @@ namespace AerolineaFrba.Compra
 
             try
             {
+                CultureInfo culture = new CultureInfo("en-US");
+
                 //obtengo el ultimo
                 DataTable dt = (new ConexionSQL()).cargarTablaSQL("select top 1 (id_compra_PNR) AS codigo FROM DBAS.compras ORDER BY 1 DESC");
                 DataRow row = dt.Rows[0];
                 string idCompra = row[0].ToString();
 
                 PasajeEncomienda encomienda = compra.encomiendas;
-                string queryEncomienda = "Insert into DBAS.encomiendas (id_cliente,encomienda_cliente_KG,id_viaje,precio_encomienda,id_compra_PNR) values (" +
-                encomienda.id + ", " + encomienda.butacaKg + ", " + compra.viaje.idViaje + " , " + compra.viaje.precioKg + " , " + idCompra + ")";
+                encomienda.darDeAltaClienteSiNoExiste();
+
+                string queryEncomienda = "Insert into DBAS.encomiendas (id_cliente ,encomienda_cliente_KG ,id_viaje, @precio_encomienda, id_compra_PNR) values (" +
+                                      encomienda.id + ", " + encomienda.butacaKg + ", " + compra.viaje.idViaje + " , " +Double.Parse(compra.viaje.precioKg,culture) + " , " + idCompra + ")";
+
+                MessageBox.Show(queryEncomienda);
 
                 foreach (PasajeEncomienda pasajero in compra.pasajes)
                 {
                     string queryPasaje = "Insert into DBAS.pasajes (id_cliente,id_viaje, id_butaca, precio_pasaje ,id_compra_PNR) values (" +
                      pasajero.id + ", " + compra.viaje.idViaje + " , " + pasajero.butacaKg + " , " + compra.viaje.precioPasaje + " , " + idCompra + ")";
                      pasajero.darDeAltaClienteSiNoExiste();
+                     MessageBox.Show(queryPasaje);
+
                 }
             }
             catch (Exception er)

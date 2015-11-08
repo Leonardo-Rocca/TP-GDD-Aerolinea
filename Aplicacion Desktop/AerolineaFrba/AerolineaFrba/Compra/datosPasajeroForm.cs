@@ -61,8 +61,9 @@ namespace AerolineaFrba.Compra
             if (tipo == 1) butacaKg = txtButaca.Text;
             if (tipo == 2) butacaKg = txtKg.Text;
 
-            PasajeEncomienda pasEn = new PasajeEncomienda(idPersona,txtnombre.Text,txtApellido.Text,dni,tel,txtMail.Text,dateTimePickerFnac.Text,butacaKg);
+            PasajeEncomienda pasEn = new PasajeEncomienda(idPersona,txtnombre.Text,txtApellido.Text,dni,tel,txtMail.Text,dateTimePickerFnac.Value.ToString(),butacaKg);
             pasEn.direccion = txtDireccion.Text;
+            pasEn.darDeAltaClienteSiNoExiste();
 
             if (tipo == 0)
             {
@@ -119,9 +120,10 @@ namespace AerolineaFrba.Compra
 
         private void txtDni_TextChanged(object sender, EventArgs e)
         {     //VERIFICAR SOLO NUMEROS                              TO-DO
-            if (txtDni.Text.Length < 5) return;
 
-           dni = txtDni.Text;
+            dni = txtDni.Text;
+   //         if (txtDni.Text.Length < 5) return;
+
            string query = "select* from dbas.personas WHERE dni_persona ="+dni;
             DataTable dt =(new ConexionSQL()).cargarTablaSQL(query);
             if(dt.Rows.Count==0)return;

@@ -15,6 +15,7 @@ namespace AerolineaFrba.Compra
         public datosCompradorForm()
         {
             InitializeComponent();
+            txtPass.UseSystemPasswordChar = true;
         }
 
         private void datosCompradorForm_Load(object sender, EventArgs e)
@@ -32,7 +33,8 @@ namespace AerolineaFrba.Compra
         {
             //TO-DO
             Compra.inicializar();
-        //    Compra.tarjeta = new Tarjeta(tx 
+            Compra.tarjeta = new Tarjeta(txtNumero.Text, txtPass.Text, dateTimePickerFnac.Value, "1", "1", "1");
+            Compra.realizarCompra();
             this.Close();
         }
     }

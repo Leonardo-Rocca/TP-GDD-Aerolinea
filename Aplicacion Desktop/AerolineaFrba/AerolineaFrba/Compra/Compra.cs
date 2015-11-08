@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data;
-
+using System.Windows.Forms;
 using AerolineaFrba.Dominio;
 namespace AerolineaFrba.Compra
 {
@@ -23,24 +23,31 @@ namespace AerolineaFrba.Compra
 
         internal static void realizarCompra()
         {
-            //TO-DO 
 
             string qGenerarCompra = "execute  DBAS.generarCompra " + comprador.id + "," + tarjeta.numeroTarjeta + " , " + tarjeta.codigo + ", '2016-11-11' ," + tarjeta.tipoTarjetaId + "," + tarjeta.cuotasElegidas + " ," + tarjeta.tipo;
             (new ConexionSQL()).ejecutarComandoSQL(qGenerarCompra);
 
-            //obtengo el ultimo
-            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select top 1 (id_compra_PNR) AS codigo FROM DBAS.compras ORDER BY 1 DESC");
-            DataRow row = dt.Rows[0];
-            string idCompra = row[0].ToString();
-         
-            PasajeEncomienda encomienda=  compra.encomiendas;
-            string queryEncomienda = "Insert into DBAS.encomiendas (id_cliente,encomienda_cliente_KG,id_viaje,precio_encomienda,id_compra_PNR) values (" +
-            encomienda.id + ", " + encomienda.butacaKg + ", " + compra.viaje.idViaje + " , " + compra.viaje.precioKg + " , " + idCompra+ ")";
+            try
+            {
+                //obtengo el ultimo
+                DataTable dt = (new ConexionSQL()).cargarTablaSQL("select top 1 (id_compra_PNR) AS codigo FROM DBAS.compras ORDER BY 1 DESC");
+                DataRow row = dt.Rows[0];
+                string idCompra = row[0].ToString();
 
-      /*      foreach(PasajeEncomienda pasajero in compra.pasajes){
-                string queryPasaje = "Insert into DBAS.encomiendas (id_cliente,encomienda_cliente_KG,id_viaje,precio_encomienda,id_compra_PNR) values (" +
-            encomienda.id + ", " + encomienda.butacaKg + ", " + compra.viaje.idViaje + " , " + compra.viaje.precioKg + " , " + idCompra;
-            }*/
+                PasajeEncomienda encomienda = compra.encomiendas;
+                string queryEncomienda = "Insert into DBAS.encomiendas (id_cliente,encomienda_cliente_KG,id_viaje,precio_encomienda,id_compra_PNR) values (" +
+                encomienda.id + ", " + encomienda.butacaKg + ", " + compra.viaje.idViaje + " , " + compra.viaje.precioKg + " , " + idCompra + ")";
+
+                foreach (PasajeEncomienda pasajero in compra.pasajes)
+                {
+                    string queryPasaje = "Insert into DBAS.pasajes (id_cliente,id_viaje, id_butaca, precio_pasaje ,id_compra_PNR) values (" +
+                     pasajero.id + ", " + compra.viaje.idViaje + " , " + pasajero.butacaKg + " , " + compra.viaje.precioPasaje + " , " + idCompra + ")";
+                }
+            }
+            catch (Exception er)
+            {
+                MessageBox.Show(er.Message);
+            }
         }
 
 

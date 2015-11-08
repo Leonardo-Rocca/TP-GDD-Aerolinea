@@ -37,6 +37,7 @@
             this.txtNombreRol = new System.Windows.Forms.TextBox();
             this.modificarRol = new System.Windows.Forms.Label();
             this.chkHabilitado = new System.Windows.Forms.CheckBox();
+            this.btSeleccionarTodo = new System.Windows.Forms.Button();
             label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
@@ -130,12 +131,24 @@
             this.chkHabilitado.Text = "Rol Habilitado";
             this.chkHabilitado.UseVisualStyleBackColor = true;
             // 
+            // btSeleccionarTodo
+            // 
+            this.btSeleccionarTodo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btSeleccionarTodo.Location = new System.Drawing.Point(650, 174);
+            this.btSeleccionarTodo.Name = "btSeleccionarTodo";
+            this.btSeleccionarTodo.Size = new System.Drawing.Size(114, 31);
+            this.btSeleccionarTodo.TabIndex = 19;
+            this.btSeleccionarTodo.Text = "Seleccionar todo";
+            this.btSeleccionarTodo.UseVisualStyleBackColor = true;
+            this.btSeleccionarTodo.Click += new System.EventHandler(this.btSeleccionarTodo_Click);
+            // 
             // modificarRolEspecificado
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.ClientSize = new System.Drawing.Size(898, 485);
+            this.Controls.Add(this.btSeleccionarTodo);
             this.Controls.Add(this.chkHabilitado);
             this.Controls.Add(label4);
             this.Controls.Add(this.chkListaFuncionalidades);
@@ -162,6 +175,7 @@
         private System.Windows.Forms.TextBox txtNombreRol;
         private System.Windows.Forms.Label modificarRol;
         private System.Windows.Forms.CheckBox chkHabilitado;
+        private System.Windows.Forms.Button btSeleccionarTodo;
 
     }
 }

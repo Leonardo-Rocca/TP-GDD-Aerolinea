@@ -28,6 +28,7 @@ namespace AerolineaFrba.Compra
             this.viaje = viaje;
             chkPasillo.Checked = true;
             chkVentanilla.Checked = true;
+            txtPiso.Text = "1";
             
         }
 

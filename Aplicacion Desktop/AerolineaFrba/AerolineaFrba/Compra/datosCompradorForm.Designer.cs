@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.txtApellido = new System.Windows.Forms.TextBox();
+            this.txtPass = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.txtnombre = new System.Windows.Forms.TextBox();
+            this.txtNumero = new System.Windows.Forms.TextBox();
             this.lbNombreOrigen = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -40,13 +40,13 @@
             this.btCancelar = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // txtApellido
+            // txtPass
             // 
-            this.txtApellido.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtApellido.Location = new System.Drawing.Point(164, 166);
-            this.txtApellido.Name = "txtApellido";
-            this.txtApellido.Size = new System.Drawing.Size(306, 26);
-            this.txtApellido.TabIndex = 63;
+            this.txtPass.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPass.Location = new System.Drawing.Point(164, 166);
+            this.txtPass.Name = "txtPass";
+            this.txtPass.Size = new System.Drawing.Size(306, 26);
+            this.txtPass.TabIndex = 63;
             // 
             // label1
             // 
@@ -58,13 +58,13 @@
             this.label1.TabIndex = 62;
             this.label1.Text = "Codigo deseguridad:";
             // 
-            // txtnombre
+            // txtNumero
             // 
-            this.txtnombre.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtnombre.Location = new System.Drawing.Point(164, 99);
-            this.txtnombre.Name = "txtnombre";
-            this.txtnombre.Size = new System.Drawing.Size(306, 26);
-            this.txtnombre.TabIndex = 61;
+            this.txtNumero.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNumero.Location = new System.Drawing.Point(164, 99);
+            this.txtNumero.Name = "txtNumero";
+            this.txtNumero.Size = new System.Drawing.Size(306, 26);
+            this.txtNumero.TabIndex = 61;
             // 
             // lbNombreOrigen
             // 
@@ -146,9 +146,9 @@
             this.Controls.Add(this.dateTimePickerFnac);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.txtApellido);
+            this.Controls.Add(this.txtPass);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.txtnombre);
+            this.Controls.Add(this.txtNumero);
             this.Controls.Add(this.lbNombreOrigen);
             this.Name = "datosCompradorForm";
             this.Text = "datosCompradorForm";
@@ -160,9 +160,9 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox txtApellido;
+        private System.Windows.Forms.TextBox txtPass;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox txtnombre;
+        private System.Windows.Forms.TextBox txtNumero;
         private System.Windows.Forms.Label lbNombreOrigen;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label2;

@@ -82,18 +82,9 @@ namespace AerolineaFrba.Abm_Rol
             {
                 MessageBox.Show("Falta elegir funcionalidad", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 return;
-            };
+            }
 
-          /*  DataTable tblfunc = new DataTable("func");
-            tblfunc.Columns.Add("Id", typeof(int));
-            for (int i = 0; i <= chkListaFuncionalidades.Items.Count - 1; i++)
-            {
-                if (chkListaFuncionalidades.GetItemChecked(i))
-                {
-                    tblfunc.Rows.Add(i + 1);
-                }
-            }*/
-            modificar();
+             modificar();
 
             MessageBox.Show("Rol Modificado(dammy)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             actualizarFormsRoles();
@@ -120,14 +111,6 @@ namespace AerolineaFrba.Abm_Rol
           
             (new ConexionSQL()).ejecutarComandoSQL(query);
        
-            /*   string qlahabilitacion = "UPDATE DBAS.roles SET habilitado_rol = 1 Where nombre_rol = '" + txtNombreRol.Text + "'";
-            (new ConexionSQL()).ejecutarComandoSQL(qlahabilitacion);
-
-            if (chkHabilitado.Checked == false)
-            {
-                string qhabilitacion = "UPDATE DBAS.roles SET habilitado_rol = 0 Where nombre_rol = '" + txtNombreRol.Text + "'";
-                (new ConexionSQL()).ejecutarComandoSQL(qhabilitacion);
-            }*/
         }
 
         private string obtenerId()
@@ -168,6 +151,14 @@ namespace AerolineaFrba.Abm_Rol
                 chkListaFuncionalidades.Items.Insert(i, dt.Rows[i][1].ToString());
             }
 
+        }
+
+        private void btSeleccionarTodo_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i <= chkListaFuncionalidades.Items.Count - 1; i++)
+            {
+                chkListaFuncionalidades.SetItemCheckState(i, CheckState.Checked);
+            }
         }
     }
 }

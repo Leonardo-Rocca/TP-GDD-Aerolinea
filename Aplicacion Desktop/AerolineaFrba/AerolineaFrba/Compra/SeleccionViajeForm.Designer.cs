@@ -153,9 +153,9 @@
             // dgvViaje
             // 
             this.dgvViaje.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvViaje.Location = new System.Drawing.Point(23, 250);
+            this.dgvViaje.Location = new System.Drawing.Point(12, 250);
             this.dgvViaje.Name = "dgvViaje";
-            this.dgvViaje.Size = new System.Drawing.Size(812, 122);
+            this.dgvViaje.Size = new System.Drawing.Size(823, 122);
             this.dgvViaje.TabIndex = 41;
             this.dgvViaje.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvViaje_CellContentClick);
             // 

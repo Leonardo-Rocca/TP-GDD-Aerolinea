@@ -18,6 +18,7 @@ namespace AerolineaFrba.Compra
         public SeleccionViajeForm()
         {
             InitializeComponent();
+            dateTimePicker1.Value = new DateTime(2016, 02, 01);
             txtCityOrigen.ReadOnly = true;
             txtDestino.ReadOnly = true;
         }
@@ -50,15 +51,20 @@ namespace AerolineaFrba.Compra
         {
             if(!validarCamposCompletos())return;
 
-            string query = "select id_viaje,fecha_salida,fecha_llegada_estimada,(precio_base_por_pasaje*s.porcentaje_arancel) as precio_pasaje ,precio_base_por_KG as precio_por_KG," +
+            string query = "select id_viaje,fecha_salida,fecha_llegada_estimada as fecha_llegada,(precio_base_por_pasaje*s.porcentaje_arancel) as precio_pasaje ,precio_base_por_KG as precio_por_KG," +
             " s.tipo_servicio,v.matricula_aeronave" +
+            ",(select top 1 DBAS.cantidadButacasLibres (v.matricula_aeronave ,id_viaje) from dbas.servicios) butacasLibres"+
+            ", (select top 1 DBAS.cantidadKgDisponibles (v.matricula_aeronave ,id_viaje) from dbas.servicios) KGs_disponibles" +
+
             " FROM dbas.rutas r,dbas.viajes v,dbas.ciudades co,dbas.ciudades cd ,dbas.aeronaves a, dbas.servicios s" +
             " WHERE habilitada_ruta = 1 AND r.codigo_ruta = v.codigo_ruta AND r.ciudad_origen_id=co.id_ciudad AND s.id_servicio = a.id_servicio AND " +
             "r.ciudad_destino_id = cd.id_ciudad AND co.nombre_ciudad = '" + txtCityOrigen.Text + "' AND cd.nombre_ciudad = '" + txtDestino.Text + "' AND a.matricula_aeronave = v.matricula_aeronave" +
             " AND datepart(year,fecha_salida) = '" + dateTimePicker1.Value.Year.ToString() +
             "' AND datepart(MONTH,fecha_salida) = '" + dateTimePicker1.Value.Month.ToString() +
-            "' AND datepart(day,fecha_salida) = '" + dateTimePicker1.Value.Day.ToString() + "'";
-           
+            "' AND datepart(day,fecha_salida) = '" + dateTimePicker1.Value.Day.ToString() + "'"+
+
+            " AND (select top 1 DBAS.cantidadButacasLibres (v.matricula_aeronave ,id_viaje) from dbas.servicios) > 0 " +
+            " AND (select top 1 DBAS.cantidadKgDisponibles (v.matricula_aeronave ,id_viaje) from dbas.servicios) > 0 ";
                hacerQuery(query, dgvViaje);
 
         }
@@ -106,6 +112,7 @@ namespace AerolineaFrba.Compra
              (new compraForm(elViaje)).Show();
              txtCityOrigen.Text = "";
              txtDestino.Text = "";
+             dataGridView1.DataSource = null;
             this.Hide();
         }
 

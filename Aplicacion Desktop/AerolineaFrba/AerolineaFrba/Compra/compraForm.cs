@@ -31,6 +31,7 @@ namespace AerolineaFrba.Compra
             InitializeComponent();
             viaje = v;
           //  btEncomienda.Visible = false;
+            Compra.inicializar();
             inicializar();
         }
 
@@ -53,20 +54,36 @@ namespace AerolineaFrba.Compra
 
         private void btPasaje_Click(object sender, EventArgs e)
         {
+                string query = "select top 1 DBAS.cantidadButacasLibres ( '"+viaje.matriculaAeronave+"',"+ viaje.idViaje+") from dbas.servicios";
+                DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
+                if (dt.Rows[0][0].ToString() == "0")
+                {
+                    MessageBox.Show("No quedan mas pasajes para este vuelo");
+                    return;
+                }
             datosPasajeroForm pasajeF = new datosPasajeroForm(this,1);
             pasajeF.Show();
         }
 
         private void btEncomienda_Click(object sender, EventArgs e)
         {
+            string query = "select top 1 DBAS.cantidadKgDisponibles ( '" + viaje.matriculaAeronave + "'," + viaje.idViaje + ") from dbas.servicios";
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
+            if (dt.Rows[0][0].ToString() == "0")
+            {
+                MessageBox.Show("No queda mas espacio para encomiendas en este viaje");
+                return;
+            }
             datosPasajeroForm encomiendaF = new datosPasajeroForm(this, 2);
             encomiendaF.Show();
         }
+
         public void cargarPasaje(PasajeEncomienda pasaje){
             cmbPasaje.Items.Add(pasaje.nombre);
             cmbPasaje.SelectedIndex = 0;
             pasajes.Add(pasaje);
         }
+
         public void cargarEncomienda(PasajeEncomienda encomienda)
         {
             txtEncomienda.Text = encomienda.butacaKg;
@@ -81,6 +98,7 @@ namespace AerolineaFrba.Compra
             }
 
             Compra.compra = this;
+            Compra.pagaEnEfectivo = false;
             if(Sesion.Usuario.nombreRol=="Administrador General"){
                 if (MessageBox.Show("¿Desea abonar en efectivo ?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {

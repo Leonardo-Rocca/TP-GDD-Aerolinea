@@ -17,6 +17,7 @@ namespace AerolineaFrba.Compra
         private compraForm compraForm;
         private int tipo;//1 pasaje, 2encomienda  //0persona
         Butaca butacaPasaje;
+        private string idPersona="";
 
         public datosPasajeroForm()
         {
@@ -29,6 +30,8 @@ namespace AerolineaFrba.Compra
             dateTimePickerFnac.Value = new DateTime(1994, 09, 17);
             this.compraForm = compraForm;
             this.tipo = tipe;
+            if (tipe == 0) lbIngrese.Text = "Ingrese los datos del comprador:";
+
             if(tipe==1||tipe==0){
                 txtKg.Visible=false;
                 lbkasterix.Visible=false;
@@ -45,7 +48,7 @@ namespace AerolineaFrba.Compra
         private void btCancel_Click(object sender, EventArgs e)
         {
             compraForm.Show();
-            Compra.inicializar();
+        //    Compra.inicializar();
             this.Close();
         }
 
@@ -53,29 +56,31 @@ namespace AerolineaFrba.Compra
         {
             if(!validarCamposVacios())return;
 
-            string id = "99";
+            if (idPersona == "") generarIdPersona();
             string butacaKg="";
             if (tipo == 1) butacaKg = txtButaca.Text;
             if (tipo == 2) butacaKg = txtKg.Text;
 
-            PasajeEncomienda pasEn = new PasajeEncomienda(id,txtnombre.Text,txtApellido.Text,dni,tel,txtMail.Text,dateTimePickerFnac.Text,butacaKg);
+            PasajeEncomienda pasEn = new PasajeEncomienda(idPersona,txtnombre.Text,txtApellido.Text,dni,tel,txtMail.Text,dateTimePickerFnac.Text,butacaKg);
 
             if (tipo == 0)
             {
+             Compra.comprador = pasEn;
+
                 if (Compra.pagaEnEfectivo) {
-                    Compra.comprador = pasEn;
                     Compra.realizarCompra();
                     Compra.inicializar();
-                    this.Close();
                 }
                 else{
                     datosCompradorForm tarjeta = new datosCompradorForm();
                     tarjeta.Show();
-                    compraForm.Hide();
-                    this.Close();
                     }
+
+                compraForm.Hide();
+                this.Close();
                 return;
             }
+
             if (tipo == 1){
                 compraForm.cargarPasaje(pasEn);
             }
@@ -84,6 +89,11 @@ namespace AerolineaFrba.Compra
             }
             compraForm.Show();
             this.Close();
+        }
+
+        private void generarIdPersona()
+        {
+            throw new NotImplementedException();
         }
 
         private bool validarCamposVacios()
@@ -117,6 +127,7 @@ namespace AerolineaFrba.Compra
                 MessageBox.Show("Hay inconsistencia en la base de datos por DNI repetido. Dirigirse a hablar con el administrador");
                 return;
             }
+            idPersona = dt.Rows[0][0].ToString();
             txtnombre.Text = dt.Rows[0][2].ToString();
             txtApellido.Text = dt.Rows[0][3].ToString();
             txtDireccion.Text = dt.Rows[0][4].ToString();

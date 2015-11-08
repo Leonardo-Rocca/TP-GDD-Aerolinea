@@ -86,7 +86,7 @@
             // btEncomienda
             // 
             this.btEncomienda.BackColor = System.Drawing.Color.Turquoise;
-            this.btEncomienda.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btEncomienda.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btEncomienda.Location = new System.Drawing.Point(385, 228);
             this.btEncomienda.Name = "btEncomienda";
             this.btEncomienda.Size = new System.Drawing.Size(106, 49);
@@ -138,6 +138,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.LightSkyBlue;
             this.ClientSize = new System.Drawing.Size(589, 442);
             this.Controls.Add(this.txtEncomienda);
             this.Controls.Add(this.label1);

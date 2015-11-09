@@ -8,9 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using AerolineaFrba.FormsPrincipales;
 namespace AerolineaFrba.Canje_Millas
 {
-    public partial class CanjeForm : Form
+    public partial class CanjeForm : FormGenerico
     {
         public CanjeForm()
         {
@@ -20,6 +21,8 @@ namespace AerolineaFrba.Canje_Millas
 
         private void inicializar()
         {
+            txtDni.Text = "";
+            textCantidad.Text = "";
             string query = "select  * FROM DBAS.productos order by valor_en_milas ";
             DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
             cmbProductos.DataSource = dt.DefaultView;
@@ -32,6 +35,30 @@ namespace AerolineaFrba.Canje_Millas
            
             if (!validacionPuntosSuficientes()) return;
 
+            string query = "select* from dbas.personas WHERE dni_persona = " + txtDni.Text;
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
+            if (dt.Rows.Count == 0) return;
+            if (dt.Rows.Count > 1)
+            {
+                MessageBox.Show("Hay inconsistencia en la base de datos por DNI repetido. Dirigirse a hablar con el administrador");
+                return;
+            }
+            string idPersona = dt.Rows[0][0].ToString();
+             //----obtengo el idcliente
+            query = "select id_cliente from dbas.clientes WHERE id_persona = " + idPersona;
+            dt = (new ConexionSQL()).cargarTablaSQL(query);
+            idPersona = dt.Rows[0][0].ToString();
+            
+            string idProd = obtenerIdProducto();
+            string qsp = "execute dbas.canjeProducto " + idPersona + "," + idProd + "," + textCantidad.Text;
+            (new ConexionSQL()).ejecutarComandoSQL(qsp);
+        }
+
+        private string obtenerIdProducto()
+        {
+            string query = "select  * from dbas.productos WHERE nombre_producto = '" + cmbProductos.Text + "'";
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
+            return dt.Rows[0][0].ToString();
         }
 
         private bool validacionPuntosSuficientes()
@@ -63,6 +90,7 @@ namespace AerolineaFrba.Canje_Millas
                 return false;
             }
 
+
             //to-do realizar canje
             return true;
 
@@ -81,6 +109,30 @@ namespace AerolineaFrba.Canje_Millas
                 return true;
             }
             return false;
+        }
+
+        private void buttonCancelar_Click(object sender, EventArgs e)
+        {
+            this.inicializar();
+            this.Hide();
+        }
+
+        private void btFiltro_Click(object sender, EventArgs e)
+        {
+            ListadoProductoForm lOrigen = new ListadoProductoForm();
+            lOrigen.setAnterior(this);
+            lOrigen.setBuffer(ref txtresultadoFiltro);
+            lOrigen.Show();
+        }
+
+        internal void setProducto(string producto)
+        {
+            cmbProductos.Text = producto;
+        }
+
+        private void txtresultadoFiltro_TextChanged(object sender, EventArgs e)
+        {
+            cmbProductos.Text = txtresultadoFiltro.Text;
         }
     }
 }

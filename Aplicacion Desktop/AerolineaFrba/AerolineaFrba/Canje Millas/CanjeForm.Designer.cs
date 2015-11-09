@@ -37,8 +37,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.textCantidad = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+            this.btFiltro = new System.Windows.Forms.Button();
+            this.txtresultadoFiltro = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btAceptar
@@ -61,12 +61,13 @@
             this.buttonCancelar.TabIndex = 71;
             this.buttonCancelar.Text = "<<Volver";
             this.buttonCancelar.UseVisualStyleBackColor = true;
+            this.buttonCancelar.Click += new System.EventHandler(this.buttonCancelar_Click);
             // 
             // cmbProductos
             // 
             this.cmbProductos.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbProductos.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmbProductos.Location = new System.Drawing.Point(256, 160);
+            this.cmbProductos.Location = new System.Drawing.Point(256, 180);
             this.cmbProductos.Name = "cmbProductos";
             this.cmbProductos.Size = new System.Drawing.Size(232, 28);
             this.cmbProductos.TabIndex = 69;
@@ -75,7 +76,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(113, 165);
+            this.label3.Location = new System.Drawing.Point(113, 185);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(77, 20);
             this.label3.TabIndex = 67;
@@ -113,7 +114,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(113, 232);
+            this.label4.Location = new System.Drawing.Point(113, 281);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(81, 20);
             this.label4.TabIndex = 73;
@@ -122,35 +123,38 @@
             // textCantidad
             // 
             this.textCantidad.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textCantidad.Location = new System.Drawing.Point(256, 230);
+            this.textCantidad.Location = new System.Drawing.Point(256, 279);
             this.textCantidad.Name = "textCantidad";
             this.textCantidad.Size = new System.Drawing.Size(232, 24);
             this.textCantidad.TabIndex = 74;
             // 
-            // label5
+            // btFiltro
             // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(113, 301);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(125, 20);
-            this.label5.TabIndex = 76;
-            this.label5.Text = "Fecha de Canje:";
+            this.btFiltro.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btFiltro.Location = new System.Drawing.Point(506, 180);
+            this.btFiltro.Name = "btFiltro";
+            this.btFiltro.Size = new System.Drawing.Size(133, 28);
+            this.btFiltro.TabIndex = 75;
+            this.btFiltro.Text = "Seleccionar Producto";
+            this.btFiltro.UseVisualStyleBackColor = true;
+            this.btFiltro.Click += new System.EventHandler(this.btFiltro_Click);
             // 
-            // dateTimePicker1
+            // txtresultadoFiltro
             // 
-            this.dateTimePicker1.Location = new System.Drawing.Point(253, 301);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(235, 20);
-            this.dateTimePicker1.TabIndex = 75;
+            this.txtresultadoFiltro.Location = new System.Drawing.Point(548, 214);
+            this.txtresultadoFiltro.Name = "txtresultadoFiltro";
+            this.txtresultadoFiltro.Size = new System.Drawing.Size(51, 20);
+            this.txtresultadoFiltro.TabIndex = 76;
+            this.txtresultadoFiltro.Visible = false;
+            this.txtresultadoFiltro.TextChanged += new System.EventHandler(this.txtresultadoFiltro_TextChanged);
             // 
-            // Form1
+            // CanjeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(670, 500);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.dateTimePicker1);
+            this.Controls.Add(this.txtresultadoFiltro);
+            this.Controls.Add(this.btFiltro);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.textCantidad);
             this.Controls.Add(this.btAceptar);
@@ -160,7 +164,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtDni);
             this.Controls.Add(this.label1);
-            this.Name = "Form1";
+            this.Name = "CanjeForm";
             this.Text = "CanjeForm";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -178,7 +182,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox textCantidad;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.DateTimePicker dateTimePicker1;
+        private System.Windows.Forms.Button btFiltro;
+        private System.Windows.Forms.TextBox txtresultadoFiltro;
     }
 }

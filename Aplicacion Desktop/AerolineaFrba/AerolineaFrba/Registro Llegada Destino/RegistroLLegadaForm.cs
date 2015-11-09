@@ -79,7 +79,7 @@ namespace AerolineaFrba.Registro_Llegada_Destino
         {
            if(!validaciones())return;
 
-            llegadaAvionForm registro = new llegadaAvionForm(txtmatricula.Text);
+            llegadaAvionForm registro = new llegadaAvionForm(txtmatricula.Text,cmbOrigen.Text,cmbDestino.Text);
             registro.Show();
             this.Hide();
             inicializar();

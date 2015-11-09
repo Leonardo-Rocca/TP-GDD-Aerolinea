@@ -48,9 +48,9 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(143, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(338, 25);
+            this.label1.Size = new System.Drawing.Size(331, 25);
             this.label1.TabIndex = 50;
-            this.label1.Text = "Registro de LLegada Aeronave";
+            this.label1.Text = "Registro de Llegada Aeronave";
             // 
             // lbMatricula
             // 

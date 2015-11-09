@@ -1,4 +1,3 @@
-
 /*
 USE[GD2C2015];
 GO
@@ -31,6 +30,7 @@ CREATE TABLE DBAS.viajes (
 	fecha_llegada_estimada datetime,
 	matricula_aeronave varchar(100),
 	codigo_ruta bigint,
+	habilitado_viaje tinyint default 1,
 	CHECK( (fecha_llegada_estimada <= DATEADD(day, 1, fecha_salida)) AND (fecha_salida < fecha_llegada))
 );
 GO
@@ -355,10 +355,20 @@ alter table DBAS.serviciosPorRutas add constraint fk_serviciosPorRutas_servicio
 	foreign key(id_servicio) references DBAS.servicios (id_servicio);
 GO
 
-
 /* -- Fecha del sistema -- */
+
 INSERT INTO DBAS.date_time(GET_DATE)
 VALUES(GETDATE())
+GO
+
+CREATE PROCEDURE DBAS.cambiarFechaDelSistema(@fecha_sistema datetime)
+AS
+BEGIN
+	
+	-- Establezco la nueva fecha actual del sistema
+	UPDATE DBAS.date_time SET GET_DATE = @fecha_sistema
+
+END;
 GO
 
 /* -- Migracion -- */
@@ -1721,19 +1731,22 @@ BEGIN
 	IF(@tipo_cancelacion = 1)
 	BEGIN
 		
-		-- Actualizo los pasajes que tienen a la aeronave que se da de baja con el di cancelacion obtenido
+		-- Actualizo los pasajes que tienen a la aeronave que se da de baja con el id cancelacion obtenido
 		UPDATE tablaPasajes SET tablaPasajes.id_cancelacion = @ID_cancelacion 
 		FROM  DBAS.viajes tablaViajes, DBAS.pasajes tablaPasajes
 		WHERE tablaViajes.fecha_salida > @GET_DATE AND tablaViajes.fecha_salida < @fecha 
 		AND tablaPasajes.id_viaje = tablaViajes.id_viaje
 		AND tablaViajes.matricula_aeronave = @matricula_aeronave
 	
-		-- Actualizo las encomiendas que tienen a la aeronave que se da de baja con el di cancelacion obtenido
+		-- Actualizo las encomiendas que tienen a la aeronave que se da de baja con el id cancelacion obtenido
 		UPDATE tablaEncomiendas SET tablaEncomiendas.id_cancelacion = @ID_cancelacion 
 		FROM  DBAS.viajes tablaViajes, DBAS.encomiendas tablaEncomiendas
 		WHERE  tablaViajes.fecha_salida > @GET_DATE AND tablaViajes.fecha_salida < @fecha 
 		AND tablaEncomiendas.id_viaje = tablaViajes.id_viaje
 		AND tablaViajes.matricula_aeronave = @matricula_aeronave
+
+		--Deshabilito el viaje para que no se pueda vender pasajes ni encomiendas
+		UPDATE DBAS.viajes SET habilitado_viaje = 0 WHERE matricula_aeronave = @matricula_aeronave AND fecha_salida > @GET_DATE AND fecha_salida < @fecha 
 	
 	END
 	ELSE
@@ -1751,6 +1764,9 @@ BEGIN
 		WHERE tablaViajes.fecha_salida > @GET_DATE
 		AND tablaEncomiendas.id_viaje = tablaViajes.id_viaje
 		AND tablaViajes.matricula_aeronave = @matricula_aeronave
+
+		--Deshabilito el viaje para que no se pueda vender pasajes ni encomiendas
+		UPDATE DBAS.viajes SET habilitado_viaje = 0 WHERE matricula_aeronave = @matricula_aeronave AND fecha_salida > @GET_DATE
 		
 	END
 
@@ -2195,6 +2211,10 @@ BEGIN
 		-- Deshabilito la ruta
 		UPDATE DBAS.rutas SET habilitada_ruta = 0 WHERE codigo_ruta = @codigo_ruta
 
+		--Deshabilito el viaje para que no se pueda vender pasajes ni encomiendas
+		UPDATE DBAS.viajes SET habilitado_viaje = 0 WHERE id_viaje = @id_viaje AND fecha_salida > @GET_DATE
+	
+
 		FETCH NEXT FROM viajesCursor
 		INTO @id_viaje, @codigo_ruta
 
@@ -2403,3 +2423,4 @@ BEGIN
 
 END;
 GO
+

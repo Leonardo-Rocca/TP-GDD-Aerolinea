@@ -831,6 +831,7 @@ BEGIN
 	DECLARE @mensaje_error varchar(100)
 	DECLARE @valor_total_en_millas bigint
 	DECLARE @GET_DATE datetime
+	DECLARE @stock int
 
 	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
 
@@ -843,6 +844,8 @@ BEGIN
 
 	SET @valor_total_en_millas = @valor_unitario_en_millas * @cantidadACanjear
 
+	SELECT @stock = stock FROM DBAS.productos productos WHERE productos.id_producto = @id_producto
+
 	IF(@valor_total_en_millas > @millas_vigentes)
 	BEGIN
 		
@@ -854,6 +857,7 @@ BEGIN
 	BEGIN
 		INSERT INTO DBAS.canjes(id_cliente,fecha_canje,cantidad_producto,millas_usadas,id_producto)
 		VALUES (@id_cliente,@GET_DATE,@cantidadACanjear,@valor_total_en_millas,@id_producto)
+		UPDATE DBAS.productos SET stock = (@stock - @cantidadACanjear)  WHERE id_producto = @id_producto
 	END
 
 END;

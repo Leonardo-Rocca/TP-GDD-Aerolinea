@@ -17,6 +17,7 @@ namespace AerolineaFrba.FormsPrincipales
         public Redireccionador()
         {
             InitializeComponent();
+            navegacion.redireccionador = this;
         }
 
         public void setFunciones(List<Funcionalidades> funciones)

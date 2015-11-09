@@ -32,7 +32,7 @@ namespace AerolineaFrba.Compra
 
             try
             {
-                CultureInfo culture = new CultureInfo("en-US");
+                CultureInfo culture = new CultureInfo("es-ES");
 
                 //obtengo el ultimo
                 DataTable dt = (new ConexionSQL()).cargarTablaSQL("select top 1 (id_compra_PNR) AS codigo FROM DBAS.compras ORDER BY 1 DESC");
@@ -42,7 +42,7 @@ namespace AerolineaFrba.Compra
                 PasajeEncomienda encomienda = compra.encomiendas;
                 encomienda.darDeAltaClienteSiNoExiste();
 
-                string queryEncomienda = "Insert into DBAS.encomiendas (id_cliente ,encomienda_cliente_KG ,id_viaje, @precio_encomienda, id_compra_PNR) values (" +
+                string queryEncomienda = "Insert into DBAS.encomiendas (id_cliente ,encomienda_cliente_KG ,id_viaje, precio_encomienda, id_compra_PNR) values (" +
                                       encomienda.id + ", " + encomienda.butacaKg + ", " + compra.viaje.idViaje + " , " +Double.Parse(compra.viaje.precioKg,culture) + " , " + idCompra + ")";
 
                 MessageBox.Show(queryEncomienda);
@@ -55,6 +55,8 @@ namespace AerolineaFrba.Compra
                      MessageBox.Show(queryPasaje);
 
                 }
+
+                MessageBox.Show("Su compra ha sido 'exitosa'.Su PNR es: "+idCompra+". Con dicho número se deberá acercar el día del viaje a canjear sus pasajes y/o entregar el paquete encomienda.");
             }
             catch (Exception er)
             {

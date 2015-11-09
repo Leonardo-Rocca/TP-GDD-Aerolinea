@@ -111,3 +111,4 @@ C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\Aero
 C:\Users\ABM\Desktop\aero\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Devolucion.Devolucion.resources
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Registro_Llegada_Destino.llegadaAvionForm.resources
 C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Registro_Llegada_Destino.RegistroLLegadaForm.resources
+C:\Users\ABM\Desktop\TP-GDD-Aerolinea\Aplicacion Desktop\AerolineaFrba\AerolineaFrba\obj\Debug\AerolineaFrba.Canje_Millas.CanjeForm.resources

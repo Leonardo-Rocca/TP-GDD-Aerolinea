@@ -14,6 +14,8 @@ using AerolineaFrba.Abm_Aeronave;
 using AerolineaFrba.Compra;
 using AerolineaFrba.Generacion_Viaje;
 using AerolineaFrba.Consulta_Millas;
+using AerolineaFrba.Devolucion;
+using AerolineaFrba.Canje_Millas;
 
 namespace AerolineaFrba.Dominio
 {
@@ -36,14 +38,19 @@ namespace AerolineaFrba.Dominio
             }
 
             Usuario= new Usuario("a","p",rol,9999);
+            generarListaFuncionalidades(rol);
+        
+        }
+
+        public static  List<Funcionalidades> generarListaFuncionalidades(string rol)
+        {
 
             //OBTENER FUNCDISP SEGUN EL ROL
             string qfuncion = "select * from  DBAS.obtenerFuncionalidadesAsociadas ('" + rol + "')";
-            DataTable dtfunciones =  (new ConexionSQL()).cargarTablaSQL(qfuncion);
+            DataTable dtfunciones = (new ConexionSQL()).cargarTablaSQL(qfuncion);
 
             cargarFuncionalidades(dtfunciones);
-            
-        
+            return funcionalidadesDisponibles;
         }
 
         private static void cargarFuncionalidades(DataTable dtfunciones)
@@ -87,12 +94,18 @@ namespace AerolineaFrba.Dominio
             
             if (descripcionF == "Consulta de millas de pasajero frecuente")
             return (new Funcionalidades(99, "Consultar millas", new ConsultarMillasForm()));
-            //Registro de Usuario
+
+            if (descripcionF == "Registro de Usuario")
+                return (new Funcionalidades(99, "Registro de Usuario", new Registro_de_Usuario.RegistroUsuarios()));
+
+            if (descripcionF == "Cancelación/Devolución de pasaje y/o encomienda")
+                return (new Funcionalidades(99, "Cancelación/Devolución de pasaje y/o encomienda", new Devolucion.Devolucion()));
+
+            if (descripcionF == "Canje de millas de pasajero frecuente")
+                return (new Funcionalidades(99, "Canje de millas de pasajero frecuente", new CanjeForm()));
+
             //default..
             return (new Funcionalidades(99, "Devolucion ", new Devolucion.Devolucion()));
-
-//Cancelación/Devolución de pasaje y/o encomienda
-//Canje de millas de pasajero frecuente
 
         }
 

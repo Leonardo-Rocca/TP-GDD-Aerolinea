@@ -159,11 +159,11 @@
     <Compile Include="Abm Ruta\ModificarEliminarRuta.Designer.cs">
       <DependentUpon>ModificarEliminarRuta.cs</DependentUpon>
     </Compile>
-    <Compile Include="Canje Millas\Form1.cs">
+    <Compile Include="Canje Millas\CanjeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Canje Millas\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Canje Millas\CanjeForm.Designer.cs">
+      <DependentUpon>CanjeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="BDComun.cs" />
     <Compile Include="Compra\Compra.cs" />
@@ -379,6 +379,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Abm Ruta\ModificarEliminarRuta.resx">
       <DependentUpon>ModificarEliminarRuta.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Canje Millas\CanjeForm.resx">
+      <DependentUpon>CanjeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Compra\compraForm.resx">
       <DependentUpon>compraForm.cs</DependentUpon>

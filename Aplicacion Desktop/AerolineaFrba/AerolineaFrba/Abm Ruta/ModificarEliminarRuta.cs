@@ -53,7 +53,7 @@ namespace AerolineaFrba.Abm_Ruta
             chkListaServicios.Items.Insert(1, "Ejecutivo");
             chkListaServicios.Items.Insert(2, "Turista");
             vaciarTextos();
-     //       cargarTablacompleta();
+            cargarTablacompleta();
 
         }
 

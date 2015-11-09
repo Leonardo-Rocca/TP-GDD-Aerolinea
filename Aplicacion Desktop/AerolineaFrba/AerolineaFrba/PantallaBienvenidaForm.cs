@@ -26,7 +26,7 @@ namespace AerolineaFrba
         }
 
         private void btIngresar_Click(object sender, EventArgs e)
-        {
+        {           
             if (cmbRoles.Text == "Administrador" || cmbRoles.Text == "Administrador General")
             {
                 LoginAdministrador ingreso = new LoginAdministrador();

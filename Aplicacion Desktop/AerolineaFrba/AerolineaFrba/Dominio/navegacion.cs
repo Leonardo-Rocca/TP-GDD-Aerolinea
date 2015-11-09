@@ -40,5 +40,7 @@ namespace AerolineaFrba.Dominio
         }
 
 
+
+        public static FormsPrincipales.Redireccionador redireccionador { get; set; }
     }
 }

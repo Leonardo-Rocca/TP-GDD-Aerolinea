@@ -47,8 +47,10 @@ namespace AerolineaFrba.Dominio
            }else{
                 comando= "UPDATE DBAS.personas SET nombre_persona = '"+nombre+"',apellido_persona = '"+apellido +"',direccion_persona = '"+direccion+"',telefono_persona = '"+tel+"',mail_persona = '"+mail+"',fecha_nacimiento = '"+fecha+
                     "' WHERE id_persona = "+id;
+                DataTable dt = (new ConexionSQL()).cargarTablaSQL(comando);
+                MessageBox.Show(comando);
            }
-            //to do... actualizar datos
+            //to do... actualizar datos -- falta probar
        }
 
         private string obtenerUltimoId()

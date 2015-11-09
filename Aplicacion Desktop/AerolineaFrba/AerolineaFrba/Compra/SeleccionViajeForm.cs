@@ -72,6 +72,7 @@ namespace AerolineaFrba.Compra
              " FROM dbas.rutas r,dbas.viajes v,dbas.ciudades co,dbas.ciudades cd ,dbas.aeronaves a, dbas.servicios s" +
              " WHERE habilitada_ruta = 1 AND r.codigo_ruta = v.codigo_ruta AND r.ciudad_origen_id=co.id_ciudad AND s.id_servicio = a.id_servicio AND " +
              "r.ciudad_destino_id = cd.id_ciudad" +
+             " AND habilitado_viaje = 1"+
 
              " AND (select top 1 DBAS.cantidadButacasLibres (v.matricula_aeronave ,id_viaje) from dbas.servicios) > 0 " +
              " AND (select top 1 DBAS.cantidadKgDisponibles (v.matricula_aeronave ,id_viaje) from dbas.servicios) > 0 ";

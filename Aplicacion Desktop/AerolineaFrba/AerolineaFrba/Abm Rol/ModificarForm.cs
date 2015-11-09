@@ -27,8 +27,6 @@ namespace AerolineaFrba.Abm_Rol
         public ModificarForm(string nombre,string nombreBoton,int tipo)
         {
             InitializeComponent();
-            comboBoxRol.Items.Insert(0, "Usuario");
-            comboBoxRol.Items.Insert(1, "El que mueve la papota");
             buttonGuardar.Text = nombreBoton;
             label1.Text = nombre;
             tipoDeForm = tipo;

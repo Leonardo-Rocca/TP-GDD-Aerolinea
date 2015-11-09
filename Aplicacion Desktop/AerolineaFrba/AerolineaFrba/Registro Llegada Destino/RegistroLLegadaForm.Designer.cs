@@ -119,6 +119,7 @@
             this.cmbOrigen.Name = "cmbOrigen";
             this.cmbOrigen.Size = new System.Drawing.Size(232, 28);
             this.cmbOrigen.TabIndex = 56;
+            this.cmbOrigen.SelectedIndexChanged += new System.EventHandler(this.cmbOrigen_SelectedIndexChanged);
             // 
             // resultadoFiltro2
             // 

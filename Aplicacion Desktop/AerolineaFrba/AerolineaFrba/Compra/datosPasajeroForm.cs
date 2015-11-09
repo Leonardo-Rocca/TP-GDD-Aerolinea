@@ -14,7 +14,7 @@ namespace AerolineaFrba.Compra
 {
     public partial class datosPasajeroForm : Form
     {
-        private compraForm compraForm;
+        private compraForm compra;
         private int tipo;//1 pasaje, 2encomienda  //0persona
         Butaca butacaPasaje;
         private string idPersona="";
@@ -28,7 +28,7 @@ namespace AerolineaFrba.Compra
         {
             InitializeComponent();
             dateTimePickerFnac.Value = new DateTime(1994, 09, 17);
-            this.compraForm = compraForm;
+            this.compra = compraForm;
             this.tipo = tipe;
             if (tipe == 0) lbIngrese.Text = "Ingrese los datos del comprador:";
 
@@ -47,7 +47,7 @@ namespace AerolineaFrba.Compra
 
         private void btCancel_Click(object sender, EventArgs e)
         {
-            compraForm.Show();
+            compra.Show();
         //    Compra.inicializar();
             this.Close();
         }
@@ -78,24 +78,24 @@ namespace AerolineaFrba.Compra
                     tarjeta.Show();
                     }
 
-                compraForm.Hide();
+                compra.Hide();
                 this.Close();
                 return;
             }
 
             if (tipo == 1){
-                compraForm.cargarPasaje(pasEn);
+                compra.cargarPasaje(pasEn);
             }
             if (tipo == 2){
                
-                   if (compraForm.kgsEncomiendasDisponible() < Convert.ToInt32(txtKg.Text))
+                   if (compra.kgsEncomiendasDisponible() < Convert.ToInt32(txtKg.Text))
                 {
-                    MessageBox.Show("Solo queda espacio para "+compraForm.kgsEncomiendasDisponible().ToString()+" kgs para encomiendas en este viaje");
+                    MessageBox.Show("Solo queda espacio para "+compra.kgsEncomiendasDisponible().ToString()+" kgs para encomiendas en este viaje");
                     return;
                 }
-                compraForm.cargarEncomienda(pasEn);
+                compra.cargarEncomienda(pasEn);
             }
-            compraForm.Show();
+            compra.Show();
             this.Close();
         }
 
@@ -159,7 +159,7 @@ namespace AerolineaFrba.Compra
 
         private void btButaca_Click(object sender, EventArgs e)
         {
-            ListadoButacas list = new ListadoButacas(compraForm.viaje);
+            ListadoButacas list = new ListadoButacas(compra.viaje);
             list.anterior = this;
             list.Show();
             this.Hide();

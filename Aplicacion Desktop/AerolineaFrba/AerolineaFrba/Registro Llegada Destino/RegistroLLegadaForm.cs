@@ -18,11 +18,21 @@ namespace AerolineaFrba.Registro_Llegada_Destino
         public RegistroLLegadaForm()
         {
             InitializeComponent();
+            cargarComboSeleccion();
         }
 
         private void inicializar()
         {
             txtmatricula.Text = "";
+        }
+
+        public void cargarComboSeleccion()
+        {
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct nombre_ciudad FROM DBAS.ciudades WHERE habilitada_ciudad = 1 ORDER BY nombre_ciudad");
+            cmbOrigen.DataSource = dt.DefaultView;
+            cmbOrigen.ValueMember = "nombre_ciudad";
+            cmbDestino.DataSource = dt.DefaultView;
+            cmbDestino.ValueMember = "nombre_ciudad";
         }
 
         private void buttonCancelar_Click(object sender, EventArgs e)
@@ -32,17 +42,24 @@ namespace AerolineaFrba.Registro_Llegada_Destino
 
         private void btFiltroOrigen_Click(object sender, EventArgs e)
         {
-            cargarCiudad(resultadoFiltro);
+            cargarCiudadOrigen(resultadoFiltro);
         }
 
-        private void cargarCiudad(TextBox invisible)
+        private void cargarCiudadOrigen( TextBox invisible)
         {
             ListadoCiudad lOrigen = new ListadoCiudad();
             lOrigen.setFormAnteriorSup(this);
-            lOrigen.setBuffer(ref invisible);
+            lOrigen.setBuffer(ref resultadoFiltro);
             lOrigen.Show();
         }
 
+        private void cargarCiudadDestino(TextBox invisible)
+        {
+            ListadoCiudad lOrigen = new ListadoCiudad();
+            lOrigen.setFormAnteriorSup(this);
+            lOrigen.setBuffer(ref resultadoFiltro2);
+            lOrigen.Show();
+        }
         private void resultadoFiltro_TextChanged(object sender, EventArgs e)
         {
             cmbOrigen.Text = resultadoFiltro.Text;
@@ -50,7 +67,7 @@ namespace AerolineaFrba.Registro_Llegada_Destino
 
         private void btFiltroDestino_Click(object sender, EventArgs e)
         {
-            cargarCiudad(resultadoFiltro2);
+            cargarCiudadDestino(resultadoFiltro2);
         }
 
         private void resultadoFiltro2_TextChanged(object sender, EventArgs e)
@@ -78,6 +95,13 @@ namespace AerolineaFrba.Registro_Llegada_Destino
                 MessageBox.Show("El numero de matricula no existe", "Matricula invalida", MessageBoxButtons.OK);
                 return false;
             }
+
+            dta = (new ConexionSQL()).cargarTablaSQL("select * from dbas.aeronavesEnServicio () where matricula_aeronave like '" + txtmatricula.Text + "'");
+            if (dta.Rows.Count == 0)
+            {
+                MessageBox.Show("La aeronave no esta habilitada", "Matricula inhabilitada", MessageBoxButtons.OK);
+                return false;
+            }
             return true;
         }
 
@@ -89,6 +113,11 @@ namespace AerolineaFrba.Registro_Llegada_Destino
                 return false;
             }
             return true;
+        }
+
+        private void cmbOrigen_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

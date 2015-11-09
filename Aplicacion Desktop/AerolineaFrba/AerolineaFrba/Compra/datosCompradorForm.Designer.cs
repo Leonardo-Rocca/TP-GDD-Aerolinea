@@ -32,12 +32,14 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txtNumero = new System.Windows.Forms.TextBox();
             this.lbNombreOrigen = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.dateTimePickerFnac = new System.Windows.Forms.DateTimePicker();
             this.label3 = new System.Windows.Forms.Label();
             this.buttonGuardar = new System.Windows.Forms.Button();
             this.btCancelar = new System.Windows.Forms.Button();
+            this.cmbTipoTarjeta = new System.Windows.Forms.ComboBox();
+            this.cmbCuotas = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txtPass
@@ -76,23 +78,15 @@
             this.lbNombreOrigen.TabIndex = 60;
             this.lbNombreOrigen.Text = "Numero deTarjeta de credito";
             // 
-            // textBox1
-            // 
-            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.Location = new System.Drawing.Point(164, 234);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(306, 26);
-            this.textBox1.TabIndex = 65;
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(264, 211);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(106, 20);
+            this.label2.Size = new System.Drawing.Size(110, 20);
             this.label2.TabIndex = 64;
-            this.label2.Text = "tipo de tarjeta";
+            this.label2.Text = "Tipo de tarjeta";
             // 
             // dateTimePickerFnac
             // 
@@ -134,17 +128,48 @@
             this.btCancelar.UseVisualStyleBackColor = true;
             this.btCancelar.Click += new System.EventHandler(this.btCancelar_Click);
             // 
+            // cmbTipoTarjeta
+            // 
+            this.cmbTipoTarjeta.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbTipoTarjeta.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmbTipoTarjeta.Location = new System.Drawing.Point(159, 232);
+            this.cmbTipoTarjeta.Name = "cmbTipoTarjeta";
+            this.cmbTipoTarjeta.Size = new System.Drawing.Size(311, 28);
+            this.cmbTipoTarjeta.TabIndex = 83;
+            this.cmbTipoTarjeta.SelectedIndexChanged += new System.EventHandler(this.cmbTipoTarjeta_SelectedIndexChanged);
+            // 
+            // cmbCuotas
+            // 
+            this.cmbCuotas.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbCuotas.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmbCuotas.Location = new System.Drawing.Point(508, 232);
+            this.cmbCuotas.Name = "cmbCuotas";
+            this.cmbCuotas.Size = new System.Drawing.Size(110, 28);
+            this.cmbCuotas.TabIndex = 85;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(487, 211);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(147, 20);
+            this.label4.TabIndex = 84;
+            this.label4.Text = "Cantidad de cuotas";
+            // 
             // datosCompradorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.ClientSize = new System.Drawing.Size(630, 476);
+            this.Controls.Add(this.cmbCuotas);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.cmbTipoTarjeta);
             this.Controls.Add(this.buttonGuardar);
             this.Controls.Add(this.btCancelar);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.dateTimePickerFnac);
-            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtPass);
             this.Controls.Add(this.label1);
@@ -164,11 +189,13 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtNumero;
         private System.Windows.Forms.Label lbNombreOrigen;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.DateTimePicker dateTimePickerFnac;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button buttonGuardar;
         private System.Windows.Forms.Button btCancelar;
+        private System.Windows.Forms.ComboBox cmbTipoTarjeta;
+        private System.Windows.Forms.ComboBox cmbCuotas;
+        private System.Windows.Forms.Label label4;
     }
 }

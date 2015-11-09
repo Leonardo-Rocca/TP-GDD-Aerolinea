@@ -16,6 +16,14 @@ namespace AerolineaFrba.Compra
         {
             InitializeComponent();
             txtPass.UseSystemPasswordChar = true;
+            inicializar();
+        }
+
+        private void inicializar()
+        {
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select * from dbas.tiposTarjeta");
+            cmbTipoTarjeta.DataSource = dt.DefaultView;
+            cmbTipoTarjeta.ValueMember = "descripcion_tipo";
         }
 
         private void datosCompradorForm_Load(object sender, EventArgs e)
@@ -31,11 +39,25 @@ namespace AerolineaFrba.Compra
 
         private void buttonGuardar_Click(object sender, EventArgs e)
         {
-            //TO-DO
             Compra.inicializar();
-            Compra.tarjeta = new Tarjeta(txtNumero.Text, txtPass.Text, dateTimePickerFnac.Value.ToString(), "1", "1", "1");
+            Compra.tarjeta = new Tarjeta(txtNumero.Text, txtPass.Text, dateTimePickerFnac.Value.ToString(), "1", cmbCuotas.Text, "1");
             Compra.realizarCompra();
             this.Close();
+        }
+
+        private void cmbTipoTarjeta_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbTipoTarjeta.Text == "") return;
+
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select cuotas from dbas.tiposTarjeta WHERE descripcion_tipo = '"+cmbTipoTarjeta.Text+"'");
+            int cantidadCuotas =Convert.ToInt32(dt.Rows[0][0]);
+            cmbCuotas.Items.Clear();
+            if(cantidadCuotas==0)cmbCuotas.Items.Insert(0,"0");
+            for (int i = 0; i < cantidadCuotas; i++)
+            {
+                cmbCuotas.Items.Insert(i,(i+1).ToString());
+            }
+            cmbCuotas.SelectedIndex = 0;
         }
     }
 }

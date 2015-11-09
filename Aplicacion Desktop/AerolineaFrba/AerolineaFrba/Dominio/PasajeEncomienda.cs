@@ -38,7 +38,7 @@ namespace AerolineaFrba.Dominio
         public void darDeAltaClienteSiNoExiste()
        {
               string comando;
-           if (id == "")
+           if (id == ""||!existeAlguienConMismoDNI())
            {
                comando = "execute dbas.altaCliente " + dni + " , '" + nombre + "', '" + apellido + "', '" + direccion + "', '"+tel+"','"+mail+"','"+fecha+"'";
                DataTable dt = (new ConexionSQL()).cargarTablaSQL(comando);
@@ -52,6 +52,13 @@ namespace AerolineaFrba.Dominio
            }
             //to do... actualizar datos -- falta probar
        }
+
+        private bool existeAlguienConMismoDNI()
+        {
+            string query = "select id_persona from dbas.personas WHERE dni_persona = "+dni;
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
+            return dt.Rows.Count>1;
+        }
 
         private string obtenerUltimoId()
         {

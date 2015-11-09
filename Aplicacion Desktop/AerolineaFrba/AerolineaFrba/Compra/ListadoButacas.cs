@@ -14,7 +14,7 @@ namespace AerolineaFrba.Compra
 {
     public partial class ListadoButacas : Form
     {
-        private Dominio.Viaje viaje;
+        private Viaje viaje;
         public datosPasajeroForm anterior;
 
         public ListadoButacas()
@@ -22,7 +22,7 @@ namespace AerolineaFrba.Compra
             InitializeComponent();
         }
 
-        public ListadoButacas(Dominio.Viaje viaje)
+        public ListadoButacas(Viaje viaje)
         {
             InitializeComponent();
             this.viaje = viaje;
@@ -34,7 +34,7 @@ namespace AerolineaFrba.Compra
 
         private void btBuscar_Click(object sender, EventArgs e)
         {
-            string query = "select distinct numero_butaca,tipo_butaca, piso_butaca  from dbas.butacas  WHERE matricula_aeronave = '" + viaje.matriculaAeronave+"'";
+            string query = "select distinct numero_butaca,tipo_butaca, piso_butaca  from dbas.butacasLibresEnViaje (" + viaje.idViaje + ") WHERE 1=1";// "  WHERE matricula_aeronave = '" + viaje.matriculaAeronave1 + "'";
              
             if(txtPiso.Text!="") query=query + " AND piso_butaca = "+txtPiso.Text;
 
@@ -76,7 +76,7 @@ namespace AerolineaFrba.Compra
             string queryid = "select id_butaca  from dbas.butacas  WHERE  numero_butaca = " + numero_butaca + " AND tipo_butaca = '" + tipo_butaca + "' AND piso_butaca =" + piso_butaca;
             DataTable dt =(new ConexionSQL()).cargarTablaSQL(queryid);
             queryid = dt.Rows[0][0].ToString();
-            Butaca seleccionada = new Butaca(queryid,numero_butaca,tipo_butaca,piso_butaca,viaje.matriculaAeronave);
+            Butaca seleccionada = new Butaca(queryid,numero_butaca,tipo_butaca,piso_butaca,viaje.matriculaAeronave1);
             anterior.cargarButaca(seleccionada);
             anterior.Show();
             this.Close();

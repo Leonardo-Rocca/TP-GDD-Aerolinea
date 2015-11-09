@@ -27,6 +27,5 @@ namespace AerolineaFrba.Dominio
             this.precioKg = precioKg;
             this.matriculaAeronave1 = matriculaAeronave1;
         }
-        public string matriculaAeronave { get; set; }
     }
 }

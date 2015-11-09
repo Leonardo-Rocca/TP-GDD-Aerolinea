@@ -76,7 +76,7 @@ namespace AerolineaFrba.Abm_Ciudad
                 }
                         navegacion.EliminarCiudad.cargarComboSeleccion();
                         navegacion.modificarCiudad.cargarComboSeleccion();
-                MessageBox.Show("Ciudad eliminada ()", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Ciudad eliminada ", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             this.Hide(); 
 

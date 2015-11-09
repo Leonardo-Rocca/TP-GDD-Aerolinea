@@ -1342,6 +1342,65 @@ GO
 
 /* -- ABM Aeronave -- */
 
+CREATE PROCEDURE DBAS.registroLLegadaAeronave(@matricula_aeronave varchar(100), @ciudad_origen varchar(100), @ciudad_destino varchar(100), @fecha_llegada datetime)
+AS
+BEGIN
+	DECLARE @GET_DATE datetime
+	DECLARE @ID_viaje bigint
+	DECLARE @codigo_ruta bigint
+	DECLARE @fecha_salida datetime
+
+	DECLARE @mensaje_error varchar(100)
+
+	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
+
+	-- Pregunto si la aeronave tiene algun viaje pendiente
+	IF EXISTS(SELECT TOP 1 id_viaje FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave AND fecha_llegada IS NULL)
+	BEGIN
+		
+		-- Obtengo el viaje más reciente a la fecha
+		SELECT TOP 1 @id_viaje = id_viaje, @codigo_ruta = codigo_ruta, @fecha_salida = fecha_salida  FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave ORDER BY fecha_salida
+
+		-- Pregunto si las ciudades ingresadas corresponden al viaje de la aeronave 
+		IF EXISTS(SELECT * FROM DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudadOrig, DBAS.ciudades tablaCiudadDest
+				 WHERE tablaRutas.codigo_ruta = @codigo_ruta AND tablaCiudadOrig.nombre_ciudad = @ciudad_origen AND tablaCiudadDest.nombre_ciudad = @ciudad_destino AND tablaRutas.ciudad_origen_id = tablaCiudadOrig.id_ciudad AND tablaRutas.ciudad_destino_id = tablaCiudadDest.id_ciudad)
+		BEGIN
+			
+			-- Pregunto si la fecha de llegada es mayor a la fecha de salida de la aeronave
+			IF(@fecha_llegada > @fecha_salida)
+			BEGIN
+				-- Actualizo la fecha de llegada del viaje
+				UPDATE DBAS.viajes SET fecha_llegada = @fecha_llegada WHERE id_viaje = @ID_viaje
+			END
+			ELSE
+			BEGIN
+				-- Devuelvo un mensaje de error
+				SET @mensaje_error = 'La fecha de salida es mayor a la fecha de llegada'
+				RAISERROR(@mensaje_error, 12, 1)
+			END
+		END
+		ELSE
+		BEGIN
+
+			-- Devuelvo un mensaje de error
+			SET @mensaje_error = 'Las ciudades ingresadas no corresponden a la ruta de vuelo de la aeronave'
+			RAISERROR(@mensaje_error, 12, 1)
+
+		END
+
+	END
+	ELSE
+	BEGIN
+		
+		-- Devuelvo un mensaje de error
+		SET @mensaje_error = 'La aeronave no tiene viajes pendientes'
+		RAISERROR(@mensaje_error, 12, 1)
+
+	END
+
+END;
+GO
+
 CREATE PROCEDURE DBAS.altaAeronave(@ID_fabricante bigint, @ID_servicio bigint, @matricula_aeronave varchar(100), @modelo varchar(100), @KG_disponible float(24), @butacas_pasillo bigint, @butacas_ventana bigint, @piso tinyint)
 AS
 BEGIN

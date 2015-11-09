@@ -18,8 +18,11 @@ namespace AerolineaFrba
         [STAThread]
         static void Main()
         {
-           // MessageBox.Show(Program.nuevaFechaSistema().ToString(),"Fecha",MessageBoxButtons.OK);
-        
+            //MessageBox.Show(Program.nuevaFechaSistema().ToString(),"Fecha",MessageBoxButtons.OK);
+
+            string query = "execute DBAS.cambiarFechaDelSistema '" + DateTime.Parse(Program.nuevaFechaSistema())+"'" ;
+
+            (new ConexionSQL()).cargarTablaSQL(query);
             
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -27,6 +30,10 @@ namespace AerolineaFrba
              Application.Run(new PantallaBienvenidaForm());
              
           
+        }
+
+        public static String conexion(){
+            return ConfigurationManager.AppSettings["conexion"];
         }
 
 

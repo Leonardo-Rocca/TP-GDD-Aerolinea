@@ -2065,7 +2065,7 @@ BEGIN
 	
 	-- Devuelvo la ciudad en donde esta la aeronave actualmente
 	RETURN (SELECT TOP 1 tablaViajes.id_viaje FROM DBAS.viajes tablaViajes
-	WHERE tablaViajes.matricula_aeronave = @matricula_aeronave 
+	WHERE tablaViajes.matricula_aeronave = @matricula_aeronave AND tablaViajes.habilitado_viaje = 1
 	ORDER BY tablaViajes.fecha_salida DESC)
 	
 END;

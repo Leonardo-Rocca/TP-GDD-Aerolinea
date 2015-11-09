@@ -40,7 +40,7 @@ namespace AerolineaFrba.Abm_Ciudad
 
         public void cargarComboSeleccion()
         {
-            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct nombre_ciudad FROM DBAS.ciudades ORDER BY nombre_ciudad");
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct nombre_ciudad FROM DBAS.ciudades WHERE habilitada_ciudad = 1 ORDER BY nombre_ciudad");
             comboBoxCity.DataSource = dt.DefaultView;
             comboBoxCity.ValueMember = "nombre_ciudad";
         }

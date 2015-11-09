@@ -119,7 +119,7 @@ CREATE TABLE DBAS.tarjetas (
 
 CREATE TABLE DBAS.tiposTarjeta (
 	tipo_tarjeta_id bigint IDENTITY(1,1) PRIMARY KEY,
-	descripcion_tipo varchar(10),
+	descripcion_tipo varchar(20),
 	cuotas smallint
 	
 );
@@ -1505,18 +1505,21 @@ RETURNS tinyint
 AS
 BEGIN
 	DECLARE @GET_DATE datetime
+	DECLARE @VALOR bigint
 
 	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
 	
 	-- Pregunto si la aeronave que llega por parametro esta en viaje actualmente y devuelve 0 si lo esta y 1 si esta disponible
 	IF EXISTS(SELECT * FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave AND fecha_salida < @GET_DATE AND fecha_llegada IS NULL)
 	BEGIN
-		RETURN 0
+		SET @VALOR = 0
 	END
 	ELSE
 	BEGIN
-		RETURN 1
+		SET @VALOR  = 1
 	END
+
+	RETURN @VALOR 
 END;
 GO
 

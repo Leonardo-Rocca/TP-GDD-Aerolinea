@@ -36,10 +36,11 @@ namespace AerolineaFrba.Dominio
                  DataTable dt =  (new ConexionSQL()).cargarTablaSQL(comando);
                
             }
-
+           
+        
             Usuario= new Usuario("a","p",rol,9999);
             generarListaFuncionalidades(rol);
-        
+            MessageBox.Show("d");
         }
 
         public static  List<Funcionalidades> generarListaFuncionalidades(string rol)
@@ -48,7 +49,7 @@ namespace AerolineaFrba.Dominio
             //OBTENER FUNCDISP SEGUN EL ROL
             string qfuncion = "select * from  DBAS.obtenerFuncionalidadesAsociadas ('" + rol + "')";
             DataTable dtfunciones = (new ConexionSQL()).cargarTablaSQL(qfuncion);
-
+            MessageBox.Show("b");
             cargarFuncionalidades(dtfunciones);
             return funcionalidadesDisponibles;
         }
@@ -61,6 +62,7 @@ namespace AerolineaFrba.Dominio
             {
                     funcionalidadesDisponibles.Add(obtenerFuncionalidad(dtfunciones.Rows[i][0].ToString() ));
               }
+
         }
 
         private static Funcionalidades obtenerFuncionalidad(string descripcionF)

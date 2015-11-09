@@ -57,13 +57,26 @@ namespace AerolineaFrba.Abm_Ciudad
             }
             else
             {
-                if (MessageBox.Show("¿Realmente desea dar de baja el rol " + comboBoxCity.Text + " ?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show("¿Realmente desea dar de baja la ciudad: " + comboBoxCity.Text + " ?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 {
                     return;
                 }
                 //dar baja logica
-                navegacion.EliminarCiudad.cargarComboSeleccion();
-                MessageBox.Show("Ciudad eliminada (dammy)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                string querybaja = "execute  DBAS.bajaCiudad '"+comboBoxCity.Text+"'";
+                try{
+                (new ConexionSQL()).ejecutarComandoSQL(querybaja);
+                }catch(Exception er){
+                    MessageBox.Show(er.Message);
+                    if (MessageBox.Show("¿Desea cancelarlos ?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                    {
+                        return;
+                    }
+                    querybaja = "execute  DBAS.cancelarPasajesBajaCiudad '" + comboBoxCity.Text + "'";
+                    (new ConexionSQL()).ejecutarComandoSQL(querybaja);
+                }
+                        navegacion.EliminarCiudad.cargarComboSeleccion();
+                        navegacion.modificarCiudad.cargarComboSeleccion();
+                MessageBox.Show("Ciudad eliminada ()", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             this.Hide(); 
 

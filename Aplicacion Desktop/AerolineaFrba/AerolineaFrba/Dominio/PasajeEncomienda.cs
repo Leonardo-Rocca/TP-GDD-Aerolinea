@@ -40,7 +40,7 @@ namespace AerolineaFrba.Dominio
               string comando;
            if (id == "")
            {
-               comando = "execute dbas.altaPersona " + dni + " , '" + nombre + "', '" + apellido + "', '" + direccion + "', '"+tel+"','"+mail+"','"+fecha+"',99";
+               comando = "execute dbas.altaCliente " + dni + " , '" + nombre + "', '" + apellido + "', '" + direccion + "', '"+tel+"','"+mail+"','"+fecha+"'";
                DataTable dt = (new ConexionSQL()).cargarTablaSQL(comando);
                MessageBox.Show(comando);
                id = obtenerUltimoId();
@@ -55,7 +55,7 @@ namespace AerolineaFrba.Dominio
 
         private string obtenerUltimoId()
         {
-            string query = "select top 1 id_persona from dbas.personas order by 1 desc";
+            string query = "select top 1 id_cliente from dbas.clientes order by 1 desc";
             DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
             return dt.Rows[0][0].ToString();
         }

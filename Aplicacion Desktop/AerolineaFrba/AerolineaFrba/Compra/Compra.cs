@@ -22,15 +22,16 @@ namespace AerolineaFrba.Compra
 
         public static void inicializar(){
             pagaEnEfectivo = false;
-            tarjeta = new Tarjeta("0", "0", new DateTime(), "0", "0", "0");
+            tarjeta = new Tarjeta("0", "0","2016-12-10", "0", "0", "0");
         }
 
         internal static void realizarCompra()
         {
+            comprador.darDeAltaClienteSiNoExiste();
 
-            string qGenerarCompra = "execute  DBAS.generarCompra " + comprador.id + "," + tarjeta.numeroTarjeta + " , " + tarjeta.codigo + ", '2016-11-11' ," + tarjeta.tipoTarjetaId + "," + tarjeta.cuotasElegidas + " ," + tarjeta.tipo;
+            string qGenerarCompra = "execute  DBAS.generarCompra " + comprador.id + "," + tarjeta.numeroTarjeta + " , " + tarjeta.codigo + ", '"+tarjeta.dateTime+"' ," + tarjeta.tipoTarjetaId + "," + tarjeta.cuotasElegidas + " ," + tarjeta.tipo;
             (new ConexionSQL()).ejecutarComandoSQL(qGenerarCompra);
-
+            MessageBox.Show("genero compra");
             try
             {
                 CultureInfo culture = new CultureInfo("es-ES");
@@ -43,20 +44,21 @@ namespace AerolineaFrba.Compra
                 PasajeEncomienda encomienda = compra.encomiendas;
                 encomienda.darDeAltaClienteSiNoExiste();
 
-                string queryEncomienda = "Insert into DBAS.encomiendas (id_cliente ,encomienda_cliente_KG ,id_viaje, precio_encomienda, id_compra_PNR) values (" +
-                                      encomienda.id + ", " + encomienda.butacaKg + ", " + compra.viaje.idViaje + " , @Parametro, " + idCompra + ")";    //+Double.Parse(compra.viaje.precioKg,culture) +
+                string queryEncomienda = "Insert into DBAS.encomiendas (id_cliente ,encomienda_cliente_KG ,id_viaje, precio_encomienda, id_compra_PNR ,fecha_compra_encomienda) values (" +
+                                      encomienda.id + ", " + encomienda.butacaKg + ", " + compra.viaje.idViaje + " , @Parametro, " + idCompra +",'"+DateTime.Parse(Program.nuevaFechaSistema())+"' )";    //+Double.Parse(compra.viaje.precioKg,culture) +
 
-                (new ConexionSQL()).ejecutarComandoSQLConParametro(queryEncomienda, compra.viaje.precioKg);
+                string precioTotalEncomienda = (Convert.ToDouble(compra.viaje.precioKg)* Convert.ToDouble(encomienda.butacaKg)).ToString();
+                (new ConexionSQL()).ejecutarComandoSQLConParametro(queryEncomienda,precioTotalEncomienda );
 
                 //MessageBox.Show(queryEncomienda);
 
                 foreach (PasajeEncomienda pasajero in compra.pasajes)
                 {
                     string queryPasaje = "Insert into DBAS.pasajes (id_cliente,id_viaje, id_butaca, precio_pasaje ,id_compra_PNR) values (" +
-                     pasajero.id + ", " + compra.viaje.idViaje + " , " + pasajero.butacaKg + " , " + compra.viaje.precioPasaje + " , " + idCompra + ")";
+                     pasajero.id + ", " + compra.viaje.idViaje + " , " + pasajero.butacaKg + " , @Parametro , " + idCompra + ")";
                      pasajero.darDeAltaClienteSiNoExiste();
-                     MessageBox.Show(queryPasaje);
 
+                     (new ConexionSQL()).ejecutarComandoSQLConParametro(queryEncomienda, compra.viaje.precioPasaje);
                 }
 
                 MessageBox.Show("Su compra ha sido 'exitosa'.Su PNR es: "+idCompra+". Con dicho número se deberá acercar el día del viaje a canjear sus pasajes y/o entregar el paquete encomienda.");

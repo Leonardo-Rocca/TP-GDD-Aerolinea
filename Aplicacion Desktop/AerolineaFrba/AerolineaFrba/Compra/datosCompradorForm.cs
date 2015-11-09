@@ -33,7 +33,7 @@ namespace AerolineaFrba.Compra
         {
             //TO-DO
             Compra.inicializar();
-            Compra.tarjeta = new Tarjeta(txtNumero.Text, txtPass.Text, dateTimePickerFnac.Value, "1", "1", "1");
+            Compra.tarjeta = new Tarjeta(txtNumero.Text, txtPass.Text, dateTimePickerFnac.Value.ToString(), "1", "1", "1");
             Compra.realizarCompra();
             this.Close();
         }

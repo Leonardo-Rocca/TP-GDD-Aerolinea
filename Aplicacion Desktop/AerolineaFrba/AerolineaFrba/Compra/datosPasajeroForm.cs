@@ -63,7 +63,7 @@ namespace AerolineaFrba.Compra
 
             PasajeEncomienda pasEn = new PasajeEncomienda(idPersona,txtnombre.Text,txtApellido.Text,dni,tel,txtMail.Text,dateTimePickerFnac.Value.ToString(),butacaKg);
             pasEn.direccion = txtDireccion.Text;
-            pasEn.darDeAltaClienteSiNoExiste();
+    //        pasEn.darDeAltaClienteSiNoExiste();
 
             if (tipo == 0)
             {
@@ -122,8 +122,9 @@ namespace AerolineaFrba.Compra
         {     //VERIFICAR SOLO NUMEROS                              TO-DO
 
             dni = txtDni.Text;
-   //         if (txtDni.Text.Length < 5) return;
+            if (txtDni.Text.Length < 5) return;
 
+            //----Obtengo el idpersona para cargar sus datos
            string query = "select* from dbas.personas WHERE dni_persona ="+dni;
             DataTable dt =(new ConexionSQL()).cargarTablaSQL(query);
             if(dt.Rows.Count==0)return;
@@ -141,6 +142,10 @@ namespace AerolineaFrba.Compra
             DateTime fechaAux = Convert.ToDateTime(dt.Rows[0][7]);
             dateTimePickerFnac.Value = new DateTime(fechaAux.Year,fechaAux.Month,fechaAux.Day);
 
+            //----obtengo el idcliente
+            query = "select id_cliente from dbas.clientes WHERE id_persona = " + idPersona;
+            dt = (new ConexionSQL()).cargarTablaSQL(query);
+            idPersona = dt.Rows[0][0].ToString();
         }
 
         public string dni { get; set; }

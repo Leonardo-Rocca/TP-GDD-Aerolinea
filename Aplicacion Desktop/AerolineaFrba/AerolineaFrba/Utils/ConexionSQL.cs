@@ -170,7 +170,16 @@ namespace AerolineaFrba
            return ds;
         }
 
+        public void ejecutarComandoSQLConParametro(string query, string parametro)
+        {
+            SqlCommand coman2 = new SqlCommand(string.Format(query), miConexionSQL);
+            coman2.Parameters.AddWithValue("@Parametro", Convert.ToDouble(parametro));
+            MessageBox.Show(coman2.CommandText);
+            this.ejecutarComando(coman2);
+        }
+
         #endregion
+
     }
 
 

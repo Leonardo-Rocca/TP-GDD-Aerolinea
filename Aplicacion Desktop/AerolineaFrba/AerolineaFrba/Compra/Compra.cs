@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Windows.Forms;
 using System.Globalization;
+using System.Data.SqlClient;
 
 using AerolineaFrba.Dominio;
 
@@ -43,9 +44,11 @@ namespace AerolineaFrba.Compra
                 encomienda.darDeAltaClienteSiNoExiste();
 
                 string queryEncomienda = "Insert into DBAS.encomiendas (id_cliente ,encomienda_cliente_KG ,id_viaje, precio_encomienda, id_compra_PNR) values (" +
-                                      encomienda.id + ", " + encomienda.butacaKg + ", " + compra.viaje.idViaje + " , " +Double.Parse(compra.viaje.precioKg,culture) + " , " + idCompra + ")";
+                                      encomienda.id + ", " + encomienda.butacaKg + ", " + compra.viaje.idViaje + " , @Parametro, " + idCompra + ")";    //+Double.Parse(compra.viaje.precioKg,culture) +
 
-                MessageBox.Show(queryEncomienda);
+                (new ConexionSQL()).ejecutarComandoSQLConParametro(queryEncomienda, compra.viaje.precioKg);
+
+                //MessageBox.Show(queryEncomienda);
 
                 foreach (PasajeEncomienda pasajero in compra.pasajes)
                 {

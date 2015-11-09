@@ -48,8 +48,8 @@ namespace AerolineaFrba.Canje_Millas
 
             query = "select  * from dbas.productos WHERE nombre_producto = '"+cmbProductos.Text+"'" ;
             dt = (new ConexionSQL()).cargarTablaSQL(query);
-            int valorEnMillas = Convert.ToInt32(dt.Rows[1][0].ToString());
-            int cantStock = Convert.ToInt32(dt.Rows[2][0].ToString());
+            int valorEnMillas = Convert.ToInt32(dt.Rows[0][1].ToString());
+            int cantStock = Convert.ToInt32(dt.Rows[0][3].ToString());
 
             if (cantStock < Convert.ToInt32(textCantidad.Text)) 
             {

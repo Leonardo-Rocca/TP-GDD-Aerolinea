@@ -46,7 +46,8 @@ namespace AerolineaFrba.Canje_Millas
 
         private void ListadoProductoForm_Load(object sender, EventArgs e)
         {
-
+            string query = "select * from dbas.productos order by 3 desc";
+            hacerQuery(query, dataGridView1);
         }
     }
 }

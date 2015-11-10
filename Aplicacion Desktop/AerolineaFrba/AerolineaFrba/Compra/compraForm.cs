@@ -133,5 +133,10 @@ namespace AerolineaFrba.Compra
         {
 
         }
+
+        private void compraForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

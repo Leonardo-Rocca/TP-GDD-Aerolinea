@@ -37,7 +37,7 @@ namespace AerolineaFrba.Devolucion
             textBox2.Text = "";
             textBox3.Text = "";
             textBox4.Text = "";
-            dateFecha.Value = DateTime.Today;
+            dateFecha.Value = DateTime.Parse(Program.nuevaFechaSistema());
 
         }
 
@@ -140,6 +140,11 @@ namespace AerolineaFrba.Devolucion
 
 
            }
+
+        private void Devolucion_Load(object sender, EventArgs e)
+        {
+
+        }
 
     }
 }

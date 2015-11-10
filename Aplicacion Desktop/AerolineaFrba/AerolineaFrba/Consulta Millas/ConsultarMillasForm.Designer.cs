@@ -135,6 +135,7 @@
             this.Controls.Add(this.label1);
             this.Name = "ConsultarMillasForm";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.ConsultarMillasForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvmillas)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

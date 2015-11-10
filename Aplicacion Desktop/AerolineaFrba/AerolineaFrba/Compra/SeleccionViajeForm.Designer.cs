@@ -179,6 +179,7 @@
             this.Controls.Add(this.lbNombreOrigen);
             this.Name = "SeleccionViajeForm";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.SeleccionViajeForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvViaje)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

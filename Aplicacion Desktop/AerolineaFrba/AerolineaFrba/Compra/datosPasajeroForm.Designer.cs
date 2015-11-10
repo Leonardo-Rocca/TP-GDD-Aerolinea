@@ -422,6 +422,7 @@
             this.Controls.Add(this.lblErrores);
             this.Name = "datosPasajeroForm";
             this.Text = "datosPasajeroForm";
+            this.Load += new System.EventHandler(this.datosPasajeroForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

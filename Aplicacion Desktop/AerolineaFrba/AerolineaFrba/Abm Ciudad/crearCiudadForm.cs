@@ -63,5 +63,10 @@ namespace AerolineaFrba.Abm_Ciudad
             txtNombreCity.Text = "";
             return;
         }
+
+        private void crearCiudadForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

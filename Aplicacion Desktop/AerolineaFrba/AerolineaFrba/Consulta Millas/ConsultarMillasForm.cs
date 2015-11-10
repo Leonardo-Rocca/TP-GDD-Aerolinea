@@ -61,5 +61,10 @@ namespace AerolineaFrba.Consulta_Millas
 
             dgvmillas.Columns.Remove("seleccionar");
         }
+
+        private void ConsultarMillasForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

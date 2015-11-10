@@ -152,6 +152,7 @@
             this.Controls.Add(this.lbTitulo);
             this.Name = "compraForm";
             this.Text = "compraForm";
+            this.Load += new System.EventHandler(this.compraForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

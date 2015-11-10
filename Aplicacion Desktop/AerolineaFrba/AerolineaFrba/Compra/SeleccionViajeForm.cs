@@ -90,7 +90,7 @@ namespace AerolineaFrba.Compra
             }
 
             //VALIDAR FECHA    
-           int anterior= DateTime.Compare(DateTime.Parse(dateTimePicker1.Text), DateTime.Now);
+           int anterior= DateTime.Compare(DateTime.Parse(dateTimePicker1.Text), DateTime.Parse(Program.nuevaFechaSistema()));
            if (anterior < 0)
             {
                 MessageBox.Show("La fecha de salida debe ser posterior al dia de hoy", "Viaje", MessageBoxButtons.OK);
@@ -154,6 +154,11 @@ namespace AerolineaFrba.Compra
                 dataGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                 dataGrid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             }
+        }
+
+        private void SeleccionViajeForm_Load(object sender, EventArgs e)
+        {
+
         }
 
     }

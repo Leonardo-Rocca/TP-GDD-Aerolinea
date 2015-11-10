@@ -192,6 +192,7 @@
             this.Controls.Add(this.label1);
             this.Name = "RegistroLLegadaForm";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.RegistroLLegadaForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

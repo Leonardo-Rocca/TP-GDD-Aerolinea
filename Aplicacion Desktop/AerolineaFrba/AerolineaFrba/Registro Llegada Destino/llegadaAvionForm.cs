@@ -71,11 +71,16 @@ namespace AerolineaFrba.Registro_Llegada_Destino
             this.Close();
         }
 
+
         private bool validarTextosCompletos()
         {
             if (txtDestino.Text == "") return false;
             if (textBox1.Text == "") return false;
             return true;
+        }
+        private void llegadaAvionForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

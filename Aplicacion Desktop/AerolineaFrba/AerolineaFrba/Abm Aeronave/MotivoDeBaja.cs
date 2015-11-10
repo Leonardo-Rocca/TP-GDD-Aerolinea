@@ -95,7 +95,7 @@ namespace AerolineaFrba.Abm_Aeronave
             string fecha;
             if (checkBoxBajaDefinitiva.Checked)
             {
-                fecha = (DateTime.Today.Date).ToString();
+                fecha = (DateTime.Parse(Program.nuevaFechaSistema())).ToString();
             }
             else
             {
@@ -144,7 +144,7 @@ namespace AerolineaFrba.Abm_Aeronave
 
             if (checkBoxFueraDeServicio.Checked)
             {
-                int ant1 = DateTime.Compare(DateTime.Parse(dateFecha.Text), DateTime.Now);
+                int ant1 = DateTime.Compare(DateTime.Parse(dateFecha.Text), DateTime.Parse(Program.nuevaFechaSistema()));
                 if (ant1 < 0)
                 {
                     MessageBox.Show("La fecha de reinsercion debe ser posterior al dia de hoy", "Motivo de baja", MessageBoxButtons.OK);

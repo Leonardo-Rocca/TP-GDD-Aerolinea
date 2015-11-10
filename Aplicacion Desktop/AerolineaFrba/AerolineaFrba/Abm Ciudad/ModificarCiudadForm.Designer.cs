@@ -97,6 +97,7 @@
             this.Controls.Add(this.lbtitulo);
             this.Name = "ModificarCiudadForm";
             this.Text = "ModificarCiudadForm";
+            this.Load += new System.EventHandler(this.ModificarCiudadForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

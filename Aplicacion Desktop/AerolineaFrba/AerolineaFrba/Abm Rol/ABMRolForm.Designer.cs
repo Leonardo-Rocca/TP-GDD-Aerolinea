@@ -103,6 +103,7 @@
             this.Controls.Add(this.label1);
             this.Name = "ABMRolForm";
             this.Text = "AbmRolForm";
+            this.Load += new System.EventHandler(this.ABMRolForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

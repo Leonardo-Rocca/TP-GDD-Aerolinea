@@ -32,8 +32,13 @@ namespace AerolineaFrba
           
         }
 
-        public static String conexion(){
-            return ConfigurationManager.AppSettings["conexion"];
+        public static String ip(){
+            return ConfigurationManager.AppSettings["ip"];
+        }
+
+        public static String puerto()
+        {
+            return ConfigurationManager.AppSettings["puerto"];
         }
 
 

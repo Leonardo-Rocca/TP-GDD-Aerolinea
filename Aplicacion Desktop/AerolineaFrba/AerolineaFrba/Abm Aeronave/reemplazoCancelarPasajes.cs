@@ -72,5 +72,10 @@ namespace AerolineaFrba.Abm_Aeronave
             this.Close();
         }
 
+        private void reemplazoCancelarPasajes_Load(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }

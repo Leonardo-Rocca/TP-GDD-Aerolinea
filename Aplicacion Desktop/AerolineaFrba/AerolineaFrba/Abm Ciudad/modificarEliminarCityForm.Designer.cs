@@ -121,6 +121,7 @@
             this.Controls.Add(this.lbtitulo);
             this.Name = "modificarEliminarCityForm";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.modificarEliminarCityForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

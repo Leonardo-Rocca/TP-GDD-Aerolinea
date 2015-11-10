@@ -84,6 +84,7 @@
             this.Controls.Add(this.buttonCancelarPasajes);
             this.Name = "reemplazoCancelarPasajes";
             this.Text = "Baja Aeronave";
+            this.Load += new System.EventHandler(this.reemplazoCancelarPasajes_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

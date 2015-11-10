@@ -135,5 +135,10 @@ namespace AerolineaFrba.Registro_Llegada_Destino
         {
 
         }
+
+        private void RegistroLLegadaForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

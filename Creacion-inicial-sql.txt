@@ -1,8 +1,3 @@
-/*
-USE[GD2C2015];
-GO
-*/
-
 /* -- Nuevo esquema -- */
 
 --CREATE SCHEMA [DBAS] AUTHORIZATION [gd];
@@ -119,7 +114,7 @@ CREATE TABLE DBAS.tarjetas (
 
 CREATE TABLE DBAS.tiposTarjeta (
 	tipo_tarjeta_id bigint IDENTITY(1,1) PRIMARY KEY,
-	descripcion_tipo varchar(20),
+	descripcion_tipo varchar(50),
 	cuotas smallint
 	
 );
@@ -2225,7 +2220,7 @@ BEGIN
 
 
 	IF EXISTS(SELECT * FROM DBAS.viajes tablaViajes, DBAS.rutasConCiudad(@nombre_ciudad) tablaRutasConCiudad
-				WHERE tablaViajes.codigo_ruta = tablaRutasConCiudad.codigo_ruta AND tablaViajes.fecha_salida > @GET_DATE)
+				WHERE tablaViajes.codigo_ruta = tablaRutasConCiudad.codigo_ruta AND tablaViajes.fecha_salida > @GET_DATE AND tablaViajes.habilitado_viaje = 1)
 	BEGIN
 		SET @mensaje_error = 'La ciudad seleccionada tiene viajes futuros'
 		RAISERROR(@mensaje_error, 12, 1)

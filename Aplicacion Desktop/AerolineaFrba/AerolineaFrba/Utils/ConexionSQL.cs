@@ -160,7 +160,6 @@ namespace AerolineaFrba
 
         public void ejecutarComandoSQL(string miCommand){
             SqlCommand coman2 = new SqlCommand(string.Format(miCommand), miConexionSQL);
-            MessageBox.Show(coman2.CommandText);
             this.ejecutarComando(coman2);
         }
 
@@ -175,7 +174,6 @@ namespace AerolineaFrba
         {
             SqlCommand coman2 = new SqlCommand(string.Format(query), miConexionSQL);
             coman2.Parameters.AddWithValue("@Parametro", Convert.ToDouble(parametro));
-            MessageBox.Show(coman2.CommandText);
             this.ejecutarComando(coman2);
         }
 

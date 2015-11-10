@@ -146,6 +146,7 @@
             this.cmbCuotas.Name = "cmbCuotas";
             this.cmbCuotas.Size = new System.Drawing.Size(110, 28);
             this.cmbCuotas.TabIndex = 85;
+            this.cmbCuotas.SelectedIndexChanged += new System.EventHandler(this.cmbCuotas_SelectedIndexChanged);
             // 
             // label4
             // 

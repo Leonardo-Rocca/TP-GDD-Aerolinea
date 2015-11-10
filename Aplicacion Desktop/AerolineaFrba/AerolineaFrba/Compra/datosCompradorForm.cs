@@ -24,6 +24,7 @@ namespace AerolineaFrba.Compra
             DataTable dt = (new ConexionSQL()).cargarTablaSQL("select * from dbas.tiposTarjeta");
             cmbTipoTarjeta.DataSource = dt.DefaultView;
             cmbTipoTarjeta.ValueMember = "descripcion_tipo";
+            cmbTipoTarjeta.SelectedIndex = -1;
         }
 
         private void datosCompradorForm_Load(object sender, EventArgs e)
@@ -50,7 +51,11 @@ namespace AerolineaFrba.Compra
             if (cmbTipoTarjeta.Text == "") return;
 
             DataTable dt = (new ConexionSQL()).cargarTablaSQL("select cuotas from dbas.tiposTarjeta WHERE descripcion_tipo = '"+cmbTipoTarjeta.Text+"'");
-            int cantidadCuotas =Convert.ToInt32(dt.Rows[0][0]);
+            int cantidadCuotas=0;
+
+            if(dt.Rows.Count!=0)
+            cantidadCuotas =Convert.ToInt32(dt.Rows[0][0]);
+
             cmbCuotas.Items.Clear();
             if(cantidadCuotas==0)cmbCuotas.Items.Insert(0,"0");
             for (int i = 0; i < cantidadCuotas; i++)
@@ -58,6 +63,11 @@ namespace AerolineaFrba.Compra
                 cmbCuotas.Items.Insert(i,(i+1).ToString());
             }
             cmbCuotas.SelectedIndex = 0;
+        }
+
+        private void cmbCuotas_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

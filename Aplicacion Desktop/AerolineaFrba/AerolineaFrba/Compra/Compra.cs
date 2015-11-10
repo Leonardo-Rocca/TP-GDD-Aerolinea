@@ -31,7 +31,6 @@ namespace AerolineaFrba.Compra
 
             string qGenerarCompra = "execute  DBAS.generarCompra " + comprador.id + "," + tarjeta.numeroTarjeta + " , " + tarjeta.codigo + ", '"+tarjeta.dateTime+"' ," + tarjeta.tipoTarjetaId + "," + tarjeta.cuotasElegidas + " ," + tarjeta.tipo;
             (new ConexionSQL()).ejecutarComandoSQL(qGenerarCompra);
-            MessageBox.Show("genero compra");
             try
             {
                 CultureInfo culture = new CultureInfo("es-ES");

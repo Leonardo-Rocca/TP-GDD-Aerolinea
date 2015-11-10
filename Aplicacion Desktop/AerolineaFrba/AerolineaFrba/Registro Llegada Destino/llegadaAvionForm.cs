@@ -59,6 +59,7 @@ namespace AerolineaFrba.Registro_Llegada_Destino
 
         private void btRegistrar_Click(object sender, EventArgs e)
         {
+            if (!validarTextosCompletos()) return;
             string qsp = "execute dbas.registroLLegadaAeronave "+matricula+","+cOrigen+","+cDestino+", '"+dateTimePicker1.Value.ToString()+"'";
             try{
                 (new ConexionSQL()).ejecutarComandoSQL(qsp);
@@ -68,6 +69,13 @@ namespace AerolineaFrba.Registro_Llegada_Destino
                 }
             MessageBox.Show("llegada registrada");
             this.Close();
+        }
+
+        private bool validarTextosCompletos()
+        {
+            if (txtDestino.Text == "") return false;
+            if (textBox1.Text == "") return false;
+            return true;
         }
     }
 }

@@ -27,23 +27,31 @@ namespace AerolineaFrba.Abm_Ciudad
                 MessageBox.Show("Falta agregar nombre", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct nombre_ciudad FROM  DBAS.ciudades WHERE nombre_ciudad LIKE '_" + txtNombreCity.Text + "'OR nombre_ciudad LIKE '" + txtNombreCity.Text + "' ");
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL("select * FROM  DBAS.ciudades WHERE nombre_ciudad LIKE '_" + txtNombreCity.Text + "'OR nombre_ciudad LIKE '" + txtNombreCity.Text + "' ");
             //--pregunto si hay alguna fila cuyo nombre coincida con el ingresado-- 
             if (dt.Rows.Count == 0)
             {
                 //ALTA DE CIUDADES 
                 string comando = "INSERT INTO DBAS.ciudades (nombre_ciudad) values ('" + txtNombreCity.Text + "')";
                 (new ConexionSQL()).ejecutarComandoSQL(comando);
-                MessageBox.Show("Ciudad Agregada (posta)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Ciudad Agregada ", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             else
             {
+                 if (dt.Rows[0][2].ToString() == "0")
+                 {
+                     string comando = "  Update dbas.ciudades set habilitada_ciudad = 1 where id_ciudad= " +dt.Rows[0][0] ;
+                     (new ConexionSQL()).ejecutarComandoSQL(comando);
+                    MessageBox.Show("Ciudad dada de Alta", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                   
+                }else{
                 MessageBox.Show("La ciudad ya existe", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
+                }
             }
             navegacion.modificarCiudad.cargarComboSeleccion();
             navegacion.EliminarCiudad.cargarComboSeleccion();
-            MessageBox.Show("Ciudad agregada", this.Text, MessageBoxButtons.OK, MessageBoxIcon.None);
+  //          MessageBox.Show("Ciudad agregada", this.Text, MessageBoxButtons.OK, MessageBoxIcon.None);
             this.Hide(); //.Close();
             txtNombreCity.Text = "";
             return;

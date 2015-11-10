@@ -31,7 +31,8 @@ namespace AerolineaFrba.Registro_Llegada_Destino
             DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct nombre_ciudad FROM DBAS.ciudades WHERE habilitada_ciudad = 1 ORDER BY nombre_ciudad");
             cmbOrigen.DataSource = dt.DefaultView;
             cmbOrigen.ValueMember = "nombre_ciudad";
-            cmbDestino.DataSource = dt.DefaultView;
+            DataTable dta = (new ConexionSQL()).cargarTablaSQL("select distinct nombre_ciudad FROM DBAS.ciudades WHERE habilitada_ciudad = 1 ORDER BY nombre_ciudad");
+            cmbDestino.DataSource = dta.DefaultView;
             cmbDestino.ValueMember = "nombre_ciudad";
         }
 
@@ -72,7 +73,7 @@ namespace AerolineaFrba.Registro_Llegada_Destino
 
         private void resultadoFiltro2_TextChanged(object sender, EventArgs e)
         {
-            cmbDestino.Text = resultadoFiltro2.Text;
+           cmbDestino.Text = resultadoFiltro2.Text;
         }
 
         private void btAceptar_Click(object sender, EventArgs e)

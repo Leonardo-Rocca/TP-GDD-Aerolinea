@@ -82,5 +82,10 @@ namespace AerolineaFrba.Compra
             this.Close();
         }
 
+        private void ListadoButacas_Load(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }

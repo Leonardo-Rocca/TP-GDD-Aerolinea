@@ -134,7 +134,7 @@ namespace AerolineaFrba.Generacion_Viaje
                 return false;
             }
 
-           int ant1= DateTime.Compare(DateTime.Parse(dateFechaDesde.Text), DateTime.Now);
+           int ant1= DateTime.Compare(DateTime.Parse(dateFechaDesde.Text), DateTime.Parse(Program.nuevaFechaSistema()));
            if (ant1 < 0)
             {
                 MessageBox.Show("La fecha de salida debe ser posterior al dia de hoy", "Generar Viaje", MessageBoxButtons.OK);

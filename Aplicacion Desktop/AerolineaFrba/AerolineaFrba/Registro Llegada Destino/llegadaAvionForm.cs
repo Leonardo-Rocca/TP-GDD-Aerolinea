@@ -69,5 +69,10 @@ namespace AerolineaFrba.Registro_Llegada_Destino
             MessageBox.Show("llegada registrada");
             this.Close();
         }
+
+        private void llegadaAvionForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

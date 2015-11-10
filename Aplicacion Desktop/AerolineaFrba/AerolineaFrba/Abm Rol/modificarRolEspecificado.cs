@@ -160,5 +160,10 @@ namespace AerolineaFrba.Abm_Rol
                 chkListaFuncionalidades.SetItemCheckState(i, CheckState.Checked);
             }
         }
+
+        private void modificarRolEspecificado_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

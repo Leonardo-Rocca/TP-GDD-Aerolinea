@@ -134,5 +134,10 @@ namespace AerolineaFrba.Canje_Millas
         {
             cmbProductos.Text = txtresultadoFiltro.Text;
         }
+
+        private void CanjeForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

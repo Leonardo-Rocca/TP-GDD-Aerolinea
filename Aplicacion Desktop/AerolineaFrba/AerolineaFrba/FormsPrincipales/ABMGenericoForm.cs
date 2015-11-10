@@ -48,5 +48,10 @@ namespace AerolineaFrba.FormsPrincipales
         {
             this.Hide();
         }
+
+        private void ABMGenericoForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

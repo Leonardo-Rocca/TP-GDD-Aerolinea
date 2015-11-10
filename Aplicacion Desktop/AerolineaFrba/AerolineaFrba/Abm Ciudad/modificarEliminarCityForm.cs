@@ -110,5 +110,10 @@ namespace AerolineaFrba.Abm_Ciudad
             }
         }
 
+        private void modificarEliminarCityForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }

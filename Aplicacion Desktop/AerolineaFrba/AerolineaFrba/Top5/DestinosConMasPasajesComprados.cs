@@ -176,7 +176,7 @@ namespace AerolineaFrba.Top5
             }
 
             anio = Convert.ToInt32(textBox1.Text);
-            if (anio < 1800 || anio > DateTime.Now.Year) //no tocar el año, ya va a andar cuando cambien la fecha del sistema
+            if (anio < 1800 || anio > DateTime.Parse(Program.nuevaFechaSistema()).Year) //no tocar el año, ya va a andar cuando cambien la fecha del sistema
             {
                 MessageBox.Show("El año especificado se encuentra fuera de los rangos validos", "Top 5", MessageBoxButtons.OK);
                 dataGridView1.DataSource = null;

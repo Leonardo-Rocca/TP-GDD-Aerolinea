@@ -104,6 +104,7 @@
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Name = "ABMGenericoForm";
             this.Text = "ABMGenericoForm";
+            this.Load += new System.EventHandler(this.ABMGenericoForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

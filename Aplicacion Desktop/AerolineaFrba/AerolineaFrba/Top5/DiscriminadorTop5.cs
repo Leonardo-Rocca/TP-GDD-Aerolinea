@@ -51,5 +51,15 @@ namespace AerolineaFrba.Top5
             dest.Show();
             this.Hide();
         }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+        }
     }
 }

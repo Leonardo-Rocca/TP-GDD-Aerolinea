@@ -43,5 +43,10 @@ namespace AerolineaFrba.Canje_Millas
         {
             this.Close();
         }
+
+        private void ListadoProductoForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -179,6 +179,7 @@
             this.Controls.Add(this.dgvbutaca);
             this.Name = "ListadoButacas";
             this.Text = "ListadoButacas";
+            this.Load += new System.EventHandler(this.ListadoButacas_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvbutaca)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

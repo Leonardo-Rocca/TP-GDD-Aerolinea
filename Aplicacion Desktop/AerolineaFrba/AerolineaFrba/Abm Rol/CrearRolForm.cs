@@ -158,5 +158,10 @@ namespace AerolineaFrba.Abm_Rol
             }
         }
 
+        private void CrearRolForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }

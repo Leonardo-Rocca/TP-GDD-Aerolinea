@@ -177,5 +177,10 @@ namespace AerolineaFrba.Compra
             //validar numero
             if (txtKg.Text == "") txtKg.Text = "0";
         }
+
+        private void datosPasajeroForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

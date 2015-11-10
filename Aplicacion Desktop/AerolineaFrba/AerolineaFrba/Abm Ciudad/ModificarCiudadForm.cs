@@ -61,5 +61,10 @@ namespace AerolineaFrba.Abm_Ciudad
         {
             this.Close();
         }
+
+        private void ModificarCiudadForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

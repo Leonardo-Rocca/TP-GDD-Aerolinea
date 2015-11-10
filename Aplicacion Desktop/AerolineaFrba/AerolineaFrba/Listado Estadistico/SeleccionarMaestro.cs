@@ -21,5 +21,10 @@ namespace AerolineaFrba.Listado_Estadistico
         {
 
         }
+
+        private void SeleccionarMaestro_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

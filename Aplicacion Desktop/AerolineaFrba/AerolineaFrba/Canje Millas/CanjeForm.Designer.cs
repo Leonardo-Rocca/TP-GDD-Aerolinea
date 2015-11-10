@@ -166,6 +166,7 @@
             this.Controls.Add(this.label1);
             this.Name = "CanjeForm";
             this.Text = "CanjeForm";
+            this.Load += new System.EventHandler(this.CanjeForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

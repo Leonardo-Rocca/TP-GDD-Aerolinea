@@ -75,6 +75,17 @@ namespace AerolineaFrba.Abm_Ruta
 
         private void buttonGuardar_Click(object sender, EventArgs e)
         {
+            
+            if (chkListaServicios.CheckedIndices.Count == 0)
+            {
+                MessageBox.Show("Falta elegir tipos de servicio", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                return;
+            }
+            if (txtCDestino.Text.Equals(string.Empty) || txtCodigo.Text.Equals(string.Empty) || txtCOrigen.Text.Equals(string.Empty) || txtPrecioPasaje.Text.Equals(string.Empty) || txtPregiokg.Text.Equals(string.Empty)){
+                MessageBox.Show("Debe completar todos los campos", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             int a, b;
             try
             {
@@ -107,15 +118,7 @@ namespace AerolineaFrba.Abm_Ruta
                 MessageBox.Show("El precio base por pasaje no es valido", "Error", MessageBoxButtons.OK);
                 return;
             }
-            if (chkListaServicios.CheckedIndices.Count == 0)
-            {
-                MessageBox.Show("Falta elegir tipos de servicio", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                return;
-            }
-            if (txtCDestino.Text.Equals(string.Empty) || txtCodigo.Text.Equals(string.Empty) || txtCOrigen.Text.Equals(string.Empty) || txtPrecioPasaje.Text.Equals(string.Empty) || txtPregiokg.Text.Equals(string.Empty)){
-                MessageBox.Show("Debe completar todos los campos", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+
             if (tipo == 0)
             {
                 agregarRuta();
@@ -124,6 +127,8 @@ namespace AerolineaFrba.Abm_Ruta
             {
                 modificarRuta();
             }
+
+
             this.Hide(); 
             return;
         }

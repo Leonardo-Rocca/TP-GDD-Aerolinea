@@ -125,6 +125,9 @@ namespace AerolineaFrba.Abm_Ruta
 
         private void btBuscar_Click(object sender, EventArgs e)
         {
+            if (!validacionesExtras()) return;
+
+
             string query = "select distinct codigo_ruta, ciudad_Origen ,ciudad_Destino ,precio_base_por_pasaje ,precio_base_por_KG ,tipo_servicio, porcentaje_arancel FROM DBAS.caracteristicasRutas";
 
             query = query + " WHERE 1 = 1 ";
@@ -177,6 +180,113 @@ namespace AerolineaFrba.Abm_Ruta
             //--sacada del listador generico--
            // MessageBox.Show(query, " la busqueda", MessageBoxButtons.OK); 
             hacerQuery(query, dataGridView2);
+        }
+
+        private bool validacionesExtras()
+        {
+            int a;
+            Double  b, c, d, e;
+            if (txtCodigo.Text != "")
+            {
+                try
+                {
+                    a = Convert.ToInt32(txtCodigo.Text);
+
+                }
+                catch
+                {
+                    MessageBox.Show("El codigo no posee un tipo de datos valido", "Error", MessageBoxButtons.OK);
+                    return false;
+                }
+
+                if (a < 1)
+                {
+                    MessageBox.Show("El codigo no es valido", "Error", MessageBoxButtons.OK);
+                    return false;
+                }
+            }
+
+            if (txtPKGLimInferior.Text != "")
+            {
+                try
+                {
+                    b = Convert.ToDouble(txtPKGLimInferior.Text);
+
+                }
+                catch
+                {
+                    MessageBox.Show("El limite inferior del precio base por kg no posee un tipo de dato valido", "Error", MessageBoxButtons.OK);
+                    return false;
+                }
+
+                if (b < 0)
+                {
+                    MessageBox.Show("El limite inferior del precio por kg no es valido", "Error", MessageBoxButtons.OK);
+                    return false;
+                }
+            }
+
+            if(txtPKGSuperior.Text != ""){
+            try
+            {
+                c = Convert.ToDouble(txtPKGSuperior.Text);
+
+            }
+            catch
+            {
+                MessageBox.Show("El limite superior del precio base por kg no posee un tipo de dato valido", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
+            if (c < 0)
+            {
+                MessageBox.Show("El limite superior del precio base por kg no es valido", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
+            }
+
+            if (txtPasajeLimInferior.Text != "")
+            {
+                try
+                {
+                    d = Convert.ToDouble(txtPasajeLimInferior.Text);
+
+                }
+                catch
+                {
+                    MessageBox.Show("El limite inferior del precio base por pasaje no posee un tipo de dato valido", "Error", MessageBoxButtons.OK);
+                    return false;
+                }
+
+                if (d < 0)
+                {
+                    MessageBox.Show("El limite inferior del precio base por pasaje no es valido", "Error", MessageBoxButtons.OK);
+                    return false;
+                }
+            }
+
+
+            if (txtPasajeSuperior.TextLength != 0)
+            {
+                try
+                {
+                    e = Convert.ToDouble(txtPasajeSuperior.Text);
+
+                }
+                catch
+                {
+                    MessageBox.Show("El limite superior del precio base por pasaje no posee un tipo de dato valido", "Error", MessageBoxButtons.OK);
+                    return false;
+                }
+
+                if (e < 0)
+                {
+                    MessageBox.Show("El limite superior del precio base por pasaje no es valido", "Error", MessageBoxButtons.OK);
+                    return false;
+                }
+            }
+            return true;
         }
 
 

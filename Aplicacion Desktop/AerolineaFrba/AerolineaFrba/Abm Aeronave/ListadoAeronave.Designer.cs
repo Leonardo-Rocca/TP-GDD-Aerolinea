@@ -121,6 +121,7 @@
             // 
             // comboBoxServicio
             // 
+            this.comboBoxServicio.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxServicio.FormattingEnabled = true;
             this.comboBoxServicio.Location = new System.Drawing.Point(408, 30);
             this.comboBoxServicio.Name = "comboBoxServicio";

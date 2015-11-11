@@ -68,5 +68,10 @@ namespace AerolineaFrba.Abm_Ciudad
         {
 
         }
+
+        private void txtNombreCity_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

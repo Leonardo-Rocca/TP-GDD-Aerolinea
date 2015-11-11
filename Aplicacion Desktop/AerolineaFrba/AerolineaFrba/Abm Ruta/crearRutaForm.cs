@@ -75,6 +75,38 @@ namespace AerolineaFrba.Abm_Ruta
 
         private void buttonGuardar_Click(object sender, EventArgs e)
         {
+            int a, b;
+            try
+            {
+                a = Convert.ToInt32(txtPregiokg.Text);
+            }
+            catch
+            {
+                MessageBox.Show("El precio base por kg no posee un tipo de datos valido", "Error", MessageBoxButtons.OK);
+                return;
+            }
+
+            try
+            {
+                b = Convert.ToInt32(txtPrecioPasaje.Text);
+            }
+            catch
+            {
+                MessageBox.Show("El precio base por pasaje no posee un tipo de datos valido", "Error", MessageBoxButtons.OK);
+                return;
+            }
+
+            if (a < 0)
+            {
+                MessageBox.Show("El precio base por kg no es valido", "Error", MessageBoxButtons.OK);
+                return;
+            }
+
+            if (b < 0)
+            {
+                MessageBox.Show("El precio base por pasaje no es valido", "Error", MessageBoxButtons.OK);
+                return;
+            }
             if (chkListaServicios.CheckedIndices.Count == 0)
             {
                 MessageBox.Show("Falta elegir tipos de servicio", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Hand);

@@ -52,6 +52,7 @@
             this.txtNombreCity.Name = "txtNombreCity";
             this.txtNombreCity.Size = new System.Drawing.Size(306, 26);
             this.txtNombreCity.TabIndex = 4;
+            this.txtNombreCity.TextChanged += new System.EventHandler(this.txtNombreCity_TextChanged);
             // 
             // lbTitulo
             // 

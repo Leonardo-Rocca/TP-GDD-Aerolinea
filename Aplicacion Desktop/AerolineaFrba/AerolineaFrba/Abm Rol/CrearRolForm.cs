@@ -68,7 +68,7 @@ namespace AerolineaFrba.Abm_Rol
 
               this.agregarRol();
            
-                MessageBox.Show("Rol agregado (posta)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.None);
+                MessageBox.Show("Rol agregado", this.Text, MessageBoxButtons.OK, MessageBoxIcon.None);
                 this.Hide(); //.Close();
                 return;
          }

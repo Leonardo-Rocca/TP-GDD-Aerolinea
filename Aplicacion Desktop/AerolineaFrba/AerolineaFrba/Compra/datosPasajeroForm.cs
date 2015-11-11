@@ -42,6 +42,7 @@ namespace AerolineaFrba.Compra
                 lbButaca.Visible=false;
                 txtButaca.Visible=false;
                 btButaca.Visible=false;
+                lbButOblig.Visible = false;
             }
         }
 
@@ -143,9 +144,9 @@ namespace AerolineaFrba.Compra
             dateTimePickerFnac.Value = new DateTime(fechaAux.Year,fechaAux.Month,fechaAux.Day);
 
             //----obtengo el idcliente
-            query = "select id_cliente from dbas.clientes WHERE id_persona = " + idPersona;
+         /*   query = "select id_cliente from dbas.clientes WHERE id_persona = " + idPersona;
             dt = (new ConexionSQL()).cargarTablaSQL(query);
-            idPersona = dt.Rows[0][0].ToString();
+            idPersona = dt.Rows[0][0].ToString();*/
         }
 
         public string dni { get; set; }
@@ -161,6 +162,7 @@ namespace AerolineaFrba.Compra
         {
             ListadoButacas list = new ListadoButacas(compra.viaje);
             list.anterior = this;
+            list.pasajes = compra.pasajes;
             list.Show();
             this.Hide();
         }
@@ -179,6 +181,11 @@ namespace AerolineaFrba.Compra
         }
 
         private void datosPasajeroForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label11_Click(object sender, EventArgs e)
         {
 
         }

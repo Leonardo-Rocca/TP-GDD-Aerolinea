@@ -16,6 +16,7 @@ namespace AerolineaFrba.Compra
     {
         private Viaje viaje;
         public datosPasajeroForm anterior;
+        public List<PasajeEncomienda> pasajes = new List<PasajeEncomienda>();
 
         public ListadoButacas()
         {
@@ -48,7 +49,15 @@ namespace AerolineaFrba.Compra
                 agregado = agregado + "'Ventanilla',";
             }
             agregado = agregado + " 'lalala')";
-            query = query + agregado +" Order BY 1";
+
+
+            string agregado2 = " AND numero_butaca NOT IN (";
+            foreach(PasajeEncomienda pasen in pasajes){
+                agregado2 = agregado2 + pasen.butacaKg + ",";
+            }
+            agregado2 = agregado2 + "-1)";
+
+            query = query + agregado +agregado2 +" Order BY 1";
 
             CompletadorDeTablas.hacerQuery(query,ref dgvbutaca);
         }

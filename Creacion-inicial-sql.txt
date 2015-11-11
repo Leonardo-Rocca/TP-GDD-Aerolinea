@@ -2191,7 +2191,7 @@ BEGIN
 		BEGIN
 			-- Compruebo que el servicio de la aeronave este tambien en la ruta seleccionada
 			IF NOT EXISTS(SELECT * FROM DBAS.aeronaves tablaAeronaves, DBAS.serviciosPorRutas tablaSporR 
-				WHERE tablaAeronaves.matricula_aeronave = @matricula_aeronave AND tablaSporR.codigo_ruta = @codigo_ruta AND tablaAeronaves.id_servicio = tablaSporR.codigo_ruta)
+				WHERE tablaAeronaves.matricula_aeronave = @matricula_aeronave AND tablaSporR.codigo_ruta = @codigo_ruta AND tablaAeronaves.id_servicio = tablaSporR.id_servicio)
 			BEGIN
 				
 				-- Devuelvo un mensaje de error

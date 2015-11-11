@@ -61,6 +61,7 @@
             this.txtDireccion = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.lbButOblig = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // butAceptar
@@ -271,7 +272,7 @@
             // 
             this.fnac1.AutoSize = true;
             this.fnac1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.fnac1.Location = new System.Drawing.Point(534, 197);
+            this.fnac1.Location = new System.Drawing.Point(547, 196);
             this.fnac1.Name = "fnac1";
             this.fnac1.Size = new System.Drawing.Size(80, 20);
             this.fnac1.TabIndex = 74;
@@ -337,11 +338,12 @@
             // 
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(534, 219);
+            this.label11.Location = new System.Drawing.Point(547, 217);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(88, 20);
             this.label11.TabIndex = 81;
             this.label11.Text = "Nacimiento";
+            this.label11.Click += new System.EventHandler(this.label11_Click);
             // 
             // btButaca
             // 
@@ -381,12 +383,24 @@
             this.label3.TabIndex = 85;
             this.label3.Text = "Ej. 42440544";
             // 
+            // lbButOblig
+            // 
+            this.lbButOblig.AutoSize = true;
+            this.lbButOblig.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbButOblig.ForeColor = System.Drawing.Color.Red;
+            this.lbButOblig.Location = new System.Drawing.Point(510, 277);
+            this.lbButOblig.Name = "lbButOblig";
+            this.lbButOblig.Size = new System.Drawing.Size(21, 16);
+            this.lbButOblig.TabIndex = 86;
+            this.lbButOblig.Text = "(*)";
+            // 
             // datosPasajeroForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Silver;
             this.ClientSize = new System.Drawing.Size(989, 446);
+            this.Controls.Add(this.lbButOblig);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.txtDireccion);
             this.Controls.Add(this.label14);
@@ -463,5 +477,6 @@
         private System.Windows.Forms.TextBox txtDireccion;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lbButOblig;
     }
 }

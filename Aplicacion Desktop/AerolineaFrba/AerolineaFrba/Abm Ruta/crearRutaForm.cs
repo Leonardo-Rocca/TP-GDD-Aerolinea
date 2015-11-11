@@ -86,10 +86,10 @@ namespace AerolineaFrba.Abm_Ruta
                 return;
             }
 
-            int a, b;
+            Double a, b;
             try
             {
-                a = Convert.ToInt32(txtPregiokg.Text);
+                a = Convert.ToDouble(txtPregiokg.Text);
             }
             catch
             {
@@ -99,7 +99,7 @@ namespace AerolineaFrba.Abm_Ruta
 
             try
             {
-                b = Convert.ToInt32(txtPrecioPasaje.Text);
+                b = Convert.ToDouble(txtPrecioPasaje.Text);
             }
             catch
             {
@@ -236,6 +236,11 @@ namespace AerolineaFrba.Abm_Ruta
         }
 
         private void crearRutaForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
         {
 
         }

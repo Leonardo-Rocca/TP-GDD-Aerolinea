@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             System.Windows.Forms.Label lbclick;
+            System.Windows.Forms.Label label2;
+            System.Windows.Forms.Label label3;
             this.lbTitle = new System.Windows.Forms.Label();
             this.lbCodigo = new System.Windows.Forms.Label();
             this.txtCodigo = new System.Windows.Forms.TextBox();
@@ -48,6 +50,8 @@
             this.chkListaServicios = new System.Windows.Forms.CheckedListBox();
             this.lbseleccion = new System.Windows.Forms.Label();
             lbclick = new System.Windows.Forms.Label();
+            label2 = new System.Windows.Forms.Label();
+            label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lbclick
@@ -237,11 +241,32 @@
             this.lbseleccion.Text = "Seleccione los nuevos campos de la Ruta:";
             this.lbseleccion.Visible = false;
             // 
+            // label2
+            // 
+            label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            label2.Location = new System.Drawing.Point(66, 421);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(117, 25);
+            label2.TabIndex = 71;
+            label2.Text = "Ej: 7.3";
+            // 
+            // label3
+            // 
+            label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            label3.Location = new System.Drawing.Point(66, 481);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(117, 25);
+            label3.TabIndex = 72;
+            label3.Text = "Ej: 253.6";
+            label3.Click += new System.EventHandler(this.label3_Click);
+            // 
             // crearRutaForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(751, 616);
+            this.Controls.Add(label3);
+            this.Controls.Add(label2);
             this.Controls.Add(this.lbseleccion);
             this.Controls.Add(lbclick);
             this.Controls.Add(this.chkListaServicios);

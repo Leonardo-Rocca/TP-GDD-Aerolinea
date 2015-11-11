@@ -133,8 +133,9 @@ namespace AerolineaFrba.Compra
                 MessageBox.Show("Hay inconsistencia en la base de datos por DNI repetido. Dirigirse a hablar con el administrador");
                 return;
             }
+       
             idPersona = dt.Rows[0][0].ToString();
-            txtnombre.Text = dt.Rows[0][2].ToString();
+            txtnombre.Text = dt.Rows[0][2].ToString(); 
             txtApellido.Text = dt.Rows[0][3].ToString();
             txtDireccion.Text = dt.Rows[0][4].ToString();
             txtPhone.Text = dt.Rows[0][5].ToString();

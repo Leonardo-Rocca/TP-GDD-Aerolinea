@@ -42,7 +42,7 @@ namespace AerolineaFrba.Dominio
         public void darDeAltaClienteSiNoExiste()
        {
               string comando;
-           if (id == ""||!existeAlguienConMismoDNI())
+           if (id == ""||existeAlguienConMismoDNI())
            {
                comando = "execute dbas.altaCliente " + dni + " , '" + nombre + "', '" + apellido + "', '" + direccion + "', '"+tel+"','"+mail+"','"+fecha+"'";
                DataTable dt = (new ConexionSQL()).cargarTablaSQL(comando);
@@ -81,7 +81,7 @@ namespace AerolineaFrba.Dominio
 
         private string obtenerIdCliente()
         {
-            string query = "select top 1 id_cliente from dbas.clientes c,dbas.personas where dni_persona = "+dni;
+            string query = "select  id_cliente from dbas.clientes c,dbas.personas where dni_persona = "+dni;
             DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
             return dt.Rows[0][0].ToString();
         }

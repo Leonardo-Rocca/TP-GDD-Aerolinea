@@ -40,7 +40,7 @@ namespace AerolineaFrba.Compra
                 DataRow row = dt.Rows[0];
                 string idCompra = row[0].ToString();
 
-                PasajeEncomienda encomienda = compra.encomiendas;
+                if(compra.encomiendas!=null){PasajeEncomienda encomienda = compra.encomiendas;
                 encomienda.darDeAltaClienteSiNoExiste();
 
                 string queryEncomienda = "Insert into DBAS.encomiendas (id_cliente ,encomienda_cliente_KG ,id_viaje, precio_encomienda, id_compra_PNR ,fecha_compra_encomienda) values (" +
@@ -48,16 +48,16 @@ namespace AerolineaFrba.Compra
 
                 string precioTotalEncomienda = (Convert.ToDouble(compra.viaje.precioKg)* Convert.ToDouble(encomienda.butacaKg)).ToString();
                 (new ConexionSQL()).ejecutarComandoSQLConParametro(queryEncomienda,precioTotalEncomienda );
+                
 
-                //MessageBox.Show(queryEncomienda);
-
+                }
                 foreach (PasajeEncomienda pasajero in compra.pasajes)
                 {
                     string queryPasaje = "Insert into DBAS.pasajes (id_cliente,id_viaje, id_butaca, precio_pasaje ,id_compra_PNR) values (" +
                      pasajero.idCliente + ", " + compra.viaje.idViaje + " , " + pasajero.butacaKg + " , @Parametro , " + idCompra + ")";
                      pasajero.darDeAltaClienteSiNoExiste();
 
-                     (new ConexionSQL()).ejecutarComandoSQLConParametro(queryEncomienda, compra.viaje.precioPasaje);
+                     (new ConexionSQL()).ejecutarComandoSQLConParametro(queryPasaje, compra.viaje.precioPasaje);
                 }
 
                 MessageBox.Show("Su compra ha sido 'exitosa'.Su PNR es: "+idCompra+". Con dicho número se deberá acercar el día del viaje a canjear sus pasajes y/o entregar el paquete encomienda.");

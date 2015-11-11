@@ -86,7 +86,7 @@ namespace AerolineaFrba.Abm_Ruta
                 return;
             }
 
-            int a, b;
+            Int32 a, b;
             try
             {
                 a = Convert.ToInt32(txtPregiokg.Text);

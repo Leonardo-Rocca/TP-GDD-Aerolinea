@@ -1,12 +1,12 @@
-/*
+
 USE[GD2C2015];
 GO
-*/
+
 
 /* -- Nuevo esquema -- */
 
---CREATE SCHEMA [DBAS] AUTHORIZATION [gd];
---GO
+CREATE SCHEMA [DBAS] AUTHORIZATION [gd];
+GO
 
 /* -- Tablas y Constraints -- */
 
@@ -668,8 +668,8 @@ GO
 
 -- Se agregan funcionalidades al rol administrador
 INSERT INTO DBAS.rolesPorFuncionalidad(id_rol, id_funcionalidad)
-select tablaRol.id_rol, tablaFuncionalidad.id_funcionalidad from DBAS.roles  tablaRol, DBAS.funcionalidades tablaFuncionalidad
-where tablaRol.nombre_rol = 'Administrador General'
+SELECT tablaRol.id_rol, tablaFuncionalidad.id_funcionalidad from DBAS.roles  tablaRol, DBAS.funcionalidades tablaFuncionalidad
+WHERE tablaRol.nombre_rol = 'Administrador General'
 GO
 
 -- Se agregan usuarios administradores
@@ -684,10 +684,34 @@ INSERT INTO DBAS.usuarios(id_usuario,username,password)
 VALUES (@id_p,'admin','e6b87050bfcb8143fcb8db0170a4dc9ed00d904ddd3e2a4ad1b1e8dc0fdc9be7')
 GO
 
+-- Se agregan usuarios administradores
+INSERT INTO DBAS.personas(dni_persona,apellido_persona,nombre_persona)
+VALUES(38000000,'Vergnory','Lucas')
+
+DECLARE @id_p bigint
+SET @id_p = SCOPE_IDENTITY()
+
+-- Se inserta el usuario admin, password w23e
+INSERT INTO DBAS.usuarios(id_usuario,username,password)
+VALUES (@id_p,'lucas','e6b87050bfcb8143fcb8db0170a4dc9ed00d904ddd3e2a4ad1b1e8dc0fdc9be7')
+GO
+
+-- Se agregan usuarios administradores
+INSERT INTO DBAS.personas(dni_persona,apellido_persona,nombre_persona)
+VALUES(37000000,'Saavedra','Jesica')
+
+DECLARE @id_p bigint
+SET @id_p = SCOPE_IDENTITY()
+
+-- Se inserta el usuario admin, password w23e
+INSERT INTO DBAS.usuarios(id_usuario,username,password)
+VALUES (@id_p,'jess','e6b87050bfcb8143fcb8db0170a4dc9ed00d904ddd3e2a4ad1b1e8dc0fdc9be7')
+GO
+
 -- Se le asigna el rol administrador general al usuario admin
 INSERT INTO DBAS.usuariosPorRol(id_usuario, id_rol)
 SELECT tablaUsuarios.id_usuario, tablaRoles.id_rol FROM DBAS.usuarios tablaUsuarios, DBAS.roles tablaRoles
-WHERE tablaRoles.nombre_rol = 'Administrador General' and tablaUsuarios.username = 'admin'
+WHERE tablaRoles.nombre_rol = 'Administrador General'
 GO
 
 -- insercion del rol cliente
@@ -2354,7 +2378,7 @@ BEGIN
 	IF NOT EXISTS(SELECT * FROM DBAS.clientes tablaClientes WHERE tablaClientes.id_persona = @id_persona)
 	BEGIN
 		
-		UPDATE DBAS.personas SET dni_persona = @dni_persona, apellido_persona = @apellido_persona, nombre_persona = @nombre_persona, direccion_persona = @direccion_persona, telefono_persona = @telefono_persona, mail_persona = @mail_persona, fecha_nacimiento = @fecha_nacimiento WHERE dni_persona = @dni_persona
+		UPDATE DBAS.personas SET apellido_persona = @apellido_persona, nombre_persona = @nombre_persona, direccion_persona = @direccion_persona, telefono_persona = @telefono_persona, mail_persona = @mail_persona, fecha_nacimiento = @fecha_nacimiento WHERE dni_persona = @dni_persona
 
 		-- Con la id de la persona creo un cliente
 		INSERT INTO DBAS.clientes(id_persona)
@@ -2364,7 +2388,7 @@ BEGIN
 	ELSE
 	BEGIN
 
-		UPDATE DBAS.personas SET dni_persona = @dni_persona, apellido_persona = @apellido_persona, nombre_persona = @nombre_persona, direccion_persona = @direccion_persona, telefono_persona = @telefono_persona, mail_persona = @mail_persona, fecha_nacimiento = @fecha_nacimiento WHERE dni_persona = @dni_persona
+		UPDATE DBAS.personas SET apellido_persona = @apellido_persona, nombre_persona = @nombre_persona, direccion_persona = @direccion_persona, telefono_persona = @telefono_persona, mail_persona = @mail_persona, fecha_nacimiento = @fecha_nacimiento WHERE dni_persona = @dni_persona
 
 	END
 
@@ -2438,9 +2462,9 @@ GO
 
 -- La vista es creada para que la aplicacion me pueda mandar un INSERT simultaneo como si fuera el de un select, con los parametros de la vista
 CREATE VIEW DBAS.PasajesCancelados AS
-SELECT tablaCompras.id_compra_PNR, tablaCompras.id_cliente, 'motivo cancelacion' motivo_cancelacion, tablaPasajes.codigo_pasaje, tablaEncomiendas.codigo_encomienda
-FROM DBAS.pasajes tablaPasajes, DBAS.encomiendas tablaEncomiendas, DBAS.compras tablaCompras
-WHERE tablaPasajes.id_compra_PNR = tablaEncomiendas.id_compra_PNR AND tablaCompras.id_compra_PNR = tablaPasajes.id_compra_PNR 
+SELECT tablaCompras.id_compra_PNR, tablaCompras.id_cliente, tablaCancelaciones.motivo_cancelacion motivo_cancelacion, tablaPasajes.codigo_pasaje, tablaEncomiendas.codigo_encomienda
+FROM DBAS.pasajes tablaPasajes, DBAS.encomiendas tablaEncomiendas, DBAS.compras tablaCompras, DBAS.cancelaciones tablaCancelaciones
+WHERE tablaPasajes.id_compra_PNR = tablaEncomiendas.id_compra_PNR AND tablaCompras.id_compra_PNR = tablaPasajes.id_compra_PNR AND tablaPasajes.id_cancelacion = tablaCancelaciones.id_cancelacion
 GO
 
 
@@ -2457,7 +2481,7 @@ BEGIN
 
 	-- Declaro un cursor para el manejo de los datos ingresados
 	DECLARE cancelarCursor CURSOR FOR
-	SELECT @PNR, @id_comprador, @motivo_cancelacion, @codigo_pasaje, @codigo_encomienda FROM inserted
+	SELECT id_compra_PNR, id_cliente, motivo_cancelacion, codigo_pasaje, codigo_encomienda FROM inserted
 
 	OPEN cancelarCursor
 
@@ -2472,49 +2496,56 @@ BEGIN
 	BEGIN
 				
 		-- comienzo una transaccion por si hay datos que no corresponden
-		BEGIN TRANSACTION cancelacionPE
+		BEGIN TRANSACTION
 		
 		-- Inserto una cancelacion con los motivos del cliente y obtengo la id de la cancelacion 
 		EXECUTE DBAS.cancelacionPasaje @motivo_cancelacion, @ID_cancelacion OUT
 
 		WHILE @@FETCH_STATUS = 0
 		BEGIN
-			-- pregunto si existe el pasaje con el codigo ingresado y con el mismo PNR
-			IF EXISTS(SELECT * FROM DBAS.pasajes WHERE codigo_pasaje = @codigo_pasaje AND id_compra_PNR = @PNR) AND @codigo_pasaje IS NOT NULL
+			IF(@codigo_pasaje IS NOT NULL)
 			BEGIN
-				-- Actualizo el pasaje con el codigo de cancelacion
-				UPDATE DBAS.pasajes SET id_cancelacion = @ID_cancelacion WHERE codigo_pasaje = @codigo_pasaje
-			END
-			ELSE
-			BEGIN
-				-- Devuelvo un mensaje de error
-				SET @mensaje_error = 'Hay un codigo de pasaje invalido'
-				RAISERROR(@mensaje_error, 12, 1)
+				-- pregunto si existe el pasaje con el codigo ingresado y con el mismo PNR
+				IF EXISTS(SELECT * FROM DBAS.pasajes WHERE codigo_pasaje = @codigo_pasaje AND id_compra_PNR = @PNR)
+				BEGIN
+					-- Actualizo el pasaje con el codigo de cancelacion
+					UPDATE DBAS.pasajes SET id_cancelacion = @ID_cancelacion WHERE codigo_pasaje = @codigo_pasaje
+				END
+				ELSE
+				BEGIN
+					-- Devuelvo un mensaje de error
+					SET @mensaje_error = 'Hay un codigo de pasaje invalido'
+					RAISERROR(@mensaje_error, 12, 1)
 
-				-- Vuelvo atras todos los cambios realizados
-				ROLLBACK TRANSACTION cancelacionPE
+					-- Vuelvo atras todos los cambios realizados
+					ROLLBACK TRANSACTION
 				
-				SET @cancelarTransaccion = 1
-				BREAK
-			END	
+					SET @cancelarTransaccion = 1
+					BREAK
+				END	
+			END
 			
-			-- pregunto si existe la encomienda con el codigo ingresado y con el mismo PNR
-			IF EXISTS(SELECT * FROM DBAS.encomiendas WHERE codigo_encomienda = @codigo_encomienda AND id_compra_PNR = @PNR) AND @codigo_encomienda IS NOT NULL
+			IF(@codigo_encomienda IS NOT NULL)
 			BEGIN
-				-- Actualizo la encomienda con el codigo de cancelacion
-				UPDATE DBAS.encomiendas SET id_cancelacion = @ID_cancelacion WHERE codigo_encomienda = @codigo_encomienda
-			END
-			ELSE
-			BEGIN
-				-- Devuelvo un mensaje de error
-				SET @mensaje_error = 'Hay un codigo de encomienda invalido'
-				RAISERROR(@mensaje_error, 12, 1)
-				
-				-- Vuelvo atras todos los cambios realizados
-				ROLLBACK TRANSACTION cancelacionPE
 
-				SET @cancelarTransaccion = 1
-				BREAK
+				-- pregunto si existe la encomienda con el codigo ingresado y con el mismo PNR
+				IF EXISTS(SELECT * FROM DBAS.encomiendas WHERE codigo_encomienda = @codigo_encomienda AND id_compra_PNR = @PNR)
+				BEGIN
+					-- Actualizo la encomienda con el codigo de cancelacion
+					UPDATE DBAS.encomiendas SET id_cancelacion = @ID_cancelacion WHERE codigo_encomienda = @codigo_encomienda
+				END
+				ELSE
+				BEGIN
+					-- Devuelvo un mensaje de error
+					SET @mensaje_error = 'Hay un codigo de encomienda invalido'
+					RAISERROR(@mensaje_error, 12, 1)
+				
+					-- Vuelvo atras todos los cambios realizados
+					ROLLBACK TRANSACTION
+
+					SET @cancelarTransaccion = 1
+					BREAK
+				END
 			END
 			
 			-- Inserto lo que obtiene el cursor en las variables
@@ -2525,7 +2556,7 @@ BEGIN
 
 		IF(@cancelarTransaccion = 0)
 		BEGIN
-			COMMIT TRANSACTION cancelacionPE
+			COMMIT TRANSACTION
 		END
 
 	END
@@ -2543,3 +2574,4 @@ BEGIN
 
 END;
 GO
+

@@ -2413,20 +2413,23 @@ INSTEAD OF INSERT
 AS
 BEGIN
 	DECLARE @PNR bigint, @id_comprador bigint, @motivo_cancelacion varchar(100), @ID_cancelacion bigint, @codigo_pasaje bigint, @codigo_encomienda bigint , @mensaje_error varchar(100)
+	DECLARE @cancelarTransaccion tinyint
+	
+	SET @cancelarTransaccion = 0
 
 	-- Declaro un cursor para el manejo de los datos ingresados
 	DECLARE cancelarCursor CURSOR FOR
 	SELECT @PNR, @id_comprador, @motivo_cancelacion, @codigo_pasaje, @codigo_encomienda FROM inserted
 
-	OPEN cancelarCursor
-
-	-- Inserto lo que obtiene el cursor en las variables
-	FETCH NEXT FROM cancelarCursor
-	INTO @PNR, @id_comprador, @motivo_cancelacion, @codigo_pasaje, @codigo_encomienda
-
 	-- Compruebo si la id de la compra y/o el cliente existen
 	IF EXISTS(SELECT * FROM DBAS.compras WHERE id_compra_PNR = @PNR)
 	BEGIN
+		
+		OPEN cancelarCursor
+
+		-- Inserto lo que obtiene el cursor en las variables
+		FETCH NEXT FROM cancelarCursor
+		INTO @PNR, @id_comprador, @motivo_cancelacion, @codigo_pasaje, @codigo_encomienda
 		
 		-- comienzo una transaccion por si hay datos que no corresponden
 		BEGIN TRANSACTION cancelacionPE
@@ -2453,7 +2456,9 @@ BEGIN
 
 				-- Vuelvo atras todos los cambios realizados
 				ROLLBACK TRANSACTION cancelacionPE
-				RETURN
+				
+				SET @cancelarTransaccion = 1
+				BREAK
 			END	
 			
 			-- pregunto si existe la encomienda con el codigo ingresado y con el mismo PNR
@@ -2473,7 +2478,9 @@ BEGIN
 				
 				-- Vuelvo atras todos los cambios realizados
 				ROLLBACK TRANSACTION cancelacionPE
-				RETURN
+
+				SET @cancelarTransaccion = 1
+				BREAK
 			END
 			
 			-- Inserto lo que obtiene el cursor en las variables
@@ -2482,10 +2489,14 @@ BEGIN
 
 		END
 
-		CLOSE cancelarCursor
-		DEALLOCATE cancelarCursor
+		IF(@cancelarTransaccion = 0)
+		BEGIN
 
-		COMMIT TRANSACTION cancelacionPE
+			CLOSE cancelarCursor
+			DEALLOCATE cancelarCursor
+
+			COMMIT TRANSACTION cancelacionPE
+		END
 
 	END
 	ELSE
@@ -2499,4 +2510,3 @@ BEGIN
 
 END;
 GO
-

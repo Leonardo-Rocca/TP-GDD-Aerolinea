@@ -2336,6 +2336,45 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE DBAS.actualizarCliente(@dni_persona bigint ,
+	@nombre_persona varchar(100),
+	@apellido_persona varchar(100),
+	@direccion_persona varchar(100),
+	@telefono_persona varchar(50),
+	@mail_persona varchar(100),
+	@fecha_nacimiento datetime, @ID_cliente bigint OUT)
+
+AS
+BEGIN
+	
+	DECLARE @id_persona bigint
+
+	SELECT @id_persona = id_persona FROM DBAS.personas WHERE dni_persona = @dni_persona
+
+	IF NOT EXISTS(SELECT * FROM DBAS.clientes tablaClientes WHERE tablaClientes.id_persona = @id_persona)
+	BEGIN
+		
+		UPDATE DBAS.personas SET dni_persona = @dni_persona, apellido_persona = @apellido_persona, nombre_persona = @nombre_persona, direccion_persona = @direccion_persona, telefono_persona = @telefono_persona, mail_persona = @mail_persona, fecha_nacimiento = @fecha_nacimiento WHERE dni_persona = @dni_persona
+
+		-- Con la id de la persona creo un cliente
+		INSERT INTO DBAS.clientes(id_persona)
+		VALUES (@id_persona)
+
+		--Devuelvo la id cliente
+		SET @ID_cliente = SCOPE_IDENTITY()
+	END
+	ELSE
+	BEGIN
+
+		UPDATE DBAS.personas SET dni_persona = @dni_persona, apellido_persona = @apellido_persona, nombre_persona = @nombre_persona, direccion_persona = @direccion_persona, telefono_persona = @telefono_persona, mail_persona = @mail_persona, fecha_nacimiento = @fecha_nacimiento WHERE dni_persona = @dni_persona
+
+		--Devuelvo la id cliente
+		SELECT @ID_cliente = id_cliente FROM DBAS.clientes WHERE id_persona = @id_persona
+	END
+
+END;
+GO
+
 --Cantidad de butacas libres de una aeronave
 CREATE FUNCTION DBAS.cantidadButacasLibres(@matricula_aeronave varchar(100),@id_viaje bigint)
 RETURNS bigint
@@ -2413,20 +2452,23 @@ INSTEAD OF INSERT
 AS
 BEGIN
 	DECLARE @PNR bigint, @id_comprador bigint, @motivo_cancelacion varchar(100), @ID_cancelacion bigint, @codigo_pasaje bigint, @codigo_encomienda bigint , @mensaje_error varchar(100)
+	DECLARE @cancelarTransaccion tinyint
+	
+	SET @cancelarTransaccion = 0
 
 	-- Declaro un cursor para el manejo de los datos ingresados
 	DECLARE cancelarCursor CURSOR FOR
 	SELECT @PNR, @id_comprador, @motivo_cancelacion, @codigo_pasaje, @codigo_encomienda FROM inserted
 
-	OPEN cancelarCursor
-
-	-- Inserto lo que obtiene el cursor en las variables
-	FETCH NEXT FROM cancelarCursor
-	INTO @PNR, @id_comprador, @motivo_cancelacion, @codigo_pasaje, @codigo_encomienda
-
 	-- Compruebo si la id de la compra y/o el cliente existen
 	IF EXISTS(SELECT * FROM DBAS.compras WHERE id_compra_PNR = @PNR)
 	BEGIN
+		
+		OPEN cancelarCursor
+
+		-- Inserto lo que obtiene el cursor en las variables
+		FETCH NEXT FROM cancelarCursor
+		INTO @PNR, @id_comprador, @motivo_cancelacion, @codigo_pasaje, @codigo_encomienda
 		
 		-- comienzo una transaccion por si hay datos que no corresponden
 		BEGIN TRANSACTION cancelacionPE
@@ -2453,7 +2495,9 @@ BEGIN
 
 				-- Vuelvo atras todos los cambios realizados
 				ROLLBACK TRANSACTION cancelacionPE
-				RETURN
+				
+				SET @cancelarTransaccion = 1
+				BREAK
 			END	
 			
 			-- pregunto si existe la encomienda con el codigo ingresado y con el mismo PNR
@@ -2473,7 +2517,9 @@ BEGIN
 				
 				-- Vuelvo atras todos los cambios realizados
 				ROLLBACK TRANSACTION cancelacionPE
-				RETURN
+
+				SET @cancelarTransaccion = 1
+				BREAK
 			END
 			
 			-- Inserto lo que obtiene el cursor en las variables
@@ -2482,10 +2528,14 @@ BEGIN
 
 		END
 
-		CLOSE cancelarCursor
-		DEALLOCATE cancelarCursor
+		IF(@cancelarTransaccion = 0)
+		BEGIN
 
-		COMMIT TRANSACTION cancelacionPE
+			CLOSE cancelarCursor
+			DEALLOCATE cancelarCursor
+
+			COMMIT TRANSACTION cancelacionPE
+		END
 
 	END
 	ELSE
@@ -2499,4 +2549,3 @@ BEGIN
 
 END;
 GO
-

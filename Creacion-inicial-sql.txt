@@ -2342,7 +2342,7 @@ CREATE PROCEDURE DBAS.actualizarCliente(@dni_persona bigint ,
 	@direccion_persona varchar(100),
 	@telefono_persona varchar(50),
 	@mail_persona varchar(100),
-	@fecha_nacimiento datetime, @ID_cliente bigint OUT)
+	@fecha_nacimiento datetime)
 
 AS
 BEGIN
@@ -2360,16 +2360,12 @@ BEGIN
 		INSERT INTO DBAS.clientes(id_persona)
 		VALUES (@id_persona)
 
-		--Devuelvo la id cliente
-		SET @ID_cliente = SCOPE_IDENTITY()
 	END
 	ELSE
 	BEGIN
 
 		UPDATE DBAS.personas SET dni_persona = @dni_persona, apellido_persona = @apellido_persona, nombre_persona = @nombre_persona, direccion_persona = @direccion_persona, telefono_persona = @telefono_persona, mail_persona = @mail_persona, fecha_nacimiento = @fecha_nacimiento WHERE dni_persona = @dni_persona
 
-		--Devuelvo la id cliente
-		SELECT @ID_cliente = id_cliente FROM DBAS.clientes WHERE id_persona = @id_persona
 	END
 
 END;

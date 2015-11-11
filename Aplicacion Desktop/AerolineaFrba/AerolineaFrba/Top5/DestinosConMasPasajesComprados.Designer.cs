@@ -40,6 +40,7 @@
             // 
             // comboBoxSemestre
             // 
+            this.comboBoxSemestre.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSemestre.FormattingEnabled = true;
             this.comboBoxSemestre.Location = new System.Drawing.Point(164, 54);
             this.comboBoxSemestre.Name = "comboBoxSemestre";

@@ -32,7 +32,7 @@ namespace AerolineaFrba.Canje_Millas
         private void btAceptar_Click(object sender, EventArgs e)
         {
             if(validacionTextosVacios())return;
-           
+            if (validacionExtra()) return;
             if (!validacionPuntosSuficientes()) return;
 
             string query = "select* from dbas.personas WHERE dni_persona = " + txtDni.Text;
@@ -52,6 +52,55 @@ namespace AerolineaFrba.Canje_Millas
             string idProd = obtenerIdProducto();
             string qsp = "execute dbas.canjeProducto " + idPersona + "," + idProd + "," + textCantidad.Text;
             (new ConexionSQL()).ejecutarComandoSQL(qsp);
+        }
+
+        private bool validacionExtra()
+        {
+            Int32 a;
+  
+                try
+                {
+                    a = Convert.ToInt32(txtDni.Text);
+
+                }
+                catch
+                {
+                    MessageBox.Show("El DNI no posee un tipo de datos valido", "Error", MessageBoxButtons.OK);
+                    return true;
+                }
+
+                if (a < 0)
+                {
+                    MessageBox.Show("El DNI no esta en un rango valido", "Error", MessageBoxButtons.OK);
+                    return true;
+                }
+
+                if (a < 1122696 || a>99999999)//a partir de ahi comienzan los dni
+                {
+                    MessageBox.Show("El DNI no se encuentra en la base", "Error", MessageBoxButtons.OK);
+                    return true;
+                }
+
+
+                int b;
+                try
+                {
+                    b = Convert.ToInt32(textCantidad.Text);
+
+                }
+                catch
+                {
+                    MessageBox.Show("La cantidad no posee un tipo de datos valido", "Error", MessageBoxButtons.OK);
+                    return true;
+                }
+
+                if (b<0)
+                {
+                    MessageBox.Show("La cantidad no esta en un rango valido", "Error", MessageBoxButtons.OK);
+                    return true;
+                }
+
+                return false;
         }
 
         private string obtenerIdProducto()

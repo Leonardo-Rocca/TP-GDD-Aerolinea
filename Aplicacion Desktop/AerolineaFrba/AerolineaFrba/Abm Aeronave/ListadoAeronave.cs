@@ -31,20 +31,10 @@ namespace AerolineaFrba.Abm_Aeronave
         {
             txtMatricula.Text = "";
             txtModelo.Text = "";
-            textButacas.Text = ""; 
             textFabricante.Text = "";
             comboBoxServicio.Text = "";
-            textBoxDesdekg.Text = "";
-            textBoxHastakg.Text = "";
-            textBoxHastakg.Visible = false;
-            textBoxDesdekg.Visible = false;
-            checkEncomienda.Checked = false;
             checkHabilitado.Checked = false;
             checkInhabilitado.Checked = false;
-            checkPasaje.Checked = false;
-            label4.Visible = false;
-            label9.Visible = false;
-            label10.Visible = false;
             comboBoxServicio.SelectedIndex = -1;      
         }
 
@@ -92,41 +82,13 @@ namespace AerolineaFrba.Abm_Aeronave
 
         private void checkEncomienda_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkEncomienda.Checked)
-            {
-                checkPasaje.Checked = false;
-                textBoxHastakg.Visible = true;
-                label4.Visible = true;
-                label10.Visible = true;
-                textBoxDesdekg.Visible = true;
-                label9.Visible = true;
-            }else
-            {
-                textBoxHastakg.Visible = false;
-                textBoxDesdekg.Visible = false;
-                label9.Visible = false;
-                label4.Visible = false;
-                label10.Visible = false;
-                textBoxHastakg.Text = "";
-                textBoxDesdekg.Text="";
-            }
+           
         }
 
         private void checkPasaje_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkPasaje.Checked)
-            {
-                checkEncomienda.Checked = false;
-                textBoxHastakg.Visible = false;
-                label4.Visible = false;
-                label9.Visible = false;
-                label10.Visible = false;
-                textBoxDesdekg.Text = "";
-                textBoxHastakg.Text = "";
-                textBoxHastakg.Visible = false;
-                textBoxDesdekg.Visible = false;
-                textBoxHastakg.Text = "";
-            }
+           
+            
         }
 
         private void checkHabilitado_CheckedChanged(object sender, EventArgs e)
@@ -197,27 +159,7 @@ namespace AerolineaFrba.Abm_Aeronave
                 yaTieneCondicion = true;
             }
 
-            if (textButacas.TextLength != 0)
-            {
-                string agregado = "a.cantidad_butacas < " + textButacas.Text;
-                armarQueryCompleja(ref query, agregado, yaTieneCondicion);
-                yaTieneCondicion = true;
-            }
-
-            if (checkPasaje.Checked)
-            {
-                //hay que chequear
-                string agregado = "p.encomienda_cliente_KG = 0";
-                armarQueryCompleja(ref query, agregado, yaTieneCondicion);
-                yaTieneCondicion = true;
-            }
-
-            if (checkEncomienda.Checked)
-            {
-                string agregado = "kg_disponible_encomienda BETWEEN " + textBoxDesdekg.Text + "AND " + textBoxHastakg.Text;
-                armarQueryCompleja(ref query, agregado, yaTieneCondicion);
-                yaTieneCondicion = true;
-            }
+         
 
             if (comboBoxServicio.SelectedIndex != -1)
             {
@@ -226,24 +168,14 @@ namespace AerolineaFrba.Abm_Aeronave
                 yaTieneCondicion = true;
             }
 
-            //POR FECHAS
 
             hacerQuery(query, dataGridView1);
         }
 
         private bool validaciones()
         {
-            if (checkEncomienda.Checked)
-            {
-                if (textBoxDesdekg.TextLength != 0 && textBoxHastakg.TextLength != 0)
-                {
-                }
-                else
-                {
-                    MessageBox.Show("Falta especificar rango de kilogramos para la encomienda", "Fallo la busqueda", MessageBoxButtons.OK);
-                    return false;
-                }
-            }
+          
+            
 
 
             if (!hayFiltros())
@@ -251,29 +183,13 @@ namespace AerolineaFrba.Abm_Aeronave
                 return false;
             }
 
-            if (checkEncomienda.Checked)
-            {
-                int a = Convert.ToInt32(textBoxDesdekg.Text);
-                int b = Convert.ToInt32(textBoxHastakg.Text);
-                if (a < 0 || b < 0)
-                {
-                    MessageBox.Show("Los kilogramos especificados no son validos", "Fallo la busqueda", MessageBoxButtons.OK);
-                    return false;
-                }
-
-                if (a > b)
-                {
-                    MessageBox.Show("El rango de kilogramos esta mal especificado", "Fallo la busqueda", MessageBoxButtons.OK);
-                    return false;
-                }
-            }
 
             return true;
         }
 
         private bool hayFiltros()
         {
-            return (txtMatricula.TextLength != 0 || txtModelo.TextLength != 0 || comboBoxServicio.SelectedIndex != -1 || textFabricante.TextLength != 0 || textButacas.TextLength != 0 || checkPasaje.Checked || checkInhabilitado.Checked || checkHabilitado.Checked || checkEncomienda.Checked);
+            return (txtMatricula.TextLength != 0 || txtModelo.TextLength != 0 || comboBoxServicio.SelectedIndex != -1 || textFabricante.TextLength != 0 || checkInhabilitado.Checked || checkHabilitado.Checked);
         }
 
         private void butAceptar_Click(object sender, EventArgs e)
@@ -300,8 +216,8 @@ namespace AerolineaFrba.Abm_Aeronave
             string kg = dataGridView1[3, dataGridView1.CurrentCell.RowIndex].Value.ToString();
             string fabricante = ((new ConexionSQL()).cargarTablaSQL("select distinct nombre_fabricante FROM DBAS.fabricantes where id_fabricante = " + idFabricante)).Rows[0][0].ToString();
             string tipoServicio = ((new ConexionSQL()).cargarTablaSQL("select distinct tipo_servicio FROM DBAS.servicios where id_servicio = " + idTipoServicio)).Rows[0][0].ToString();
-            string cantPasillo = ((new ConexionSQL()).cargarTablaSQL("select count(id_butaca) from dbas.butacas where tipo_butaca like 'Pasillo' and matricula_aeronave like '" + matricula + "'")).Rows[0][0].ToString();
-            string cantVentanila = ((new ConexionSQL()).cargarTablaSQL("select count(id_butaca) from dbas.butacas where tipo_butaca like 'Ventanilla' and matricula_aeronave like '" + matricula + "'")).Rows[0][0].ToString();
+            string cantPasillo = ((new ConexionSQL()).cargarTablaSQL("select count(id_butaca) from dbas.butacas where piso_butaca = 1 and tipo_butaca like 'Pasillo' and matricula_aeronave like '" + matricula + "'")).Rows[0][0].ToString();
+            string cantVentanila = ((new ConexionSQL()).cargarTablaSQL("select count(id_butaca) from dbas.butacas where piso_butaca = 1 and tipo_butaca like 'Ventanilla' and matricula_aeronave like '" + matricula + "'")).Rows[0][0].ToString();
             string cantPisos = ((new ConexionSQL()).cargarTablaSQL("select count(distinct piso_butaca) from dbas.butacas where matricula_aeronave like '" + matricula + "'")).Rows[0][0].ToString(); ;
 
             if (viaje != null)

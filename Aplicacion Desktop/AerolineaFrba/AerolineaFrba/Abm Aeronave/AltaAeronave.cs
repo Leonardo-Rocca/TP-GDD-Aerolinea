@@ -132,10 +132,51 @@ namespace AerolineaFrba.Abm_Aeronave
                 }
                
             }
+            int a, b, c,d;
+            try
+            {
+                 a = Convert.ToInt32(textButacasPasillo.Text);
 
-            int a = Convert.ToInt32(textButacasPasillo.Text);
-            int b = Convert.ToInt32(textButacasVentanilla.Text);
-            int c = Convert.ToInt32(textPisos.Text);
+            }
+            catch
+            {
+                MessageBox.Show("La cantidad de butacas tipo pasillo no posee un tipo de datos valido", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
+            try
+            {
+                b = Convert.ToInt32(textButacasVentanilla.Text);
+
+            }
+            catch
+            {
+                MessageBox.Show("La cantidad de butacas tipo ventanilla no posee un tipo de dato valido", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
+            try
+            {
+                c = Convert.ToInt32(textPisos.Text);
+            }
+            catch
+            {
+                MessageBox.Show("La cantidad de pisos ingresada no posee un tipo de dato valido", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
+            try
+            {
+                d = Convert.ToInt32(textKdDisponibles.Text);
+            }
+            catch
+            {
+                MessageBox.Show("Los kilogramos ingresados no poseen un tipo de dato valido", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
+
+            
             if (a < 1 || b < 1)
             {
                 MessageBox.Show("Cantidad de butacas invalida", "Error", MessageBoxButtons.OK);
@@ -147,6 +188,11 @@ namespace AerolineaFrba.Abm_Aeronave
                 return false;
             }
 
+            if (d < 1)
+            {
+                MessageBox.Show("Cantidad de kilogramos invalidos", "Error", MessageBoxButtons.OK);
+                return false;
+            }
             return true;
         }
 

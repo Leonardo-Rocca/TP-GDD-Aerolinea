@@ -50,12 +50,13 @@ namespace AerolineaFrba.Dominio
                idCliente = obtenerUltimoIdCliente();
                id = obtenerUltimoIdPersona();
            }else{
-                comando= "UPDATE DBAS.personas SET nombre_persona = '"+nombre+"',apellido_persona = '"+apellido +"',direccion_persona = '"+direccion+"',telefono_persona = '"+tel+"',mail_persona = '"+mail+"',fecha_nacimiento = '"+fecha+
-                    "' WHERE id_persona = "+id;
-                DataTable dt = (new ConexionSQL()).cargarTablaSQL(comando);
-
+                //comando= "UPDATE DBAS.personas SET nombre_persona = '"+nombre+"',apellido_persona = '"+apellido +"',direccion_persona = '"+direccion+"',telefono_persona = '"+tel+"',mail_persona = '"+mail+"',fecha_nacimiento = '"+fecha+
+                  //  "' WHERE id_persona = "+id;
+               comando = "execute DBAS.actualizarCliente " + dni + " , '" + nombre + "', '" + apellido + "', '" + direccion + "', '" + tel + "','" + mail + "','" + fecha + "'";
+               // DataTable dt = (new ConexionSQL()).cargarTablaSQL(comando);
+               (new ConexionSQL()).ejecutarComandoSQL(comando);
            }
-            //to do... actualizar datos -- falta probar
+    
        }
 
         private string obtenerUltimoIdPersona()

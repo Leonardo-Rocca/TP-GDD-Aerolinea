@@ -690,6 +690,16 @@ SELECT tablaUsuarios.id_usuario, tablaRoles.id_rol FROM DBAS.usuarios tablaUsuar
 WHERE tablaRoles.nombre_rol = 'Administrador General' and tablaUsuarios.username = 'admin'
 GO
 
+-- insercion del rol cliente
+INSERT INTO DBAS.roles(nombre_rol) VALUES('Cliente');
+GO
+
+-- Se agregan funcionalidades al rol cliente
+INSERT INTO DBAS.rolesPorFuncionalidad(id_rol, id_funcionalidad)
+select tablaRol.id_rol, tablaFuncionalidad.id_funcionalidad from DBAS.roles  tablaRol, DBAS.funcionalidades tablaFuncionalidad
+WHERE tablaRol.nombre_rol = 'Cliente' AND tablaFuncionalidad.descripcion IN ('Compra de Pasaje/Encomienda', 'Cancelación/Devolución de pasaje y/o encomienda', 'Consulta de millas de pasajero frecuente', 'Canje de millas de pasajero frecuente')
+GO
+
 -- Inserto productos
 INSERT INTO DBAS.productos(valor_en_milas,nombre_producto,stock)
 VALUES (2500,'cafetera',50)

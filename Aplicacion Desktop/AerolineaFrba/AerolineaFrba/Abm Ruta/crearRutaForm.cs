@@ -86,10 +86,12 @@ namespace AerolineaFrba.Abm_Ruta
                 return;
             }
 
-            Double a, b;
-            try
+
+            Int32 a, b;
+
+         /*   try
             {
-                a = Convert.ToDouble(txtPregiokg.Text);
+                a = Convert.ToInt32(txtPregiokg.Text);
             }
             catch
             {
@@ -99,7 +101,7 @@ namespace AerolineaFrba.Abm_Ruta
 
             try
             {
-                b = Convert.ToDouble(txtPrecioPasaje.Text);
+                b = Convert.ToInt32(txtPrecioPasaje.Text);
             }
             catch
             {
@@ -118,7 +120,7 @@ namespace AerolineaFrba.Abm_Ruta
                 MessageBox.Show("El precio base por pasaje no es valido", "Error", MessageBoxButtons.OK);
                 return;
             }
-
+*/
             if (tipo == 0)
             {
                 agregarRuta();

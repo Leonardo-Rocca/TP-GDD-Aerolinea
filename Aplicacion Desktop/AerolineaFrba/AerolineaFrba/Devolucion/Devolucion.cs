@@ -80,6 +80,34 @@ namespace AerolineaFrba.Devolucion
                 return false;
             }
 
+            Int32 a;
+
+            try
+            {
+                a = Convert.ToInt32(textBox0.Text);
+
+            }
+            catch
+            {
+                MessageBox.Show("El DNI no posee un tipo de datos valido", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
+            if (a < 0)
+            {
+                MessageBox.Show("El DNI no esta en un rango valido", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
+            if (a < 1122696 || a > 99999999)//a partir de ahi comienzan los dni
+            {
+                MessageBox.Show("El DNI no se encuentra en la base", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
+
+
+
             return true;
         }
 

@@ -21,7 +21,7 @@ namespace AerolineaFrba.Dominio
         public string butacaKg="";
         public string direccion;
 
-        public string idCliente;
+        public string idCliente="";
 
        public PasajeEncomienda(string id,string p1, string p2, string dni, string tel, string p3, string p4, string butacaKg)
        {
@@ -33,26 +33,27 @@ namespace AerolineaFrba.Dominio
            this.mail = p3;
            this.fecha = p4;
            this.butacaKg = butacaKg;
-           if (id == "") return;
-           idCliente = obtenerUltimoIdCliente();
+           darDeAltaClienteSiNoExiste();
+           idCliente = obtenerIdCliente();
 
        }
+
        
         public void darDeAltaClienteSiNoExiste()
        {
               string comando;
-           if (id == ""||!existeAlguienConMismoDNI())
+           if (id == ""||existeAlguienConMismoDNI())
            {
                comando = "execute dbas.altaCliente " + dni + " , '" + nombre + "', '" + apellido + "', '" + direccion + "', '"+tel+"','"+mail+"','"+fecha+"'";
                DataTable dt = (new ConexionSQL()).cargarTablaSQL(comando);
-               MessageBox.Show(comando);
+
                idCliente = obtenerUltimoIdCliente();
                id = obtenerUltimoIdPersona();
            }else{
                 comando= "UPDATE DBAS.personas SET nombre_persona = '"+nombre+"',apellido_persona = '"+apellido +"',direccion_persona = '"+direccion+"',telefono_persona = '"+tel+"',mail_persona = '"+mail+"',fecha_nacimiento = '"+fecha+
                     "' WHERE id_persona = "+id;
                 DataTable dt = (new ConexionSQL()).cargarTablaSQL(comando);
-                MessageBox.Show(comando);
+
            }
             //to do... actualizar datos -- falta probar
        }
@@ -78,5 +79,11 @@ namespace AerolineaFrba.Dominio
             return dt.Rows[0][0].ToString();
         }
 
+        private string obtenerIdCliente()
+        {
+            string query = "select  id_cliente from dbas.clientes c,dbas.personas where dni_persona = "+dni;
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
+            return dt.Rows[0][0].ToString();
+        }
     }
 }

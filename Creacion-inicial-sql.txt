@@ -2336,6 +2336,42 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE DBAS.actualizarCliente(@dni_persona bigint ,
+	@nombre_persona varchar(100),
+	@apellido_persona varchar(100),
+	@direccion_persona varchar(100),
+	@telefono_persona varchar(50),
+	@mail_persona varchar(100),
+	@fecha_nacimiento datetime)
+
+AS
+BEGIN
+	
+	DECLARE @id_persona bigint
+
+	SELECT @id_persona = id_persona FROM DBAS.personas WHERE dni_persona = @dni_persona
+
+	IF NOT EXISTS(SELECT * FROM DBAS.clientes tablaClientes WHERE tablaClientes.id_persona = @id_persona)
+	BEGIN
+		
+		UPDATE DBAS.personas SET dni_persona = @dni_persona, apellido_persona = @apellido_persona, nombre_persona = @nombre_persona, direccion_persona = @direccion_persona, telefono_persona = @telefono_persona, mail_persona = @mail_persona, fecha_nacimiento = @fecha_nacimiento WHERE dni_persona = @dni_persona
+
+		-- Con la id de la persona creo un cliente
+		INSERT INTO DBAS.clientes(id_persona)
+		VALUES (@id_persona)
+
+	END
+	ELSE
+	BEGIN
+
+		UPDATE DBAS.personas SET dni_persona = @dni_persona, apellido_persona = @apellido_persona, nombre_persona = @nombre_persona, direccion_persona = @direccion_persona, telefono_persona = @telefono_persona, mail_persona = @mail_persona, fecha_nacimiento = @fecha_nacimiento WHERE dni_persona = @dni_persona
+
+	END
+
+END;
+GO
+
+
 --Cantidad de butacas libres de una aeronave
 CREATE FUNCTION DBAS.cantidadButacasLibres(@matricula_aeronave varchar(100),@id_viaje bigint)
 RETURNS bigint
@@ -2407,6 +2443,7 @@ FROM DBAS.pasajes tablaPasajes, DBAS.encomiendas tablaEncomiendas, DBAS.compras 
 WHERE tablaPasajes.id_compra_PNR = tablaEncomiendas.id_compra_PNR AND tablaCompras.id_compra_PNR = tablaPasajes.id_compra_PNR 
 GO
 
+
 -- Creo un trigger para manejar los pasajes/Encomiendas cancelados en la vista
 CREATE TRIGGER DBAS.cancelarPasajes ON DBAS.PasajesCancelados
 INSTEAD OF INSERT
@@ -2414,6 +2451,7 @@ AS
 BEGIN
 	DECLARE @PNR bigint, @id_comprador bigint, @motivo_cancelacion varchar(100), @ID_cancelacion bigint, @codigo_pasaje bigint, @codigo_encomienda bigint , @mensaje_error varchar(100)
 	DECLARE @cancelarTransaccion tinyint
+	DECLARE @ID_cliente_comprador bigint
 	
 	SET @cancelarTransaccion = 0
 
@@ -2421,16 +2459,18 @@ BEGIN
 	DECLARE cancelarCursor CURSOR FOR
 	SELECT @PNR, @id_comprador, @motivo_cancelacion, @codigo_pasaje, @codigo_encomienda FROM inserted
 
-	-- Compruebo si la id de la compra y/o el cliente existen
-	IF EXISTS(SELECT * FROM DBAS.compras WHERE id_compra_PNR = @PNR)
-	BEGIN
-		
-		OPEN cancelarCursor
+	OPEN cancelarCursor
 
-		-- Inserto lo que obtiene el cursor en las variables
-		FETCH NEXT FROM cancelarCursor
-		INTO @PNR, @id_comprador, @motivo_cancelacion, @codigo_pasaje, @codigo_encomienda
-		
+	-- Inserto lo que obtiene el cursor en las variables
+	FETCH NEXT FROM cancelarCursor
+	INTO @PNR, @id_comprador, @motivo_cancelacion, @codigo_pasaje, @codigo_encomienda
+
+	SELECT @ID_cliente_comprador = id_cliente FROM DBAS.clientes WHERE id_persona = @id_comprador
+
+	-- Compruebo si la id de la compra y/o el cliente existen
+	IF EXISTS(SELECT * FROM DBAS.compras WHERE id_compra_PNR = @PNR AND id_cliente = @ID_cliente_comprador)
+	BEGIN
+				
 		-- comienzo una transaccion por si hay datos que no corresponden
 		BEGIN TRANSACTION cancelacionPE
 		
@@ -2451,9 +2491,6 @@ BEGIN
 				SET @mensaje_error = 'Hay un codigo de pasaje invalido'
 				RAISERROR(@mensaje_error, 12, 1)
 
-				CLOSE cancelarCursor
-				DEALLOCATE cancelarCursor
-
 				-- Vuelvo atras todos los cambios realizados
 				ROLLBACK TRANSACTION cancelacionPE
 				
@@ -2472,9 +2509,6 @@ BEGIN
 				-- Devuelvo un mensaje de error
 				SET @mensaje_error = 'Hay un codigo de encomienda invalido'
 				RAISERROR(@mensaje_error, 12, 1)
-
-				CLOSE cancelarCursor
-				DEALLOCATE cancelarCursor
 				
 				-- Vuelvo atras todos los cambios realizados
 				ROLLBACK TRANSACTION cancelacionPE
@@ -2491,10 +2525,6 @@ BEGIN
 
 		IF(@cancelarTransaccion = 0)
 		BEGIN
-
-			CLOSE cancelarCursor
-			DEALLOCATE cancelarCursor
-
 			COMMIT TRANSACTION cancelacionPE
 		END
 
@@ -2507,6 +2537,9 @@ BEGIN
 		RAISERROR(@mensaje_error, 12, 1)
 
 	END
+
+	CLOSE cancelarCursor
+	DEALLOCATE cancelarCursor
 
 END;
 GO

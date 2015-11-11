@@ -74,7 +74,7 @@ namespace AerolineaFrba.Devolucion
 
         private bool validaciones()
         {
-            if (textBox0.Text == "" || textBox4.Text == "" || textBox2.Text=="" || textBox3.Text=="" || comboBox1.SelectedIndex==-1)
+            if (textBox0.Text == "" || textBox2.Text == "" || textBox3.Text == "" || (comboBox1.SelectedIndex == -1 && textBox4.Text == ""))
             {
                 MessageBox.Show("Debe completar todos los campos", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
                 return false;
@@ -116,11 +116,28 @@ namespace AerolineaFrba.Devolucion
             DataTable cancelacion = new DataTable("cancelacion");
             cancelacion.Columns.Add("Id", typeof(int));
             string pnr = textBox2.Text;
-            string idCli = ((new ConexionSQL()).cargarTablaSQL("select distinct id_persona from dbas.personas where dni_persona = '" + textBox0.Text+"'")).Rows[0][0].ToString();
+            DataTable dt =  ((new ConexionSQL()).cargarTablaSQL("select distinct id_persona from dbas.personas where dni_persona = '" + textBox0.Text+"'"));
+            if (dt.Rows.Count == 0)
+            {
+                MessageBox.Show("El dni no esta en la base", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                return;
+            }     
+            string idCli = dt.Rows[0][0].ToString();
             string motivo = textBox3.Text;
-            string encomienda = textBox4.Text;
-            string comando = "insert into DBAS.PasajesCancelados(id_compra_PNR,id_cliente, motivo_cancelacion, codigo_pasaje,codigo_encomienda) select distinct " + pnr + ","+idCli+",'"+motivo+"',codigo_pasaje,"+encomienda+" FROM DBAS.pasajes WHERE id_cliente = "+idCli +" and codigo_pasaje IN ( ";
+            string encomienda;
+            string comando;
+            if (textBox4.Text == "")
+            {
+                encomienda = "-1";
+                comando = "insert into DBAS.PasajesCancelados(id_compra_PNR,id_cliente, motivo_cancelacion, codigo_pasaje,codigo_encomienda) select distinct " + pnr + "," + idCli + ",'" + motivo + "',codigo_pasaje," + encomienda + " FROM DBAS.pasajes WHERE id_cliente = " + idCli + " and codigo_pasaje IN ( ";
 
+            }
+            else
+            {
+                 encomienda = textBox4.Text;
+                 comando = "insert into DBAS.PasajesCancelados(id_compra_PNR,id_cliente, motivo_cancelacion, codigo_pasaje,codigo_encomienda) select distinct " + pnr + "," + idCli + ",'" + motivo + "',codigo_pasaje," + encomienda + " FROM DBAS.pasajes WHERE id_cliente = " + idCli + " and codigo_pasaje IN ( ";
+            }
+            
             int i = 1;
             int cant = pasajes.Count;
             foreach (String elemento in pasajes)
@@ -161,7 +178,7 @@ namespace AerolineaFrba.Devolucion
                 }
 
 
-                throw new Exception();
+                MessageBox.Show(sqlEx.Message);
             }
 
             MessageBox.Show("Cancelacion exitosa", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);

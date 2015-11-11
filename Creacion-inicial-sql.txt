@@ -2425,7 +2425,7 @@ BEGIN
 	INTO @PNR, @id_comprador, @motivo_cancelacion, @codigo_pasaje, @codigo_encomienda
 
 	-- Compruebo si la id de la compra y/o el cliente existen
-	IF EXISTS(SELECT * FROM DBAS.compras WHERE id_compra_PNR = @PNR AND id_cliente = @id_comprador)
+	IF EXISTS(SELECT * FROM DBAS.compras WHERE id_compra_PNR = @PNR)
 	BEGIN
 		
 		-- comienzo una transaccion por si hay datos que no corresponden

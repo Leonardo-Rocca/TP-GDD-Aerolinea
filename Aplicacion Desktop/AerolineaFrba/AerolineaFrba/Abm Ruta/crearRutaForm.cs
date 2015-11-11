@@ -156,7 +156,7 @@ namespace AerolineaFrba.Abm_Ruta
                 return;
             }
 
-            MessageBox.Show("Ruta creada (posta)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Ruta creada", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
             inicializar();
         }
 

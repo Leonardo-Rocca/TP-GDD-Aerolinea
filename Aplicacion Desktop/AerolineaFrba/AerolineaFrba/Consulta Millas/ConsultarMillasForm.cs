@@ -25,6 +25,11 @@ namespace AerolineaFrba.Consulta_Millas
                 MessageBox.Show("Complete su dni");
                 return;
             }
+
+            if(!validarExtraDNI())return;
+
+
+
             string query = "select  top 1 dbas.millasVigentes ("+txtDni.Text+") from dbas.servicios";
             DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
 
@@ -35,6 +40,36 @@ namespace AerolineaFrba.Consulta_Millas
             }
 
             MessageBox.Show("Usted tiene "+millas+" millas");
+        }
+
+        private bool validarExtraDNI()
+        {
+            Int32 a;
+
+            try
+            {
+                a = Convert.ToInt32(txtDni.Text);
+
+            }
+            catch
+            {
+                MessageBox.Show("El DNI no posee un tipo de datos valido", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
+            if (a < 0)
+            {
+                MessageBox.Show("El DNI no esta en un rango valido", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
+            if (a < 1122696 || a > 99999999)//a partir de ahi comienzan los dni
+            {
+                MessageBox.Show("El DNI no se encuentra en la base", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
+            return true;
         }
 
         private void botonVolver_Click(object sender, EventArgs e)
@@ -57,9 +92,11 @@ namespace AerolineaFrba.Consulta_Millas
                 return;
             }
 
+            if (!validarExtraDNI()) return;
+
             CompletadorDeTablas.hacerQuery("select * from dbas.historialMillas ("+txtDni.Text+")", ref dgvmillas);
 
-            dgvmillas.Columns.Remove("seleccionar");
+            if(dgvmillas.Columns.Count != 0)dgvmillas.Columns.Remove("seleccionar");
         }
 
         private void ConsultarMillasForm_Load(object sender, EventArgs e)

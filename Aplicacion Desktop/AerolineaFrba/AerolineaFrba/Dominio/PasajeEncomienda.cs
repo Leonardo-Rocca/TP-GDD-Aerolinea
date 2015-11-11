@@ -20,7 +20,8 @@ namespace AerolineaFrba.Dominio
         public string fecha;
         public string butacaKg="";
         public string direccion;
-      
+
+        public string idCliente;
 
        public PasajeEncomienda(string id,string p1, string p2, string dni, string tel, string p3, string p4, string butacaKg)
        {
@@ -32,6 +33,8 @@ namespace AerolineaFrba.Dominio
            this.mail = p3;
            this.fecha = p4;
            this.butacaKg = butacaKg;
+           if (id == "") return;
+           idCliente = obtenerUltimoIdCliente();
 
        }
        
@@ -43,7 +46,8 @@ namespace AerolineaFrba.Dominio
                comando = "execute dbas.altaCliente " + dni + " , '" + nombre + "', '" + apellido + "', '" + direccion + "', '"+tel+"','"+mail+"','"+fecha+"'";
                DataTable dt = (new ConexionSQL()).cargarTablaSQL(comando);
                MessageBox.Show(comando);
-               id = obtenerUltimoId();
+               idCliente = obtenerUltimoIdCliente();
+               id = obtenerUltimoIdPersona();
            }else{
                 comando= "UPDATE DBAS.personas SET nombre_persona = '"+nombre+"',apellido_persona = '"+apellido +"',direccion_persona = '"+direccion+"',telefono_persona = '"+tel+"',mail_persona = '"+mail+"',fecha_nacimiento = '"+fecha+
                     "' WHERE id_persona = "+id;
@@ -53,6 +57,13 @@ namespace AerolineaFrba.Dominio
             //to do... actualizar datos -- falta probar
        }
 
+        private string obtenerUltimoIdPersona()
+        {
+            string query = "select top 1 id_persona from dbas.personas order by 1 desc";
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
+            return dt.Rows[0][0].ToString();
+        }
+
         private bool existeAlguienConMismoDNI()
         {
             string query = "select id_persona from dbas.personas WHERE dni_persona = "+dni;
@@ -60,7 +71,7 @@ namespace AerolineaFrba.Dominio
             return dt.Rows.Count>1;
         }
 
-        private string obtenerUltimoId()
+        private string obtenerUltimoIdCliente()
         {
             string query = "select top 1 id_cliente from dbas.clientes order by 1 desc";
             DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);

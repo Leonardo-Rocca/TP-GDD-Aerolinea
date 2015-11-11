@@ -29,7 +29,7 @@ namespace AerolineaFrba.Compra
         {
             comprador.darDeAltaClienteSiNoExiste();
 
-            string qGenerarCompra = "execute  DBAS.generarCompra " + comprador.id + "," + tarjeta.numeroTarjeta + " , " + tarjeta.codigo + ", '"+tarjeta.dateTime+"' ," + tarjeta.tipoTarjetaId + "," + tarjeta.cuotasElegidas + " ," + tarjeta.tipo;
+            string qGenerarCompra = "execute  DBAS.generarCompra " + comprador.idCliente + "," + tarjeta.numeroTarjeta + " , " + tarjeta.codigo + ", '"+tarjeta.dateTime+"' ," + tarjeta.tipoTarjetaId + "," + tarjeta.cuotasElegidas + " ," + tarjeta.tipo;
             (new ConexionSQL()).ejecutarComandoSQL(qGenerarCompra);
             try
             {
@@ -44,7 +44,7 @@ namespace AerolineaFrba.Compra
                 encomienda.darDeAltaClienteSiNoExiste();
 
                 string queryEncomienda = "Insert into DBAS.encomiendas (id_cliente ,encomienda_cliente_KG ,id_viaje, precio_encomienda, id_compra_PNR ,fecha_compra_encomienda) values (" +
-                                      encomienda.id + ", " + encomienda.butacaKg + ", " + compra.viaje.idViaje + " , @Parametro, " + idCompra +",'"+DateTime.Parse(Program.nuevaFechaSistema())+"' )";    //+Double.Parse(compra.viaje.precioKg,culture) +
+                                      encomienda.idCliente + ", " + encomienda.butacaKg + ", " + compra.viaje.idViaje + " , @Parametro, " + idCompra +",'"+DateTime.Parse(Program.nuevaFechaSistema())+"' )";    //+Double.Parse(compra.viaje.precioKg,culture) +
 
                 string precioTotalEncomienda = (Convert.ToDouble(compra.viaje.precioKg)* Convert.ToDouble(encomienda.butacaKg)).ToString();
                 (new ConexionSQL()).ejecutarComandoSQLConParametro(queryEncomienda,precioTotalEncomienda );
@@ -54,7 +54,7 @@ namespace AerolineaFrba.Compra
                 foreach (PasajeEncomienda pasajero in compra.pasajes)
                 {
                     string queryPasaje = "Insert into DBAS.pasajes (id_cliente,id_viaje, id_butaca, precio_pasaje ,id_compra_PNR) values (" +
-                     pasajero.id + ", " + compra.viaje.idViaje + " , " + pasajero.butacaKg + " , @Parametro , " + idCompra + ")";
+                     pasajero.idCliente + ", " + compra.viaje.idViaje + " , " + pasajero.butacaKg + " , @Parametro , " + idCompra + ")";
                      pasajero.darDeAltaClienteSiNoExiste();
 
                      (new ConexionSQL()).ejecutarComandoSQLConParametro(queryEncomienda, compra.viaje.precioPasaje);

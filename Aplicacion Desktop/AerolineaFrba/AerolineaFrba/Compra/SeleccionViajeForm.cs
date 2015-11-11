@@ -27,7 +27,7 @@ namespace AerolineaFrba.Compra
         {
             txtCityOrigen.Text = "";
             txtDestino.Text="";
-   //         dgvViaje.DataSource = null;
+            dgvViaje.DataSource = null;
    //         hacerQuery(queryTodosLosViajes(), dgvViaje);
             this.Hide();
         }
@@ -102,7 +102,7 @@ namespace AerolineaFrba.Compra
 
         private void dgvViaje_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (dgvViaje.CurrentCell.ColumnIndex == dgvViaje.Columns.Count - 1) ;
+            if (dgvViaje.CurrentCell.ColumnIndex == dgvViaje.Columns.Count - 1)
                     seleccionar(dgvViaje);
             
         }
@@ -132,8 +132,12 @@ namespace AerolineaFrba.Compra
         {
             ConexionSQL conn = new ConexionSQL();
             DataTable dt = conn.cargarTablaSQL(query);
-            if (dataGrid.DataSource != null) dataGrid.Columns.Remove("seleccionar");
-
+            if (dataGrid.DataSource != null) dataGrid.Columns.Remove("Seleccionar");
+            try
+            {
+                dataGrid.Columns.Remove("Seleccionar");
+            }
+            catch { }
             dataGrid.DataSource = dt;
 
             if (dt.Rows.Count == 0)

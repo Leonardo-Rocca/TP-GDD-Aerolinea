@@ -38,7 +38,6 @@ CREATE TABLE DBAS.aeronaves (
 	matricula_aeronave varchar(100) PRIMARY KEY,
 	numero_aeronave bigint IDENTITY(1,1) UNIQUE,
 	modelo_aeronave varchar(100),
-	fecha_reinsercion datetime,
 	fecha_baja_servicio_definitiva datetime,
 	kg_disponible_encomienda float(24),
 	id_fabricante bigint,

@@ -2,7 +2,6 @@
 USE[GD2C2015];
 GO
 
-
 /* -- Nuevo esquema -- */
 
 CREATE SCHEMA [DBAS] AUTHORIZATION [gd];
@@ -698,7 +697,7 @@ GO
 
 -- Se agregan usuarios administradores
 INSERT INTO DBAS.personas(dni_persona,apellido_persona,nombre_persona)
-VALUES(37000000,'Saavedra','Jesica')
+VALUES(37000000,'Saavedra','Jessica')
 
 DECLARE @id_p bigint
 SET @id_p = SCOPE_IDENTITY()
@@ -706,6 +705,30 @@ SET @id_p = SCOPE_IDENTITY()
 -- Se inserta el usuario admin, password w23e
 INSERT INTO DBAS.usuarios(id_usuario,username,password)
 VALUES (@id_p,'jess','e6b87050bfcb8143fcb8db0170a4dc9ed00d904ddd3e2a4ad1b1e8dc0fdc9be7')
+GO
+
+-- Se agregan usuarios administradores
+INSERT INTO DBAS.personas(dni_persona,apellido_persona,nombre_persona)
+VALUES(36000000,'Rocca','Leonardo')
+
+DECLARE @id_p bigint
+SET @id_p = SCOPE_IDENTITY()
+
+-- Se inserta el usuario admin, password w23e
+INSERT INTO DBAS.usuarios(id_usuario,username,password)
+VALUES (@id_p,'leo','e6b87050bfcb8143fcb8db0170a4dc9ed00d904ddd3e2a4ad1b1e8dc0fdc9be7')
+GO
+
+-- Se agregan usuarios administradores
+INSERT INTO DBAS.personas(dni_persona,apellido_persona,nombre_persona)
+VALUES(35000000,'Kalinowski','Eric')
+
+DECLARE @id_p bigint
+SET @id_p = SCOPE_IDENTITY()
+
+-- Se inserta el usuario admin, password w23e
+INSERT INTO DBAS.usuarios(id_usuario,username,password)
+VALUES (@id_p,'eric','e6b87050bfcb8143fcb8db0170a4dc9ed00d904ddd3e2a4ad1b1e8dc0fdc9be7')
 GO
 
 -- Se le asigna el rol administrador general al usuario admin

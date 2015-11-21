@@ -156,7 +156,7 @@ namespace AerolineaFrba.Compra
 
         private bool estaCompleto()
         {
-            return (cmbPasaje.SelectedIndex != -1 && txtEncomienda.Text != "");
+            return (cmbPasaje.SelectedIndex != -1 && (txtEncomienda.Text != "" || txtEncomienda.Text == "0"));
         }
 
         private void txtEncomienda_TextChanged(object sender, EventArgs e)

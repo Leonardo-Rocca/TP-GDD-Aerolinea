@@ -86,7 +86,7 @@ namespace AerolineaFrba.Abm_Rol
 
              modificar();
 
-            MessageBox.Show("Rol Modificado(dammy)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            MessageBox.Show("Rol Modificado", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             actualizarFormsRoles();
 
             //this.Close();

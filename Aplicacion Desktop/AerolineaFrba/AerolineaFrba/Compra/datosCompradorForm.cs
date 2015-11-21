@@ -25,6 +25,7 @@ namespace AerolineaFrba.Compra
             cmbTipoTarjeta.DataSource = dt.DefaultView;
             cmbTipoTarjeta.ValueMember = "descripcion_tipo";
             cmbTipoTarjeta.SelectedIndex = -1;
+            cmbCuotas.SelectedIndex = -1;
         }
 
         private void datosCompradorForm_Load(object sender, EventArgs e)
@@ -40,10 +41,46 @@ namespace AerolineaFrba.Compra
 
         private void buttonGuardar_Click(object sender, EventArgs e)
         {
+            if (!validaciones()) return;
             Compra.inicializar();
             Compra.tarjeta = new Tarjeta(txtNumero.Text, txtPass.Text, dateTimePickerFnac.Value.ToString(), "1", cmbCuotas.Text, "1");
             Compra.realizarCompra();
             this.Close();
+        }
+
+        private bool validaciones()
+        {
+            if (!estaCompleto())
+            {
+                MessageBox.Show("Faltan completar campos", "Formulario Incompleto", MessageBoxButtons.OK);
+                return false;
+            }
+
+            int a;
+            try
+            {
+                a = Convert.ToInt32(txtNumero.Text);
+
+            }
+            catch
+            {
+                MessageBox.Show("El dni ingresado no posee un tipo de datos valido", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
+            int ant1 = DateTime.Compare(DateTime.Parse(dateTimePickerFnac.Text), DateTime.Parse(Program.nuevaFechaSistema()));
+            if (ant1 < 0)
+            {
+                MessageBox.Show("La fecha de vencimiento debe ser posterior al dia de hoy", "Fecha de vencimiento invalida", MessageBoxButtons.OK);
+                return false;
+            }
+            return true;
+        }
+
+        private bool estaCompleto()
+        {
+            return (txtNumero.TextLength != 0 && txtPass.TextLength != 0 && cmbCuotas.SelectedIndex != -1 && cmbTipoTarjeta.SelectedIndex != -1);
+   
         }
 
         private void cmbTipoTarjeta_SelectedIndexChanged(object sender, EventArgs e)

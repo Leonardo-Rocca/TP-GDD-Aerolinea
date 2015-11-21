@@ -56,7 +56,7 @@ namespace AerolineaFrba.Compra
         private void butAceptar_Click(object sender, EventArgs e)
         {
             if(!validarCamposVacios())return;
-
+            if (!masValidaciones()) return;
    //         if (idPersona == "") generarIdPersona();
             string butacaKg="";
             if (tipo == 1) butacaKg = txtButaca.Text;
@@ -98,6 +98,36 @@ namespace AerolineaFrba.Compra
             }
             compra.Show();
             this.Close();
+        }
+
+        private bool masValidaciones()
+        {
+            Int32 a;
+
+            try
+            {
+                a = Convert.ToInt32(txtDni.Text);
+
+            }
+            catch
+            {
+                MessageBox.Show("El DNI no posee un tipo de datos valido", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
+            if (a < 0)
+            {
+                MessageBox.Show("El DNI no esta en un rango valido", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
+            if (a < 1122696 || a > 99999999)//a partir de ahi comienzan los dni
+            {
+                MessageBox.Show("El DNI no se encuentra en la base", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
+            return true;
         }
 
         private bool validarCamposVacios()

@@ -35,6 +35,8 @@ namespace AerolineaFrba.Compra
 
         private void btBuscar_Click(object sender, EventArgs e)
         {
+            if (!validaciones()) return;
+
             string query = "select distinct numero_butaca,tipo_butaca, piso_butaca  from dbas.butacasLibresEnViaje (" + viaje.idViaje + ") WHERE 1=1";// "  WHERE matricula_aeronave = '" + viaje.matriculaAeronave1 + "'";
              
             if(txtPiso.Text!="") query=query + " AND piso_butaca = "+txtPiso.Text;
@@ -60,6 +62,29 @@ namespace AerolineaFrba.Compra
             query = query + agregado +agregado2 +" Order BY 1";
 
             CompletadorDeTablas.hacerQuery(query,ref dgvbutaca);
+        }
+
+        private bool validaciones()
+        {
+
+            int a;
+            try
+            {
+                a = Convert.ToInt32(txtPiso.Text);
+
+            }
+            catch
+            {
+                MessageBox.Show("El numero de piso no posee un tipo de datos valido", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
+            if (txtPiso.Text == "")
+            {
+                MessageBox.Show("El numero de piso no es valido", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+            return true;
         }
 
         private void btCancelar_Click(object sender, EventArgs e)

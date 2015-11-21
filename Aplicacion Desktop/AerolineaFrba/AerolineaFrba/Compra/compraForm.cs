@@ -49,6 +49,7 @@ namespace AerolineaFrba.Compra
             txtEncomienda.Text = "0";
             cmbPasaje.Items.Clear();
             cmbPasaje.Text = "";
+            cmbPasaje.SelectedIndex = -1;
 
         }
 
@@ -103,6 +104,7 @@ namespace AerolineaFrba.Compra
 
         private void buttonGuardar_Click(object sender, EventArgs e)
         {
+            if (!validaciones()) return;
             if ((txtEncomienda.Text == "" || txtEncomienda.Text == "0") && cmbPasaje.Items.Count == 0) {
                 MessageBox.Show("Debe agregar pasajes o encomiendas");
                 return;
@@ -121,6 +123,40 @@ namespace AerolineaFrba.Compra
             compradorF.Show();
             this.Hide();
 
+        }
+
+        private bool validaciones()
+        {
+            if (!estaCompleto())
+            {
+                MessageBox.Show("Faltan completar campos", "Formulario Incompleto", MessageBoxButtons.OK);
+                return false;
+            }
+
+            int a;
+            try
+            {
+                a = Convert.ToInt32(txtEncomienda.Text);
+
+            }
+            catch
+            {
+                MessageBox.Show("La cantidad de kilogramos para encomienda no posee un tipo de datos valido", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
+            if (a < 0)
+            {
+                MessageBox.Show("La cantidad de kilogramos para encomienda debe ser positiva", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+       
+            return true;
+        }
+
+        private bool estaCompleto()
+        {
+            return (cmbPasaje.SelectedIndex != -1 && txtEncomienda.Text != "");
         }
 
         private void txtEncomienda_TextChanged(object sender, EventArgs e)

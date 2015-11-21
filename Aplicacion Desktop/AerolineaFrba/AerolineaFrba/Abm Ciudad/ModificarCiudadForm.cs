@@ -40,7 +40,7 @@ namespace AerolineaFrba.Abm_Ciudad
             {
                 string comando = "UPDATE DBAS.ciudades  SET nombre_ciudad = '" + txtNombreCiudad.Text + "' WHERE nombre_ciudad = '" + nombreDeLaCiudadAModificar +"'";
                 (new ConexionSQL()).ejecutarComandoSQL(comando);
-                MessageBox.Show("Ciudad Modificada (posta)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Ciudad Modificada", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 formAnterior.cargarComboSeleccion();
             }
             else

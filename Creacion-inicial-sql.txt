@@ -2568,7 +2568,7 @@ BEGIN
 
 		WHILE @@FETCH_STATUS = 0
 		BEGIN
-			IF(@codigo_pasaje IS NOT NULL)
+			IF(@codigo_pasaje != -1)
 			BEGIN
 				-- pregunto si existe el pasaje con el codigo ingresado y con el mismo PNR
 				IF EXISTS(SELECT * FROM DBAS.pasajes WHERE codigo_pasaje = @codigo_pasaje AND id_compra_PNR = @PNR)
@@ -2590,7 +2590,7 @@ BEGIN
 				END	
 			END
 			
-			IF(@codigo_encomienda IS NOT NULL)
+			IF(@codigo_encomienda != -1)
 			BEGIN
 
 				-- pregunto si existe la encomienda con el codigo ingresado y con el mismo PNR

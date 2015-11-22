@@ -135,12 +135,15 @@ namespace AerolineaFrba.Devolucion
                  encomienda = textBox4.Text;
             }
 
-            comando = "insert into DBAS.PasajesCancelados(id_compra_PNR,id_cliente, motivo_cancelacion, codigo_pasaje,codigo_encomienda) select distinct " + pnr + "," + idCli + ",'" + motivo + "',codigo_pasaje," + encomienda + " FROM DBAS.pasajes WHERE id_cliente = " + idCli;
-
             if (comboBox1.SelectedIndex != -1)
             {
-                comando = comando + " and codigo_pasaje IN ( ";
+                comando = "insert into DBAS.PasajesCancelados(id_compra_PNR,id_cliente, motivo_cancelacion, codigo_pasaje,codigo_encomienda) select distinct " + pnr + "," + idCli + ",'" + motivo + "',codigo_pasaje," + encomienda + " FROM DBAS.pasajes WHERE id_cliente = " + idCli + " and codigo_pasaje IN ( ";
             }
+            else
+            {
+                comando = "insert into DBAS.PasajesCancelados(id_compra_PNR,id_cliente, motivo_cancelacion, codigo_pasaje,codigo_encomienda) select distinct " + pnr + "," + idCli + ",'" + motivo + "',-1," + encomienda + " FROM DBAS.pasajes WHERE id_cliente = " + idCli;
+            }
+
             int i = 1;
             int cant = pasajes.Count;
             foreach (String elemento in pasajes)
@@ -157,7 +160,7 @@ namespace AerolineaFrba.Devolucion
                 
             }
 
-            MessageBox.Show(comando);
+//            MessageBox.Show(comando);
             try
             {
                 (new ConexionSQL()).ejecutarComandoSQL(comando);

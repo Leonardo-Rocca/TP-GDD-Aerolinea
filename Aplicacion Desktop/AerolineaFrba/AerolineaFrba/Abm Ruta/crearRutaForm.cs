@@ -168,11 +168,14 @@ namespace AerolineaFrba.Abm_Ruta
          // foreach (string service in chkListaServicios.CheckedItems)
             for (int i = 0; i <= (chkListaServicios.CheckedItems.Count - 1); i++) 
             {
-                string subSelect = "(select top "+(i+1).ToString()+" tipo_servicio From DBAS.servicios)";
-                string comando = "UPDATE DBAS.caracteristicasRutas  SET ciudad_Origen = '" + txtCOrigen.Text + "', ciudad_Destino = '"+txtCDestino.Text+"', precio_base_por_pasaje = "+Convert.ToDouble(txtPrecioPasaje.Text).ToString() +", precio_base_por_KG = "+txtPregiokg.Text+", tipo_servicio = '"+service+"'"+
+             //   string subSelect = "(select top "+(i+1).ToString()+" tipo_servicio From DBAS.servicios)";
+              if(chkListaServicios.GetItemChecked(i)){
+                
+                string comando = "UPDATE DBAS.caracteristicasRutas  SET ciudad_Origen = '" + txtCOrigen.Text + "', ciudad_Destino = '"+txtCDestino.Text+"', precio_base_por_pasaje = "+Convert.ToDouble(txtPrecioPasaje.Text).ToString() +", precio_base_por_KG = "+txtPregiokg.Text+ //, tipo_servicio = '"+service+"'"+
             " WHERE codigo_ruta = " + txtCodigo ;
         //        (new ConexionSQL()).ejecutarComandoSQL(comando); --rompe
-
+              
+              }
             }
 
            //     MessageBox.Show("Ruta Modificada (posta)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);

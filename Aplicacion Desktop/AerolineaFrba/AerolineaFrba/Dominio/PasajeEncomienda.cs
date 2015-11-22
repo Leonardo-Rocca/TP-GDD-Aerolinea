@@ -42,7 +42,7 @@ namespace AerolineaFrba.Dominio
         public void darDeAltaClienteSiNoExiste()
        {
               string comando;
-           if (id == ""||existeAlguienConMismoDNI())
+           if (id == ""/*||existeAlguienConMismoDNI()*/)
            {
                comando = "execute dbas.altaCliente " + dni + " , '" + nombre + "', '" + apellido + "', '" + direccion + "', '"+tel+"','"+mail+"','"+fecha+"'";
                DataTable dt = (new ConexionSQL()).cargarTablaSQL(comando);

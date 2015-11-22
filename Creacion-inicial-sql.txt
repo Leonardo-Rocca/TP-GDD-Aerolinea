@@ -2185,7 +2185,7 @@ RETURNS bigint
 AS
 BEGIN
 	
-	-- Devuelvo la ciudad en donde esta la aeronave actualmente
+	-- Devuelvo el ultimo viaje de la aeronave
 	RETURN (SELECT TOP 1 tablaViajes.id_viaje FROM DBAS.viajes tablaViajes
 	WHERE tablaViajes.matricula_aeronave = @matricula_aeronave AND tablaViajes.habilitado_viaje = 1
 	ORDER BY tablaViajes.fecha_salida DESC)
@@ -2382,6 +2382,18 @@ BEGIN
 END;
 GO
 
+CREATE FUNCTION DBAS.ultimoViajePasajero(@id_cliente bigint)
+RETURNS bigint
+BEGIN
+
+	-- Devuelvo el ultimo viaje del cliente
+	RETURN (SELECT TOP 1 tablaViajes.id_viaje FROM DBAS.viajes tablaViajes, DBAS.pasajes tablaPasajes
+	WHERE tablaPasajes.id_cliente = @id_cliente AND tablaViajes.id_viaje = tablaPasajes.id_viaje AND tablaViajes.habilitado_viaje = 1 AND tablaPasajes.id_cancelacion IS NULL
+	ORDER BY tablaViajes.fecha_salida DESC)
+
+END;
+GO
+
 CREATE PROCEDURE DBAS.actualizarCliente(@dni_persona bigint ,
 	@nombre_persona varchar(100),
 	@apellido_persona varchar(100),
@@ -2394,10 +2406,17 @@ AS
 BEGIN
 	
 	DECLARE @id_persona bigint
+	DECLARE @id_cliente bigint
+	DECLARE @ID_viaje bigint
+
+	DECLARE @mensaje_error varchar(100)
+	DECLARE @GET_DATE datetime
+
+	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
 
 	SELECT @id_persona = id_persona FROM DBAS.personas WHERE dni_persona = @dni_persona
 
-	IF NOT EXISTS(SELECT * FROM DBAS.clientes tablaClientes WHERE tablaClientes.id_persona = @id_persona)
+	IF NOT EXISTS(SELECT * FROM DBAS.clientes WHERE id_persona = @id_persona)
 	BEGIN
 		
 		UPDATE DBAS.personas SET apellido_persona = @apellido_persona, nombre_persona = @nombre_persona, direccion_persona = @direccion_persona, telefono_persona = @telefono_persona, mail_persona = @mail_persona, fecha_nacimiento = @fecha_nacimiento WHERE dni_persona = @dni_persona
@@ -2409,8 +2428,24 @@ BEGIN
 	END
 	ELSE
 	BEGIN
+		
+		SELECT @id_cliente = id_cliente FROM DBAS.clientes WHERE id_persona = @id_persona
+		SET @ID_viaje = DBAS.ultimoViajePasajero(@id_cliente)
 
-		UPDATE DBAS.personas SET apellido_persona = @apellido_persona, nombre_persona = @nombre_persona, direccion_persona = @direccion_persona, telefono_persona = @telefono_persona, mail_persona = @mail_persona, fecha_nacimiento = @fecha_nacimiento WHERE dni_persona = @dni_persona
+		IF EXISTS(SELECT * FROM DBAS.viajes WHERE id_viaje = @ID_viaje AND fecha_llegada_estimada > @GET_DATE)
+		BEGIN
+			
+			-- Devuelvo un mensaje de error
+			SET @mensaje_error = 'El cliente ingresado ya tiene un viaje pendiente'
+			RAISERROR(@mensaje_error, 12, 1)
+
+		END
+		ELSE
+		BEGIN
+
+			UPDATE DBAS.personas SET apellido_persona = @apellido_persona, nombre_persona = @nombre_persona, direccion_persona = @direccion_persona, telefono_persona = @telefono_persona, mail_persona = @mail_persona, fecha_nacimiento = @fecha_nacimiento WHERE dni_persona = @dni_persona
+		
+		END
 
 	END
 
@@ -2468,7 +2503,7 @@ BEGIN
 	INSERT INTO @butacas
 	SELECT id_butaca,numero_butaca,tipo_butaca,piso_butaca FROM DBAS.viajes viajes, DBAS.aeronaves aeronaves, DBAS.butacas butacas
 	WHERE viajes.id_viaje = @id_viaje AND viajes.matricula_aeronave = aeronaves.matricula_aeronave
-	AND butacas.matricula_aeronave = aeronaves.matricula_aeronave 
+	AND butacas.matricula_aeronave = aeronaves.matricula_aeronave AND butacas.piso_butaca != 0
 	EXCEPT
 	(SELECT butacas.id_butaca,numero_butaca,tipo_butaca,piso_butaca 
 	FROM DBAS.pasajes, DBAS.viajes viajes, DBAS.butacas butacas, DBAS.aeronaves aeronaves

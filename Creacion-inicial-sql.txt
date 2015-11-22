@@ -2010,6 +2010,14 @@ WHERE tablaRutas.habilitada_ruta = 1 AND tablaRutas.ciudad_origen_id = tablaCiud
 AND tablaSporR.codigo_ruta = tablaRutas.codigo_ruta AND tablaServicios.id_servicio = tablaSporR.id_servicio
 GO
 
+-- La vista es creada para que la aplicacion me pueda mandar un INSERT simultaneo como si fuera el de un select, con los parametros de la vista
+CREATE VIEW DBAS.modificarCaracteristicasRutas AS
+SELECT tablaRutas.codigo_ruta, tablaRutas.precio_base_por_KG, tablaRutas.precio_base_por_pasaje, tablaCiudad_origen.nombre_ciudad as ciudad_Origen, tablaCiudad_destino.nombre_ciudad as ciudad_Destino, tablaServicios.tipo_servicio, tablaServicios.porcentaje_arancel
+FROM DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudad_origen, DBAS.ciudades tablaCiudad_destino, DBAS.servicios tablaServicios, DBAS.serviciosPorRutas tablaSporR
+WHERE tablaRutas.habilitada_ruta = 1 AND tablaRutas.ciudad_origen_id = tablaCiudad_origen.id_ciudad AND tablaRutas.ciudad_destino_id = tablaCiudad_destino.id_ciudad
+AND tablaSporR.codigo_ruta = tablaRutas.codigo_ruta AND tablaServicios.id_servicio = tablaSporR.id_servicio
+GO
+
 -- Creo un trigger para manejar las nuevas rutas ingresadas en la vista
 CREATE TRIGGER DBAS.altaRutas ON DBAS.caracteristicasRutas
 INSTEAD OF INSERT
@@ -2065,8 +2073,8 @@ END;
 GO
 
 
-CREATE TRIGGER DBAS.modificacionRutas ON DBAS.caracteristicasRutas
-INSTEAD OF UPDATE
+CREATE TRIGGER DBAS.modificacionRutas ON DBAS.modificarCaracteristicasRutas
+INSTEAD OF INSERT
 AS
 BEGIN
 	DECLARE @codigo_ruta bigint

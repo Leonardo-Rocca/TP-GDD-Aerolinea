@@ -1765,71 +1765,60 @@ BEGIN
 		DECLARE @matricula_aeronave_nueva varchar(100)
 		DECLARE @id_pasaje bigint
 		DECLARE @id_butaca bigint
-	
-		-- Obtengo todos los viajes que fueron reemplazados por una aeronave
-		DECLARE viajesCursor CURSOR FOR
-		SELECT id_viaje, matricula_aeronave FROM inserted
+		DECLARE @fecha_llegada datetime
 
-		OPEN viajesCursor
-
-		-- Inserto lo que obtiene el cursor en las variables
-		FETCH NEXT FROM viajesCursor
-		INTO @id_viaje, @matricula_aeronave_nueva
-
-		WHILE @@FETCH_STATUS = 0
+		-- Sirve para saber si la actualizacion en la tabla fue de la fecha de llegada
+		IF NOT EXISTS(SELECT * FROM deleted WHERE fecha_llegada IS NULL)
 		BEGIN
-			UPDATE DBAS.viajes SET matricula_aeronave = @matricula_aeronave_nueva WHERE id_viaje = @id_viaje
+		
+			-- Obtengo todos los viajes que fueron reemplazados por una aeronave
+			DECLARE viajesCursor CURSOR FOR
+			SELECT id_viaje, matricula_aeronave FROM inserted
 
-			-- Obtengo cada pasaje que tenga este viaje
-			DECLARE pasajesCursor CURSOR FOR
-			SELECT @id_pasaje FROM  DBAS.pasajes
-			WHERE  DBAS.pasajes.id_viaje = @id_viaje
-
-			-- Obtengo las butacas de la aeronave nueva
-			DECLARE butacaCursor CURSOR FOR
-			SELECT @id_butaca FROM  DBAS.butacas
-			WHERE  matricula_aeronave = @matricula_aeronave_nueva
-			
-			OPEN pasajesCursor
-			OPEN butacaCursor
+			OPEN viajesCursor
 
 			-- Inserto lo que obtiene el cursor en las variables
-			FETCH NEXT FROM pasajesCursor
-			INTO @id_pasaje
-
-			-- Inserto lo que obtiene el cursor en las variables
-			FETCH NEXT FROM butacaCursor
-			INTO @id_butaca
+			FETCH NEXT FROM viajesCursor
+			INTO @id_viaje, @matricula_aeronave_nueva
 
 			WHILE @@FETCH_STATUS = 0
 			BEGIN
-				
-				-- Reemplazo todas las butacas de cada pasaje del viaje
-				UPDATE DBAS.pasajes SET id_butaca = @id_butaca WHERE id_viaje = @id_viaje
 
-				-- Inserto lo que obtiene el cursor en las variables
-				FETCH NEXT FROM butacaCursor
-				INTO @id_butaca
+				-- Obtengo cada pasaje que tenga este viaje
+				DECLARE pasajesCursor CURSOR FOR
+				SELECT codigo_pasaje FROM  DBAS.pasajes
+				WHERE  DBAS.pasajes.id_viaje = @id_viaje
+
+				OPEN pasajesCursor
 
 				-- Inserto lo que obtiene el cursor en las variables
 				FETCH NEXT FROM pasajesCursor
 				INTO @id_pasaje
+			
+				WHILE @@FETCH_STATUS = 0
+				BEGIN
+				
+					UPDATE DBAS.pasajes SET id_butaca = (SELECT TOP 1 id_butaca FROM DBAS.butacas butacas WHERE butacas.matricula_aeronave = 'ASQ-169' AND NOT EXISTS(SELECT pasajes.id_butaca FROM DBAS.pasajes pasajes WHERE pasajes.id_viaje = 1 AND pasajes.id_butaca = butacas.id_butaca))
+					WHERE id_viaje = @id_viaje AND codigo_pasaje = @id_pasaje
+
+					-- Inserto lo que obtiene el cursor en las variables
+					FETCH NEXT FROM pasajesCursor
+					INTO @id_pasaje
+
+				END
+				CLOSE pasajesCursor
+				DEALLOCATE pasajesCursor
+
+				-- Inserto lo que obtiene el cursor en las variables
+				FETCH NEXT FROM viajesCursor
+				INTO @id_viaje, @matricula_aeronave_nueva
+		
 			END
 
-			CLOSE pasajesCursor
-			DEALLOCATE pasajesCursor
+			CLOSE viajesCursor
+			DEALLOCATE viajesCursor
 
-			CLOSE butacaCursor
-			DEALLOCATE butacaCursor
-			
-			-- Inserto lo que obtiene el cursor en las variables
-			FETCH NEXT FROM viajesCursor
-			INTO @id_viaje, @matricula_aeronave_nueva
-		
 		END
-
-		CLOSE viajesCursor
-		DEALLOCATE viajesCursor
 END;
 GO
 

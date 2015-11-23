@@ -137,12 +137,20 @@ namespace AerolineaFrba.Abm_Ruta
 
         private void agregarRuta()
         {
+            agregarModificar("-1");
+            MessageBox.Show("Ruta creada", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            inicializar();
+        }
+
+        private void agregarModificar(string code)
+        {
+
             // probar  (es posible q haya que cambiar los nombres de atributos en la vista)
-            string comando = "INSERT INTO DBAS.caracteristicasRutas   "+
-                           "( precio_base_por_KG,  precio_base_por_pasaje,ciudad_Origen, ciudad_Destino, tipo_servicio) " +  //porcentaje_arancel
-           "select distinct '" + txtPregiokg.Text + "' , '" + txtPrecioPasaje.Text + "','"  + txtCOrigen.Text + "','" + txtCDestino.Text + "' , tipo_servicio FROM DBAS.servicios WHERE tipo_servicio IN ( "; 
-        
-              foreach (Object elemento in chkListaServicios.CheckedItems)
+            string comando = "INSERT INTO DBAS.caracteristicasRutas   " +
+                           "(codigo_ruta ,  precio_base_por_KG,  precio_base_por_pasaje,ciudad_Origen, ciudad_Destino, tipo_servicio) " +  //porcentaje_arancel
+           "select distinct "+code+", '" + txtPregiokg.Text + "' , '" + txtPrecioPasaje.Text + "','" + txtCOrigen.Text + "','" + txtCDestino.Text + "' , tipo_servicio FROM DBAS.servicios WHERE tipo_servicio IN ( ";
+
+            foreach (Object elemento in chkListaServicios.CheckedItems)
             {
                 comando = comando + " '" + elemento.ToString() + "',";
             }
@@ -158,14 +166,14 @@ namespace AerolineaFrba.Abm_Ruta
                 return;
             }
 
-            if(tipo==0) MessageBox.Show("Ruta creada", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
-            inicializar();
+          return;
         }
 
         private void modificarRuta()
         {
             string service = "dammy";
-
+            agregarModificar(txtCodigo.Text);
+        //    return;
 
          // foreach (string service in chkListaServicios.CheckedItems)
             for (int i = 0; i <= (chkListaServicios.CheckedItems.Count - 1); i++) 
@@ -180,7 +188,7 @@ namespace AerolineaFrba.Abm_Ruta
               }
             }
 
-           //     MessageBox.Show("Ruta Modificada ", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Ruta Modificada ", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             
         }
 

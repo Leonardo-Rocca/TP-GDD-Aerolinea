@@ -33,9 +33,7 @@
             this.chkListaServicios = new System.Windows.Forms.CheckedListBox();
             this.lbService = new System.Windows.Forms.Label();
             this.txtPasajeSuperior = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.txtPasajeLimInferior = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.txtPKGSuperior = new System.Windows.Forms.TextBox();
             this.lby = new System.Windows.Forms.Label();
             this.txtPKGLimInferior = new System.Windows.Forms.TextBox();
@@ -55,6 +53,8 @@
             this.butCancelar = new System.Windows.Forms.Button();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.button2 = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             lbclick = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.SuspendLayout();
@@ -102,43 +102,23 @@
             // txtPasajeSuperior
             // 
             this.txtPasajeSuperior.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPasajeSuperior.Location = new System.Drawing.Point(857, 236);
+            this.txtPasajeSuperior.Location = new System.Drawing.Point(899, 236);
             this.txtPasajeSuperior.Name = "txtPasajeSuperior";
             this.txtPasajeSuperior.Size = new System.Drawing.Size(107, 26);
             this.txtPasajeSuperior.TabIndex = 64;
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(828, 239);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(23, 18);
-            this.label3.TabIndex = 63;
-            this.label3.Text = "y :";
-            // 
             // txtPasajeLimInferior
             // 
             this.txtPasajeLimInferior.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPasajeLimInferior.Location = new System.Drawing.Point(673, 234);
+            this.txtPasajeLimInferior.Location = new System.Drawing.Point(715, 234);
             this.txtPasajeLimInferior.Name = "txtPasajeLimInferior";
             this.txtPasajeLimInferior.Size = new System.Drawing.Size(107, 26);
             this.txtPasajeLimInferior.TabIndex = 62;
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(622, 236);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(45, 18);
-            this.label4.TabIndex = 61;
-            this.label4.Text = "entre:";
-            // 
             // txtPKGSuperior
             // 
             this.txtPKGSuperior.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPKGSuperior.Location = new System.Drawing.Point(857, 135);
+            this.txtPKGSuperior.Location = new System.Drawing.Point(899, 135);
             this.txtPKGSuperior.Name = "txtPKGSuperior";
             this.txtPKGSuperior.Size = new System.Drawing.Size(107, 26);
             this.txtPKGSuperior.TabIndex = 60;
@@ -147,16 +127,16 @@
             // 
             this.lby.AutoSize = true;
             this.lby.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lby.Location = new System.Drawing.Point(828, 138);
+            this.lby.Location = new System.Drawing.Point(847, 138);
             this.lby.Name = "lby";
-            this.lby.Size = new System.Drawing.Size(23, 18);
+            this.lby.Size = new System.Drawing.Size(52, 18);
             this.lby.TabIndex = 59;
-            this.lby.Text = "y :";
+            this.lby.Text = "hasta :";
             // 
             // txtPKGLimInferior
             // 
             this.txtPKGLimInferior.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPKGLimInferior.Location = new System.Drawing.Point(673, 133);
+            this.txtPKGLimInferior.Location = new System.Drawing.Point(715, 133);
             this.txtPKGLimInferior.Name = "txtPKGLimInferior";
             this.txtPKGLimInferior.Size = new System.Drawing.Size(107, 26);
             this.txtPKGLimInferior.TabIndex = 58;
@@ -165,17 +145,17 @@
             // 
             this.lbEntre.AutoSize = true;
             this.lbEntre.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbEntre.Location = new System.Drawing.Point(622, 135);
+            this.lbEntre.Location = new System.Drawing.Point(656, 135);
             this.lbEntre.Name = "lbEntre";
-            this.lbEntre.Size = new System.Drawing.Size(45, 18);
+            this.lbEntre.Size = new System.Drawing.Size(55, 18);
             this.lbEntre.TabIndex = 57;
-            this.lbEntre.Text = "entre:";
+            this.lbEntre.Text = "Desde:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(607, 197);
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(649, 197);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(173, 20);
             this.label2.TabIndex = 55;
@@ -184,8 +164,8 @@
             // lbPrecioKG
             // 
             this.lbPrecioKG.AutoSize = true;
-            this.lbPrecioKG.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbPrecioKG.Location = new System.Drawing.Point(607, 95);
+            this.lbPrecioKG.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbPrecioKG.Location = new System.Drawing.Point(649, 95);
             this.lbPrecioKG.Name = "lbPrecioKG";
             this.lbPrecioKG.Size = new System.Drawing.Size(148, 20);
             this.lbPrecioKG.TabIndex = 53;
@@ -205,7 +185,7 @@
             // btsOringen
             // 
             this.btsOringen.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btsOringen.Location = new System.Drawing.Point(431, 132);
+            this.btsOringen.Location = new System.Drawing.Point(431, 139);
             this.btsOringen.Name = "btsOringen";
             this.btsOringen.Size = new System.Drawing.Size(108, 29);
             this.btsOringen.TabIndex = 51;
@@ -235,7 +215,7 @@
             // txtCOrigen
             // 
             this.txtCOrigen.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCOrigen.Location = new System.Drawing.Point(224, 135);
+            this.txtCOrigen.Location = new System.Drawing.Point(224, 142);
             this.txtCOrigen.Name = "txtCOrigen";
             this.txtCOrigen.ReadOnly = true;
             this.txtCOrigen.Size = new System.Drawing.Size(180, 26);
@@ -245,7 +225,7 @@
             // 
             this.lbOrigen.AutoSize = true;
             this.lbOrigen.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbOrigen.Location = new System.Drawing.Point(30, 138);
+            this.lbOrigen.Location = new System.Drawing.Point(30, 145);
             this.lbOrigen.Name = "lbOrigen";
             this.lbOrigen.Size = new System.Drawing.Size(110, 20);
             this.lbOrigen.TabIndex = 47;
@@ -321,20 +301,40 @@
             this.button2.UseVisualStyleBackColor = false;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(656, 239);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(55, 18);
+            this.label4.TabIndex = 69;
+            this.label4.Text = "Desde:";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(847, 239);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(52, 18);
+            this.label3.TabIndex = 70;
+            this.label3.Text = "hasta :";
+            // 
             // ModificarEliminarRuta
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.ClientSize = new System.Drawing.Size(1109, 676);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label4);
             this.Controls.Add(lbclick);
             this.Controls.Add(this.btBuscar);
             this.Controls.Add(this.chkListaServicios);
             this.Controls.Add(this.lbService);
             this.Controls.Add(this.txtPasajeSuperior);
-            this.Controls.Add(this.label3);
             this.Controls.Add(this.txtPasajeLimInferior);
-            this.Controls.Add(this.label4);
             this.Controls.Add(this.txtPKGSuperior);
             this.Controls.Add(this.lby);
             this.Controls.Add(this.txtPKGLimInferior);
@@ -385,11 +385,11 @@
         private System.Windows.Forms.TextBox txtPKGSuperior;
         private System.Windows.Forms.Label lby;
         private System.Windows.Forms.TextBox txtPasajeSuperior;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtPasajeLimInferior;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckedListBox chkListaServicios;
         private System.Windows.Forms.Label lbService;
         private System.Windows.Forms.Button btBuscar;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label3;
     }
 }

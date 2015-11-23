@@ -354,6 +354,14 @@ namespace AerolineaFrba.Abm_Ruta
         {
             string codigo_ruta = dataGridView2[0, dataGridView2.CurrentCell.RowIndex].Value.ToString();
 
+            ConexionSQL conn = new ConexionSQL();
+            string qEstaEnviaje = "select * from dbas.viajes where habilitado_viaje = 1 AND codigo_ruta = "+codigo_ruta;
+            DataTable dviaje = conn.cargarTablaSQL(qEstaEnviaje);
+            if(dviaje.Rows.Count != 0){
+                MessageBox.Show("No se puede modificar la ruta "+codigo_ruta+", se encuentra en viaje/s");
+                return;
+            }
+
             string ciudad_Origen = dataGridView2[1, dataGridView2.CurrentCell.RowIndex].Value.ToString();
             string ciudad_Destino = dataGridView2[2, dataGridView2.CurrentCell.RowIndex].Value.ToString();
             string tipo_servicio = dataGridView2[5, dataGridView2.CurrentCell.RowIndex].Value.ToString();
@@ -362,7 +370,7 @@ namespace AerolineaFrba.Abm_Ruta
             string porcentaje_arancel = dataGridView2[4, dataGridView2.CurrentCell.RowIndex].Value.ToString();
 
             string query = "select tipo_servicio FROM DBAS.caracteristicasRutas WHERE codigo_ruta = "+codigo_ruta ;
-            ConexionSQL conn = new ConexionSQL();
+           
             DataTable dt = conn.cargarTablaSQL(query);
 
            List<string> servicios = new List<string>();

@@ -2010,16 +2010,8 @@ WHERE tablaRutas.habilitada_ruta = 1 AND tablaRutas.ciudad_origen_id = tablaCiud
 AND tablaSporR.codigo_ruta = tablaRutas.codigo_ruta AND tablaServicios.id_servicio = tablaSporR.id_servicio
 GO
 
--- La vista es creada para que la aplicacion me pueda mandar un INSERT simultaneo como si fuera el de un select, con los parametros de la vista
-CREATE VIEW DBAS.modificarCaracteristicasRutas AS
-SELECT tablaRutas.codigo_ruta, tablaRutas.precio_base_por_KG, tablaRutas.precio_base_por_pasaje, tablaCiudad_origen.nombre_ciudad as ciudad_Origen, tablaCiudad_destino.nombre_ciudad as ciudad_Destino, tablaServicios.tipo_servicio, tablaServicios.porcentaje_arancel
-FROM DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudad_origen, DBAS.ciudades tablaCiudad_destino, DBAS.servicios tablaServicios, DBAS.serviciosPorRutas tablaSporR
-WHERE tablaRutas.habilitada_ruta = 1 AND tablaRutas.ciudad_origen_id = tablaCiudad_origen.id_ciudad AND tablaRutas.ciudad_destino_id = tablaCiudad_destino.id_ciudad
-AND tablaSporR.codigo_ruta = tablaRutas.codigo_ruta AND tablaServicios.id_servicio = tablaSporR.id_servicio
-GO
-
 -- Creo un trigger para manejar las nuevas rutas ingresadas en la vista
-CREATE TRIGGER DBAS.altaRutas ON DBAS.caracteristicasRutas
+CREATE TRIGGER DBAS.altaYModificacionRutas ON DBAS.caracteristicasRutas
 INSTEAD OF INSERT
 AS
 BEGIN
@@ -2035,60 +2027,6 @@ BEGIN
 
 	-- Creo un cursor para las el manejo de las nuevas rutas insertadas
 	DECLARE rutasCursor CURSOR FOR
-	SELECT CAST(precio_base_por_KG AS float(24)), CAST(precio_base_por_pasaje AS float(24)), ciudad_Origen, ciudad_Destino, tipo_servicio FROM inserted
-
-	OPEN rutasCursor
-
-	FETCH NEXT FROM rutasCursor
-	INTO @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
-
-	-- Obtengo las id de las ciudades con los nombres de la nueva ruta
-	SELECT @ID_ciudad_Origen = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Origen
-	SELECT @ID_ciudad_Destino = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Destino
-
-	-- Inserto la nueva ruta con sus caracteristicas
-	INSERT INTO DBAS.rutas(precio_base_por_KG, precio_base_por_pasaje, ciudad_origen_id, ciudad_destino_id)
-	VALUES (@precio_KG, @precio_pasaje, @ID_ciudad_Origen, @ID_ciudad_Destino)
-
-	-- Obtengo el codigo de la ruta para su utilizacion
-	SET @codigo_ruta = SCOPE_IDENTITY()
-	
-	WHILE @@FETCH_STATUS = 0
-	BEGIN
-		--Obtengo el id del servicio que fueron seleccionados de la ruta
-		SELECT @id_servicio = id_servicio FROM DBAS.servicios WHERE tipo_servicio = @tipo_servicio
-
-		-- Establezco la relacion entre la nueva ruta y los servicios seleccionados
-		INSERT INTO DBAS.serviciosPorRutas(codigo_ruta, id_servicio)
-		VALUES (@codigo_ruta, @id_servicio)
-
-		FETCH NEXT FROM rutasCursor
-		INTO @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
-	END
-
-	CLOSE rutasCursor
-	DEALLOCATE rutasCursor
-
-END;
-GO
-
-
-CREATE TRIGGER DBAS.modificacionRutas ON DBAS.modificarCaracteristicasRutas
-INSTEAD OF INSERT
-AS
-BEGIN
-	DECLARE @codigo_ruta bigint
-	DECLARE @ciudad_Origen varchar(100)
-	DECLARE @ciudad_Destino varchar(100)
-	DECLARE @ID_ciudad_Origen bigint
-	DECLARE @ID_ciudad_Destino bigint
-	DECLARE @tipo_servicio varchar(100)
-	DECLARE @precio_KG float(24)
-	DECLARE @precio_pasaje float(24)
-	DECLARE @id_servicio bigint
-
-	-- Creo un cursor para las el manejo de la ruta a modificar
-	DECLARE rutasCursor CURSOR FOR
 	SELECT codigo_ruta, CAST(precio_base_por_KG AS float(24)), CAST(precio_base_por_pasaje AS float(24)), ciudad_Origen, ciudad_Destino, tipo_servicio FROM inserted
 
 	OPEN rutasCursor
@@ -2096,16 +2034,29 @@ BEGIN
 	FETCH NEXT FROM rutasCursor
 	INTO @codigo_ruta, @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
 
-	-- Obtengo las id de las nuevas ciudades que va a tener la ruta
+	-- Obtengo las id de las ciudades con los nombres de la nueva ruta
 	SELECT @ID_ciudad_Origen = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Origen
 	SELECT @ID_ciudad_Destino = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Destino
 
-	-- Actualizo los valores de la ruta a modificar
-	UPDATE DBAS.rutas SET precio_base_por_KG = @precio_KG, precio_base_por_pasaje = @precio_pasaje, ciudad_origen_id = @ID_ciudad_Origen, ciudad_destino_id = @ID_ciudad_Destino WHERE codigo_ruta = @codigo_ruta
+	IF EXISTS(SELECT * FROM DBAS.rutas WHERE codigo_ruta = @codigo_ruta)
+	BEGIN
+		-- Actualizo los valores de la ruta a modificar
+		UPDATE DBAS.rutas SET precio_base_por_KG = @precio_KG, precio_base_por_pasaje = @precio_pasaje, ciudad_origen_id = @ID_ciudad_Origen, ciudad_destino_id = @ID_ciudad_Destino WHERE codigo_ruta = @codigo_ruta
 
-	-- Elimino las relaciones de la ruta con los viejos servicios
-	DELETE FROM DBAS.serviciosPorRutas
-	WHERE codigo_ruta = @codigo_ruta
+		-- Elimino las relaciones de la ruta con los viejos servicios
+		DELETE FROM DBAS.serviciosPorRutas
+		WHERE codigo_ruta = @codigo_ruta
+	END
+	ELSE
+	BEGIN
+		
+		-- Inserto la nueva ruta con sus caracteristicas
+		INSERT INTO DBAS.rutas(precio_base_por_KG, precio_base_por_pasaje, ciudad_origen_id, ciudad_destino_id)
+		VALUES (@precio_KG, @precio_pasaje, @ID_ciudad_Origen, @ID_ciudad_Destino)
+
+		-- Obtengo el codigo de la ruta para su utilizacion
+		SET @codigo_ruta = SCOPE_IDENTITY()
+	END
 	
 	WHILE @@FETCH_STATUS = 0
 	BEGIN
@@ -2118,7 +2069,6 @@ BEGIN
 
 		FETCH NEXT FROM rutasCursor
 		INTO @codigo_ruta, @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
-
 	END
 
 	CLOSE rutasCursor

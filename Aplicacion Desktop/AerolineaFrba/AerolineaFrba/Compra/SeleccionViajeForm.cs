@@ -76,8 +76,8 @@ namespace AerolineaFrba.Compra
              "r.ciudad_destino_id = cd.id_ciudad" +
              " AND habilitado_viaje = 1"+
 
-             " AND (select top 1 DBAS.cantidadButacasLibres (v.matricula_aeronave ,id_viaje) from dbas.servicios) > 0 " +
-             " AND (select top 1 DBAS.cantidadKgDisponibles (v.matricula_aeronave ,id_viaje) from dbas.servicios) > 0 ";
+             " AND ( ((select top 1 DBAS.cantidadButacasLibres (v.matricula_aeronave ,id_viaje) from dbas.servicios) > 0 )" +
+             " OR ( (select top 1 DBAS.cantidadKgDisponibles (v.matricula_aeronave ,id_viaje) from dbas.servicios) > 0) ) ";
         }
 
         private bool validarCamposCompletos()

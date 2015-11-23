@@ -117,7 +117,9 @@ namespace AerolineaFrba.Generacion_Viaje
                     return;
                 }
 
-               throw new Exception();
+                 MessageBox.Show(sqlEx.Message);
+                 return;
+                throw new Exception();
             }
 
             MessageBox.Show("Viaje generado", "Generar Viaje", MessageBoxButtons.OK);

@@ -31,8 +31,8 @@ namespace AerolineaFrba
             {
                 LoginAdministrador ingreso = new LoginAdministrador();
                 ingreso.Show();
-                //this.Hide();
-                this.Close();
+                this.Hide();
+              //  this.Close();
             }
             else
             {
@@ -42,8 +42,8 @@ namespace AerolineaFrba
                 redirec.setFunciones(Sesion.getFuncionalidadesDisponibles);
                 //  (new  Abm_Rol.Form1()).Show();
                 redirec.Show();
-              //  this.Hide();
-                this.Close();
+                this.Hide();
+              //  this.Close();
             }
         }
 

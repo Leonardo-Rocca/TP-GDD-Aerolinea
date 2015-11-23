@@ -28,15 +28,16 @@ namespace AerolineaFrba.Compra
         internal static void realizarCompra()
         {
             comprador.darDeAltaClienteSiNoExiste();
-
+           
+           
             string qGenerarCompra = "execute  DBAS.generarCompra " + comprador.idCliente + "," + tarjeta.numeroTarjeta + " , " + tarjeta.codigo + ", '"+tarjeta.dateTime+"' ," + tarjeta.tipoTarjetaId + "," + tarjeta.cuotasElegidas + " ," + tarjeta.tipo;
             (new ConexionSQL()).ejecutarComandoSQL(qGenerarCompra);
-            MessageBox.Show("compra "+ qGenerarCompra);
-            try
-            {
+         
+            
                 CultureInfo culture = new CultureInfo("es-ES");
 
-                //obtengo el ultimo
+                try
+                {                //obtengo el ultimo
                 DataTable dt = (new ConexionSQL()).cargarTablaSQL("select top 1 (id_compra_PNR) AS codigo FROM DBAS.compras ORDER BY 1 DESC");
                 DataRow row = dt.Rows[0];
                 string idCompra = row[0].ToString();

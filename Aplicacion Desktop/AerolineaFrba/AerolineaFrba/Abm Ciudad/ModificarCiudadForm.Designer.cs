@@ -60,7 +60,7 @@
             this.buttonGuardar.Name = "buttonGuardar";
             this.buttonGuardar.Size = new System.Drawing.Size(117, 58);
             this.buttonGuardar.TabIndex = 16;
-            this.buttonGuardar.Text = "Modificar City";
+            this.buttonGuardar.Text = "Modificar Ciudad";
             this.buttonGuardar.UseVisualStyleBackColor = true;
             this.buttonGuardar.Click += new System.EventHandler(this.buttonGuardar_Click);
             // 

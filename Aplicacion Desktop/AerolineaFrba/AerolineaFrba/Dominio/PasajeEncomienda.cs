@@ -56,11 +56,8 @@ namespace AerolineaFrba.Dominio
                // DataTable dt = (new ConexionSQL()).cargarTablaSQL(comando);
             
            }
-            try{
            (new ConexionSQL()).ejecutarComandoSQL(comando);
-                }catch(Exception er){
-                    MessageBox.Show(er.Message.ToString());
-                }
+
        }
 
         private string obtenerUltimoIdPersona()

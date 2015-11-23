@@ -56,15 +56,23 @@ namespace AerolineaFrba.Compra
         private void butAceptar_Click(object sender, EventArgs e)
         {
             if(!validarCamposVacios())return;
-            if (!masValidaciones()) return;
+            if (!masValidaciones(txtDni.Text,"El DNI")) return;
    //         if (idPersona == "") generarIdPersona();
             string butacaKg="";
             if (tipo == 1) butacaKg = txtButaca.Text;
             if (tipo == 2) butacaKg = txtKg.Text;
 
-            PasajeEncomienda pasEn = new PasajeEncomienda(idPersona,txtnombre.Text,txtApellido.Text,dni,tel,txtMail.Text,dateTimePickerFnac.Value.ToString(),butacaKg);
+            PasajeEncomienda pasEn;
+            try{
+            pasEn = new PasajeEncomienda(idPersona,txtnombre.Text,txtApellido.Text,dni,tel,txtMail.Text,dateTimePickerFnac.Value.ToString(),butacaKg);
             pasEn.direccion = txtDireccion.Text;
     //        pasEn.darDeAltaClienteSiNoExiste();
+            }
+            catch (Exception er)
+            {
+                MessageBox.Show(er.Message.ToString());
+                return;
+            }
 
             if (tipo == 0)
             {
@@ -101,24 +109,24 @@ namespace AerolineaFrba.Compra
             this.Close();
         }
 
-        private bool masValidaciones()
+        private bool masValidaciones(string texto,string mensaje)
         {
             Int32 a;
 
             try
             {
-                a = Convert.ToInt32(txtDni.Text);
+                a = Convert.ToInt32(texto);
 
             }
             catch
             {
-                MessageBox.Show("El DNI no posee un tipo de datos valido", "Error", MessageBoxButtons.OK);
+                MessageBox.Show(mensaje + " no posee un tipo de datos valido", "Error", MessageBoxButtons.OK);
                 return false;
             }
 
             if (a < 0)
             {
-                MessageBox.Show("El DNI no esta en un rango valido", "Error", MessageBoxButtons.OK);
+                MessageBox.Show(mensaje +" no esta en un rango valido", "Error", MessageBoxButtons.OK);
                 return false;
             }
 
@@ -153,7 +161,7 @@ namespace AerolineaFrba.Compra
         private void txtDni_TextChanged(object sender, EventArgs e)
         {    
              if (txtDni.Text.Length < 5) return;
-            if (!masValidaciones()) return;
+            if (!masValidaciones(txtDni.Text,"El DNI")) return;
             dni = txtDni.Text;
 
             //----Obtengo el idpersona para cargar sus datos
@@ -208,8 +216,11 @@ namespace AerolineaFrba.Compra
 
         private void txtKg_TextChanged(object sender, EventArgs e)
         {
-            //validar numero  (no hace falta)
+            //validar numero  TO-DO
             if (txtKg.Text == "") txtKg.Text = "0";
+           // if (!masValidaciones(txtButaca.Text, "El valor de kilogramos por encomienda"))
+           //     txtKg.Text = "";
+                return;
         }
 
         private void datosPasajeroForm_Load(object sender, EventArgs e)

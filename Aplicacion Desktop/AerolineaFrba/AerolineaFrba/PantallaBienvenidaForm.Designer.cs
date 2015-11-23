@@ -52,7 +52,7 @@
             this.cmbRoles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbRoles.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbRoles.FormattingEnabled = true;
-            this.cmbRoles.Location = new System.Drawing.Point(144, 178);
+            this.cmbRoles.Location = new System.Drawing.Point(160, 178);
             this.cmbRoles.Name = "cmbRoles";
             this.cmbRoles.Size = new System.Drawing.Size(310, 28);
             this.cmbRoles.TabIndex = 8;

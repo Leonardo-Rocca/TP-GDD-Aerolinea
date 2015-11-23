@@ -1,9 +1,12 @@
+
+
 DROP TRIGGER DBAS.modificarRol
 DROP TRIGGER DBAS.crearRolConFuncionalidades
 DROP TRIGGER DBAS.reemplazarButacasEnViajes
 DROP TRIGGER DBAS.altaRutas
 DROP TRIGGER DBAS.modificacionRutas
 DROP TRIGGER DBAS.cancelarPasajes
+DROP TRIGGER DBAS.modificacionRutas
 
 
 DROP FUNCTION DBAS.preciosPasajes
@@ -29,6 +32,9 @@ DROP FUNCTION DBAS.aeronavesDeReemplazo
 DROP FUNCTION DBAS.ultimaCiudadAeronave
 DROP FUNCTION DBAS.cantidadButacasLibres
 DROP FUNCTION DBAS.cantidadKgDisponibles
+DROP FUNCTION DBAS.rutasConCiudad
+DROP FUNCTION DBAS.butacasLibresEnViaje
+DROP FUNCTION DBAS.ultimoViajePasajero
 
 
 DROP PROCEDURE DBAS.migracionFabricantes
@@ -58,6 +64,11 @@ DROP PROCEDURE DBAS.altaViaje
 DROP PROCEDURE DBAS.generarCompra
 DROP PROCEDURE DBAS.modificarRol
 DROP PROCEDURE DBAS.altaRol
+DROP PROCEDURE DBAS.registroLLegadaAeronave
+DROP PROCEDURE DBAS.bajaCiudad
+DROP PROCEDURE DBAS.cancelarPasajesBajaCiudad
+DROP PROCEDURE DBAS.actualizarCliente
+
 
 DROP VIEW DBAS.cantidadKgEncomiendasPorViaje
 DROP VIEW DBAS.cantidadPasajerosPorViaje
@@ -67,7 +78,7 @@ DROP VIEW DBAS.millasPorPasajes
 DROP VIEW DBAS.modificarRoles
 DROP VIEW DBAS.PasajesCancelados
 DROP VIEW DBAS.rolesConFuncionalidades
-
+DROP VIEW DBAS.modificarCaracteristicasRutas
 
 
 DROP TABLE DBAS.rutas

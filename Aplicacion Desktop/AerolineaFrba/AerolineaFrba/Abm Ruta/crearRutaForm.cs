@@ -158,13 +158,15 @@ namespace AerolineaFrba.Abm_Ruta
                 return;
             }
 
-            MessageBox.Show("Ruta creada", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if(tipo==0) MessageBox.Show("Ruta creada", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
             inicializar();
         }
 
         private void modificarRuta()
         {
             string service = "dammy";
+
+
          // foreach (string service in chkListaServicios.CheckedItems)
             for (int i = 0; i <= (chkListaServicios.CheckedItems.Count - 1); i++) 
             {
@@ -178,7 +180,7 @@ namespace AerolineaFrba.Abm_Ruta
               }
             }
 
-           //     MessageBox.Show("Ruta Modificada (posta)", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+           //     MessageBox.Show("Ruta Modificada ", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             
         }
 

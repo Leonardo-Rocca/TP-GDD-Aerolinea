@@ -60,7 +60,14 @@ namespace AerolineaFrba.Devolucion
             if (comboBox1.Text == "") return;
             pasajes.Remove(comboBox1.Text);
             comboBox1.Items.Remove(comboBox1.Text);
-            comboBox1.Text = "";
+            if (pasajes.Count == 0)
+            {
+                comboBox1.Text = "";
+            }
+            else
+            {
+                comboBox1.Text = (pasajes.ElementAt(0)).ToString();
+            }
         }
 
         private void butAceptar_Click(object sender, EventArgs e)
@@ -199,8 +206,20 @@ namespace AerolineaFrba.Devolucion
                     return;
                 }
 
+                if (sqlEx.Message.StartsWith("Hay un pasaje que ya fue cancelado"))
+                {
+                    MessageBox.Show("Hay un pasaje que ya fue cancelado", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                    return;
+                }
 
-                MessageBox.Show(sqlEx.Message);
+                if (sqlEx.Message.StartsWith("Hay una encomienda que ya fue cancelada"))
+                {
+                    MessageBox.Show("Hay una encomienda que ya fue cancelada", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                    return;
+                }
+
+
+              //  MessageBox.Show(sqlEx.Message);
             }
 
             MessageBox.Show("Cancelacion exitosa", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);

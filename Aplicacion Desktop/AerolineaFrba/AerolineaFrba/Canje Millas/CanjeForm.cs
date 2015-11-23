@@ -52,6 +52,11 @@ namespace AerolineaFrba.Canje_Millas
             string idProd = obtenerIdProducto();
             string qsp = "execute dbas.canjeProducto " + idPersona + "," + idProd + "," + textCantidad.Text;
             (new ConexionSQL()).ejecutarComandoSQL(qsp);
+
+           
+            MessageBox.Show("Millas canjeadas correctamente", "Canje de Millas", MessageBoxButtons.OK);
+            this.inicializar();
+            this.Hide();
         }
 
         private bool validacionExtra()

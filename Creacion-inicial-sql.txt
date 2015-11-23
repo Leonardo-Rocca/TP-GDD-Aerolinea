@@ -849,11 +849,9 @@ BEGIN
 	WHERE DATEDIFF(day,fecha_obtencion_millas,@GET_DATE) <= 365) -
 	 ( ISNULL((SELECT SUM(millas_usadas) FROM DBAS.canjes tablaCanjes, DBAS.clientes tablaClientes, DBAS.personas tablaPersonas
 	WHERE tablaCanjes.id_cliente = tablaClientes.id_cliente AND tablaClientes.id_persona = tablaPersonas.id_persona
-	AND tablaPersonas.dni_persona = @dni_persona AND DATEDIFF(day,fecha_canje,@GET_DATE) <= 365
-	GROUP BY id_canje),0)))
+	AND tablaPersonas.dni_persona = @dni_persona AND DATEDIFF(day,fecha_canje,@GET_DATE) <= 365),0)))
 END;
 GO
-
 
 
 CREATE FUNCTION DBAS.millasAcumuladasEntre(@fecha_desde datetime, @fecha_hasta datetime)
@@ -1848,6 +1846,7 @@ BEGIN
 		WHERE tablaViajes.fecha_salida > @GET_DATE AND tablaViajes.fecha_salida < @fecha 
 		AND tablaPasajes.id_viaje = tablaViajes.id_viaje
 		AND tablaViajes.matricula_aeronave = @matricula_aeronave
+		AND tablaPasajes.id_cancelacion IS NULL
 	
 		-- Actualizo las encomiendas que tienen a la aeronave que se da de baja con el id cancelacion obtenido
 		UPDATE tablaEncomiendas SET tablaEncomiendas.id_cancelacion = @ID_cancelacion 
@@ -1855,6 +1854,7 @@ BEGIN
 		WHERE  tablaViajes.fecha_salida > @GET_DATE AND tablaViajes.fecha_salida < @fecha 
 		AND tablaEncomiendas.id_viaje = tablaViajes.id_viaje
 		AND tablaViajes.matricula_aeronave = @matricula_aeronave
+		AND tablaEncomiendas.id_cancelacion IS NULL
 
 		--Deshabilito el viaje para que no se pueda vender pasajes ni encomiendas
 		UPDATE DBAS.viajes SET habilitado_viaje = 0 WHERE matricula_aeronave = @matricula_aeronave AND fecha_salida > @GET_DATE AND fecha_salida < @fecha 
@@ -1869,12 +1869,14 @@ BEGIN
 		WHERE  tablaViajes.fecha_salida > @GET_DATE
 		AND tablaPasajes.id_viaje = tablaViajes.id_viaje
 		AND tablaViajes.matricula_aeronave = @matricula_aeronave
+		AND tablaPasajes.id_cancelacion IS NULL
 		
 		UPDATE tablaEncomiendas SET tablaEncomiendas.id_cancelacion = @ID_cancelacion 
 		FROM  DBAS.viajes tablaViajes, DBAS.encomiendas tablaEncomiendas
 		WHERE tablaViajes.fecha_salida > @GET_DATE
 		AND tablaEncomiendas.id_viaje = tablaViajes.id_viaje
 		AND tablaViajes.matricula_aeronave = @matricula_aeronave
+		AND tablaEncomiendas.id_cancelacion IS NULL
 
 		--Deshabilito el viaje para que no se pueda vender pasajes ni encomiendas
 		UPDATE DBAS.viajes SET habilitado_viaje = 0 WHERE matricula_aeronave = @matricula_aeronave AND fecha_salida > @GET_DATE
@@ -2013,6 +2015,7 @@ BEGIN
 	DECLARE @precio_KG float(24)
 	DECLARE @precio_pasaje float(24)
 	DECLARE @id_servicio bigint
+	DECLARE @NULL bigint
 
 	-- Creo un cursor para las el manejo de las nuevas rutas insertadas
 	DECLARE rutasCursor CURSOR FOR
@@ -2057,7 +2060,7 @@ BEGIN
 		VALUES (@codigo_ruta, @id_servicio)
 
 		FETCH NEXT FROM rutasCursor
-		INTO @codigo_ruta, @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
+		INTO @NULL, @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
 	END
 
 	CLOSE rutasCursor
@@ -2110,6 +2113,7 @@ BEGIN
 	WHERE tablaViajes.fecha_salida > @GET_DATE
 	AND tablaPasajes.id_viaje = tablaViajes.id_viaje
 	AND tablaViajes.codigo_ruta= @codigo_ruta
+	AND tablaPasajes.id_cancelacion IS NULL
 	
 	-- Actualizo todos los pasajes que contengan la ruta que se da de baja e inserto el id de cancelacion
 	UPDATE tablaEncomiendas SET tablaEncomiendas.id_cancelacion = @ID_cancelacion 
@@ -2117,6 +2121,7 @@ BEGIN
 	WHERE  tablaViajes.fecha_salida > @GET_DATE
 	AND tablaEncomiendas.id_viaje = tablaViajes.id_viaje
 	AND tablaViajes.codigo_ruta= @codigo_ruta
+	AND tablaEncomiendas.id_cancelacion IS NULL
 
 	-- Deshabilito la ruta
 	UPDATE DBAS.rutas SET habilitada_ruta = 0 WHERE codigo_ruta = @codigo_ruta
@@ -2274,8 +2279,8 @@ BEGIN
 	WHILE @@FETCH_STATUS = 0
 	BEGIN
 		
-		UPDATE DBAS.pasajes SET id_cancelacion = @ID_cancelacion WHERE id_viaje = @id_viaje
-		UPDATE DBAS.encomiendas SET id_cancelacion = @ID_cancelacion WHERE id_viaje = @id_viaje
+		UPDATE DBAS.pasajes SET id_cancelacion = @ID_cancelacion WHERE id_viaje = @id_viaje AND id_cancelacion IS NULL
+		UPDATE DBAS.encomiendas SET id_cancelacion = @ID_cancelacion WHERE id_viaje = @id_viaje AND id_cancelacion IS NULL
 
 		-- Deshabilito la ruta
 		UPDATE DBAS.rutas SET habilitada_ruta = 0 WHERE codigo_ruta = @codigo_ruta
@@ -2512,8 +2517,26 @@ BEGIN
 				-- pregunto si existe el pasaje con el codigo ingresado y con el mismo PNR
 				IF EXISTS(SELECT * FROM DBAS.pasajes WHERE codigo_pasaje = @codigo_pasaje AND id_compra_PNR = @PNR)
 				BEGIN
-					-- Actualizo el pasaje con el codigo de cancelacion
-					UPDATE DBAS.pasajes SET id_cancelacion = @ID_cancelacion WHERE codigo_pasaje = @codigo_pasaje
+					IF EXISTS(SELECT * FROM DBAS.pasajes WHERE codigo_pasaje = @codigo_pasaje AND id_cancelacion IS NULL)
+					BEGIN
+						-- Actualizo el pasaje con el codigo de cancelacion
+						UPDATE DBAS.pasajes SET id_cancelacion = @ID_cancelacion WHERE codigo_pasaje = @codigo_pasaje
+					END
+					ELSE
+					BEGIN
+
+						-- Devuelvo un mensaje de error
+						SET @mensaje_error = 'Hay un pasaje que ya fue cancelado'
+						RAISERROR(@mensaje_error, 12, 1)
+
+						-- Vuelvo atras todos los cambios realizados
+						ROLLBACK TRANSACTION
+				
+						SET @cancelarTransaccion = 1
+
+					BREAK
+					END
+						
 				END
 				ELSE
 				BEGIN
@@ -2535,8 +2558,27 @@ BEGIN
 				-- pregunto si existe la encomienda con el codigo ingresado y con el mismo PNR
 				IF EXISTS(SELECT * FROM DBAS.encomiendas WHERE codigo_encomienda = @codigo_encomienda AND id_compra_PNR = @PNR)
 				BEGIN
-					-- Actualizo la encomienda con el codigo de cancelacion
-					UPDATE DBAS.encomiendas SET id_cancelacion = @ID_cancelacion WHERE codigo_encomienda = @codigo_encomienda
+					IF EXISTS(SELECT * FROM DBAS.encomiendas WHERE codigo_encomienda = @codigo_encomienda AND id_cancelacion IS NULL)
+					BEGIN
+						
+						-- Actualizo la encomienda con el codigo de cancelacion
+						UPDATE DBAS.encomiendas SET id_cancelacion = @ID_cancelacion WHERE codigo_encomienda = @codigo_encomienda
+					END
+					ELSE
+					BEGIN
+
+						-- Devuelvo un mensaje de error
+						SET @mensaje_error = 'Hay una encomienda que ya fue cancelada'
+						RAISERROR(@mensaje_error, 12, 1)
+				
+						-- Vuelvo atras todos los cambios realizados
+						ROLLBACK TRANSACTION
+
+						SET @cancelarTransaccion = 1
+						BREAK
+
+					END
+
 				END
 				ELSE
 				BEGIN

@@ -62,7 +62,7 @@ namespace AerolineaFrba.Compra
             if (tipo == 1) butacaKg = txtButaca.Text;
             if (tipo == 2) butacaKg = txtKg.Text;
 
-            PasajeEncomienda pasEn;
+            PasajeEncomienda pasEn=null;
             try{
             pasEn = new PasajeEncomienda(idPersona,txtnombre.Text,txtApellido.Text,dni,tel,txtMail.Text,dateTimePickerFnac.Value.ToString(),butacaKg);
             pasEn.direccion = txtDireccion.Text;
@@ -70,8 +70,10 @@ namespace AerolineaFrba.Compra
             }
             catch (Exception er)
             {
+                if(tipo==1){
                 MessageBox.Show(er.Message.ToString());
                 return;
+                }
             }
 
             if (tipo == 0)

@@ -41,7 +41,7 @@
             this.lbAerolinea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lbAerolinea.Font = new System.Drawing.Font("Tahoma", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbAerolinea.ForeColor = System.Drawing.Color.Red;
-            this.lbAerolinea.Location = new System.Drawing.Point(169, 40);
+            this.lbAerolinea.Location = new System.Drawing.Point(190, 40);
             this.lbAerolinea.Name = "lbAerolinea";
             this.lbAerolinea.Size = new System.Drawing.Size(258, 35);
             this.lbAerolinea.TabIndex = 1;
@@ -61,7 +61,7 @@
             // 
             this.lbseleccion.AutoSize = true;
             this.lbseleccion.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbseleccion.Location = new System.Drawing.Point(134, 122);
+            this.lbseleccion.Location = new System.Drawing.Point(158, 122);
             this.lbseleccion.Name = "lbseleccion";
             this.lbseleccion.Size = new System.Drawing.Size(325, 18);
             this.lbseleccion.TabIndex = 7;

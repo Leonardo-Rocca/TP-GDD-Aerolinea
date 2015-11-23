@@ -74,10 +74,10 @@
             // btPasaje
             // 
             this.btPasaje.BackColor = System.Drawing.Color.Turquoise;
-            this.btPasaje.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btPasaje.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btPasaje.Location = new System.Drawing.Point(385, 134);
             this.btPasaje.Name = "btPasaje";
-            this.btPasaje.Size = new System.Drawing.Size(106, 49);
+            this.btPasaje.Size = new System.Drawing.Size(122, 48);
             this.btPasaje.TabIndex = 17;
             this.btPasaje.Text = "Agregar Pasaje";
             this.btPasaje.UseVisualStyleBackColor = false;
@@ -86,10 +86,10 @@
             // btEncomienda
             // 
             this.btEncomienda.BackColor = System.Drawing.Color.Turquoise;
-            this.btEncomienda.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btEncomienda.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btEncomienda.Location = new System.Drawing.Point(385, 228);
             this.btEncomienda.Name = "btEncomienda";
-            this.btEncomienda.Size = new System.Drawing.Size(106, 49);
+            this.btEncomienda.Size = new System.Drawing.Size(122, 48);
             this.btEncomienda.TabIndex = 18;
             this.btEncomienda.Text = "Agregar Encomienda";
             this.btEncomienda.UseVisualStyleBackColor = false;

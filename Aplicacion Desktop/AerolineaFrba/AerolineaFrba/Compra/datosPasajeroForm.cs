@@ -79,7 +79,8 @@ namespace AerolineaFrba.Compra
                     tarjeta.Show();
                     }
 
-                compra.Hide();
+            //    compra.Hide();
+                compra.Close();
                 this.Close();
                 return;
             }
@@ -150,14 +151,13 @@ namespace AerolineaFrba.Compra
         }
 
         private void txtDni_TextChanged(object sender, EventArgs e)
-        {     //VERIFICAR SOLO NUMEROS                              TO-DO
-
-            dni = txtDni.Text;
-            if (txtDni.Text.Length < 5) return;
+        {    
+             if (txtDni.Text.Length < 5) return;
             if (!masValidaciones()) return;
+            dni = txtDni.Text;
 
             //----Obtengo el idpersona para cargar sus datos
-           string query = "select* from dbas.personas WHERE dni_persona ="+dni;
+           string query = "select* from dbas.personas WHERE dni_persona = "+dni;
             DataTable dt =(new ConexionSQL()).cargarTablaSQL(query);
             if(dt.Rows.Count==0)return;
             if (dt.Rows.Count > 1) {
@@ -208,7 +208,7 @@ namespace AerolineaFrba.Compra
 
         private void txtKg_TextChanged(object sender, EventArgs e)
         {
-            //validar numero
+            //validar numero  (no hace falta)
             if (txtKg.Text == "") txtKg.Text = "0";
         }
 

@@ -41,7 +41,7 @@
             this.lbAerolinea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lbAerolinea.Font = new System.Drawing.Font("Tahoma", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbAerolinea.ForeColor = System.Drawing.Color.Red;
-            this.lbAerolinea.Location = new System.Drawing.Point(124, 24);
+            this.lbAerolinea.Location = new System.Drawing.Point(169, 40);
             this.lbAerolinea.Name = "lbAerolinea";
             this.lbAerolinea.Size = new System.Drawing.Size(258, 35);
             this.lbAerolinea.TabIndex = 1;
@@ -52,16 +52,16 @@
             this.cmbRoles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbRoles.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbRoles.FormattingEnabled = true;
-            this.cmbRoles.Location = new System.Drawing.Point(61, 138);
+            this.cmbRoles.Location = new System.Drawing.Point(144, 178);
             this.cmbRoles.Name = "cmbRoles";
-            this.cmbRoles.Size = new System.Drawing.Size(406, 28);
+            this.cmbRoles.Size = new System.Drawing.Size(310, 28);
             this.cmbRoles.TabIndex = 8;
             // 
             // lbseleccion
             // 
             this.lbseleccion.AutoSize = true;
             this.lbseleccion.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbseleccion.Location = new System.Drawing.Point(97, 104);
+            this.lbseleccion.Location = new System.Drawing.Point(134, 122);
             this.lbseleccion.Name = "lbseleccion";
             this.lbseleccion.Size = new System.Drawing.Size(325, 18);
             this.lbseleccion.TabIndex = 7;
@@ -70,7 +70,7 @@
             // btIngresar
             // 
             this.btIngresar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btIngresar.Location = new System.Drawing.Point(340, 213);
+            this.btIngresar.Location = new System.Drawing.Point(423, 275);
             this.btIngresar.Name = "btIngresar";
             this.btIngresar.Size = new System.Drawing.Size(103, 56);
             this.btIngresar.TabIndex = 6;
@@ -81,7 +81,7 @@
             // btSalir
             // 
             this.btSalir.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btSalir.Location = new System.Drawing.Point(77, 213);
+            this.btSalir.Location = new System.Drawing.Point(79, 275);
             this.btSalir.Name = "btSalir";
             this.btSalir.Size = new System.Drawing.Size(103, 56);
             this.btSalir.TabIndex = 9;
@@ -94,7 +94,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Silver;
-            this.ClientSize = new System.Drawing.Size(532, 290);
+            this.ClientSize = new System.Drawing.Size(636, 370);
             this.Controls.Add(this.btSalir);
             this.Controls.Add(this.cmbRoles);
             this.Controls.Add(this.lbseleccion);

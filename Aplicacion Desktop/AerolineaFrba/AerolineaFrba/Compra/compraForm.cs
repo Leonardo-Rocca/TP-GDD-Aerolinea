@@ -18,32 +18,26 @@ namespace AerolineaFrba.Compra
        public PasajeEncomienda encomiendas;
        public int kgEncomiendas;
 
-        public compraForm()
-        {
-            InitializeComponent();
-            inicializar();
-            btEncomienda.Visible = false;
-       //     viaje = new Viaje();
-       //     viaje.matriculaAeronave = "BZD-177";
-        }
+       
         public compraForm(Viaje v)
         {
             InitializeComponent();
             viaje = v;
           //  btEncomienda.Visible = false;
-            Compra.inicializar();
             inicializar();
         }
 
         private void btCancelar_Click(object sender, EventArgs e)
         {
-            Compra.inicializar();
             inicializar();
-            this.Hide();
+           // this.Hide();
+            this.Close();
         }
 
         private void inicializar()
         {
+            Compra.inicializar();
+
             pasajes = new List<PasajeEncomienda>();
             encomiendas = null;
             txtEncomienda.Text = "0";
@@ -127,11 +121,11 @@ namespace AerolineaFrba.Compra
 
         private bool validaciones()
         {
-            if (!estaCompleto())
+            /*if (!estaCompleto())
             {
                 MessageBox.Show("Faltan completar campos", "Formulario Incompleto", MessageBoxButtons.OK);
                 return false;
-            }
+            }*/
 
             int a;
             try
@@ -156,7 +150,7 @@ namespace AerolineaFrba.Compra
 
         private bool estaCompleto()
         {
-            return (cmbPasaje.SelectedIndex != -1 && (txtEncomienda.Text != "" || txtEncomienda.Text == "0"));
+            return (cmbPasaje.SelectedIndex != -1 || (txtEncomienda.Text != "" || txtEncomienda.Text != "0"));
         }
 
         private void txtEncomienda_TextChanged(object sender, EventArgs e)

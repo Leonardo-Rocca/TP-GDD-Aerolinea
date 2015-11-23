@@ -31,6 +31,7 @@ namespace AerolineaFrba.Compra
 
             string qGenerarCompra = "execute  DBAS.generarCompra " + comprador.idCliente + "," + tarjeta.numeroTarjeta + " , " + tarjeta.codigo + ", '"+tarjeta.dateTime+"' ," + tarjeta.tipoTarjetaId + "," + tarjeta.cuotasElegidas + " ," + tarjeta.tipo;
             (new ConexionSQL()).ejecutarComandoSQL(qGenerarCompra);
+            MessageBox.Show("compra "+ qGenerarCompra);
             try
             {
                 CultureInfo culture = new CultureInfo("es-ES");
@@ -40,7 +41,8 @@ namespace AerolineaFrba.Compra
                 DataRow row = dt.Rows[0];
                 string idCompra = row[0].ToString();
 
-                if(compra.encomiendas!=null){PasajeEncomienda encomienda = compra.encomiendas;
+                if(compra.encomiendas!=null){
+                    PasajeEncomienda encomienda = compra.encomiendas;
                 encomienda.darDeAltaClienteSiNoExiste();
 
                 string queryEncomienda = "Insert into DBAS.encomiendas (id_cliente ,encomienda_cliente_KG ,id_viaje, precio_encomienda, id_compra_PNR ,fecha_compra_encomienda) values (" +

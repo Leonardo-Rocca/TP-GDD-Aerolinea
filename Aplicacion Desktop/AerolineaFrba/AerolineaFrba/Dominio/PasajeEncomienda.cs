@@ -10,7 +10,7 @@ namespace AerolineaFrba.Dominio
 {
    public class PasajeEncomienda
     {
-       public string id;
+       public string idPersona;
 
         public string nombre;
         public string apellido;
@@ -23,14 +23,14 @@ namespace AerolineaFrba.Dominio
 
         public string idCliente="";
 
-       public PasajeEncomienda(string id,string p1, string p2, string dni, string tel, string p3, string p4, string butacaKg)
+       public PasajeEncomienda(string id,string name, string lname, string dni, string tel, string email, string p4, string butacaKg)
        {
-           this.id = id;
-           this.nombre = p1;
-           this.apellido = p2;
+           this.idPersona = id;
+           this.nombre = name;
+           this.apellido = lname;
            this.dni = dni;
            this.tel = tel;
-           this.mail = p3;
+           this.mail = email;
            this.fecha = p4;
            this.butacaKg = butacaKg;
            darDeAltaClienteSiNoExiste();
@@ -42,21 +42,25 @@ namespace AerolineaFrba.Dominio
         public void darDeAltaClienteSiNoExiste()
        {
               string comando;
-           if (id == ""/*||existeAlguienConMismoDNI()*/)
+           if (idPersona == ""/*||existeAlguienConMismoDNI()*/)
            {
                comando = "execute dbas.altaCliente " + dni + " , '" + nombre + "', '" + apellido + "', '" + direccion + "', '"+tel+"','"+mail+"','"+fecha+"'";
-               DataTable dt = (new ConexionSQL()).cargarTablaSQL(comando);
+           //   (new ConexionSQL()).ejecutarComandoSQL(comando);
 
                idCliente = obtenerUltimoIdCliente();
-               id = obtenerUltimoIdPersona();
+               idPersona = obtenerUltimoIdPersona();
            }else{
-                //comando= "UPDATE DBAS.personas SET nombre_persona = '"+nombre+"',apellido_persona = '"+apellido +"',direccion_persona = '"+direccion+"',telefono_persona = '"+tel+"',mail_persona = '"+mail+"',fecha_nacimiento = '"+fecha+
-                  //  "' WHERE id_persona = "+id;
+        //        comando= "UPDATE DBAS.personas SET nombre_persona = '"+nombre+"',apellido_persona = '"+apellido +"',direccion_persona = '"+direccion+"',telefono_persona = '"+tel+"',mail_persona = '"+mail+"',fecha_nacimiento = '"+fecha+
+        //            "' WHERE id_persona = "+idPersona;
                comando = "execute DBAS.actualizarCliente " + dni + " , '" + nombre + "', '" + apellido + "', '" + direccion + "', '" + tel + "','" + mail + "','" + fecha + "'";
                // DataTable dt = (new ConexionSQL()).cargarTablaSQL(comando);
-               (new ConexionSQL()).ejecutarComandoSQL(comando);
+            
            }
-    
+            try{
+           (new ConexionSQL()).ejecutarComandoSQL(comando);
+                }catch(Exception er){
+                    MessageBox.Show(er.Message.ToString());
+                }
        }
 
         private string obtenerUltimoIdPersona()
@@ -82,7 +86,7 @@ namespace AerolineaFrba.Dominio
 
         private string obtenerIdCliente()
         {
-            string query = "select  id_cliente from dbas.clientes c,dbas.personas where dni_persona = "+dni;
+            string query = "select  id_cliente from dbas.clientes c,dbas.personas p where  p.id_persona=c.id_persona AND dni_persona = " + dni;
             DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
             return dt.Rows[0][0].ToString();
         }

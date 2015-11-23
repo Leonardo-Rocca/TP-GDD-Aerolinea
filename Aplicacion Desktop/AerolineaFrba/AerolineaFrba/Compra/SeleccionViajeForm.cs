@@ -18,7 +18,7 @@ namespace AerolineaFrba.Compra
         public SeleccionViajeForm()
         {
             InitializeComponent();
-            dateTimePicker1.Value = new DateTime(2016, 02, 01);
+            dateTimePicker1.Value = new DateTime(2018, 01, 01);
             txtCityOrigen.ReadOnly = true;
             txtDestino.ReadOnly = true;
         }
@@ -28,6 +28,7 @@ namespace AerolineaFrba.Compra
             txtCityOrigen.Text = "";
             txtDestino.Text="";
             dgvViaje.DataSource = null;
+            dgvViaje.Visible = false;
    //         hacerQuery(queryTodosLosViajes(), dgvViaje);
             this.Hide();
         }
@@ -51,6 +52,7 @@ namespace AerolineaFrba.Compra
         private void buttonGuardar_Click(object sender, EventArgs e)
         {
             if(!validarCamposCompletos())return;
+            dgvViaje.Visible = true;
 
             string query = queryTodosLosViajes()+
             " AND co.nombre_ciudad = '" + txtCityOrigen.Text + "' AND cd.nombre_ciudad = '" + txtDestino.Text + "' AND a.matricula_aeronave = v.matricula_aeronave" +
@@ -124,7 +126,8 @@ namespace AerolineaFrba.Compra
              (new compraForm(elViaje)).Show();
              txtCityOrigen.Text = "";
              txtDestino.Text = "";
-             dataGridView1.DataSource = null;
+           //  dataGridView1.DataSource = null;
+             dgvViaje.Visible = false;
             this.Hide();
         }
 

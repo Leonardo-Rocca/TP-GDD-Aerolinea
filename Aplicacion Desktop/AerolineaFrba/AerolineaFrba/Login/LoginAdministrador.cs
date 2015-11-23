@@ -33,7 +33,8 @@ namespace AerolineaFrba.Login
         {
             PantallaBienvenidaForm p =new PantallaBienvenidaForm();
             p.Show();
-            this.Hide();
+            //this.Hide();
+            this.Close();
         }
 
         private void botonIniciarSesion_Click(object sender, EventArgs e)

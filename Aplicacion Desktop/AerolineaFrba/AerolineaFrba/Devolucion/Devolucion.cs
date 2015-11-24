@@ -60,7 +60,14 @@ namespace AerolineaFrba.Devolucion
             if (comboBox1.Text == "") return;
             pasajes.Remove(comboBox1.Text);
             comboBox1.Items.Remove(comboBox1.Text);
-            comboBox1.Text = "";
+            if (pasajes.Count == 0)
+            {
+                comboBox1.Text = "";
+            }
+            else
+            {
+                comboBox1.Text = (pasajes.ElementAt(0)).ToString();
+            }
         }
 
         private void butAceptar_Click(object sender, EventArgs e)
@@ -74,7 +81,7 @@ namespace AerolineaFrba.Devolucion
 
         private bool validaciones()
         {
-            if (textBox0.Text == "" || textBox2.Text == "" || textBox3.Text == "" || (comboBox1.SelectedIndex == -1 && textBox4.Text == ""))
+            if (textBox0.Text == "" || textBox2.Text == "" || textBox3.Text == "" || (pasajes.Count == 0 && textBox4.Text == ""))
             {
                 MessageBox.Show("Debe completar todos los campos", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
                 return false;
@@ -99,12 +106,12 @@ namespace AerolineaFrba.Devolucion
                 return false;
             }
 
-            if (a < 1122696 || a > 99999999)//a partir de ahi comienzan los dni
+          /*  if (a < 1122696 || a > 99999999)//a partir de ahi comienzan los dni
             {
                 MessageBox.Show("El DNI no se encuentra en la base", "Error", MessageBoxButtons.OK);
                 return false;
             }
-
+            */
 
 
 
@@ -144,10 +151,25 @@ namespace AerolineaFrba.Devolucion
                 comando = "insert into DBAS.PasajesCancelados(id_compra_PNR,id_cliente, motivo_cancelacion, codigo_pasaje,codigo_encomienda) select distinct " + pnr + "," + idCli + ",'" + motivo + "',-1," + encomienda + " FROM DBAS.pasajes WHERE id_cliente = " + idCli;
             }
 
+            DataTable dtas = (new ConexionSQL()).cargarTablaSQL(" SELECT * FROM DBAS.compras WHERE id_compra_PNR = '"+pnr+"' and id_cliente = '"+idCli+"'");
+                if (dtas.Rows.Count == 0)
+                {
+                    MessageBox.Show("El PNR ingresado es invalido", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                    return;
+                }
+
             int i = 1;
             int cant = pasajes.Count;
             foreach (String elemento in pasajes)
             {
+                DataTable dta = (new ConexionSQL()).cargarTablaSQL("select codigo_pasaje FROM DBAS.pasajes where id_cliente = "+idCli+" and codigo_pasaje = '" + elemento + "'");
+                if (dta.Rows.Count == 0)
+                {
+                    MessageBox.Show("Hay un codigo de pasaje invalido", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                    return;
+                }
+
+
                 if (i < cant)
                 {
                     comando = comando + " '" + elemento + "',";
@@ -160,7 +182,7 @@ namespace AerolineaFrba.Devolucion
                 
             }
 
-//            MessageBox.Show(comando);
+           // MessageBox.Show(comando);
             try
             {
                 (new ConexionSQL()).ejecutarComandoSQL(comando);
@@ -184,12 +206,25 @@ namespace AerolineaFrba.Devolucion
                     return;
                 }
 
+                if (sqlEx.Message.StartsWith("Hay un pasaje que ya fue cancelado"))
+                {
+                    MessageBox.Show("Hay un pasaje que ya fue cancelado", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                    return;
+                }
 
-                MessageBox.Show(sqlEx.Message);
+                if (sqlEx.Message.StartsWith("Hay una encomienda que ya fue cancelada"))
+                {
+                    MessageBox.Show("Hay una encomienda que ya fue cancelada", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                    return;
+                }
+
+
+              //  MessageBox.Show(sqlEx.Message);
             }
 
             MessageBox.Show("Cancelacion exitosa", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
-
+            this.iniciar();
+            this.Hide();
 
            }
 

@@ -56,8 +56,8 @@ namespace AerolineaFrba.Compra
                 }
                 foreach (PasajeEncomienda pasajero in compra.pasajes)
                 {
-                    string queryPasaje = "Insert into DBAS.pasajes (id_cliente,id_viaje, id_butaca, precio_pasaje ,id_compra_PNR) values (" +
-                     pasajero.idCliente + ", " + compra.viaje.idViaje + " , " + pasajero.butacaKg + " , @Parametro , " + idCompra + ")";
+                    string queryPasaje = "Insert into DBAS.pasajes (id_cliente,id_viaje, id_butaca, precio_pasaje ,id_compra_PNR, fecha_compra_pasaje) values (" +
+                     pasajero.idCliente + ", " + compra.viaje.idViaje + " , " + pasajero.butacaKg + " , @Parametro , " + idCompra + ",'"+DateTime.Parse(Program.nuevaFechaSistema())+"' )";
                      pasajero.darDeAltaClienteSiNoExiste();
 
                      (new ConexionSQL()).ejecutarComandoSQLConParametro(queryPasaje, compra.viaje.precioPasaje);

@@ -107,7 +107,9 @@ namespace AerolineaFrba.Compra
             string tipo_butaca = dataGridView2[1, dataGridView2.CurrentCell.RowIndex].Value.ToString();
             string piso_butaca = dataGridView2[2, dataGridView2.CurrentCell.RowIndex].Value.ToString();
 
-            string queryid = "select id_butaca  from dbas.butacas  WHERE  numero_butaca = " + numero_butaca + " AND tipo_butaca = '" + tipo_butaca + "' AND piso_butaca =" + piso_butaca;
+     //       string queryid = "select id_butaca  from dbas.butacas  WHERE  numero_butaca = " + numero_butaca + " AND tipo_butaca = '" + tipo_butaca + "' AND piso_butaca =" + piso_butaca;
+            string queryid = "select distinct id_butaca from dbas.butacasLibresEnViaje (" + viaje.idViaje + ") WHERE numero_butaca = " + numero_butaca;// viaje.matriculaAeronave1 + "'";
+            
             DataTable dt =(new ConexionSQL()).cargarTablaSQL(queryid);
             queryid = dt.Rows[0][0].ToString();
             Butaca seleccionada = new Butaca(queryid,numero_butaca,tipo_butaca,piso_butaca,viaje.matriculaAeronave1);

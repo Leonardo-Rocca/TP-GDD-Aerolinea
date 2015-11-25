@@ -59,13 +59,22 @@ namespace AerolineaFrba.Compra
             if (!masValidaciones(txtDni.Text,"El DNI")) return;
    //         if (idPersona == "") generarIdPersona();
             string butacaKg="";
-            if (tipo == 1) butacaKg = txtButaca.Text;
+            if (tipo == 1) butacaKg = butacaPasaje.queryid.ToString();
             if (tipo == 2) butacaKg = txtKg.Text;
 
             PasajeEncomienda pasEn=null;
             try{
-            pasEn = new PasajeEncomienda(idPersona,txtnombre.Text,txtApellido.Text,dni,tel,txtMail.Text,dateTimePickerFnac.Value.ToString(),butacaKg);
-            pasEn.direccion = txtDireccion.Text;
+
+                if (tipo == 2)
+                {
+                    pasEn = new PasajeEncomienda(idPersona, txtnombre.Text, txtApellido.Text, dni, tel, txtMail.Text, dateTimePickerFnac.Value.ToString(), butacaKg,0);
+                }
+                else
+                {
+                    pasEn = new PasajeEncomienda(idPersona, txtnombre.Text, txtApellido.Text, dni, tel, txtMail.Text, dateTimePickerFnac.Value.ToString(), butacaKg);
+                }
+                
+                pasEn.direccion = txtDireccion.Text;
     //        pasEn.darDeAltaClienteSiNoExiste();
             }
             catch (Exception er)
@@ -96,7 +105,15 @@ namespace AerolineaFrba.Compra
             }
 
             if (tipo == 1){
-                compra.cargarPasaje(pasEn);
+                if (compra.pasajes.Find(pas => pas.idPersona == pasEn.idPersona) == null)
+                {
+                    compra.cargarPasaje(pasEn);
+                }
+                else {
+                    MessageBox.Show(" La persona ya tiene un pasaje");
+                    txtDni.Text = "";
+                    return;
+                }
             }
             if (tipo == 2){
                

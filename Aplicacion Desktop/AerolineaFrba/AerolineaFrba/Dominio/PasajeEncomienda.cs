@@ -22,6 +22,16 @@ namespace AerolineaFrba.Dominio
         public string direccion;
 
         public string idCliente="";
+        private string idPersona1;
+        private string p1;
+        private string p2;
+        private string dni1;
+        private string tel1;
+        private string p3;
+        private string p4;
+        private string butacaKg1;
+        private int p5;
+       private int tipo = 1;
 
        public PasajeEncomienda(string id,string name, string lname, string dni, string tel, string email, string p4, string butacaKg)
        {
@@ -38,10 +48,26 @@ namespace AerolineaFrba.Dominio
 
        }
 
+       public PasajeEncomienda(string id, string name, string lname, string dni, string tel, string email, string p4, string butacaKg,int code)
+       {
+           this.idPersona = id;
+           this.nombre = name;
+           this.apellido = lname;
+           this.dni = dni;
+           this.tel = tel;
+           this.mail = email;
+           this.fecha = p4;
+           this.butacaKg = butacaKg;
+           this.tipo = code;
+           darDeAltaClienteSiNoExiste();
+           idCliente = obtenerIdCliente();
+
+       }
+
        
         public void darDeAltaClienteSiNoExiste()
        {
-              string comando;
+              string comando="";
            if (idPersona == ""/*||existeAlguienConMismoDNI()*/)
            {
                comando = "execute dbas.altaCliente " + dni + " , '" + nombre + "', '" + apellido + "', '" + direccion + "', '"+tel+"','"+mail+"','"+fecha+"'";
@@ -52,7 +78,9 @@ namespace AerolineaFrba.Dominio
            }else{
         //        comando= "UPDATE DBAS.personas SET nombre_persona = '"+nombre+"',apellido_persona = '"+apellido +"',direccion_persona = '"+direccion+"',telefono_persona = '"+tel+"',mail_persona = '"+mail+"',fecha_nacimiento = '"+fecha+
         //            "' WHERE id_persona = "+idPersona;
-               comando = "execute DBAS.actualizarCliente " + dni + " , '" + nombre + "', '" + apellido + "', '" + direccion + "', '" + tel + "','" + mail + "','" + fecha + "'";
+             if(tipo==1)  comando = "execute DBAS.actualizarCliente " + dni + " , '" + nombre + "', '" + apellido + "', '" + direccion + "', '" + tel + "','" + mail + "','" + fecha + "'";
+             if (tipo == 0) comando = "execute DBAS.actualizarClienteEncomienda " + dni + " , '" + nombre + "', '" + apellido + "', '" + direccion + "', '" + tel + "','" + mail + "','" + fecha + "'";
+
                // DataTable dt = (new ConexionSQL()).cargarTablaSQL(comando);
             
            }

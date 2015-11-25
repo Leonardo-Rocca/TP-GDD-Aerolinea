@@ -17,7 +17,7 @@ namespace AerolineaFrba.Abm_Ruta
 {
     public partial class ModificarEliminarRuta : FormGenerico
     {
-        int tipoDeForm; //1 modificar ,2 eliminar
+        int tipoDeForm; //1 modificar ,2 eliminar  ,3 Listado
         Generar_Viaje formAuxiliar;
 
         public ModificarEliminarRuta(int tipo)
@@ -30,6 +30,7 @@ namespace AerolineaFrba.Abm_Ruta
             {
                 lbTitle.Text = "Modificar" + lbTitle.Text;
                 lbSeleccion.Text = lbSeleccion.Text+ "modificar:";
+                navegacion.modificarRuta = this;
                 return;
             }
             if (tipo == 3)
@@ -41,12 +42,13 @@ namespace AerolineaFrba.Abm_Ruta
             {
                 lbTitle.Text = "Eliminar" + lbTitle.Text;
                 lbSeleccion.Text = lbSeleccion.Text + "eliminar:";
+                navegacion.eliminarRuta = this;
             }
 
         }
 
 
-        private void inicializar()
+        public void inicializar()
         {
             chkListaServicios.Items.Clear();
             chkListaServicios.Items.Insert(0, "Primera Clase");
@@ -96,13 +98,14 @@ namespace AerolineaFrba.Abm_Ruta
             catch (Exception er)
             {
                 MessageBox.Show(er.Message, "Baja ", MessageBoxButtons.OK);
-                if (MessageBox.Show("¿desea cancelar los pasajes de la ruta: " + codigo_ruta + "?(falta probar)", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show("¿desea cancelar los pasajes de la ruta: " + codigo_ruta + "?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 {
                   return;
                 }
                 string queryBajaPasajes = "execute DBAS.bajaRutaYCancelarPasajes '" + codigo_ruta + "'";
                 (new ConexionSQL()).cargarTablaSQL(queryBajaPasajes);
             }
+            navegacion.modificarRuta.inicializar();
             inicializar();
             this.Hide();
         }
@@ -357,7 +360,7 @@ namespace AerolineaFrba.Abm_Ruta
             ConexionSQL conn = new ConexionSQL();
             string qEstaEnviaje = "select * from dbas.viajes where habilitado_viaje = 1 AND codigo_ruta = "+codigo_ruta;
             DataTable dviaje = conn.cargarTablaSQL(qEstaEnviaje);
-            if(dviaje.Rows.Count != 0){
+            if(dviaje.Rows.Count != 0 && tipoDeForm!=3){
                 MessageBox.Show("No se puede modificar la ruta "+codigo_ruta+", se encuentra en viaje/s");
                 return;
             }
@@ -370,7 +373,11 @@ namespace AerolineaFrba.Abm_Ruta
             string porcentaje_arancel = dataGridView2[4, dataGridView2.CurrentCell.RowIndex].Value.ToString();
 
             string query = "select tipo_servicio FROM DBAS.caracteristicasRutas WHERE codigo_ruta = "+codigo_ruta ;
-           
+
+            precio_base_por_KG = sacarComaMeterPunto(precio_base_por_KG);
+            precio_base_por_pasaje = sacarComaMeterPunto(precio_base_por_pasaje);
+
+
             DataTable dt = conn.cargarTablaSQL(query);
 
            List<string> servicios = new List<string>();
@@ -379,6 +386,7 @@ namespace AerolineaFrba.Abm_Ruta
            {
                servicios.Add(dt.Rows[i][ 0].ToString());
            }
+
 
             Ruta aModificar = new Ruta(Convert.ToInt32(codigo_ruta), ciudad_Origen, ciudad_Destino, precio_base_por_pasaje, precio_base_por_KG, tipo_servicio, porcentaje_arancel,servicios);
 
@@ -395,6 +403,20 @@ namespace AerolineaFrba.Abm_Ruta
                 formAuxiliar.cargarRuta(aModificar);
             }
 
+        }
+
+        private string sacarComaMeterPunto(string unString)
+        {
+            string stringPosta;
+            string[] words = unString.Split(',');
+            if (words.Length == 1)
+            {
+                stringPosta = unString;
+            }else{
+                stringPosta = words[0] + '.' + words[1];
+            }
+           
+            return stringPosta;
         }
 
         private void button2_Click(object sender, EventArgs e)

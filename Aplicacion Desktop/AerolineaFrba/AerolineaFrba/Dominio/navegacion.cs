@@ -15,6 +15,8 @@ namespace AerolineaFrba.Dominio
         private static modificarEliminarCityForm eliminarCiudad;
         public static Form modifRol;
         public static Form eliminarRol;
+        public static Abm_Ruta.ModificarEliminarRuta modificarRuta;
+        public static Abm_Ruta.ModificarEliminarRuta eliminarRuta;
 
         public static  modificarEliminarCityForm ModificarCiudad
         {

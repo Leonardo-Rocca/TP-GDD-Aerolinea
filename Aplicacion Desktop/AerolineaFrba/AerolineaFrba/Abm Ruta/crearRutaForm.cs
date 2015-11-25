@@ -121,6 +121,8 @@ namespace AerolineaFrba.Abm_Ruta
                 return;
             }
 */
+            try
+            {
             if (tipo == 0)
             {
                 agregarRuta();
@@ -129,7 +131,14 @@ namespace AerolineaFrba.Abm_Ruta
             {
                 modificarRuta();
             }
-
+            navegacion.modificarRuta.inicializar();
+            navegacion.eliminarRuta.inicializar();
+            }
+            catch (Exception er)
+            {
+                MessageBox.Show("Error con el tipo de datos ingresado");
+                return;
+            }
 
             this.Hide(); 
             return;
@@ -137,7 +146,10 @@ namespace AerolineaFrba.Abm_Ruta
 
         private void agregarRuta()
         {
-            agregarModificar("-1");
+
+            
+                agregarModificar("-1");
+            
             MessageBox.Show("Ruta creada", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
             inicializar();
         }
@@ -156,24 +168,19 @@ namespace AerolineaFrba.Abm_Ruta
             }
             comando = comando + "'lalala' )";
 
-            try
-            {
+          
                 (new ConexionSQL()).ejecutarComandoSQL(comando);
-            }
-            catch (Exception er)
-            {
-                MessageBox.Show(er.Message);
-                return;
-            }
-
+            
+           
           return;
         }
 
         private void modificarRuta()
         {
             string service = "dammy";
+
             agregarModificar(txtCodigo.Text);
-        //    return;
+            
 
          // foreach (string service in chkListaServicios.CheckedItems)
             for (int i = 0; i <= (chkListaServicios.CheckedItems.Count - 1); i++) 

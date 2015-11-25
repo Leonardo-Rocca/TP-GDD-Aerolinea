@@ -17,7 +17,7 @@ namespace AerolineaFrba.Compra
         public static PasajeEncomienda persona;
         public static  compraForm compra;
         public static bool pagaEnEfectivo = false;
-        public static PasajeEncomienda comprador { get; set; }
+        public static PasajeEncomienda comprador;
         public static Tarjeta tarjeta;
 
         public static void inicializar(){

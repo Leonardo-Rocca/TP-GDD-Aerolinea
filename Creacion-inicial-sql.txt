@@ -823,6 +823,16 @@ BEGIN
 END;
 GO
 
+CREATE FUNCTION DBAS.millasCanjeadas(@dni_persona bigint)
+RETURNS @millas TABLE (nombre_producto varchar(100), fecha_canje datetime, cantidad_producto bigint, millas_usadas bigint)
+AS
+BEGIN
+	INSERT INTO @millas
+	SELECT prod.nombre_producto, canj.fecha_canje, canj.cantidad_producto, canj.millas_usadas FROM DBAS.personas p, DBAS.clientes c, DBAS.canjes canj, DBAS.productos prod
+	WHERE p.dni_persona = @dni_persona AND p.id_persona = c.id_persona AND canj.id_cliente = c.id_cliente AND prod.id_producto = canj.id_producto 
+	RETURN
+END;
+GO
 
 CREATE VIEW DBAS.millasPorPasajes AS
 SELECT id_cliente, fecha_llegada, CAST((precio_base_por_pasaje*porcentaje_arancel)/10 AS bigint) as millas FROM DBAS.pasajes pasajes, DBAS.viajes viajes, DBAS.rutas rutas, DBAS.serviciosPorRutas serviciosPorRutas, DBAS.servicios servicios

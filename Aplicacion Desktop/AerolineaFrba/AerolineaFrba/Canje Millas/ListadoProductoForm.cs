@@ -15,7 +15,7 @@ namespace AerolineaFrba.Canje_Millas
         public ListadoProductoForm()
         {
             InitializeComponent();
-            string query = "select * from dbas.productos order by 3 desc";
+            string query = "select nombre_producto,valor_en_milas,stock from dbas.productos order by 2 desc";
             hacerQuery(query, dataGridView1);
         }
 
@@ -26,7 +26,7 @@ namespace AerolineaFrba.Canje_Millas
 
         private void completar(DataGridView dataGridView1)
         {
-            string producto = dataGridView1[2, dataGridView1.CurrentCell.RowIndex].Value.ToString();
+            string producto = dataGridView1[0, dataGridView1.CurrentCell.RowIndex].Value.ToString();
 
            llamada.setProducto(producto);
             llamada.Show();
@@ -46,7 +46,7 @@ namespace AerolineaFrba.Canje_Millas
 
         private void ListadoProductoForm_Load(object sender, EventArgs e)
         {
-            string query = "select * from dbas.productos order by 3 desc";
+            string query = "select nombre_producto,valor_en_milas,stock from dbas.productos order by 2 ";
             hacerQuery(query, dataGridView1);
         }
     }

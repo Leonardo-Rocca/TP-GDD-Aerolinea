@@ -36,13 +36,16 @@
             this.label3 = new System.Windows.Forms.Label();
             this.dgvmillas = new System.Windows.Forms.DataGridView();
             this.btPuntos = new System.Windows.Forms.Button();
+            this.dgvProd = new System.Windows.Forms.DataGridView();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvmillas)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvProd)).BeginInit();
             this.SuspendLayout();
             // 
             // botonVolver
             // 
             this.botonVolver.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.botonVolver.Location = new System.Drawing.Point(47, 337);
+            this.botonVolver.Location = new System.Drawing.Point(59, 478);
             this.botonVolver.Name = "botonVolver";
             this.botonVolver.Size = new System.Drawing.Size(112, 49);
             this.botonVolver.TabIndex = 21;
@@ -94,7 +97,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(67, 160);
+            this.label3.Location = new System.Drawing.Point(67, 151);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(152, 20);
             this.label3.TabIndex = 49;
@@ -103,7 +106,7 @@
             // dgvmillas
             // 
             this.dgvmillas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvmillas.Location = new System.Drawing.Point(22, 198);
+            this.dgvmillas.Location = new System.Drawing.Point(22, 189);
             this.dgvmillas.Name = "dgvmillas";
             this.dgvmillas.Size = new System.Drawing.Size(606, 116);
             this.dgvmillas.TabIndex = 50;
@@ -112,7 +115,7 @@
             // 
             this.btPuntos.BackColor = System.Drawing.Color.Turquoise;
             this.btPuntos.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btPuntos.Location = new System.Drawing.Point(431, 340);
+            this.btPuntos.Location = new System.Drawing.Point(443, 481);
             this.btPuntos.Name = "btPuntos";
             this.btPuntos.Size = new System.Drawing.Size(134, 49);
             this.btPuntos.TabIndex = 51;
@@ -120,11 +123,31 @@
             this.btPuntos.UseVisualStyleBackColor = false;
             this.btPuntos.Click += new System.EventHandler(this.btPuntos_Click);
             // 
+            // dgvProd
+            // 
+            this.dgvProd.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvProd.Location = new System.Drawing.Point(17, 363);
+            this.dgvProd.Name = "dgvProd";
+            this.dgvProd.Size = new System.Drawing.Size(606, 101);
+            this.dgvProd.TabIndex = 53;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(62, 328);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(166, 20);
+            this.label4.TabIndex = 52;
+            this.label4.Text = "Productos canjeados: ";
+            // 
             // ConsultarMillasForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(647, 409);
+            this.ClientSize = new System.Drawing.Size(649, 547);
+            this.Controls.Add(this.dgvProd);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.btPuntos);
             this.Controls.Add(this.dgvmillas);
             this.Controls.Add(this.label3);
@@ -137,6 +160,7 @@
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.ConsultarMillasForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvmillas)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvProd)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -152,5 +176,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.DataGridView dgvmillas;
         private System.Windows.Forms.Button btPuntos;
+        private System.Windows.Forms.DataGridView dgvProd;
+        private System.Windows.Forms.Label label4;
     }
 }

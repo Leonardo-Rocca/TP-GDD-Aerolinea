@@ -74,18 +74,11 @@ namespace AerolineaFrba.Canje_Millas
                     return true;
                 }
 
-                if (a < 0)
+                if (a < 0 || a > 99999999)
                 {
                     MessageBox.Show("El DNI no esta en un rango valido", "Error", MessageBoxButtons.OK);
                     return true;
                 }
-
-                if (a < 1122696 || a>99999999)//a partir de ahi comienzan los dni
-                {
-                    MessageBox.Show("El DNI no se encuentra en la base", "Error", MessageBoxButtons.OK);
-                    return true;
-                }
-
 
                 int b;
                 try
@@ -120,11 +113,18 @@ namespace AerolineaFrba.Canje_Millas
             string query = "select  top 1 dbas.millasVigentes (" + txtDni.Text + ") from dbas.roles";
             DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
 
-            string millas = dt.Rows[0][0].ToString();
-            if (millas == "")//millas="0";
+            string queryExistencia = "select * from dbas.personas where dni_persona = " + txtDni.Text;
+            DataTable dte = (new ConexionSQL()).cargarTablaSQL(queryExistencia);
+            if (dte.Rows.Count == 0)
             {
                 MessageBox.Show("El dni: " + txtDni.Text + " no se encuentra en la base ");
                 return false;
+            }
+
+            string millas = dt.Rows[0][0].ToString();
+            if (millas == "")//millas="0";
+            {
+                millas = "0";
             }
 
             query = "select  * from dbas.productos WHERE nombre_producto = '"+cmbProductos.Text+"'" ;
@@ -144,8 +144,6 @@ namespace AerolineaFrba.Canje_Millas
                 return false;
             }
 
-
-            //to-do realizar canje
             return true;
 
         }

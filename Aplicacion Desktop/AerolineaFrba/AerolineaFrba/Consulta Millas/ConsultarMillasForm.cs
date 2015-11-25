@@ -33,10 +33,18 @@ namespace AerolineaFrba.Consulta_Millas
             string query = "select  top 1 dbas.millasVigentes ("+txtDni.Text+") from dbas.servicios";
             DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
 
+              string queryExistencia ="select * from dbas.personas where dni_persona = "+txtDni.Text;
+            DataTable dte = (new ConexionSQL()).cargarTablaSQL(queryExistencia);
+            if (dte.Rows.Count == 0)
+            {
+                MessageBox.Show("El dni: " + txtDni.Text + " no se encuentra en la base ");
+                return;
+            }
+
             string millas = dt.Rows[0][0].ToString();
             if(millas=="")//millas="0";
-            {MessageBox.Show("El dni: "+txtDni.Text+" no se encuentra en la base ");
-            return;
+            {
+                millas = "0";
             }
 
             MessageBox.Show("Usted tiene "+millas+" millas");
@@ -57,19 +65,13 @@ namespace AerolineaFrba.Consulta_Millas
                 return false;
             }
 
-            if (a < 0)
+            if (a < 0 || a > 999999999)
             {
                 MessageBox.Show("El DNI no esta en un rango valido", "Error", MessageBoxButtons.OK);
                 return false;
             }
 
-            if (a < 1122696 || a > 99999999)//a partir de ahi comienzan los dni
-            {
-                MessageBox.Show("El DNI no se encuentra en la base", "Error", MessageBoxButtons.OK);
-                return false;
-            }
-
-            return true;
+         return true;
         }
 
         private void botonVolver_Click(object sender, EventArgs e)
@@ -82,6 +84,7 @@ namespace AerolineaFrba.Consulta_Millas
         {
             txtDni.Text = "";
             dgvmillas.DataSource = null;
+            dgvProd.DataSource = null;
         }
 
         private void btPuntos_Click(object sender, EventArgs e)
@@ -96,7 +99,10 @@ namespace AerolineaFrba.Consulta_Millas
 
             CompletadorDeTablas.hacerQuery("select * from dbas.historialMillas ("+txtDni.Text+")", ref dgvmillas);
 
+            CompletadorDeTablas.hacerQuery("select * from DBAS.millasCanjeadas (" + txtDni.Text + ")", ref dgvProd);
+            
             if(dgvmillas.Columns.Count != 0)dgvmillas.Columns.Remove("seleccionar");
+            if (dgvProd.Columns.Count != 0) dgvProd.Columns.Remove("seleccionar");
         }
 
         private void ConsultarMillasForm_Load(object sender, EventArgs e)

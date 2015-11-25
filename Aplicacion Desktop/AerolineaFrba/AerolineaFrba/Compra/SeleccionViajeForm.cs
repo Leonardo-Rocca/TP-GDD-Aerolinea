@@ -18,7 +18,7 @@ namespace AerolineaFrba.Compra
         public SeleccionViajeForm()
         {
             InitializeComponent();
-            dateTimePicker1.Value = new DateTime(2018, 01, 01);
+            dateTimePicker1.Text = Program.nuevaFechaSistema();//new DateTime(2018, 01, 01);
             txtCityOrigen.ReadOnly = true;
             txtDestino.ReadOnly = true;
         }

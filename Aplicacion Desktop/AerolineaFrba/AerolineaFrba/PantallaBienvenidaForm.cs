@@ -22,7 +22,10 @@ namespace AerolineaFrba
 
             DataTable dt = (new ConexionSQL()).cargarTablaSQL("select distinct nombre_rol FROM  DBAS.roles Where habilitado_rol > 0 "); //gd_esquema.Maestra
             cmbRoles.DataSource = dt.DefaultView;
-            cmbRoles.ValueMember = "nombre_rol"; 
+            cmbRoles.ValueMember = "nombre_rol";
+            DateTime fecha;
+            fecha=DateTime.Parse(Program.nuevaFechaSistema());
+            lbFecha.Text = lbFecha.Text + " " + fecha.Day.ToString() + "/" + fecha.Month + "/" + fecha.Year;    
         }
 
         private void btIngresar_Click(object sender, EventArgs e)

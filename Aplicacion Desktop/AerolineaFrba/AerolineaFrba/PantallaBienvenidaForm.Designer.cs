@@ -33,6 +33,7 @@
             this.lbseleccion = new System.Windows.Forms.Label();
             this.btIngresar = new System.Windows.Forms.Button();
             this.btSalir = new System.Windows.Forms.Button();
+            this.lbFecha = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lbAerolinea
@@ -89,12 +90,23 @@
             this.btSalir.UseVisualStyleBackColor = true;
             this.btSalir.Click += new System.EventHandler(this.btSalir_Click);
             // 
+            // lbFecha
+            // 
+            this.lbFecha.AutoSize = true;
+            this.lbFecha.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbFecha.Location = new System.Drawing.Point(12, 9);
+            this.lbFecha.Name = "lbFecha";
+            this.lbFecha.Size = new System.Drawing.Size(49, 16);
+            this.lbFecha.TabIndex = 10;
+            this.lbFecha.Text = "Fecha:";
+            // 
             // PantallaBienvenidaForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Silver;
             this.ClientSize = new System.Drawing.Size(636, 370);
+            this.Controls.Add(this.lbFecha);
             this.Controls.Add(this.btSalir);
             this.Controls.Add(this.cmbRoles);
             this.Controls.Add(this.lbseleccion);
@@ -114,5 +126,6 @@
         private System.Windows.Forms.Label lbseleccion;
         private System.Windows.Forms.Button btIngresar;
         private System.Windows.Forms.Button btSalir;
+        private System.Windows.Forms.Label lbFecha;
     }
 }

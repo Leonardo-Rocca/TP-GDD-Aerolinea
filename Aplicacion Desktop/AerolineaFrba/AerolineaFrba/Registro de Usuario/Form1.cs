@@ -20,6 +20,7 @@ namespace AerolineaFrba.Registro_de_Usuario
         private void button1_Click(object sender, EventArgs e)
         {
             MessageBox.Show("creado");
+            this.Hide();
         }
 
       
@@ -31,6 +32,11 @@ namespace AerolineaFrba.Registro_de_Usuario
         private void Form1_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Hide();
         }
     }
 }

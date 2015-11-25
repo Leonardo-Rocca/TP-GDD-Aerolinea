@@ -2406,6 +2406,45 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE DBAS.actualizarClienteEncomienda(@dni_persona bigint ,
+	@nombre_persona varchar(100),
+	@apellido_persona varchar(100),
+	@direccion_persona varchar(100),
+	@telefono_persona varchar(50),
+	@mail_persona varchar(100),
+	@fecha_nacimiento datetime)
+
+AS
+BEGIN
+	
+	DECLARE @id_persona bigint
+	DECLARE @id_cliente bigint
+	DECLARE @ID_viaje bigint
+
+
+	SELECT @id_persona = id_persona FROM DBAS.personas WHERE dni_persona = @dni_persona
+
+	IF NOT EXISTS(SELECT * FROM DBAS.clientes WHERE id_persona = @id_persona)
+	BEGIN
+		
+		UPDATE DBAS.personas SET apellido_persona = @apellido_persona, nombre_persona = @nombre_persona, direccion_persona = @direccion_persona, telefono_persona = @telefono_persona, mail_persona = @mail_persona, fecha_nacimiento = @fecha_nacimiento WHERE dni_persona = @dni_persona
+
+		-- Con la id de la persona creo un cliente
+		INSERT INTO DBAS.clientes(id_persona)
+		VALUES (@id_persona)
+
+	END
+	ELSE
+	BEGIN
+
+		UPDATE DBAS.personas SET apellido_persona = @apellido_persona, nombre_persona = @nombre_persona, direccion_persona = @direccion_persona, telefono_persona = @telefono_persona, mail_persona = @mail_persona, fecha_nacimiento = @fecha_nacimiento WHERE dni_persona = @dni_persona
+		
+
+	END
+
+END;
+GO
+
 
 --Cantidad de butacas libres de una aeronave
 CREATE FUNCTION DBAS.cantidadButacasLibres(@matricula_aeronave varchar(100),@id_viaje bigint)

@@ -29,6 +29,8 @@ namespace AerolineaFrba.Generacion_Viaje
         {
             textBoxMatricula.Text = "";
             textCodRuta.Text = "";
+            dateFechaDesde.Text = Program.nuevaFechaSistema().ToString();
+            dateFechaHasta.Text = Program.nuevaFechaSistema().ToString();
         }
 
         private void calendario_DateChanged(object sender, DateRangeEventArgs e)

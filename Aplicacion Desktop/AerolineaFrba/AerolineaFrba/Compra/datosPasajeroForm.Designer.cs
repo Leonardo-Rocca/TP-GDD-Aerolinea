@@ -161,9 +161,9 @@
             this.lbIngrese.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbIngrese.Location = new System.Drawing.Point(75, 24);
             this.lbIngrese.Name = "lbIngrese";
-            this.lbIngrese.Size = new System.Drawing.Size(140, 20);
+            this.lbIngrese.Size = new System.Drawing.Size(144, 20);
             this.lbIngrese.TabIndex = 62;
-            this.lbIngrese.Text = "Ingrese sus datos:";
+            this.lbIngrese.Text = "Ingrese sus datos: ";
             // 
             // txtPhone
             // 

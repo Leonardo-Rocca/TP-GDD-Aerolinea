@@ -26,6 +26,7 @@ namespace AerolineaFrba.Compra
             cmbTipoTarjeta.ValueMember = "descripcion_tipo";
             cmbTipoTarjeta.SelectedIndex = -1;
             cmbCuotas.SelectedIndex = -1;
+            dateTimePickerFnac.Text = Program.nuevaFechaSistema();
         }
 
         private void datosCompradorForm_Load(object sender, EventArgs e)
@@ -103,6 +104,11 @@ namespace AerolineaFrba.Compra
         }
 
         private void cmbCuotas_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dateTimePickerFnac_ValueChanged(object sender, EventArgs e)
         {
 
         }

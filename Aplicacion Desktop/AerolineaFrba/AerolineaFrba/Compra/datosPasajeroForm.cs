@@ -89,8 +89,8 @@ namespace AerolineaFrba.Compra
                     tarjeta.Show();
                     }
 
-            //    compra.Hide();
-                compra.Close();
+                compra.Hide();
+            //    compra.Close();
                 this.Close();
                 return;
             }

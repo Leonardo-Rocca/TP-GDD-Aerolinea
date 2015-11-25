@@ -94,6 +94,7 @@
             this.dateTimePickerFnac.Name = "dateTimePickerFnac";
             this.dateTimePickerFnac.Size = new System.Drawing.Size(302, 20);
             this.dateTimePickerFnac.TabIndex = 79;
+            this.dateTimePickerFnac.ValueChanged += new System.EventHandler(this.dateTimePickerFnac_ValueChanged);
             // 
             // label3
             // 

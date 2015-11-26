@@ -2465,7 +2465,7 @@ GO
 
 -- Creo la vista para obtener los kg disponibles de encomienda de cada viaje
 CREATE VIEW DBAS.cantidadKgEncomiendasPorViaje AS
-SELECT encomiendas.id_viaje,SUM(encomienda_cliente_KG) as cantidad_kg FROM DBAS.encomiendas encomiendas
+SELECT encomiendas.id_viaje,SUM(encomienda_cliente_KG) as cantidad_kg FROM DBAS.encomiendas encomiendas WHERE encomiendas.id_cancelacion IS NULL
 GROUP BY encomiendas.id_viaje
 GO
 
@@ -2501,7 +2501,7 @@ BEGIN
 	FROM DBAS.pasajes, DBAS.viajes viajes, DBAS.butacas butacas, DBAS.aeronaves aeronaves
 	WHERE viajes.id_viaje = @id_viaje AND viajes.matricula_aeronave = aeronaves.matricula_aeronave 
 	AND butacas.matricula_aeronave = aeronaves.matricula_aeronave AND pasajes.id_viaje = @id_viaje
-	AND pasajes.id_butaca = butacas.id_butaca)
+	AND pasajes.id_butaca = butacas.id_butaca AND pasajes.id_cancelacion IS NULL)
 	RETURN
 END;
 GO

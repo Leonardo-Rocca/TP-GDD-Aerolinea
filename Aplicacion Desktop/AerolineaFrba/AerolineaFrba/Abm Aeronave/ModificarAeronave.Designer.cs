@@ -124,7 +124,7 @@
             this.groupBox1.Size = new System.Drawing.Size(673, 195);
             this.groupBox1.TabIndex = 50;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Formulario de Alta";
+            this.groupBox1.Text = "Formulario";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
             // textKdDisponibles
@@ -304,7 +304,7 @@
             this.Controls.Add(this.lblErrores);
             this.Controls.Add(this.groupBox1);
             this.Name = "ModificarAeronave";
-            this.Text = "ModificarAeronave";
+            this.Text = "Aeronave";
             this.Load += new System.EventHandler(this.ModificarAeronave_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

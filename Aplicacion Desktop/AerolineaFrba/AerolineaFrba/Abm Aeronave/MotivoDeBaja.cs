@@ -26,6 +26,7 @@ namespace AerolineaFrba.Abm_Aeronave
             checkBoxFueraDeServicio.Checked = false;
             checkBoxBajaDefinitiva.Checked = false;
             labelFechaDeReinsercion.Visible = false;
+            dateFecha.Text = Program.nuevaFechaSistema().ToString();
             dateFecha.Visible = false;
             
         }

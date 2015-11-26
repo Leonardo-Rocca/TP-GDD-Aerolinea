@@ -222,8 +222,17 @@ namespace AerolineaFrba.Abm_Aeronave
 
             if (viaje != null)
             {
-                viaje.textBoxMatricula.Text = matricula;
-                viaje = null;
+                int cantidad = Int32.Parse(((new ConexionSQL()).cargarTablaSQL("select count(*) from dbas.aeronavesEnServicio() where matricula_aeronave like '" + matricula + "'")).Rows[0][0].ToString());
+                if (cantidad == 1)
+                {
+                    viaje.textBoxMatricula.Text = matricula;
+                    viaje = null;
+                }
+                else
+                {
+                    MessageBox.Show("No puede seleccionar una matricula inhabilitada para un viaje", "Generar Viaje", MessageBoxButtons.OK);
+                    return;
+                }
             }
             else
             {

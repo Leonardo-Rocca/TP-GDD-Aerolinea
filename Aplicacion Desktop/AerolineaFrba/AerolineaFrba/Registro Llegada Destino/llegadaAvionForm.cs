@@ -63,7 +63,7 @@ namespace AerolineaFrba.Registro_Llegada_Destino
         private void btRegistrar_Click(object sender, EventArgs e)
         {
             if (!validarTextosCompletos()) return;
-            string qsp = "execute dbas.registroLLegadaAeronave "+matricula+","+cOrigen+","+cDestino+", '"+dateTimePicker1.Value.ToString()+"'";
+            string qsp = "execute dbas.registroLLegadaAeronave '"+matricula+"','"+cOrigen+"','"+cDestino+"', '"+dateTimePicker1.Value.ToString()+"'";
             try{
                 (new ConexionSQL()).ejecutarComandoSQL(qsp);
                 }catch(Exception er){

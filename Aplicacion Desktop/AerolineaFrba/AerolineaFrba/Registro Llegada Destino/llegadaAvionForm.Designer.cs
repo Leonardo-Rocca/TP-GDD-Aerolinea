@@ -141,7 +141,7 @@
             // 
             // btCancelar
             // 
-            this.btCancelar.BackColor = System.Drawing.Color.SteelBlue;
+            this.btCancelar.BackColor = System.Drawing.Color.Azure;
             this.btCancelar.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btCancelar.Location = new System.Drawing.Point(91, 305);
             this.btCancelar.Name = "btCancelar";
@@ -153,7 +153,7 @@
             // 
             // btRegistrar
             // 
-            this.btRegistrar.BackColor = System.Drawing.Color.SteelBlue;
+            this.btRegistrar.BackColor = System.Drawing.Color.Azure;
             this.btRegistrar.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btRegistrar.Location = new System.Drawing.Point(398, 305);
             this.btRegistrar.Name = "btRegistrar";

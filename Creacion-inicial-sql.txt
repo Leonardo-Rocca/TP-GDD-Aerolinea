@@ -1414,7 +1414,7 @@ BEGIN
 	BEGIN
 		
 		-- Obtengo el viaje más reciente a la fecha
-		SELECT TOP 1 @id_viaje = id_viaje, @codigo_ruta = codigo_ruta, @fecha_salida = fecha_salida  FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave ORDER BY fecha_salida
+		SELECT TOP 1 @id_viaje = id_viaje, @codigo_ruta = codigo_ruta, @fecha_salida = fecha_salida  FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave ORDER BY fecha_salida DESC
 
 		-- Pregunto si las ciudades ingresadas corresponden al viaje de la aeronave 
 		IF EXISTS(SELECT * FROM DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudadOrig, DBAS.ciudades tablaCiudadDest

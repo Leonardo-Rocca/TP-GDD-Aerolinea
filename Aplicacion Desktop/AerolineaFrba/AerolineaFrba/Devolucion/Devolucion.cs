@@ -32,6 +32,10 @@ namespace AerolineaFrba.Devolucion
         {
             textBox0.Text = "";
             comboBox1.Text = "";
+            foreach (String elemento in pasajes)
+            {
+                comboBox1.Items.Remove(elemento);
+            }
             comboBox1.SelectedIndex = -1;
             textBox1.Text = "";
             textBox2.Text = "";
@@ -133,6 +137,7 @@ namespace AerolineaFrba.Devolucion
             string motivo = textBox3.Text;
             string encomienda;
             string comando;
+            string resto = "";
             if (textBox4.Text == "")
             {
                 encomienda = "-1";
@@ -144,12 +149,14 @@ namespace AerolineaFrba.Devolucion
 
             if (comboBox1.SelectedIndex != -1)
             {
-                comando = "insert into DBAS.PasajesCancelados(id_compra_PNR,id_cliente, motivo_cancelacion, codigo_pasaje,codigo_encomienda) select distinct " + pnr + "," + idCli + ",'" + motivo + "',codigo_pasaje," + encomienda + " FROM DBAS.pasajes WHERE id_cliente = " + idCli + " and codigo_pasaje IN ( ";
+                comando = "insert into DBAS.PasajesCancelados values (" + pnr + "," + idCli + ",'" + motivo + "',";
+                resto= ","+encomienda+ ")";
             }
             else
             {
-                comando = "insert into DBAS.PasajesCancelados(id_compra_PNR,id_cliente, motivo_cancelacion, codigo_pasaje,codigo_encomienda) select distinct " + pnr + "," + idCli + ",'" + motivo + "',-1," + encomienda + " FROM DBAS.pasajes WHERE id_cliente = " + idCli;
+                comando = "insert into DBAS.PasajesCancelados values (" + pnr + "," + idCli + ",'" + motivo + "',-1," + encomienda + ")";
             }
+            
 
             DataTable dtas = (new ConexionSQL()).cargarTablaSQL(" SELECT * FROM DBAS.compras WHERE id_compra_PNR = '"+pnr+"' and id_cliente = '"+idCli+"'");
                 if (dtas.Rows.Count == 0)
@@ -160,17 +167,18 @@ namespace AerolineaFrba.Devolucion
 
             int i = 1;
             int cant = pasajes.Count;
+            
             foreach (String elemento in pasajes)
             {
-                DataTable dta = (new ConexionSQL()).cargarTablaSQL("select codigo_pasaje FROM DBAS.pasajes where id_cliente = "+idCli+" and codigo_pasaje = '" + elemento + "'");
+                DataTable dta = (new ConexionSQL()).cargarTablaSQL("select codigo_pasaje FROM DBAS.pasajes where id_compra_PNR = "+pnr+" and codigo_pasaje = '" + elemento + "'");
                 if (dta.Rows.Count == 0)
                 {
-                    MessageBox.Show("Hay un codigo de pasaje invalido", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                    MessageBox.Show("Hay un codigo de pasaje invalido LALALA", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
                     return;
                 }
 
 
-                if (i < cant)
+              /*  if (i < cant)
                 {
                     comando = comando + " '" + elemento + "',";
                 }
@@ -179,46 +187,89 @@ namespace AerolineaFrba.Devolucion
                     comando = comando + " '" + elemento + "')";
                 }
                 i++;
-                
+                */
             }
 
            // MessageBox.Show(comando);
-            try
+            if (cant == 0)
             {
-                (new ConexionSQL()).ejecutarComandoSQL(comando);
-            }
-            catch (SqlException sqlEx)
-            {
-                if (sqlEx.Message.StartsWith("Hay un codigo de pasaje invalido"))
+                try
                 {
-                    MessageBox.Show("Hay un codigo de pasaje invalido", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
-                    return;
+                    (new ConexionSQL()).ejecutarComandoSQL(comando);
                 }
-
-                if (sqlEx.Message.StartsWith("Hay un codigo de encomienda invalido"))
+                catch (SqlException sqlEx)
                 {
-                    MessageBox.Show("Hay un codigo de encomienda invalido", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
-                    return;
+                    if (sqlEx.Message.StartsWith("Hay un codigo de pasaje invalido"))
+                    {
+                        MessageBox.Show("Hay un codigo de pasaje invalido", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                        return;
+                    }
+
+                    if (sqlEx.Message.StartsWith("Hay un codigo de encomienda invalido"))
+                    {
+                        MessageBox.Show("Hay un codigo de encomienda invalido", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                        return;
+                    }
+                    if (sqlEx.Message.StartsWith("El PNR ingresado es incorrecto"))
+                    {
+                        MessageBox.Show("El PNR ingresado es incorrecto", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                        return;
+                    }
+
+                    if (sqlEx.Message.StartsWith("Hay un pasaje que ya fue cancelado"))
+                    {
+                        MessageBox.Show("Hay un pasaje que ya fue cancelado", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                        return;
+                    }
+
+                    if (sqlEx.Message.StartsWith("Hay una encomienda que ya fue cancelada"))
+                    {
+                        MessageBox.Show("Hay una encomienda que ya fue cancelada", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                        return;
+                    }
                 }
-                if (sqlEx.Message.StartsWith("El PNR ingresado es incorrecto"))
+            }else{
+
+                foreach (String elemento in pasajes)
                 {
-                    MessageBox.Show("El PNR ingresado es incorrecto", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
-                    return;
+                    string comandoNuevo = comando + elemento + resto;
+                    //MessageBox.Show(comandoNuevo);
+                    try
+                    {
+                        (new ConexionSQL()).ejecutarComandoSQL(comandoNuevo);
+                    }
+                    catch (SqlException sqlEx)
+                    {
+                        if (sqlEx.Message.StartsWith("Hay un codigo de pasaje invalido"))
+                        {
+                            MessageBox.Show("Hay un codigo de pasaje invalido", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                            return;
+                        }
+
+                        if (sqlEx.Message.StartsWith("Hay un codigo de encomienda invalido"))
+                        {
+                            MessageBox.Show("Hay un codigo de encomienda invalido", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                            return;
+                        }
+                        if (sqlEx.Message.StartsWith("El PNR ingresado es incorrecto"))
+                        {
+                            MessageBox.Show("El PNR ingresado es incorrecto", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                            return;
+                        }
+
+                        if (sqlEx.Message.StartsWith("Hay un pasaje que ya fue cancelado"))
+                        {
+                            MessageBox.Show("Hay un pasaje que ya fue cancelado", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                            return;
+                        }
+
+                        if (sqlEx.Message.StartsWith("Hay una encomienda que ya fue cancelada"))
+                        {
+                            MessageBox.Show("Hay una encomienda que ya fue cancelada", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                            return;
+                        }
+                    }
                 }
-
-                if (sqlEx.Message.StartsWith("Hay un pasaje que ya fue cancelado"))
-                {
-                    MessageBox.Show("Hay un pasaje que ya fue cancelado", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
-                    return;
-                }
-
-                if (sqlEx.Message.StartsWith("Hay una encomienda que ya fue cancelada"))
-                {
-                    MessageBox.Show("Hay una encomienda que ya fue cancelada", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
-                    return;
-                }
-
-
               //  MessageBox.Show(sqlEx.Message);
             }
 

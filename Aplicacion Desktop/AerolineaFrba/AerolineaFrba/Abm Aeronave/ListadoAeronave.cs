@@ -126,14 +126,14 @@ namespace AerolineaFrba.Abm_Aeronave
 
             if (checkHabilitado.Checked || (!checkHabilitado.Checked && !checkInhabilitado.Checked))
             {
-                string agregado = "(fecha_reinsercion <= GETDATE() or fecha_reinsercion IS NULL) AND fecha_baja_servicio_definitiva is NULL";
+                string agregado = "matricula_aeronave IN (select matricula_aeronave from DBAS.aeronavesEnServicio()) AND fecha_baja_servicio_definitiva is NULL";
                 armarQueryCompleja(ref query, agregado, yaTieneCondicion);
                 yaTieneCondicion = true;
             }
 
             if (checkInhabilitado.Checked)
             {
-                string agregado = "fecha_reinsercion IS NOT NULL AND fecha_baja_servicio_definitiva IS NOT NULL";
+                string agregado = "fecha_baja_servicio_definitiva IS NOT NULL";
                 armarQueryCompleja(ref query, agregado, yaTieneCondicion);
                 yaTieneCondicion = true;
             }

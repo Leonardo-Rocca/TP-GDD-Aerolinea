@@ -50,7 +50,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(38, 225);
+            this.button2.Location = new System.Drawing.Point(125, 217);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(147, 63);
             this.button2.TabIndex = 1;
@@ -105,19 +105,21 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(23, 353);
+            this.button6.BackColor = System.Drawing.Color.DarkRed;
+            this.button6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button6.Location = new System.Drawing.Point(61, 340);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(108, 21);
+            this.button6.Size = new System.Drawing.Size(120, 45);
             this.button6.TabIndex = 52;
             this.button6.Text = "Cancelar";
-            this.button6.UseVisualStyleBackColor = true;
+            this.button6.UseVisualStyleBackColor = false;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // DiscriminadorTop5
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(452, 395);
+            this.ClientSize = new System.Drawing.Size(452, 415);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.groupBox1);
             this.Name = "DiscriminadorTop5";

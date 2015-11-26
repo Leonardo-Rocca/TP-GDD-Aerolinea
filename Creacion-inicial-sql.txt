@@ -800,6 +800,7 @@ BEGIN
 END;
 GO
 
+-- Devuelve la cantidad de millas que se ganaron en el tiempo
 CREATE FUNCTION DBAS.historialMillas(@dni_persona bigint)
 RETURNS @millas TABLE (ciudad_origen varchar(100), ciudad_destino varchar(100), cantidad_millas bigint, fecha_obtencion_millas datetime, tipo varchar(20))
 AS
@@ -812,6 +813,7 @@ BEGIN
 END;
 GO
 
+-- Devuelve la cantidad de millas que se gastaron en los productos
 CREATE FUNCTION DBAS.millasCanjeadas(@dni_persona bigint)
 RETURNS @millas TABLE (nombre_producto varchar(100), fecha_canje datetime, cantidad_producto bigint, millas_usadas bigint)
 AS
@@ -2347,6 +2349,7 @@ BEGIN
 END;
 GO
 
+-- Sirve para actualizar los datos de una persona que compra un pasaje
 CREATE PROCEDURE DBAS.actualizarCliente(@dni_persona bigint ,
 	@nombre_persona varchar(100),
 	@apellido_persona varchar(100),
@@ -2405,6 +2408,7 @@ BEGIN
 END;
 GO
 
+-- Sirve para actualizar los datos de una persona que compra una encomienda
 CREATE PROCEDURE DBAS.actualizarClienteEncomienda(@dni_persona bigint ,
 	@nombre_persona varchar(100),
 	@apellido_persona varchar(100),

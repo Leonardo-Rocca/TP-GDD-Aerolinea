@@ -470,10 +470,11 @@ BEGIN
 	DECLARE @precio_pasaje float(24)
 	DECLARE @id_servicio bigint
 	DECLARE @id_ruta bigint
+	DECLARE @codigo_ruta_original bigint
 
 	--Obtengo todas las rutas de la base maestra y obtengo las id de las ciudades y servicios ya migrados
 	DECLARE migrarRutasConServicios CURSOR FOR
-	SELECT DISTINCT tablaCiudades_orig.id_ciudad, tablaCiudades_dest.id_ciudad, tablaAux2.Ruta_Precio_BaseKG, tablaAux1.Ruta_Precio_BasePasaje, tablaServicios.id_servicio
+	SELECT DISTINCT tablaAux1.Ruta_Codigo, tablaCiudades_orig.id_ciudad, tablaCiudades_dest.id_ciudad, tablaAux2.Ruta_Precio_BaseKG, tablaAux1.Ruta_Precio_BasePasaje, tablaServicios.id_servicio
 			FROM ((SELECT DISTINCT Ruta_Codigo, Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BasePasaje, Tipo_Servicio FROM gd_esquema.Maestra WHERE Ruta_Precio_BasePasaje > 0.00) tablaAux1
 				JOIN (SELECT DISTINCT Ruta_Codigo,Ruta_Ciudad_Origen, Ruta_Ciudad_Destino,Ruta_Precio_BaseKG, Tipo_Servicio FROM gd_esquema.Maestra WHERE Ruta_Precio_BASEKG > 0.00) tablaAux2
 					ON (tablaAux1.Ruta_Ciudad_Origen = tablaAux2.Ruta_Ciudad_Origen AND tablaAux1.Ruta_Ciudad_Destino = tablaAux2.Ruta_Ciudad_Destino)
@@ -485,13 +486,13 @@ BEGIN
 
 	-- Inserto lo que obtiene el cursor en las variables
 	FETCH NEXT FROM migrarRutasConServicios
-	INTO @id_ciudad_original, @id_ciudad_destino, @precio_KG, @precio_pasaje, @id_servicio
+	INTO @codigo_ruta_original, @id_ciudad_original, @id_ciudad_destino, @precio_KG, @precio_pasaje, @id_servicio
 
 	WHILE @@FETCH_STATUS = 0
 	BEGIN
 		
-		INSERT INTO DBAS.rutas(ciudad_origen_id, ciudad_destino_id, precio_base_por_KG, precio_base_por_pasaje)
-		VALUES(@id_ciudad_original, @id_ciudad_destino, @precio_KG, @precio_pasaje)
+		INSERT INTO DBAS.rutas(codigo_ruta_original, ciudad_origen_id, ciudad_destino_id, precio_base_por_KG, precio_base_por_pasaje)
+		VALUES(@codigo_ruta_original, @id_ciudad_original, @id_ciudad_destino, @precio_KG, @precio_pasaje)
 
 		SET @id_ruta = SCOPE_IDENTITY()
 
@@ -500,7 +501,7 @@ BEGIN
 
 		-- Inserto lo que obtiene el cursor en las variables
 		FETCH NEXT FROM migrarRutasConServicios
-		INTO @id_ciudad_original, @id_ciudad_destino, @precio_KG, @precio_pasaje, @id_servicio
+		INTO @codigo_ruta_original, @id_ciudad_original, @id_ciudad_destino, @precio_KG, @precio_pasaje, @id_servicio
 
 	END 
 	
@@ -509,18 +510,6 @@ BEGIN
 
 END;
 GO
-
-/*
--- sirve para saber si hay consistencia con el tipo de servicio de la aeronave
-SELECT DISTINCT aux1.Aeronave_matricula, aux1.Aeronave_KG_Disponibles, aux1.Aeronave_Fabricante, aux1.Tipo_Servicio 
-FROM ((SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Tipo_Servicio FROM gd_esquema.Maestra) aux1 JOIN (SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Tipo_Servicio FROM gd_esquema.Maestra) aux2 
-ON (aux1.Aeronave_Matricula = aux2.Aeronave_Matricula AND aux1.Tipo_Servicio != aux2.Tipo_Servicio)) 
-
--- sirve para saber si hay consistencia con kg disponibles
-SELECT DISTINCT aux1.Aeronave_matricula, aux1.Aeronave_KG_Disponibles, aux1.Aeronave_Fabricante, aux1.Tipo_Servicio 
-FROM ((SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Tipo_Servicio FROM gd_esquema.Maestra) aux1 JOIN (SELECT Aeronave_matricula, Aeronave_KG_Disponibles, Aeronave_Fabricante, Tipo_Servicio FROM gd_esquema.Maestra) aux2 
-ON (aux1.Aeronave_Matricula = aux2.Aeronave_Matricula AND aux1.Aeronave_KG_Disponibles != aux2.Aeronave_KG_Disponibles)) 
-*/
 
 CREATE PROCEDURE DBAS.migracionAeronaves
 AS

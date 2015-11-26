@@ -19,6 +19,7 @@ namespace AerolineaFrba.Registro_Llegada_Destino
         public llegadaAvionForm()
         {
             InitializeComponent();
+            
         }
 
         public llegadaAvionForm(string p)
@@ -31,6 +32,7 @@ namespace AerolineaFrba.Registro_Llegada_Destino
             lbModelo.Text = lbModelo.Text + dta.Rows[0][2].ToString();
             lbServicio.Text=lbServicio.Text+dta.Rows[0][4].ToString();
             lbFabricante.Text=lbFabricante.Text+dta.Rows[0][3].ToString();
+            dateTimePicker1.Text = Program.nuevaFechaSistema().ToString();
         }
 
         public llegadaAvionForm(string p1, string p2, string p3)
@@ -45,6 +47,7 @@ namespace AerolineaFrba.Registro_Llegada_Destino
             lbFabricante.Text = lbFabricante.Text + dta.Rows[0][3].ToString();
             this.cOrigen = p2;
             this.cDestino = p3;
+            dateTimePicker1.Text = Program.nuevaFechaSistema().ToString();
         }
 
         private void btCancelar_Click(object sender, EventArgs e)
@@ -76,6 +79,28 @@ namespace AerolineaFrba.Registro_Llegada_Destino
         {
             if (txtDestino.Text == "") return false;
             if (textBox1.Text == "") return false;
+
+            int horas = Int32.Parse(txtDestino.Text);
+            int minutos = Int32.Parse(textBox1.Text);
+            if (horas < 0 || horas > 24)
+            {
+                MessageBox.Show("La hora de llegada no es una hora valida", "Registro de llegada", MessageBoxButtons.OK);
+                return false;
+            }
+
+            if (minutos < 0 || minutos > 59)
+            {
+                MessageBox.Show("Los minutos de llegada no estan dentro de un rango valido", "Registro de llegada", MessageBoxButtons.OK);
+                return false;
+            }
+
+            int ant1 = DateTime.Compare(DateTime.Parse(dateTimePicker1.Text), DateTime.Parse(Program.nuevaFechaSistema()).AddDays(-1));
+            if (ant1 < 0)
+            {
+                MessageBox.Show("La fecha de llegada debe ser posterior al dia de hoy", "Registro de llegada", MessageBoxButtons.OK);
+                return false;
+            }
+           
             return true;
         }
         private void llegadaAvionForm_Load(object sender, EventArgs e)

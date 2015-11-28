@@ -87,7 +87,7 @@ namespace AerolineaFrba.Abm_Ruta
             }
             if (txtCDestino.Text.Equals(txtCOrigen.Text))
             {
-                MessageBox.Show("La ciudad de Origen debe ser distinta que la de Destino");
+                MessageBox.Show("La ciudad de Origen debe ser distinta que la de Destino", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 

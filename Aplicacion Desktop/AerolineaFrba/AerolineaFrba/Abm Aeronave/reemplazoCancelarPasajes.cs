@@ -23,7 +23,7 @@ namespace AerolineaFrba.Abm_Aeronave
 
         private void buttonCancelarPasajes_Click(object sender, EventArgs e)
         {
-            string fecha = DateTime.Parse(anterior.getFecha()).ToString();
+            string fecha = anterior.getFecha();
             string motivo = anterior.motivo();
             string matricula = llamado.getMatricula();
             string query = "execute dbas.cancelacionPasajesBajaAeronave '" + fecha + "', '" + matricula + "', "+ motivo;

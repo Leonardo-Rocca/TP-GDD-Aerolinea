@@ -1738,9 +1738,9 @@ BEGIN
 	
 	-- Devuelvo todas la aeronaves disponibles para reemplazar a la actual que no tengan ningun vuelo programado
 	INSERT INTO  @avionesSinVuelo
-	SELECT DISTINCT tablaViajes.matricula_aeronave FROM DBAS.viajes tablaViajes, DBAS.aeronavesDisponiblesParaReemplazo() tablaAeronavesTemp, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades
-	WHERE (tablaAeronavesTemp.id_viaje = tablaViajes.id_viaje OR tablaAeronavesTemp.id_viaje IS NULL) AND tablaViajes.fecha_llegada <= @GET_DATE 
-	AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaRutas.ciudad_destino_id = @ciudad_actual_id
+	SELECT DISTINCT tablaAeronavesTemp.matricula_aeronave FROM DBAS.viajes tablaViajes, DBAS.aeronavesDisponiblesParaReemplazo() tablaAeronavesTemp
+	WHERE ((tablaAeronavesTemp.id_viaje = tablaViajes.id_viaje AND tablaViajes.fecha_llegada <= @GET_DATE) OR tablaAeronavesTemp.id_viaje IS NULL)
+	AND DBAS.ciudadAeronave(tablaAeronavesTemp.matricula_aeronave) = @ciudad_actual_id
 
 	RETURN	
 		
@@ -1757,69 +1757,43 @@ BEGIN
 END;
 GO
 
--- Trigger para reemplazar las butacas de un viaje de los pasajes cuando se reemplaza la aeronave
-CREATE TRIGGER DBAS.reemplazarButacasEnViajes ON DBAS.viajes
-AFTER UPDATE
+-- Procedure para reemplazar las butacas de un viaje de los pasajes cuando se reemplaza la aeronave
+CREATE PROCEDURE DBAS.reemplazarButacasEnViajes(@matricula_aeronave_nueva varchar(100), @id_viaje bigint)
 AS
 BEGIN
-		DECLARE @id_viaje bigint
-		DECLARE @matricula_aeronave_nueva varchar(100)
+		
 		DECLARE @id_pasaje bigint
 		DECLARE @id_butaca bigint
-		DECLARE @fecha_llegada datetime
+		DECLARE @GET_DATE datetime
 
-		-- Sirve para saber si la actualizacion en la tabla fue de la fecha de llegada
-		IF NOT EXISTS(SELECT * FROM deleted WHERE fecha_llegada IS NULL)
+		SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
+
+		-- Obtengo cada pasaje que tenga este viaje
+		DECLARE pasajesCursor CURSOR FOR
+		SELECT codigo_pasaje FROM  DBAS.pasajes
+		WHERE  DBAS.pasajes.id_viaje = @id_viaje
+
+		OPEN pasajesCursor
+
+		-- Inserto lo que obtiene el cursor en las variables
+		FETCH NEXT FROM pasajesCursor
+		INTO @id_pasaje
+			
+		WHILE @@FETCH_STATUS = 0
 		BEGIN
-		
-			-- Obtengo todos los viajes que fueron reemplazados por una aeronave
-			DECLARE viajesCursor CURSOR FOR
-			SELECT id_viaje, matricula_aeronave FROM inserted
-
-			OPEN viajesCursor
+				
+			UPDATE DBAS.pasajes SET id_butaca = (SELECT TOP 1 id_butaca FROM DBAS.butacas butacas WHERE butacas.matricula_aeronave = @matricula_aeronave_nueva AND butacas.piso_butaca != 0  AND butacas.id_butaca NOT IN (SELECT pasajes.id_butaca FROM DBAS.pasajes pasajes WHERE pasajes.id_viaje = @id_viaje AND pasajes.id_cancelacion IS NULL ))
+			WHERE id_viaje = @id_viaje AND codigo_pasaje = @id_pasaje AND id_cancelacion IS NULL
 
 			-- Inserto lo que obtiene el cursor en las variables
-			FETCH NEXT FROM viajesCursor
-			INTO @id_viaje, @matricula_aeronave_nueva
-
-			WHILE @@FETCH_STATUS = 0
-			BEGIN
-
-				-- Obtengo cada pasaje que tenga este viaje
-				DECLARE pasajesCursor CURSOR FOR
-				SELECT codigo_pasaje FROM  DBAS.pasajes
-				WHERE  DBAS.pasajes.id_viaje = @id_viaje
-
-				OPEN pasajesCursor
-
-				-- Inserto lo que obtiene el cursor en las variables
-				FETCH NEXT FROM pasajesCursor
-				INTO @id_pasaje
-			
-				WHILE @@FETCH_STATUS = 0
-				BEGIN
-				
-					UPDATE DBAS.pasajes SET id_butaca = (SELECT TOP 1 id_butaca FROM DBAS.butacas butacas WHERE butacas.matricula_aeronave = 'ASQ-169' AND NOT EXISTS(SELECT pasajes.id_butaca FROM DBAS.pasajes pasajes WHERE pasajes.id_viaje = 1 AND pasajes.id_butaca = butacas.id_butaca))
-					WHERE id_viaje = @id_viaje AND codigo_pasaje = @id_pasaje
-
-					-- Inserto lo que obtiene el cursor en las variables
-					FETCH NEXT FROM pasajesCursor
-					INTO @id_pasaje
-
-				END
-				CLOSE pasajesCursor
-				DEALLOCATE pasajesCursor
-
-				-- Inserto lo que obtiene el cursor en las variables
-				FETCH NEXT FROM viajesCursor
-				INTO @id_viaje, @matricula_aeronave_nueva
-		
-			END
-
-			CLOSE viajesCursor
-			DEALLOCATE viajesCursor
+			FETCH NEXT FROM pasajesCursor
+			INTO @id_pasaje
 
 		END
+			
+		CLOSE pasajesCursor
+		DEALLOCATE pasajesCursor
+		
 END;
 GO
 
@@ -1896,6 +1870,7 @@ CREATE PROCEDURE DBAS.reemplazarAeronave(@matricula_aeronave_original varchar(10
 AS 
 BEGIN
 	DECLARE @GET_DATE datetime
+	DECLARE @id_viaje bigint
 
 	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
 	
@@ -1904,18 +1879,63 @@ BEGIN
 	BEGIN
 		
 		-- Actualizo los viajes que tengan la matricula aeronave viejo por la nueva
-		UPDATE DBAS.viajes SET matricula_aeronave = @matricula_aeronave_nueva 
+		DECLARE viajesCursor CURSOR FOR
+		SELECT id_viaje	FROM DBAS.viajes
 		WHERE fecha_salida > @GET_DATE AND fecha_salida < @fecha AND matricula_aeronave = @matricula_aeronave_original
+
+		OPEN viajesCursor
+
+		-- Inserto lo que obtiene el cursor en las variables
+		FETCH NEXT FROM viajesCursor
+		INTO @id_viaje
+
+		WHILE @@FETCH_STATUS = 0
+		BEGIN
+
+			UPDATE DBAS.viajes SET matricula_aeronave = @matricula_aeronave_nueva WHERE id_viaje = @id_viaje
+
+			EXECUTE DBAS.reemplazarButacasEnViajes @matricula_aeronave_nueva, @id_viaje
+
+			-- Inserto lo que obtiene el cursor en las variables
+			FETCH NEXT FROM viajesCursor
+			INTO @id_viaje
+		END
+
+		CLOSE viajesCursor
+		DEALLOCATE viajesCursor
 
 	END
 	ELSE
 	BEGIN
 		
 		-- Actualizo los viajes que tengan la matricula aeronave viejo por la nueva
-		UPDATE DBAS.viajes SET matricula_aeronave = @matricula_aeronave_nueva 
+		DECLARE viajesCursor CURSOR FOR
+		SELECT id_viaje	FROM DBAS.viajes
 		WHERE fecha_salida > @GET_DATE AND matricula_aeronave = @matricula_aeronave_original
 
+		OPEN viajesCursor
+
+		-- Inserto lo que obtiene el cursor en las variables
+		FETCH NEXT FROM viajesCursor
+		INTO @id_viaje
+
+		WHILE @@FETCH_STATUS = 0
+		BEGIN
+		
+			UPDATE DBAS.viajes SET matricula_aeronave = @matricula_aeronave_nueva WHERE id_viaje = @id_viaje
+		
+			EXECUTE DBAS.reemplazarButacasEnViajes @matricula_aeronave_nueva, @id_viaje
+
+			-- Inserto lo que obtiene el cursor en las variables
+			FETCH NEXT FROM viajesCursor
+			INTO @id_viaje
+		END
+
+		CLOSE viajesCursor
+		DEALLOCATE viajesCursor
+
 	END
+
 END;
 GO
 
@@ -2681,5 +2701,3 @@ BEGIN
 
 END;
 GO
-
-

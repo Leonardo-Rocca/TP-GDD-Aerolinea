@@ -68,6 +68,7 @@ DROP PROCEDURE DBAS.registroLLegadaAeronave
 DROP PROCEDURE DBAS.bajaCiudad
 DROP PROCEDURE DBAS.cancelarPasajesBajaCiudad
 DROP PROCEDURE DBAS.actualizarCliente
+DROP PROCEDURE DBAS.reemplazarButacasEnViajes
 
 
 DROP VIEW DBAS.cantidadKgEncomiendasPorViaje

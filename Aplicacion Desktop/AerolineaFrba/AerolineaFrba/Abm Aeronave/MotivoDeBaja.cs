@@ -178,7 +178,14 @@ namespace AerolineaFrba.Abm_Aeronave
         }
 
        public string getFecha(){
-           return DateTime.Parse(dateFecha.Text).ToString();
+           if (checkBoxBajaDefinitiva.Checked)
+           {
+               return (DateTime.Parse(Program.nuevaFechaSistema())).ToString();
+           }
+           else
+           {
+               return dateFecha.Value.ToString();
+           }
         }
 
        private void MotivoDeBaja_Load(object sender, EventArgs e)

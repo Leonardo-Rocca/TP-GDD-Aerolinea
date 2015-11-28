@@ -173,7 +173,7 @@ namespace AerolineaFrba.Devolucion
                 DataTable dta = (new ConexionSQL()).cargarTablaSQL("select codigo_pasaje FROM DBAS.pasajes where id_compra_PNR = "+pnr+" and codigo_pasaje = '" + elemento + "'");
                 if (dta.Rows.Count == 0)
                 {
-                    MessageBox.Show("Hay un codigo de pasaje invalido LALALA", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                    MessageBox.Show("Hay un codigo de pasaje invalido", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
                     return;
                 }
 

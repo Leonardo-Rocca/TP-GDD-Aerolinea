@@ -136,7 +136,8 @@ namespace AerolineaFrba.Abm_Ruta
             }
             catch (Exception er)
             {
-                MessageBox.Show("Error con el tipo de datos ingresado");
+               // MessageBox.Show("Error con el tipo de datos ingresado");
+                MessageBox.Show(er.Message);
                 return;
             }
 

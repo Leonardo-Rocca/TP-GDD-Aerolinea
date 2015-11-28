@@ -85,7 +85,11 @@ namespace AerolineaFrba.Abm_Ruta
                 MessageBox.Show("Debe completar todos los campos", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
+            if (txtCDestino.Text.Equals(txtCOrigen.Text))
+            {
+                MessageBox.Show("La ciudad de Origen debe ser distinta que la de Destino");
+                return;
+            }
 
             Int32 a, b;
 
@@ -136,8 +140,8 @@ namespace AerolineaFrba.Abm_Ruta
             }
             catch (Exception er)
             {
-               // MessageBox.Show("Error con el tipo de datos ingresado");
-                MessageBox.Show(er.Message);
+                MessageBox.Show("Error con el tipo de datos ingresado");
+               // MessageBox.Show(er.Message);
                 return;
             }
 

@@ -29,7 +29,9 @@ namespace AerolineaFrba.Abm_Aeronave
             string query = "execute dbas.cancelacionPasajesBajaAeronave '" + fecha + "', '" + matricula + "', "+ motivo;
             (new ConexionSQL()).cargarTablaSQL(query);
             MessageBox.Show("Pasajes cancelados", "Baja Aeronave", MessageBoxButtons.OK);
-            llamado.Close();
+         //   llamado.Close();
+            llamado.iniciar();
+            llamado.Hide();
             anterior.Close();
             this.Close();
 

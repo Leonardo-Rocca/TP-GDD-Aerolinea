@@ -2048,7 +2048,7 @@ BEGIN
 	END
 	ELSE
 	BEGIN
-		IF EXISTS(SELECT * FROM DBAS.rutas WHERE ciudad_origen_id = @ID_ciudad_Origen AND ciudad_destino_id = @ID_ciudad_Destino)
+		IF EXISTS(SELECT * FROM DBAS.rutas WHERE ciudad_origen_id = @ID_ciudad_Origen AND ciudad_destino_id = @ID_ciudad_Destino AND habilitada_ruta = 1)
 		BEGIN
 			SET @mensaje_error = 'La ruta ya existe, no puede crearla'
 			RAISERROR(@mensaje_error, 12, 1)

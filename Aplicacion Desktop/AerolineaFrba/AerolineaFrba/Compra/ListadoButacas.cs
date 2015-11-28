@@ -53,7 +53,7 @@ namespace AerolineaFrba.Compra
             agregado = agregado + " 'lalala')";
 
 
-            string agregado2 = " AND numero_butaca NOT IN (";
+            string agregado2 = " AND id_butaca NOT IN (";
             foreach(PasajeEncomienda pasen in pasajes){
                 agregado2 = agregado2 + pasen.butacaKg + ",";
             }

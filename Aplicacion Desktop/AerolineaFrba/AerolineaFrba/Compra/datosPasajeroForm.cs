@@ -67,14 +67,14 @@ namespace AerolineaFrba.Compra
 
                 if (tipo == 2 || tipo == 0 )
                 {
-                    pasEn = new PasajeEncomienda(idPersona, txtnombre.Text, txtApellido.Text, dni, tel, txtMail.Text, dateTimePickerFnac.Value.ToString(), butacaKg,0);
+                    pasEn = new PasajeEncomienda(idPersona, txtnombre.Text, txtApellido.Text, dni, tel, txtMail.Text, dateTimePickerFnac.Value.ToString(), butacaKg,txtDireccion.Text,0);
                 }
                 else
                 {
-                    pasEn = new PasajeEncomienda(idPersona, txtnombre.Text, txtApellido.Text, dni, tel, txtMail.Text, dateTimePickerFnac.Value.ToString(), butacaKg);
+                    pasEn = new PasajeEncomienda(idPersona, txtnombre.Text, txtApellido.Text, dni, tel, txtMail.Text, dateTimePickerFnac.Value.ToString(), butacaKg,txtDireccion.Text);
                 }
                 
-                pasEn.direccion = txtDireccion.Text;
+      //          pasEn.direccion = txtDireccion.Text;
     //        pasEn.darDeAltaClienteSiNoExiste();
             }
             catch (Exception er)
@@ -179,8 +179,9 @@ namespace AerolineaFrba.Compra
 
         private void txtDni_TextChanged(object sender, EventArgs e)
         {
-            dni = "";
-             if (txtDni.Text.Length < 5) return;
+          //  dni = "";
+            idPersona = "";
+            if (txtDni.Text.Length < 5) return;
             if (!masValidaciones(txtDni.Text,"El DNI")) return;
             dni = txtDni.Text;
 

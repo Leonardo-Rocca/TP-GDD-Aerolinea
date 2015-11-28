@@ -33,7 +33,7 @@ namespace AerolineaFrba.Dominio
         private int p5;
        private int tipo = 1;
 
-       public PasajeEncomienda(string id,string name, string lname, string dni, string tel, string email, string p4, string butacaKg)
+       public PasajeEncomienda(string id,string name, string lname, string dni, string tel, string email, string p4, string butacaKg,string direcc)
        {
            this.idPersona = id;
            this.nombre = name;
@@ -43,12 +43,13 @@ namespace AerolineaFrba.Dominio
            this.mail = email;
            this.fecha = p4;
            this.butacaKg = butacaKg;
+           this.direccion = direcc;
            darDeAltaClienteSiNoExiste();
            idCliente = obtenerIdCliente();
 
        }
 
-       public PasajeEncomienda(string id, string name, string lname, string dni, string tel, string email, string p4, string butacaKg,int code)
+       public PasajeEncomienda(string id, string name, string lname, string dni, string tel, string email, string p4, string butacaKg,string direc,int code)
        {
            this.idPersona = id;
            this.nombre = name;
@@ -59,6 +60,7 @@ namespace AerolineaFrba.Dominio
            this.fecha = p4;
            this.butacaKg = butacaKg;
            this.tipo = code;
+           this.direccion = direc;
            darDeAltaClienteSiNoExiste();
            idCliente = obtenerIdCliente();
 

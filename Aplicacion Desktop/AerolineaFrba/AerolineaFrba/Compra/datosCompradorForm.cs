@@ -65,7 +65,12 @@ namespace AerolineaFrba.Compra
             }
             catch
             {
-                MessageBox.Show("El numero de tarjeta ingresado no posee un tipo de datos valido", "Error", MessageBoxButtons.OK);
+                MessageBox.Show("El numero de tarjeta ingresado no posee un tipo de datos valido - Debe ser un número entero inferior a 2.000.000.000", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+            if (a < 0)
+            {
+                MessageBox.Show("El numero de tarjeta ingresado debe ser positivo", "Error", MessageBoxButtons.OK);
                 return false;
             }
 

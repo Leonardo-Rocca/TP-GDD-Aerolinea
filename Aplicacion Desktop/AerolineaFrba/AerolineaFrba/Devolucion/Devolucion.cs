@@ -156,9 +156,10 @@ namespace AerolineaFrba.Devolucion
             {
                 comando = "insert into DBAS.PasajesCancelados values (" + pnr + "," + idCli + ",'" + motivo + "',-1," + encomienda + ")";
             }
-            
 
-            DataTable dtas = (new ConexionSQL()).cargarTablaSQL(" SELECT * FROM DBAS.compras WHERE id_compra_PNR = '"+pnr+"' and id_cliente = '"+idCli+"'");
+
+            //DataTable dtas = (new ConexionSQL()).cargarTablaSQL(" SELECT * FROM DBAS.compras WHERE id_compra_PNR = '" + pnr + "' and id_cliente = '" + idCli + "'");
+            DataTable dtas = (new ConexionSQL()).cargarTablaSQL("SELECT * FROM DBAS.compras c,dbas.clientes cli WHERE c.id_cliente = cli.id_cliente AND id_compra_PNR = '" + pnr + "' and id_persona = '" + idCli + "'");
                 if (dtas.Rows.Count == 0)
                 {
                     MessageBox.Show("El PNR ingresado es invalido", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);

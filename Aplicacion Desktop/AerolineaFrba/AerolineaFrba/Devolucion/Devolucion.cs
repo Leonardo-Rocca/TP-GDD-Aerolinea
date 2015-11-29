@@ -104,20 +104,11 @@ namespace AerolineaFrba.Devolucion
                 return false;
             }
 
-            if (a < 0)
+            if (a < 0 || a > 99999999)
             {
-                MessageBox.Show("El DNI no esta en un rango valido", "Error", MessageBoxButtons.OK);
+                MessageBox.Show("El DNI no esta en un rango valido (0 - 99999999)", "Error", MessageBoxButtons.OK);
                 return false;
             }
-
-          /*  if (a < 1122696 || a > 99999999)//a partir de ahi comienzan los dni
-            {
-                MessageBox.Show("El DNI no se encuentra en la base", "Error", MessageBoxButtons.OK);
-                return false;
-            }
-            */
-
-
 
             return true;
         }
@@ -157,8 +148,6 @@ namespace AerolineaFrba.Devolucion
                 comando = "insert into DBAS.PasajesCancelados values (" + pnr + "," + idCli + ",'" + motivo + "',-1," + encomienda + ")";
             }
 
-
-            //DataTable dtas = (new ConexionSQL()).cargarTablaSQL(" SELECT * FROM DBAS.compras WHERE id_compra_PNR = '" + pnr + "' and id_cliente = '" + idCli + "'");
             DataTable dtas = (new ConexionSQL()).cargarTablaSQL("SELECT * FROM DBAS.compras c,dbas.clientes cli WHERE c.id_cliente = cli.id_cliente AND id_compra_PNR = '" + pnr + "' and id_persona = '" + idCli + "'");
                 if (dtas.Rows.Count == 0)
                 {

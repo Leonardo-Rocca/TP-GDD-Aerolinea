@@ -127,7 +127,7 @@ namespace AerolineaFrba.Compra
                 return false;
             }*/
 
-            int a;
+            Int32 a;
             try
             {
                 a = Convert.ToInt32(txtEncomienda.Text);

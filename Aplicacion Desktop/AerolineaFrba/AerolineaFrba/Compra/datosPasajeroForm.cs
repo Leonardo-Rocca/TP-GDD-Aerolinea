@@ -143,17 +143,11 @@ namespace AerolineaFrba.Compra
                 return false;
             }
 
-            if (a < 0)
+            if (a < 0 || a > 99999999)
             {
-                MessageBox.Show(mensaje +" no esta en un rango valido", "Error", MessageBoxButtons.OK);
+                MessageBox.Show(mensaje + " no esta en un rango valido (0 - 99999999)", "Error", MessageBoxButtons.OK);
                 return false;
             }
-
-           /* if (a < 1122696 || a > 99999999)//a partir de ahi comienzan los dni
-            {
-                MessageBox.Show("El DNI no se encuentra en la base", "Error", MessageBoxButtons.OK);
-                return false;
-            }*/ //LO COMENTO por que puede ser que se ingrese un dni nuevo
 
             return true;
         }

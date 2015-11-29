@@ -1567,7 +1567,7 @@ BEGIN
 	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
 	
 	-- Pregunto si la aeronave que llega por parametro esta en viaje actualmente y devuelve 0 si lo esta y 1 si esta disponible
-	IF EXISTS(SELECT * FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave AND fecha_salida < @GET_DATE AND fecha_llegada IS NULL)
+	IF EXISTS(SELECT * FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave AND habilitado_viaje = 1 AND fecha_salida <= @GET_DATE AND fecha_llegada IS NULL)
 	BEGIN
 		SET @VALOR = 0
 	END
@@ -1604,9 +1604,9 @@ BEGIN
 	DECLARE @id_viaje bigint
 
 	-- Pregunto si no existe la aeronave actual en pleno vuelo, retornando null si esta en vuelo y sino devuelvo el ultimo viaje que realizo
-	IF NOT EXISTS(SELECT TOP 1 id_viaje FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave AND fecha_llegada IS NULL)
+	IF NOT EXISTS(SELECT TOP 1 id_viaje FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave AND habilitado_viaje = 1 AND fecha_llegada IS NULL)
 	BEGIN
-		SELECT TOP 1 @id_viaje = id_viaje FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave ORDER BY fecha_salida DESC
+		SELECT TOP 1 @id_viaje = id_viaje FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave AND habilitado_viaje = 1 ORDER BY fecha_salida DESC
 	END
 	ELSE
 	BEGIN
@@ -1960,9 +1960,12 @@ AS
 BEGIN
 	DECLARE @mensaje_error varchar(100)
 	DECLARE @ciudad_actual_id bigint
+	DECLARE @GET_DATE datetime
+
+	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
 	
 	-- Pregunto si la aeronave esta en algun viaje antes de reemplazar
-	IF EXISTS(SELECT * FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave)
+	IF EXISTS(SELECT * FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave AND habilitado_viaje = 1)
 	BEGIN
 		
 		--Pregunto si la aeronave esta en vuelo
@@ -1975,9 +1978,19 @@ BEGIN
 		END
 		ELSE
 		BEGIN
-			-- Devuelvo un mensaje de error
-			SET @mensaje_error = 'La aeronave esta en uso'
-			RAISERROR(@mensaje_error, 12, 1)
+			IF EXISTS(SELECT * FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave AND habilitado_viaje = 1 AND fecha_salida > @GET_DATE)
+			BEGIN
+				
+				-- Devuelvo un mensaje de error
+				SET @mensaje_error = 'La aeronave esta en uso'
+				RAISERROR(@mensaje_error, 12, 1)
+			END
+			ELSE
+			BEGIN
+				-- Se da de baja la aeronave llamando al procedure
+				EXECUTE DBAS.actualizarBajaAeronave @fecha, @matricula_aeronave, @tipo_cancelacion
+			END
+
 		END
 	END
 	ELSE
@@ -2068,41 +2081,29 @@ BEGIN
 	END
 	ELSE
 	BEGIN
-		IF EXISTS(SELECT * FROM DBAS.rutas WHERE ciudad_origen_id = @ID_ciudad_Origen AND ciudad_destino_id = @ID_ciudad_Destino AND habilitada_ruta = 1)
-		BEGIN
-			SET @mensaje_error = 'La ruta ya existe, no puede crearla'
-			RAISERROR(@mensaje_error, 12, 1)
-			SET @insertarServicios = 0
-		END
-		ELSE
-		BEGIN
+	
+		-- Inserto la nueva ruta con sus caracteristicas
+		INSERT INTO DBAS.rutas(precio_base_por_KG, precio_base_por_pasaje, ciudad_origen_id, ciudad_destino_id)
+		VALUES (@precio_KG, @precio_pasaje, @ID_ciudad_Origen, @ID_ciudad_Destino)
 
-			-- Inserto la nueva ruta con sus caracteristicas
-			INSERT INTO DBAS.rutas(precio_base_por_KG, precio_base_por_pasaje, ciudad_origen_id, ciudad_destino_id)
-			VALUES (@precio_KG, @precio_pasaje, @ID_ciudad_Origen, @ID_ciudad_Destino)
-
-			-- Obtengo el codigo de la ruta para su utilizacion
-			SET @codigo_ruta = SCOPE_IDENTITY()
-
-		END
+		-- Obtengo el codigo de la ruta para su utilizacion
+		SET @codigo_ruta = SCOPE_IDENTITY()
+		
 	END
 	
-	IF(@insertarServicios = 1)
+	WHILE @@FETCH_STATUS = 0
 	BEGIN
-		WHILE @@FETCH_STATUS = 0
-		BEGIN
-			--Obtengo el id del servicio que fueron seleccionados de la ruta
-			SELECT @id_servicio = id_servicio FROM DBAS.servicios WHERE tipo_servicio = @tipo_servicio
+		--Obtengo el id del servicio que fueron seleccionados de la ruta
+		SELECT @id_servicio = id_servicio FROM DBAS.servicios WHERE tipo_servicio = @tipo_servicio
 
-			-- Establezco la relacion entre la nueva ruta y los servicios seleccionados
-			INSERT INTO DBAS.serviciosPorRutas(codigo_ruta, id_servicio)
-			VALUES (@codigo_ruta, @id_servicio)
+		-- Establezco la relacion entre la nueva ruta y los servicios seleccionados
+		INSERT INTO DBAS.serviciosPorRutas(codigo_ruta, id_servicio)
+		VALUES (@codigo_ruta, @id_servicio)
 
-			FETCH NEXT FROM rutasCursor
-			INTO @NULL, @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
-		END
+		FETCH NEXT FROM rutasCursor
+		INTO @NULL, @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
 	END
-
+	
 	CLOSE rutasCursor
 	DEALLOCATE rutasCursor
 
@@ -2152,7 +2153,7 @@ BEGIN
 	FROM  DBAS.viajes tablaViajes, DBAS.pasajes tablaPasajes
 	WHERE tablaViajes.fecha_salida > @GET_DATE
 	AND tablaPasajes.id_viaje = tablaViajes.id_viaje
-	AND tablaViajes.codigo_ruta= @codigo_ruta
+	AND tablaViajes.codigo_ruta= @codigo_ruta AND tablaViajes.habilitado_viaje = 1
 	AND tablaPasajes.id_cancelacion IS NULL
 	
 	-- Actualizo todos los pasajes que contengan la ruta que se da de baja e inserto el id de cancelacion
@@ -2160,11 +2161,14 @@ BEGIN
 	FROM  DBAS.viajes tablaViajes, DBAS.encomiendas tablaEncomiendas
 	WHERE  tablaViajes.fecha_salida > @GET_DATE
 	AND tablaEncomiendas.id_viaje = tablaViajes.id_viaje
-	AND tablaViajes.codigo_ruta= @codigo_ruta
+	AND tablaViajes.codigo_ruta= @codigo_ruta AND tablaViajes.habilitado_viaje = 1
 	AND tablaEncomiendas.id_cancelacion IS NULL
 
 	-- Deshabilito la ruta
 	UPDATE DBAS.rutas SET habilitada_ruta = 0 WHERE codigo_ruta = @codigo_ruta
+
+	-- Deshabilito los viajes
+	UPDATE DBAS.viajes SET habilitado_viaje = 0 WHERE codigo_ruta = @codigo_ruta AND fecha_salida > @GET_DATE
 
 END;
 GO
@@ -2701,4 +2705,3 @@ BEGIN
 
 END;
 GO
-

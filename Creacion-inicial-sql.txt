@@ -1590,7 +1590,7 @@ BEGIN
 
 	-- Devuelvo la id de la ciudad actual de la aeronave ingresada por parametro 
 	RETURN (SELECT TOP 1 tablaCiudades.id_ciudad FROM DBAS.viajes tablaViajes, DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudades 
-	WHERE tablaViajes.matricula_aeronave = @matricula_aeronave AND tablaViajes.fecha_llegada <= @GET_DATE 
+	WHERE tablaViajes.matricula_aeronave = @matricula_aeronave AND tablaViajes.fecha_llegada <= @GET_DATE AND tablaViajes.fecha_llegada IS NOT NULL
 	AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta AND tablaRutas.ciudad_destino_id = tablaCiudades.id_ciudad
 	ORDER BY tablaViajes.fecha_llegada DESC)
 	
@@ -2701,3 +2701,4 @@ BEGIN
 
 END;
 GO
+

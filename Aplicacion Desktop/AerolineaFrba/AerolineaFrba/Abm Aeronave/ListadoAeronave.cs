@@ -220,9 +220,10 @@ namespace AerolineaFrba.Abm_Aeronave
             string cantVentanila = ((new ConexionSQL()).cargarTablaSQL("select count(id_butaca) from dbas.butacas where piso_butaca = 1 and tipo_butaca like 'Ventanilla' and matricula_aeronave like '" + matricula + "'")).Rows[0][0].ToString();
             string cantPisos = ((new ConexionSQL()).cargarTablaSQL("select count(distinct piso_butaca) from dbas.butacas where matricula_aeronave like '" + matricula + "'")).Rows[0][0].ToString(); ;
 
+            int cantidad = Int32.Parse(((new ConexionSQL()).cargarTablaSQL("select count(*) from dbas.aeronavesEnServicio() where matricula_aeronave like '" + matricula + "'")).Rows[0][0].ToString());
+
             if (viaje != null)
             {
-                int cantidad = Int32.Parse(((new ConexionSQL()).cargarTablaSQL("select count(*) from dbas.aeronavesEnServicio() where matricula_aeronave like '" + matricula + "'")).Rows[0][0].ToString());
                 if (cantidad == 1)
                 {
                     viaje.textBoxMatricula.Text = matricula;
@@ -236,15 +237,24 @@ namespace AerolineaFrba.Abm_Aeronave
             }
             else
             {
-                modifAnterior.textBox1.Text = matricula;
-                modifAnterior.textBox1.ReadOnly = true;
-                modifAnterior.textBox2.Text = modelo;
-                modifAnterior.textBox3.Text = cantPisos;
-                modifAnterior.textBox4.Text = cantPasillo;
-                modifAnterior.textBox5.Text = cantVentanila;
-                modifAnterior.textBox6.Text = kg;
-                modifAnterior.combo1.Text = tipoServicio;
-                modifAnterior.combo2.Text = fabricante;
+                if (cantidad == 1)
+                {
+                    modifAnterior.textBox1.Text = matricula;
+                    modifAnterior.textBox1.ReadOnly = true;
+                    modifAnterior.textBox2.Text = modelo;
+                    modifAnterior.textBox3.Text = cantPisos;
+                    modifAnterior.textBox4.Text = cantPasillo;
+                    modifAnterior.textBox5.Text = cantVentanila;
+                    modifAnterior.textBox6.Text = kg;
+                    modifAnterior.combo1.Text = tipoServicio;
+                    modifAnterior.combo2.Text = fabricante;
+                }
+                else
+                {
+                    MessageBox.Show("No puede seleccionar una matricula inhabilitada", "ABM Aeronave", MessageBoxButtons.OK);
+                    return;
+                }
+                
             }
 
             this.iniciar();

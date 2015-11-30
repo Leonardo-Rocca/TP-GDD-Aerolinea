@@ -46,13 +46,31 @@ namespace AerolineaFrba.Abm_Aeronave
                 return;
             }
 
+            int cantidad = Int32.Parse(((new ConexionSQL()).cargarTablaSQL("select count(*) from dbas.aeronavesEnServicio() where matricula_aeronave like '" + txtMatricula.Text + "'")).Rows[0][0].ToString());
+            if (cantidad != 1)
+            {
+                MessageBox.Show("Esta Aeronave ya fue eliminada, no puede modificarla", "Modificar Aeronave", MessageBoxButtons.OK);
+                return;
+            }   
+
             string idFabricante = ((new ConexionSQL()).cargarTablaSQL("select distinct id_fabricante FROM DBAS.fabricantes where nombre_fabricante like '" + comboBoxFabricante.Text + "'")).Rows[0][0].ToString();
             string idServicio = ((new ConexionSQL()).cargarTablaSQL("select distinct id_servicio FROM DBAS.servicios where tipo_servicio like '" + comboBoxServicio.Text + "'")).Rows[0][0].ToString();
             string query = "execute DBAS.modificarAeronave '"+txtMatricula.Text+"',"+idFabricante.ToString()+","+idServicio.ToString()+",'"+txtMatricula.Text+"','"+txtModelo.Text+"',"+textKdDisponibles.Text+","+ textButacasPasillo.Text+","+textButacasVentanilla.Text+","+textPisos.Text;
-            (new ConexionSQL()).cargarTablaSQL(query);
 
-            MessageBox.Show("Modificacion de aeronave exitosa", "Modificacion aeronave", MessageBoxButtons.OK);
+            try
+            {
+                (new ConexionSQL()).cargarTablaSQL(query);
+            }
+            catch
+            {
+                MessageBox.Show("La aeronave fue usada, no puede modificarla", "Modificar Aeronave", MessageBoxButtons.OK);
+                return;
+            }
+
+            MessageBox.Show("Modificacion de aeronave exitosa", "Modificar aeronave", MessageBoxButtons.OK);
             iniciar();
+            this.Hide();
+            
         }
 
         private bool Validaciones()
@@ -165,6 +183,16 @@ namespace AerolineaFrba.Abm_Aeronave
         private void button3_Click(object sender, EventArgs e)
         {
             if (!validaciones2()) return;
+        //--
+    
+              int cantidad = Int32.Parse(((new ConexionSQL()).cargarTablaSQL("select count(*) from dbas.aeronavesEnServicio() where matricula_aeronave like '" + txtMatricula.Text + "'")).Rows[0][0].ToString());
+              if (cantidad != 1)
+              {
+                  MessageBox.Show("Esta Aeronave ya fue eliminada", "Baja Aeronave", MessageBoxButtons.OK);
+                  return;
+              }   
+           
+    //--
             MotivoDeBaja motivo = new MotivoDeBaja(this);
             this.Hide();
             motivo.Show();

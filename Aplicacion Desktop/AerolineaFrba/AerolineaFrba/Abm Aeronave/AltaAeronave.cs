@@ -107,7 +107,7 @@ namespace AerolineaFrba.Abm_Aeronave
             
             MessageBox.Show("Alta aeronave exitosa", "Alta aeronave", MessageBoxButtons.OK);
             iniciar();
-            this.Close();
+            this.Hide();
         }
 
        

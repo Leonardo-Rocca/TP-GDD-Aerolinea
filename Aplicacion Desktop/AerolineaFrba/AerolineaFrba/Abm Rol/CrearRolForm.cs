@@ -20,9 +20,15 @@ namespace AerolineaFrba.Abm_Rol
         public CrearRolForm()
         {  
             InitializeComponent();
+            inicializar();
+
+        }
+
+        private void inicializar()
+        {
+            txtNombreRol.Text = "";
             chkHabilitado.Checked = true;
             cargarChkFuncionalidades();
-
         }
    
         private void cargarChkFuncionalidades()
@@ -66,10 +72,14 @@ namespace AerolineaFrba.Abm_Rol
                 return;
              };
 
+              if (validacionNombreExistente()) return;
+
               this.agregarRol();
            
                 MessageBox.Show("Rol agregado", this.Text, MessageBoxButtons.OK, MessageBoxIcon.None);
+
                 this.Hide(); //.Close();
+                this.inicializar();
                 return;
          }
 
@@ -95,17 +105,18 @@ namespace AerolineaFrba.Abm_Rol
         
             (new ConexionSQL()).ejecutarComandoSQL(comando);
 
-            actualizarFormsRoles();
-
             if (chkHabilitado.Checked == true)
                 return;
             string qhabilitacion = "UPDATE DBAS.roles SET habilitado_rol = 0 Where nombre_rol = '" + nombreRol + "'";
             (new ConexionSQL()).ejecutarComandoSQL(qhabilitacion);
+
+            actualizarFormsRoles();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             //cancelar     // this.Close();
+            this.inicializar();
             this.Hide();
         }
 
@@ -163,5 +174,16 @@ namespace AerolineaFrba.Abm_Rol
 
         }
 
+
+        private bool validacionNombreExistente() {
+            string comando = "select * FROM  DBAS.roles  WHERE habilitado_rol = 1 AND nombre_rol = '" + txtNombreRol.Text + "'";
+           DataTable dt =  (new ConexionSQL()).cargarTablaSQL(comando);
+           if (dt.Rows.Count != 0)
+           {
+               MessageBox.Show("El nombre de rol ya existe");
+               return true;
+           }
+           return false;
+        }
     }
 }

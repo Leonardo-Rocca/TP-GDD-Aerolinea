@@ -43,8 +43,8 @@
             // 
             // label4
             // 
-            label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            label4.Location = new System.Drawing.Point(163, 197);
+            label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            label4.Location = new System.Drawing.Point(163, 174);
             label4.Name = "label4";
             label4.Size = new System.Drawing.Size(100, 141);
             label4.TabIndex = 17;

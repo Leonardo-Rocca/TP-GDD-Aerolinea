@@ -1764,10 +1764,7 @@ BEGIN
 		
 		DECLARE @id_pasaje bigint
 		DECLARE @id_butaca bigint
-		DECLARE @GET_DATE datetime
-
-		SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
-
+	
 		-- Obtengo cada pasaje que tenga este viaje
 		DECLARE pasajesCursor CURSOR FOR
 		SELECT codigo_pasaje FROM  DBAS.pasajes
@@ -1935,6 +1932,9 @@ BEGIN
 		DEALLOCATE viajesCursor
 
 	END
+
+	-- Doy de baja la aeronave una vez actualizados los datos
+	EXECUTE DBAS.actualizarBajaAeronave @fecha, @matricula_aeronave_original, @baja_temporal
 
 END;
 GO

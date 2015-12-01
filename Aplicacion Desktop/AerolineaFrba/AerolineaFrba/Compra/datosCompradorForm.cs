@@ -57,15 +57,27 @@ namespace AerolineaFrba.Compra
                 return false;
             }
 
-            Int32 a;
+            if (txtNumero.TextLength > 16)
+            {
+                MessageBox.Show("El numero de tarjeta ingresado excede el maximo de 16 digitos permitido", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
+            if (txtPass.TextLength > 16)
+            {
+                MessageBox.Show("El password ingresado excede los 16 digitos permitidos", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+            Int64 a;
+            
             try
             {
-                a = Convert.ToInt32(txtNumero.Text);
+                a = Convert.ToInt64(txtNumero.Text);
 
             }
             catch
             {
-                MessageBox.Show("El numero de tarjeta ingresado no posee un tipo de datos valido - Debe ser un número entero inferior a 2.000.000.000", "Error", MessageBoxButtons.OK);
+                MessageBox.Show("El numero de tarjeta ingresado no posee un tipo de datos valido", "Error", MessageBoxButtons.OK);
                 return false;
             }
             if (a < 0)

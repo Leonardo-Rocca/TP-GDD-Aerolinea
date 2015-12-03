@@ -36,6 +36,7 @@ namespace AerolineaFrba.Devolucion
             {
                 comboBox1.Items.Remove(elemento);
             }
+            pasajes.Clear();
             comboBox1.SelectedIndex = -1;
             textBox1.Text = "";
             textBox2.Text = "";
@@ -160,6 +161,9 @@ namespace AerolineaFrba.Devolucion
             
             foreach (String elemento in pasajes)
             {
+
+                //MessageBox.Show(elemento);
+
                 DataTable dta = (new ConexionSQL()).cargarTablaSQL("select codigo_pasaje FROM DBAS.pasajes where id_compra_PNR = "+pnr+" and codigo_pasaje = '" + elemento + "'");
                 if (dta.Rows.Count == 0)
                 {
@@ -208,6 +212,7 @@ namespace AerolineaFrba.Devolucion
 
                     if (sqlEx.Message.StartsWith("Hay un pasaje que ya fue cancelado"))
                     {
+                     //   MessageBox.Show('2' + ' ' + comando);
                         MessageBox.Show("Hay un pasaje que ya fue cancelado", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
                         return;
                     }
@@ -249,6 +254,8 @@ namespace AerolineaFrba.Devolucion
 
                         if (sqlEx.Message.StartsWith("Hay un pasaje que ya fue cancelado"))
                         {
+                   //         MessageBox.Show('1' +' '+ comandoNuevo);
+
                             MessageBox.Show("Hay un pasaje que ya fue cancelado", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
                             return;
                         }
@@ -271,7 +278,7 @@ namespace AerolineaFrba.Devolucion
 
         private void Devolucion_Load(object sender, EventArgs e)
         {
-
+            iniciar();
         }
 
     }

@@ -296,6 +296,21 @@ namespace AerolineaFrba.Abm_Aeronave
             return textButacasPasillo.Text;
         }
 
+        public string getFabricante()
+        {
+            return comboBoxFabricante.Text;
+        }
+
+        public string getServicio()
+        {
+            return comboBoxServicio.Text;
+        }
+
+        public string getModelo()
+        {
+            return txtModelo.Text;
+        }
+
         public string getButacasVentanilla()
         {
             return textButacasVentanilla.Text;

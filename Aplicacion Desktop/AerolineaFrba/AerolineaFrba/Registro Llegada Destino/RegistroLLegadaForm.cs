@@ -79,27 +79,11 @@ namespace AerolineaFrba.Registro_Llegada_Destino
         private void btAceptar_Click(object sender, EventArgs e)
         {
            if(!validaciones())return;
-           if (!validarExistenciaViaje()) return;
-
+          
             llegadaAvionForm registro = new llegadaAvionForm(txtmatricula.Text,cmbOrigen.Text,cmbDestino.Text);
             registro.Show();
             this.Hide();
             inicializar();
-        }
-
-        private bool validarExistenciaViaje()
-        {
-           string query ="select * FROM dbas.rutas r,dbas.viajes v,dbas.ciudades co,dbas.ciudades cd "+ 
-              "WHERE r.codigo_ruta = v.codigo_ruta AND r.ciudad_origen_id=co.id_ciudad AND r.ciudad_destino_id = cd.id_ciudad  AND habilitado_viaje = 1 "+
-			  "AND co.nombre_ciudad = '" + cmbOrigen.Text + "' AND cd.nombre_ciudad = '" + cmbDestino.Text + "' AND matricula_aeronave = '"+txtmatricula.Text+"'";
-           DataTable dt = (new ConexionSQL()).cargarTablaSQL(query);
-           if (dt.Rows.Count == 0)
-           {
-               MessageBox.Show("No existe tal viaje", "invalido", MessageBoxButtons.OK);
-               return false;
-           }
-
-           return true;
         }
 
         private bool validaciones()

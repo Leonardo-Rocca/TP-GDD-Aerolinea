@@ -123,6 +123,11 @@ namespace AerolineaFrba.Abm_Aeronave
 
             if (txtMatricula.Text != "")
             {
+                if (txtMatricula.TextLength > 100)
+                {
+                    MessageBox.Show("La matricula no debe exceder los 100 caracteres", "Error", MessageBoxButtons.OK);
+                    return false;
+                }
 
                 DataTable dta = (new ConexionSQL()).cargarTablaSQL("select distinct matricula_aeronave FROM DBAS.aeronaves where matricula_aeronave like '" + txtMatricula.Text + "'");
                 if (dta.Rows.Count != 0)
@@ -132,6 +137,13 @@ namespace AerolineaFrba.Abm_Aeronave
                 }
                
             }
+
+            if (txtModelo.TextLength > 100)
+            {
+                MessageBox.Show("El modelo de la aeronave no debe exceder los 100 caracteres", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
             int a, b, c,d;
             try
             {
@@ -216,24 +228,61 @@ namespace AerolineaFrba.Abm_Aeronave
 
         private void altaParaLaBaja()
         {
-            if (!validacionParaModificacion())
+            if (!validacionParaModificacion())return;
+            //-------alta--------
+            string idFabricante = ((new ConexionSQL()).cargarTablaSQL("select distinct id_fabricante FROM DBAS.fabricantes where nombre_fabricante like '" + comboBoxFabricante.Text + "'")).Rows[0][0].ToString();
+            string idServicio = ((new ConexionSQL()).cargarTablaSQL("select distinct id_servicio FROM DBAS.servicios where tipo_servicio like '" + comboBoxServicio.Text + "'")).Rows[0][0].ToString();
+            string queryAlta = "execute dbas.altaAeronave " + idFabricante + ", " + idServicio + ", '" + txtMatricula.Text + "', '" + txtModelo.Text + "', " + textKdDisponibles.Text + ", " + textButacasPasillo.Text + ", " + textButacasVentanilla.Text + ", " + textPisos.Text;
+            try
             {
-                MessageBox.Show("La cantidad de butacas y pisos debe ser mayor que en la aeronave a reemplazar", "Datos invalidos", MessageBoxButtons.OK);
+                (new ConexionSQL()).cargarTablaSQL(queryAlta);
+            }
+            catch
+            {
+                //--- aca no deberia entrar
+                MessageBox.Show("No se pudo dar de alta la aeronave", "Baja aeronave", MessageBoxButtons.OK);
                 return;
             }
+            
+            //------modificacion-------------
             discriminador = 0;
             string query = "execute dbas.reemplazarAeronave '" + datosParaModificacion.getMatricula() + "', '" + txtMatricula.Text + "', " + datosSobreModificacion.motivo() + ", '" + datosSobreModificacion.getFecha()+"'";            
             (new ConexionSQL()).cargarTablaSQL(query);
             MessageBox.Show("Baja de aeronave exitosa", "Baja aeronave", MessageBoxButtons.OK);
-            datosParaModificacion.Close();
+            datosParaModificacion.iniciar();
+            datosParaModificacion.Hide();
             datosSobreModificacion.Close();
             iniciar();
-            this.Close();
+            this.Hide();
         }
 
         private bool validacionParaModificacion()
         {
-            return (Convert.ToInt32(textButacasPasillo.Text) >= Convert.ToInt32(datosParaModificacion.getButacasPasillo()) && Convert.ToInt32(textButacasVentanilla.Text) >= Convert.ToInt32(datosParaModificacion.getButacasVentanilla()) && Convert.ToInt32(textPisos.Text) >= Convert.ToInt32(datosParaModificacion.getPisos()));
+            
+            if(!(Convert.ToInt32(textButacasPasillo.Text) >= Convert.ToInt32(datosParaModificacion.getButacasPasillo()))&& Convert.ToInt32(textButacasVentanilla.Text) >= Convert.ToInt32(datosParaModificacion.getButacasVentanilla()) && Convert.ToInt32(textPisos.Text) >= Convert.ToInt32(datosParaModificacion.getPisos())){
+                MessageBox.Show("La cantidad de butacas y pisos debe ser mayor que en la aeronave a reemplazar", "Datos invalidos", MessageBoxButtons.OK);
+                return false;
+            }
+
+            if(!(datosParaModificacion.getFabricante() == comboBoxFabricante.Text)){
+                MessageBox.Show("El fabricante debe ser el mismo"+'('+datosParaModificacion.getFabricante()+')', "Datos invalidos", MessageBoxButtons.OK);
+                return false;
+            }
+
+            if (!(datosParaModificacion.getServicio() == comboBoxServicio.Text))
+            {
+                MessageBox.Show("El Servicio debe ser el mismo" + '(' + datosParaModificacion.getServicio() + ')', "Datos invalidos", MessageBoxButtons.OK);
+                return false;
+            }
+
+
+            if (!(datosParaModificacion.getModelo() == txtModelo.Text))
+            {
+                MessageBox.Show("El Modelo debe ser el mismo" + '(' + datosParaModificacion.getModelo() + ')', "Datos invalidos", MessageBoxButtons.OK);
+                return false;
+            }
+
+            return true;
         }
     }
 }

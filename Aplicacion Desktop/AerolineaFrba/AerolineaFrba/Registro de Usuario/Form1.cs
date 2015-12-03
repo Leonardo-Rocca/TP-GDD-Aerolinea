@@ -19,7 +19,7 @@ namespace AerolineaFrba.Registro_de_Usuario
 
         private void button1_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("creado");
+            MessageBox.Show("Funcionalidad no implementada");
             this.Hide();
         }
 

@@ -94,10 +94,10 @@ namespace AerolineaFrba.Registro_Llegada_Destino
                 return false;
             }
 
-            int ant1 = DateTime.Compare(DateTime.Parse(dateTimePicker1.Text), DateTime.Parse(Program.nuevaFechaSistema()).AddDays(-1));
-            if (ant1 < 0)
+            int ant1 = DateTime.Compare(DateTime.Parse(dateTimePicker1.Text), DateTime.Parse(Program.nuevaFechaSistema()));
+            if (ant1 > 0)
             {
-                MessageBox.Show("La fecha de llegada debe ser posterior al dia de hoy", "Registro de llegada", MessageBoxButtons.OK);
+                MessageBox.Show("La fecha de llegada debe ser anterior o igual al dia de hoy", "Registro de llegada", MessageBoxButtons.OK);
                 return false;
             }
            

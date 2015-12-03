@@ -27,6 +27,13 @@ namespace AerolineaFrba.Abm_Ciudad
                 MessageBox.Show("Falta agregar nombre", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            if (txtNombreCity.TextLength > 100)
+            {
+                MessageBox.Show("El nombre de la ciudad no debe superar los 100 caracteres", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             DataTable dt = (new ConexionSQL()).cargarTablaSQL("select * FROM  DBAS.ciudades WHERE nombre_ciudad LIKE '_" + txtNombreCity.Text + "'OR nombre_ciudad LIKE '" + txtNombreCity.Text + "' ");
             //--pregunto si hay alguna fila cuyo nombre coincida con el ingresado-- 
             if (dt.Rows.Count == 0)

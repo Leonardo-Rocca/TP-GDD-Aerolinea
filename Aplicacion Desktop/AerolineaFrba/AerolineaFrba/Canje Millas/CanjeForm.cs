@@ -61,7 +61,13 @@ namespace AerolineaFrba.Canje_Millas
 
         private bool validacionExtra()
         {
-            Int32 a;
+                Int32 a;
+
+                if (txtDni.TextLength > 9)
+                {
+                    MessageBox.Show("El DNI no esta en un rango valido (0 - 999999999)", "Error", MessageBoxButtons.OK);
+                    return false;
+                }
   
                 try
                 {
@@ -74,10 +80,16 @@ namespace AerolineaFrba.Canje_Millas
                     return true;
                 }
 
-                if (a < 0 || a > 99999999)
+                if (a < 0)
                 {
-                    MessageBox.Show("El DNI no esta en un rango valido", "Error", MessageBoxButtons.OK);
+                    MessageBox.Show("El DNI debe ser positivo", "Error", MessageBoxButtons.OK);
                     return true;
+                }
+
+                if (textCantidad.TextLength > 9)
+                {
+                    MessageBox.Show("La cantidad no debe ser mayor a 999999999)", "Error", MessageBoxButtons.OK);
+                    return false;
                 }
 
                 int b;
@@ -94,7 +106,7 @@ namespace AerolineaFrba.Canje_Millas
 
                 if (b<0)
                 {
-                    MessageBox.Show("La cantidad no esta en un rango valido", "Error", MessageBoxButtons.OK);
+                    MessageBox.Show("La cantidad debe ser positiva", "Error", MessageBoxButtons.OK);
                     return true;
                 }
 

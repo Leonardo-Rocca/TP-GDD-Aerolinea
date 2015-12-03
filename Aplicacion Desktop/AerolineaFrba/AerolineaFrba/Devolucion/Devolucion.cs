@@ -92,6 +92,18 @@ namespace AerolineaFrba.Devolucion
                 return false;
             }
 
+            if (textBox0.TextLength > 9)
+            {
+                MessageBox.Show("El DNI no esta en un rango valido (0 - 999999999)", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
+            if (textBox3.TextLength > 100)
+            {
+                MessageBox.Show("El motivo de cancelacion no debe superar los 100 caracteres", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
             Int32 a;
 
             try
@@ -105,9 +117,9 @@ namespace AerolineaFrba.Devolucion
                 return false;
             }
 
-            if (a < 0 || a > 99999999)
+            if (a < 0)
             {
-                MessageBox.Show("El DNI no esta en un rango valido (0 - 99999999)", "Error", MessageBoxButtons.OK);
+                MessageBox.Show("El DNI debe ser positivo", "Error", MessageBoxButtons.OK);
                 return false;
             }
 

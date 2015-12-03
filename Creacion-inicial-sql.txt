@@ -1412,7 +1412,7 @@ BEGIN
 	SELECT @GET_DATE = GET_DATE FROM DBAS.date_time
 
 	-- Pregunto si la aeronave tiene algun viaje pendiente
-	IF EXISTS(SELECT TOP 1 id_viaje FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave AND fecha_llegada IS NULL)
+	IF EXISTS(SELECT TOP 1 id_viaje FROM DBAS.viajes WHERE matricula_aeronave = @matricula_aeronave AND fecha_llegada IS NULL AND habilitado_viaje = 1)
 	BEGIN
 		
 		-- Obtengo el viaje más reciente a la fecha

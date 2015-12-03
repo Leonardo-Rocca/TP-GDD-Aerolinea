@@ -57,22 +57,22 @@ namespace AerolineaFrba.Compra
                 return false;
             }
 
-            if (txtNumero.TextLength > 16)
+            if (txtNumero.TextLength > 9)
             {
-                MessageBox.Show("El numero de tarjeta ingresado excede el maximo de 16 digitos permitido", "Error", MessageBoxButtons.OK);
+                MessageBox.Show("El numero de tarjeta ingresado excede el maximo de 9 digitos permitido", "Error", MessageBoxButtons.OK);
                 return false;
             }
 
-            if (txtPass.TextLength > 16)
+            if (txtPass.TextLength > 9)
             {
-                MessageBox.Show("El password ingresado excede los 16 digitos permitidos", "Error", MessageBoxButtons.OK);
+                MessageBox.Show("El password ingresado excede los 9 digitos permitidos", "Error", MessageBoxButtons.OK);
                 return false;
             }
-            Int64 a;
+            Int32 a;
             
             try
             {
-                a = Convert.ToInt64(txtNumero.Text);
+                a = Convert.ToInt32(txtNumero.Text);
 
             }
             catch

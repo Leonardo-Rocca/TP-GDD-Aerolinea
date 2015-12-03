@@ -123,6 +123,11 @@ namespace AerolineaFrba.Abm_Aeronave
 
             if (txtMatricula.Text != "")
             {
+                if (txtMatricula.TextLength > 100)
+                {
+                    MessageBox.Show("La matricula no debe exceder los 100 caracteres", "Error", MessageBoxButtons.OK);
+                    return false;
+                }
 
                 DataTable dta = (new ConexionSQL()).cargarTablaSQL("select distinct matricula_aeronave FROM DBAS.aeronaves where matricula_aeronave like '" + txtMatricula.Text + "'");
                 if (dta.Rows.Count != 0)
@@ -132,6 +137,13 @@ namespace AerolineaFrba.Abm_Aeronave
                 }
                
             }
+
+            if (txtModelo.TextLength > 100)
+            {
+                MessageBox.Show("El modelo de la aeronave no debe exceder los 100 caracteres", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
             int a, b, c,d;
             try
             {

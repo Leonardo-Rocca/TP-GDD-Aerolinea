@@ -54,6 +54,12 @@ namespace AerolineaFrba.Consulta_Millas
         {
             Int32 a;
 
+            if (txtDni.TextLength > 9)
+            {
+                MessageBox.Show("El DNI no esta en un rango valido (0 - 999999999)", "Error", MessageBoxButtons.OK);
+                return false;
+            }
+
             try
             {
                 a = Convert.ToInt32(txtDni.Text);
@@ -65,9 +71,9 @@ namespace AerolineaFrba.Consulta_Millas
                 return false;
             }
 
-            if (a < 0 || a > 999999999)
+            if (a < 0)
             {
-                MessageBox.Show("El DNI no esta en un rango valido", "Error", MessageBoxButtons.OK);
+                MessageBox.Show("El DNI debe ser positivo", "Error", MessageBoxButtons.OK);
                 return false;
             }
 

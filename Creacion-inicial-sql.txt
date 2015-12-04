@@ -1738,10 +1738,9 @@ BEGIN
 	
 	-- Devuelvo todas la aeronaves disponibles para reemplazar a la actual que no tengan ningun vuelo programado
 	INSERT INTO  @avionesSinVuelo
-	SELECT DISTINCT tablaAeronavesTemp.matricula_aeronave FROM DBAS.viajes tablaViajes, DBAS.aeronavesDisponiblesParaReemplazo() tablaAeronavesTemp
-	WHERE ((tablaAeronavesTemp.id_viaje = tablaViajes.id_viaje AND tablaViajes.fecha_llegada <= @GET_DATE) OR tablaAeronavesTemp.id_viaje IS NULL)
-	AND DBAS.ciudadAeronave(tablaAeronavesTemp.matricula_aeronave) = @ciudad_actual_id
-
+	SELECT DISTINCT tablaAeronavesTemp.matricula_aeronave FROM DBAS.aeronavesDisponiblesParaReemplazo() tablaAeronavesTemp
+	WHERE (DBAS.ciudadAeronave(tablaAeronavesTemp.matricula_aeronave) = @ciudad_actual_id) OR tablaAeronavesTemp.id_viaje IS NULL
+	
 	RETURN	
 		
 END;
@@ -1949,7 +1948,7 @@ BEGIN
 	INSERT INTO @avionesSinVuelo
 	SELECT tablaAeronaves1.matricula_aeronave, DBAS.cantidadButacas(tablaAeronaves1.matricula_aeronave) FROM  DBAS.aeronavesDisponiblesSinVuelo(@matricula_aeronave) avionesDisponibles, DBAS.aeronaves tablaAeronaves1, DBAS.aeronaves tablaAeronaves2
 	WHERE DBAS.cantidadButacas(avionesDisponibles.matricula_aeronave) >= DBAS.cantidadButacas(@matricula_aeronave) AND tablaAeronaves1.matricula_aeronave = avionesDisponibles.matricula_aeronave AND tablaAeronaves2.matricula_aeronave = @matricula_aeronave
-	AND tablaAeronaves1.id_servicio = tablaAeronaves2.id_servicio AND tablaAeronaves1.id_fabricante = tablaAeronaves2.id_fabricante
+	AND tablaAeronaves1.id_servicio = tablaAeronaves2.id_servicio AND tablaAeronaves1.id_fabricante = tablaAeronaves2.id_fabricante AND tablaAeronaves1.kg_disponible_encomienda >= tablaAeronaves2.kg_disponible_encomienda
 	
 	RETURN
 END;
@@ -2705,3 +2704,4 @@ BEGIN
 
 END;
 GO
+

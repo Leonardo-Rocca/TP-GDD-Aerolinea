@@ -141,8 +141,8 @@ namespace AerolineaFrba.Abm_Ruta
             }
             catch (Exception er)
             {
-               // MessageBox.Show("Error con el tipo de datos ingresado");
-                MessageBox.Show(er.Message);
+                if (er.Message == "Error al convertir el tipo de datos varchar a real.")  MessageBox.Show("Error con el tipo de datos ingresado");
+                else MessageBox.Show(er.Message);
                 return;
             }
 

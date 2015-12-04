@@ -105,8 +105,8 @@
             // 
             // button6
             // 
-            this.button6.BackColor = System.Drawing.Color.DarkRed;
-            this.button6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button6.BackColor = System.Drawing.Color.Brown;
+            this.button6.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button6.Location = new System.Drawing.Point(61, 340);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(120, 45);
@@ -119,6 +119,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.CadetBlue;
             this.ClientSize = new System.Drawing.Size(452, 415);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.groupBox1);

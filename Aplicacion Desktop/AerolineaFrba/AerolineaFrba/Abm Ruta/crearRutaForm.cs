@@ -152,10 +152,7 @@ namespace AerolineaFrba.Abm_Ruta
         private void agregarRuta()
         {
 
-            
-                agregarModificar("-1");
-            
-            MessageBox.Show("Ruta creada", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            agregarModificar("-1");
             inicializar();
         }
 
@@ -173,9 +170,24 @@ namespace AerolineaFrba.Abm_Ruta
             }
             comando = comando + "'lalala' )";
 
-          
+            if (code.Equals("-1"))
+            {
+                try
+                {
+                    (new ConexionSQL()).ejecutarComandoSQL(comando);
+                }
+                catch (Exception er)
+                {
+                    MessageBox.Show(er.Message);
+                    return;
+                }
+
+                MessageBox.Show("Ruta creada", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
                 (new ConexionSQL()).ejecutarComandoSQL(comando);
-            
+            }
            
           return;
         }

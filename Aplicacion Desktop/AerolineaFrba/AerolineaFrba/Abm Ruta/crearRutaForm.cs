@@ -129,7 +129,6 @@ namespace AerolineaFrba.Abm_Ruta
             {
             if (tipo == 0)
             {
-                validarRutaDuplicada();
                 agregarRuta();
             }
             else
@@ -177,17 +176,6 @@ namespace AerolineaFrba.Abm_Ruta
 
         }
 
-        private void validarRutaDuplicada()
-        {
-            string qvalidacion = "SELECT * FROM DBAS.rutas r , dbas.ciudades c1, dbas.ciudades c2  WHERE r.ciudad_origen_id = c1.id_ciudad  AND r.ciudad_destino_id= c2.id_ciudad" +
-                " AND c1.nombre_ciudad = '" + txtCOrigen.Text + "' AND c2.nombre_ciudad = '"+txtCDestino.Text+"'";
-            DataTable dt = (new ConexionSQL()).cargarTablaSQL(qvalidacion);
-
-            if (dt.Rows.Count == 0) return;
-
-            //MessageBox.Show("Ya existe una ruta con misma ciudad de origen y destino", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
-            throw new Exception("Ya existe una ruta con misma ciudad de origen y destino");
-        }
 
         private void modificarRuta()
         {

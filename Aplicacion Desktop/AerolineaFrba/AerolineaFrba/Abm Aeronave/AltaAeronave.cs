@@ -259,7 +259,7 @@ namespace AerolineaFrba.Abm_Aeronave
         private bool validacionParaModificacion()
         {
             
-            if(!(Convert.ToInt32(textButacasPasillo.Text) >= Convert.ToInt32(datosParaModificacion.getButacasPasillo()))&& Convert.ToInt32(textButacasVentanilla.Text) >= Convert.ToInt32(datosParaModificacion.getButacasVentanilla()) && Convert.ToInt32(textPisos.Text) >= Convert.ToInt32(datosParaModificacion.getPisos())){
+            if(!((Convert.ToInt32(textButacasPasillo.Text) >= Convert.ToInt32(datosParaModificacion.getButacasPasillo()))&& Convert.ToInt32(textButacasVentanilla.Text) >= Convert.ToInt32(datosParaModificacion.getButacasVentanilla()) && Convert.ToInt32(textPisos.Text) >= Convert.ToInt32(datosParaModificacion.getPisos()))){
                 MessageBox.Show("La cantidad de butacas y pisos debe ser mayor que en la aeronave a reemplazar", "Datos invalidos", MessageBoxButtons.OK);
                 return false;
             }

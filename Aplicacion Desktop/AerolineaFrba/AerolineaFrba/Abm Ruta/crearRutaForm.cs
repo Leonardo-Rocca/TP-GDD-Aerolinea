@@ -129,6 +129,7 @@ namespace AerolineaFrba.Abm_Ruta
             {
             if (tipo == 0)
             {
+                validarRutaDuplicada();
                 agregarRuta();
             }
             else
@@ -140,8 +141,8 @@ namespace AerolineaFrba.Abm_Ruta
             }
             catch (Exception er)
             {
-                MessageBox.Show("Error con el tipo de datos ingresado");
-               // MessageBox.Show(er.Message);
+               // MessageBox.Show("Error con el tipo de datos ingresado");
+                MessageBox.Show(er.Message);
                 return;
             }
 
@@ -152,9 +153,7 @@ namespace AerolineaFrba.Abm_Ruta
         private void agregarRuta()
         {
 
-            
-                agregarModificar("-1");
-            
+            agregarModificar("-1");
             MessageBox.Show("Ruta creada", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
             inicializar();
         }
@@ -173,11 +172,21 @@ namespace AerolineaFrba.Abm_Ruta
             }
             comando = comando + "'lalala' )";
 
-          
-                (new ConexionSQL()).ejecutarComandoSQL(comando);
-            
-           
-          return;
+  
+            (new ConexionSQL()).ejecutarComandoSQL(comando);
+
+        }
+
+        private void validarRutaDuplicada()
+        {
+            string qvalidacion = "SELECT * FROM DBAS.rutas r , dbas.ciudades c1, dbas.ciudades c2  WHERE r.ciudad_origen_id = c1.id_ciudad  AND r.ciudad_destino_id= c2.id_ciudad" +
+                " AND c1.nombre_ciudad = '" + txtCOrigen.Text + "' AND c2.nombre_ciudad = '"+txtCDestino.Text+"'";
+            DataTable dt = (new ConexionSQL()).cargarTablaSQL(qvalidacion);
+
+            if (dt.Rows.Count == 0) return;
+
+            //MessageBox.Show("Ya existe una ruta con misma ciudad de origen y destino", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            throw new Exception("Ya existe una ruta con misma ciudad de origen y destino");
         }
 
         private void modificarRuta()

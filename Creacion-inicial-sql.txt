@@ -1738,10 +1738,9 @@ BEGIN
 	
 	-- Devuelvo todas la aeronaves disponibles para reemplazar a la actual que no tengan ningun vuelo programado
 	INSERT INTO  @avionesSinVuelo
-	SELECT DISTINCT tablaAeronavesTemp.matricula_aeronave FROM DBAS.viajes tablaViajes, DBAS.aeronavesDisponiblesParaReemplazo() tablaAeronavesTemp
-	WHERE ((tablaAeronavesTemp.id_viaje = tablaViajes.id_viaje AND tablaViajes.fecha_llegada <= @GET_DATE) OR tablaAeronavesTemp.id_viaje IS NULL)
-	AND DBAS.ciudadAeronave(tablaAeronavesTemp.matricula_aeronave) = @ciudad_actual_id
-
+	SELECT DISTINCT tablaAeronavesTemp.matricula_aeronave FROM DBAS.aeronavesDisponiblesParaReemplazo() tablaAeronavesTemp
+	WHERE (DBAS.ciudadAeronave(tablaAeronavesTemp.matricula_aeronave) = @ciudad_actual_id) OR tablaAeronavesTemp.id_viaje IS NULL
+	
 	RETURN	
 		
 END;
@@ -1949,7 +1948,7 @@ BEGIN
 	INSERT INTO @avionesSinVuelo
 	SELECT tablaAeronaves1.matricula_aeronave, DBAS.cantidadButacas(tablaAeronaves1.matricula_aeronave) FROM  DBAS.aeronavesDisponiblesSinVuelo(@matricula_aeronave) avionesDisponibles, DBAS.aeronaves tablaAeronaves1, DBAS.aeronaves tablaAeronaves2
 	WHERE DBAS.cantidadButacas(avionesDisponibles.matricula_aeronave) >= DBAS.cantidadButacas(@matricula_aeronave) AND tablaAeronaves1.matricula_aeronave = avionesDisponibles.matricula_aeronave AND tablaAeronaves2.matricula_aeronave = @matricula_aeronave
-	AND tablaAeronaves1.id_servicio = tablaAeronaves2.id_servicio AND tablaAeronaves1.id_fabricante = tablaAeronaves2.id_fabricante
+	AND tablaAeronaves1.id_servicio = tablaAeronaves2.id_servicio AND tablaAeronaves1.id_fabricante = tablaAeronaves2.id_fabricante AND tablaAeronaves1.kg_disponible_encomienda >= tablaAeronaves2.kg_disponible_encomienda
 	
 	RETURN
 END;
@@ -2081,27 +2080,40 @@ BEGIN
 	END
 	ELSE
 	BEGIN
-	
-		-- Inserto la nueva ruta con sus caracteristicas
-		INSERT INTO DBAS.rutas(precio_base_por_KG, precio_base_por_pasaje, ciudad_origen_id, ciudad_destino_id)
-		VALUES (@precio_KG, @precio_pasaje, @ID_ciudad_Origen, @ID_ciudad_Destino)
+		IF EXISTS(SELECT * FROM DBAS.rutas WHERE ciudad_origen_id = @ID_ciudad_Origen AND ciudad_destino_id = @ID_ciudad_Destino)
+		BEGIN
+			SET @mensaje_error = 'La ruta ya existe, no puede crearla'
+			RAISERROR(@mensaje_error, 12, 1)
+			SET @insertarServicios = 0
+		END
+		ELSE
+		BEGIN
+			-- Inserto la nueva ruta con sus caracteristicas
+			INSERT INTO DBAS.rutas(precio_base_por_KG, precio_base_por_pasaje, ciudad_origen_id, ciudad_destino_id)
+			VALUES (@precio_KG, @precio_pasaje, @ID_ciudad_Origen, @ID_ciudad_Destino)
 
-		-- Obtengo el codigo de la ruta para su utilizacion
-		SET @codigo_ruta = SCOPE_IDENTITY()
+			-- Obtengo el codigo de la ruta para su utilizacion
+			SET @codigo_ruta = SCOPE_IDENTITY()
+		END
 		
 	END
 	
-	WHILE @@FETCH_STATUS = 0
+	IF(@insertarServicios = 1)
 	BEGIN
-		--Obtengo el id del servicio que fueron seleccionados de la ruta
-		SELECT @id_servicio = id_servicio FROM DBAS.servicios WHERE tipo_servicio = @tipo_servicio
 
-		-- Establezco la relacion entre la nueva ruta y los servicios seleccionados
-		INSERT INTO DBAS.serviciosPorRutas(codigo_ruta, id_servicio)
-		VALUES (@codigo_ruta, @id_servicio)
+		WHILE @@FETCH_STATUS = 0
+		BEGIN
+			--Obtengo el id del servicio que fueron seleccionados de la ruta
+			SELECT @id_servicio = id_servicio FROM DBAS.servicios WHERE tipo_servicio = @tipo_servicio
 
-		FETCH NEXT FROM rutasCursor
-		INTO @NULL, @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
+			-- Establezco la relacion entre la nueva ruta y los servicios seleccionados
+			INSERT INTO DBAS.serviciosPorRutas(codigo_ruta, id_servicio)
+			VALUES (@codigo_ruta, @id_servicio)
+
+			FETCH NEXT FROM rutasCursor
+			INTO @NULL, @precio_KG, @precio_pasaje, @ciudad_Origen, @ciudad_Destino, @tipo_servicio
+		END
+
 	END
 	
 	CLOSE rutasCursor
@@ -2705,3 +2717,4 @@ BEGIN
 
 END;
 GO
+

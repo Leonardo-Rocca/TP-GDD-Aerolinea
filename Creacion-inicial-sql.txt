@@ -1134,7 +1134,7 @@ BEGIN
 		INSERT INTO @TOP5(id_viaje,matricula_aeronave,butacas_vacias,fecha_salida,fecha_llegada,codigo_ruta)
 		SELECT TOP 5 tablaPasajeros.id_viaje,matricula_aeronave,(DBAS.cantidadButacas(matricula_aeronave)-cantidad_pasajeros) as butacas_vacias,fecha_salida,fecha_llegada,codigo_ruta
 		FROM DBAS.cantidadPasajerosPorViaje tablaPasajeros, DBAS.viajes viajes
-		WHERE tablaPasajeros.id_viaje = viajes.id_viaje AND fecha_salida >= @comienzoAnio AND fecha_salida < @anioDelSemestre
+		WHERE tablaPasajeros.id_viaje = viajes.id_viaje AND fecha_salida >= @comienzoAnio AND fecha_salida < @anioDelSemestre AND viajes.habilitado_viaje = 1 AND viajes.fecha_llegada IS NOT NULL
 		ORDER BY butacas_vacias DESC
 	END
 	ELSE
@@ -1143,7 +1143,7 @@ BEGIN
 		INSERT INTO @TOP5(id_viaje,matricula_aeronave,butacas_vacias,fecha_salida,fecha_llegada,codigo_ruta)
 		SELECT TOP 5 tablaPasajeros.id_viaje,matricula_aeronave,(DBAS.cantidadButacas(matricula_aeronave)-cantidad_pasajeros) as butacas_vacias,fecha_salida,fecha_llegada,codigo_ruta
 		FROM DBAS.cantidadPasajerosPorViaje tablaPasajeros, DBAS.viajes viajes
-		WHERE tablaPasajeros.id_viaje = viajes.id_viaje AND fecha_salida >= @anioDelSemestre AND fecha_salida < @finAnio
+		WHERE tablaPasajeros.id_viaje = viajes.id_viaje AND fecha_salida >= @anioDelSemestre AND fecha_salida < @finAnio AND viajes.habilitado_viaje = 1 AND viajes.fecha_llegada IS NOT NULL
 		ORDER BY butacas_vacias DESC
 	END
 	RETURN

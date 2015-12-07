@@ -74,9 +74,6 @@ namespace AerolineaFrba.Abm_Ciudad
                     querybaja = "execute  DBAS.cancelarPasajesBajaCiudad '" + comboBoxCity.Text + "'";
                     (new ConexionSQL()).ejecutarComandoSQL(querybaja);
                  
-                    //vuelvo a intentar eliminarla
-                    querybaja = "execute  DBAS.bajaCiudad '"+comboBoxCity.Text+"'";
-                    (new ConexionSQL()).ejecutarComandoSQL(querybaja);
 
                 }
                 cargarComboOtrosForms();

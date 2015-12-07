@@ -2352,6 +2352,9 @@ BEGIN
 	CLOSE viajesCursor
 	DEALLOCATE viajesCursor
 
+	-- Se da de baja la ciudad
+	EXECUTE DBAS.bajaCiudad @nombre_ciudad
+
 END;
 GO
 

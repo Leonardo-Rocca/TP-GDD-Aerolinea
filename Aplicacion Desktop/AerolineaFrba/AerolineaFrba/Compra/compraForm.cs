@@ -62,7 +62,7 @@ namespace AerolineaFrba.Compra
         private void btEncomienda_Click(object sender, EventArgs e)
         {
             int espacioDisponible = kgsEncomiendasDisponible(); 
-            if (espacioDisponible < 0)
+            if (espacioDisponible <= 0)
             {
                 MessageBox.Show("No queda mas espacio para encomiendas en este viaje");
                 return;

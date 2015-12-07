@@ -58,6 +58,7 @@ namespace AerolineaFrba.Abm_Ciudad
             }
             navegacion.modificarCiudad.cargarComboSeleccion();
             navegacion.EliminarCiudad.cargarComboSeleccion();
+            navegacion.registroLlegada.cargarComboSeleccion();
   //          MessageBox.Show("Ciudad agregada", this.Text, MessageBoxButtons.OK, MessageBoxIcon.None);
             this.Hide(); //.Close();
             txtNombreCity.Text = "";

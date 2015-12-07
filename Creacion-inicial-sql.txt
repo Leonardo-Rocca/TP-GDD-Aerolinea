@@ -2068,23 +2068,23 @@ BEGIN
 	-- Obtengo las id de las ciudades con los nombres de la nueva ruta
 	SELECT @ID_ciudad_Origen = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Origen
 	SELECT @ID_ciudad_Destino = id_ciudad FROM DBAS.ciudades WHERE nombre_ciudad = @ciudad_Destino
-
-	IF EXISTS(SELECT * FROM DBAS.rutas WHERE codigo_ruta = @codigo_ruta)
+	
+	IF EXISTS(SELECT * FROM DBAS.rutas WHERE ciudad_origen_id = @ID_ciudad_Origen AND ciudad_destino_id = @ID_ciudad_Destino AND codigo_ruta != @codigo_ruta)
 	BEGIN
-		-- Actualizo los valores de la ruta a modificar
-		UPDATE DBAS.rutas SET precio_base_por_KG = @precio_KG, precio_base_por_pasaje = @precio_pasaje, ciudad_origen_id = @ID_ciudad_Origen, ciudad_destino_id = @ID_ciudad_Destino WHERE codigo_ruta = @codigo_ruta
-
-		-- Elimino las relaciones de la ruta con los viejos servicios
-		DELETE FROM DBAS.serviciosPorRutas
-		WHERE codigo_ruta = @codigo_ruta
+		SET @mensaje_error = 'Ya existe una ruta con misma ciudad de origen y destino'
+		RAISERROR(@mensaje_error, 12, 1)
+		SET @insertarServicios = 0
 	END
 	ELSE
 	BEGIN
-		IF EXISTS(SELECT * FROM DBAS.rutas WHERE ciudad_origen_id = @ID_ciudad_Origen AND ciudad_destino_id = @ID_ciudad_Destino)
+		IF EXISTS(SELECT * FROM DBAS.rutas WHERE codigo_ruta = @codigo_ruta)
 		BEGIN
-			SET @mensaje_error = 'La ruta ya existe, no puede crearla'
-			RAISERROR(@mensaje_error, 12, 1)
-			SET @insertarServicios = 0
+			-- Actualizo los valores de la ruta a modificar
+			UPDATE DBAS.rutas SET precio_base_por_KG = @precio_KG, precio_base_por_pasaje = @precio_pasaje, ciudad_origen_id = @ID_ciudad_Origen, ciudad_destino_id = @ID_ciudad_Destino WHERE codigo_ruta = @codigo_ruta
+
+			-- Elimino las relaciones de la ruta con los viejos servicios
+			DELETE FROM DBAS.serviciosPorRutas
+			WHERE codigo_ruta = @codigo_ruta
 		END
 		ELSE
 		BEGIN
@@ -2095,7 +2095,6 @@ BEGIN
 			-- Obtengo el codigo de la ruta para su utilizacion
 			SET @codigo_ruta = SCOPE_IDENTITY()
 		END
-		
 	END
 	
 	IF(@insertarServicios = 1)

@@ -73,14 +73,24 @@ namespace AerolineaFrba.Abm_Ciudad
                     }
                     querybaja = "execute  DBAS.cancelarPasajesBajaCiudad '" + comboBoxCity.Text + "'";
                     (new ConexionSQL()).ejecutarComandoSQL(querybaja);
+                 
+                    //vuelvo a intentar eliminarla
+                    querybaja = "execute  DBAS.bajaCiudad '"+comboBoxCity.Text+"'";
+                    (new ConexionSQL()).ejecutarComandoSQL(querybaja);
+
                 }
-                        navegacion.EliminarCiudad.cargarComboSeleccion();
-                        navegacion.modificarCiudad.cargarComboSeleccion();
-                        navegacion.registroLlegada.cargarComboSeleccion();
+                cargarComboOtrosForms();
                 MessageBox.Show("Ciudad eliminada ", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             this.Hide(); 
 
+        }
+
+        private static void cargarComboOtrosForms()
+        {
+            navegacion.EliminarCiudad.cargarComboSeleccion();
+            navegacion.modificarCiudad.cargarComboSeleccion();
+            navegacion.registroLlegada.cargarComboSeleccion();
         }
 
         private void buttonCancelar_Click(object sender, EventArgs e)

@@ -51,6 +51,7 @@ namespace AerolineaFrba.Abm_Ciudad
 
             ((modificarEliminarCityForm)navegacion.modificarCiudad).cargarComboSeleccion();
             ((modificarEliminarCityForm)navegacion.EliminarCiudad).cargarComboSeleccion();
+            navegacion.registroLlegada.cargarComboSeleccion();
 
             this.Close();
             txtNombreCiudad.Text = "";

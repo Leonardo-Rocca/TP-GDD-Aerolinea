@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 using AerolineaFrba.Abm_Ciudad;
 using AerolineaFrba.FormsPrincipales;
-
+using AerolineaFrba.Dominio;
 namespace AerolineaFrba.Registro_Llegada_Destino
 {
     public partial class RegistroLLegadaForm : FormGenerico
@@ -18,6 +18,7 @@ namespace AerolineaFrba.Registro_Llegada_Destino
         public RegistroLLegadaForm()
         {
             InitializeComponent();
+            navegacion.registroLlegada = this;
             cargarComboSeleccion();
         }
 
@@ -101,6 +102,12 @@ namespace AerolineaFrba.Registro_Llegada_Destino
             if (dta.Rows.Count == 0)
             {
                 MessageBox.Show("La aeronave no esta habilitada", "Matricula inhabilitada", MessageBoxButtons.OK);
+                return false;
+            }
+
+            if (cmbOrigen.Text == cmbDestino.Text)
+            {
+                MessageBox.Show("La ciudad de Origen no puede ser la misma que de Destino", "ciudades incorrectas", MessageBoxButtons.OK);
                 return false;
             }
             return true;

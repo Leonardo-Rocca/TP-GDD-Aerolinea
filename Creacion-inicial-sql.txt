@@ -1109,7 +1109,7 @@ GO
 
 -- Creo la vista para obtener la cantidad de pasajeros por viaje para el TOP 5 aeronaves más vacias
 CREATE VIEW DBAS.cantidadPasajerosPorViaje AS
-SELECT pasajes.id_viaje,COUNT(codigo_pasaje) as cantidad_pasajeros FROM DBAS.pasajes pasajes
+SELECT pasajes.id_viaje,COUNT(codigo_pasaje) as cantidad_pasajeros FROM DBAS.pasajes pasajes WHERE id_cancelacion IS NULL
 GROUP BY pasajes.id_viaje
 GO
 

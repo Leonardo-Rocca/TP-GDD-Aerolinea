@@ -104,10 +104,10 @@ namespace AerolineaFrba.Consulta_Millas
             if (!validarExtraDNI()) return;
 
             CompletadorDeTablas.hacerQuery("select * from dbas.historialMillas ("+txtDni.Text+")", ref dgvmillas);
+            if (dgvmillas.Columns.Count != 0) dgvmillas.Columns.Remove("seleccionar");
 
             CompletadorDeTablas.hacerQuery("select * from DBAS.millasCanjeadas (" + txtDni.Text + ")", ref dgvProd);
             
-            if(dgvmillas.Columns.Count != 0)dgvmillas.Columns.Remove("seleccionar");
             if (dgvProd.Columns.Count != 0) dgvProd.Columns.Remove("seleccionar");
         }
 

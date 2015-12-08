@@ -16,7 +16,16 @@ namespace AerolineaFrba.Utils
         {
             ConexionSQL conn = new ConexionSQL();
             DataTable dt = conn.cargarTablaSQL(query);
-            if (dataGrid.DataSource != null) dataGrid.Columns.Remove("seleccionar");
+
+            try
+            {
+                if (dataGrid.DataSource != null) dataGrid.Columns.Remove("seleccionar");
+            }
+            catch
+            {
+                //El unico caso donde va a tirar error es si no lo encuentra, entonces
+                //es lo mismo que no haga nada
+            }
 
             dataGrid.DataSource = dt;
 

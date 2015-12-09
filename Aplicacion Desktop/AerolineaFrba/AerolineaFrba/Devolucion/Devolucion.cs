@@ -42,7 +42,7 @@ namespace AerolineaFrba.Devolucion
             textBox2.Text = "";
             textBox3.Text = "";
             textBox4.Text = "";
-            dateFecha.Value = DateTime.Parse(Program.nuevaFechaSistema());
+            textBox5.Text = Program.nuevaFechaSistema().Substring(0,10);
 
         }
 
@@ -291,6 +291,11 @@ namespace AerolineaFrba.Devolucion
         private void Devolucion_Load(object sender, EventArgs e)
         {
             iniciar();
+        }
+
+        private void textBox5_TextChanged(object sender, EventArgs e)
+        {
+
         }
 
     }

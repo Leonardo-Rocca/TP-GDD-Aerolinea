@@ -234,6 +234,20 @@ namespace AerolineaFrba.Devolucion
                         MessageBox.Show("Hay una encomienda que ya fue cancelada", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
                         return;
                     }
+
+                    if (sqlEx.Message.StartsWith("El viaje ya fue realizado, no puede cancelar el pasaje"))
+                    {
+                        MessageBox.Show("El viaje ya fue realizado, no puede cancelar el pasaje", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                        return;
+                    }
+
+                    if (sqlEx.Message.StartsWith("El viaje ya fue realizado, no puede cancelar la encomienda"))
+                    {
+                        MessageBox.Show("El viaje ya fue realizado, no puede cancelar la encomienda", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                        return;
+                    }
+
+
                 }
             }else{
 
@@ -277,6 +291,19 @@ namespace AerolineaFrba.Devolucion
                             MessageBox.Show("Hay una encomienda que ya fue cancelada", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
                             return;
                         }
+
+                        if (sqlEx.Message.StartsWith("El viaje ya fue realizado, no puede cancelar el pasaje"))
+                        {
+                            MessageBox.Show("El viaje ya fue realizado, no puede cancelar el pasaje", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                            return;
+                        }
+
+                        if (sqlEx.Message.StartsWith("El viaje ya fue realizado, no puede cancelar la encomienda"))
+                        {
+                            MessageBox.Show("El viaje ya fue realizado, no puede cancelar la encomienda", "Cancelacion de pasajes y/o encomiendas", MessageBoxButtons.OK);
+                            return;
+                        }
+
                     }
                 }
               //  MessageBox.Show(sqlEx.Message);

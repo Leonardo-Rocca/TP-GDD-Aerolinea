@@ -49,7 +49,7 @@ namespace AerolineaFrba.Abm_Aeronave
             int cantidad = Int32.Parse(((new ConexionSQL()).cargarTablaSQL("select count(*) from dbas.aeronavesEnServicio() where matricula_aeronave like '" + txtMatricula.Text + "'")).Rows[0][0].ToString());
             if (cantidad != 1)
             {
-                MessageBox.Show("Esta Aeronave ya fue eliminada, no puede modificarla", "Modificar Aeronave", MessageBoxButtons.OK);
+                MessageBox.Show("Esta Aeronave esta fuera de servicio, no puede modificarla", "Modificar Aeronave", MessageBoxButtons.OK);
                 return;
             }   
 

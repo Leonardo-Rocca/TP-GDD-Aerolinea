@@ -316,6 +316,11 @@ namespace AerolineaFrba.Abm_Aeronave
             return textButacasVentanilla.Text;
         }
 
+        public string getKdDisponibles()
+        {
+            return textKdDisponibles.Text;
+        }
+
         private void groupBox1_Enter(object sender, EventArgs e)
         {
 

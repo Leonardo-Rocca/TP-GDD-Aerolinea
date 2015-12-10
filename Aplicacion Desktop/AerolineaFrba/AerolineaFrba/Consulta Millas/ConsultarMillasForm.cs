@@ -40,6 +40,12 @@ namespace AerolineaFrba.Consulta_Millas
                 MessageBox.Show("El dni: " + txtDni.Text + " no se encuentra en la base ");
                 return;
             }
+           
+            if (dte.Rows.Count > 1)
+            {
+                MessageBox.Show("Hay inconsistencia en la base de datos por DNI repetido. Dirigirse a hablar con el administrador");
+                return;
+            }
 
             string millas = dt.Rows[0][0].ToString();
             if(millas=="")//millas="0";
@@ -98,6 +104,20 @@ namespace AerolineaFrba.Consulta_Millas
             if (txtDni.Text == "")
             {
                 MessageBox.Show("Complete su dni");
+                return;
+            }
+
+            string queryExistencia = "select * from dbas.personas where dni_persona = " + txtDni.Text;
+            DataTable dte = (new ConexionSQL()).cargarTablaSQL(queryExistencia);
+            if (dte.Rows.Count == 0)
+            {
+                MessageBox.Show("El dni: " + txtDni.Text + " no se encuentra en la base ");
+                return;
+            }
+
+            if (dte.Rows.Count > 1)
+            {
+                MessageBox.Show("Hay inconsistencia en la base de datos por DNI repetido. Dirigirse a hablar con el administrador");
                 return;
             }
 

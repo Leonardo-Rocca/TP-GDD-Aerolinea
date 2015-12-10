@@ -185,6 +185,8 @@ namespace AerolineaFrba.Compra
             if(dt.Rows.Count==0)return;
             if (dt.Rows.Count > 1) {
                 MessageBox.Show("Hay inconsistencia en la base de datos por DNI repetido. Dirigirse a hablar con el administrador");
+                compra.Show();
+                this.Close();
                 return;
             }
        

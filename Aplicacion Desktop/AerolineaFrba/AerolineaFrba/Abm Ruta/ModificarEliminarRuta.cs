@@ -93,7 +93,6 @@ namespace AerolineaFrba.Abm_Ruta
             try
             {
                 (new ConexionSQL()).cargarTablaSQL(query);
-                MessageBox.Show("Ruta Eliminada", "Baja ", MessageBoxButtons.OKCancel);
             }
             catch (Exception er)
             {
@@ -106,6 +105,7 @@ namespace AerolineaFrba.Abm_Ruta
                 (new ConexionSQL()).cargarTablaSQL(queryBajaPasajes);
             }
             navegacion.modificarRuta.inicializar();
+            MessageBox.Show("Ruta Eliminada", "Baja ", MessageBoxButtons.OKCancel);
             inicializar();
             this.Hide();
         }

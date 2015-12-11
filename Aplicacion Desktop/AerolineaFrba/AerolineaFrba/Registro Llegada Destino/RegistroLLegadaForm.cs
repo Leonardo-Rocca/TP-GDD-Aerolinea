@@ -113,12 +113,13 @@ namespace AerolineaFrba.Registro_Llegada_Destino
 
             string query = "SELECT * FROM DBAS.rutas tablaRutas, DBAS.ciudades tablaCiudadOrig, DBAS.ciudades tablaCiudadDest ,dbas.viajes v" +
                " WHERE  tablaRutas.ciudad_origen_id = tablaCiudadOrig.id_ciudad AND tablaRutas.ciudad_destino_id = tablaCiudadDest.id_ciudad AND v.codigo_ruta= tablaRutas.codigo_ruta" +
+               "  AND v.fecha_llegada is NULL"+
                " AND v.habilitado_viaje = 1  AND tablaCiudadOrig.nombre_ciudad = '"+cmbOrigen.Text+"' AND tablaCiudadDest.nombre_ciudad = '"+cmbDestino.Text+"'";
             dta = (new ConexionSQL()).cargarTablaSQL(query);
          
             if (dta.Rows.Count == 0)
             {
-                MessageBox.Show("La aeronave y la ruta no coinciden en ningun viaje", "Matricula inhabilitada", MessageBoxButtons.OK);
+                MessageBox.Show("La aeronave y la ruta no coinciden en ningun viaje pendiente de registro de llegada", "Matricula inhabilitada", MessageBoxButtons.OK);
                 return false;
             }
 

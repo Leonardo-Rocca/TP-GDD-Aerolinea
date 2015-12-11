@@ -224,6 +224,8 @@ namespace AerolineaFrba.Abm_Aeronave
 
             if (viaje != null)
             {
+                cantidad = Int32.Parse(((new ConexionSQL()).cargarTablaSQL("select count(*) from dbas.aeronaves where fecha_baja_servicio_definitiva IS NULL AND matricula_aeronave like '" + matricula + "'")).Rows[0][0].ToString());
+
                 if (cantidad == 1)
                 {
                     viaje.textBoxMatricula.Text = matricula;
@@ -231,7 +233,7 @@ namespace AerolineaFrba.Abm_Aeronave
                 }
                 else
                 {
-                    MessageBox.Show("No puede seleccionar una matricula inhabilitada para un viaje", "Generar Viaje", MessageBoxButtons.OK);
+                    MessageBox.Show("No puede seleccionar una matricula dada de baja para un viaje", "Generar Viaje", MessageBoxButtons.OK);
                     return;
                 }
             }

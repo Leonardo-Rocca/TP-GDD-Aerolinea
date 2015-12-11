@@ -2207,6 +2207,7 @@ BEGIN
 	DECLARE @ID_ultima_ciudad bigint
 	DECLARE @ID_ciudad_origen_nueva bigint
 	DECLARE @fecha_disponible datetime
+	DECLARE @fecha_reinsercion datetime
 
 	DECLARE @mensaje_error varchar(100)
 	
@@ -2217,6 +2218,20 @@ BEGIN
 	SELECT @ID_ultima_ciudad = tablaRutas.ciudad_destino_id, @fecha_disponible = tablaViajes.fecha_llegada_estimada FROM DBAS.viajes tablaViajes, DBAS.rutas tablaRutas
 	WHERE tablaViajes.id_viaje = @ID_viaje AND tablaViajes.codigo_ruta = tablaRutas.codigo_ruta
 	
+	IF EXISTS(SELECT * FROM DBAS.periodosFueraDeServicio WHERE matricula_aeronave = @matricula_aeronave)
+	BEGIN
+		SELECT TOP 1 @fecha_reinsercion = fecha_reinicio_servicio FROM DBAS.periodosFueraDeServicio WHERE matricula_aeronave = @matricula_aeronave ORDER BY fecha_reinicio_servicio DESC
+	END
+	ELSE
+	BEGIN
+		SET @fecha_reinsercion = convert(datetime,'19000101 00:00:00.000')
+	END
+
+	IF(@fecha_disponible < @fecha_reinsercion)
+	BEGIN
+		SET @fecha_disponible = @fecha_reinsercion
+	END
+
 	-- Compruebo que la fecha de salida sea mayor a la fecha de la llegada de la aeronave de su ultimo viaje
 	IF(@fecha_disponible >= @fecha_salida)
 	BEGIN
@@ -2752,6 +2767,5 @@ BEGIN
 
 END;
 GO
-
 
 
